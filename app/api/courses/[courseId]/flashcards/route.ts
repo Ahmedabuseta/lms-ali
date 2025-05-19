@@ -1,0 +1,97 @@
+import { NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs'
+import { db } from '@/lib/db'
+
+export async function POST(
+  req: Request,
+  { params }: { params: { courseId: string } }
+) {
+  try {
+    const { userId } = auth()
+    const { question, answer, chapterId } = await req.json()
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    // Verify course ownership
+    const course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+        // //createdById: userId,
+      },
+    })
+
+    if (!course) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    // Verify the chapter belongs to this course
+    const chapter = await db.chapter.findUnique({
+      where: {
+        id: chapterId,
+        courseId: params.courseId,
+      },
+    })
+
+    if (!chapter) {
+      return new NextResponse('Chapter not found', { status: 404 })
+    }
+
+    // Create the flashcard with just the chapterId field
+    const flashcard = await db.flashcard.create({
+      data: {
+        question,
+        answer,
+        chapterId,
+      },
+    })
+
+    return NextResponse.json(flashcard)
+  } catch (error) {
+    console.error('[FLASHCARDS_POST]', error)
+    return new NextResponse('Internal Error', { status: 500 })
+  }
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: { courseId: string } }
+) {
+  try {
+    const { userId } = auth()
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    // Verify course ownership
+    const course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+        // //createdById: userId,
+      },
+    })
+
+    if (!course) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    // Get all flashcards for this course's chapters
+    const flashcards = await db.flashcard.findMany({
+      where: {
+        chapter: {
+          courseId: params.courseId,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return NextResponse.json(flashcards)
+  } catch (error) {
+    console.error('[FLASHCARDS_GET]', error)
+    return new NextResponse('Internal Error', { status: 500 })
+  }
+}

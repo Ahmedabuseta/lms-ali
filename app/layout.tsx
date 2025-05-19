@@ -1,0 +1,86 @@
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { ClerkProvider } from '@clerk/nextjs'
+import { ToastProvider } from '@/components/providers/toaster-provider'
+import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/components/providers'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'LMS (Learning Management System)',
+  description: 'LMS (Learning Management System)',
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          {/* Enhanced dark mode script with better transition handling */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    // Get stored theme preference or detect system preference
+                    const storedTheme = localStorage.getItem('theme');
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    
+                    // Apply theme class immediately to avoid flash
+                    if (storedTheme === 'dark' || (!storedTheme && systemPrefersDark)) {
+                      document.documentElement.classList.add('dark');
+                      document.documentElement.style.colorScheme = 'dark';
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                      document.documentElement.style.colorScheme = 'light';
+                    }
+                    
+                    // Temporarily disable transitions on initial load
+                    document.documentElement.setAttribute('data-theme-transition', 'false');
+                    
+                    // Re-enable transitions after a short delay
+                    window.addEventListener('DOMContentLoaded', () => {
+                      setTimeout(() => {
+                        document.documentElement.removeAttribute('data-theme-transition');
+                      }, 250);
+                    });
+                    
+                    // Listen for system theme changes
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                      const currentTheme = localStorage.getItem('theme');
+                      if (currentTheme !== 'light' && currentTheme !== 'dark') {
+                        if (e.matches) {
+                          document.documentElement.classList.add('dark');
+                          document.documentElement.style.colorScheme = 'dark';
+                        } else {
+                          document.documentElement.classList.remove('dark');
+                          document.documentElement.style.colorScheme = 'light';
+                        }
+                      }
+                    });
+                  } catch (e) {
+                    console.warn('Failed to apply theme early:', e);
+                  }
+                })();
+              `,
+            }}
+          />
+        </head>
+        <body className={`${inter.className} antialiased bg-background text-foreground`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            storageKey="theme"
+          >
+            <ConfettiProvider />
+            <ToastProvider />
+            <NotificationsProvider />
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
+  )
+}
