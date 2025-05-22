@@ -11,60 +11,72 @@ interface Option {
 interface OptionItemProps {
   option: Option
   isSelected: boolean
-  isAnswered: boolean
-  onClick: () => void
+  showAnswer: boolean
+  onSelect: () => void
+  isDisabled?: boolean
 }
 
 export const OptionItem = ({
   option,
   isSelected,
-  isAnswered,
-  onClick
+  showAnswer,
+  onSelect,
+  isDisabled = false,
 }: OptionItemProps) => {
-  const getBgColor = () => {
-    if (!isAnswered) {
-      return isSelected ? 'bg-blue-50 border-blue-300' : 'bg-white hover:bg-slate-50'
+  const getOptionClasses = () => {
+    const baseClasses = 'p-4 rounded-lg border transition-all flex items-center justify-between'
+    const cursorClasses = isDisabled ? 'cursor-default' : 'cursor-pointer'
+    
+    if (!showAnswer) {
+      return `${baseClasses} ${cursorClasses} ${
+        isSelected
+          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+          : isDisabled 
+            ? 'border-slate-200 dark:border-slate-700'
+            : 'hover:border-slate-300 dark:hover:border-slate-600'
+      }`
     }
     
     if (option.isCorrect) {
-      return 'bg-green-50 border-green-300'
+      return `${baseClasses} ${cursorClasses} border-green-500 bg-green-50 dark:bg-green-900/20`
     }
     
     if (isSelected && !option.isCorrect) {
-      return 'bg-red-50 border-red-300'
+      return `${baseClasses} ${cursorClasses} border-red-500 bg-red-50 dark:bg-red-900/20`
     }
     
-    return 'bg-white opacity-70'
+    return `${baseClasses} ${cursorClasses} opacity-50`
   }
   
-  const getIcon = () => {
-    if (!isAnswered) {
-      return null
+  const handleClick = () => {
+    if (!isDisabled) {
+      onSelect()
     }
-    
-    if (option.isCorrect) {
-      return <Check className="h-5 w-5 text-green-600" />
-    }
-    
-    if (isSelected && !option.isCorrect) {
-      return <X className="h-5 w-5 text-red-600" />
-    }
-    
-    return null
   }
   
   return (
     <div
-      className={`
-        ${getBgColor()}
-        border rounded-md p-3 flex items-center justify-between
-        cursor-pointer transition-colors
-        ${!isAnswered ? 'cursor-pointer' : 'cursor-default'}
-      `}
-      onClick={!isAnswered ? onClick : undefined}
+      className={getOptionClasses()}
+      onClick={handleClick}
+      role="button"
+      tabIndex={isDisabled ? -1 : 0}
+      aria-disabled={isDisabled}
     >
-      <span className="font-medium">{option.text}</span>
-      {getIcon()}
+      <span className="flex-1">{option.text}</span>
+      {showAnswer && (
+        <div className="flex items-center gap-2">
+          {option.isCorrect ? (
+            <span className="text-green-600 dark:text-green-400 text-sm">صحيح</span>
+          ) : isSelected ? (
+            <span className="text-red-600 dark:text-red-400 text-sm">خطأ</span>
+          ) : null}
+          {option.isCorrect ? (
+            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+          ) : isSelected ? (
+            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+          ) : null}
+        </div>
+      )}
     </div>
   )
 }

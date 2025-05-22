@@ -58,13 +58,13 @@ const CoursesList = ({ items }: CoursesListProps) => {
             chaptersLength={item.chaptersLength}
             price={item.price}
             progress={item.progress}
-            category={item?.category?.name}
+            category={item?.category?.name || null}
           />
         ))}
       </div>
       {items.length === 0 && (
         <div className="text-center text-sm text-muted-foreground mt-10">
-          No courses found
+          لا توجد دورات متاحة
         </div>
       )}
     </div>

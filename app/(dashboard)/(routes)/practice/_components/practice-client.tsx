@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Loader2, Book, BookOpen } from 'lucide-react'
 import { QuestionCard } from './question-card'
 import { PracticeOptions } from './practice-options'
+import { toast } from 'react-hot-toast'
 
 interface Chapter {
   id: string
@@ -29,8 +30,39 @@ interface Course {
   }
 }
 
+interface Question {
+  id: string
+  text: string
+  type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE'
+  difficulty: string
+  chapter?: {
+    id: string
+    title: string
+  }
+  options: {
+    id: string
+    text: string
+    isCorrect: boolean
+  }[]
+}
+
 interface PracticeClientProps {
   courses: Course[]
+}
+
+interface SavedAnswer {
+  questionId: string
+  selectedOptionId: string
+  isCorrect: boolean
+}
+
+interface SavedProgress {
+  courseId: string
+  chapterIds: string[]
+  currentPage: number
+  currentQuestionIndex: number
+  answers: SavedAnswer[]
+  lastUpdated: number
 }
 
 export const PracticeClient = ({ courses }: PracticeClientProps) => {
@@ -41,25 +73,59 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
   const courseIdParam = searchParams.get('courseId')
   const chapterIdsParam = searchParams.get('chapterIds')
   
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(courseIdParam || courses[0].id)
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(courseIdParam || courses[0]?.id || '')
   const [selectedChapterIds, setSelectedChapterIds] = useState<string[]>(
     chapterIdsParam ? chapterIdsParam.split(',') : []
   )
   const [isLoading, setIsLoading] = useState(false)
   const [isPracticeMode, setIsPracticeMode] = useState(false)
-  const [questions, setQuestions] = useState<any[]>([])
+  const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [totalQuestions, setTotalQuestions] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [error, setError] = useState<string | null>(null)
+  const [savedAnswers, setSavedAnswers] = useState<SavedAnswer[]>([])
   
   const selectedCourse = courses.find(course => course.id === selectedCourseId)
   
-  // Reset chapter selection when course changes
+  // Load saved progress on initial mount
   useEffect(() => {
-    setSelectedChapterIds([])
-  }, [selectedCourseId])
-  
+    const savedProgress = localStorage.getItem('practiceProgress')
+    if (savedProgress) {
+      const progress: SavedProgress = JSON.parse(savedProgress)
+      // Only restore if less than 24 hours old
+      if (Date.now() - progress.lastUpdated < 24 * 60 * 60 * 1000) {
+        setSelectedCourseId(progress.courseId)
+        setSelectedChapterIds(progress.chapterIds)
+        setCurrentPage(progress.currentPage)
+        setCurrentQuestionIndex(progress.currentQuestionIndex)
+        setSavedAnswers(progress.answers)
+        // Don't immediately start practice mode - let user choose to continue
+        if (progress.answers.length > 0) {
+          toast.success('تم استرجاع تقدمك السابق')
+        }
+      } else {
+        localStorage.removeItem('practiceProgress')
+      }
+    }
+  }, [])
+
+  // Save progress whenever relevant state changes
+  useEffect(() => {
+    if (isPracticeMode && questions.length > 0) {
+      const progress: SavedProgress = {
+        courseId: selectedCourseId,
+        chapterIds: selectedChapterIds,
+        currentPage,
+        currentQuestionIndex,
+        answers: savedAnswers,
+        lastUpdated: Date.now()
+      }
+      localStorage.setItem('practiceProgress', JSON.stringify(progress))
+    }
+  }, [isPracticeMode, selectedCourseId, selectedChapterIds, currentPage, currentQuestionIndex, savedAnswers])
+
   const handleCourseChange = (courseId: string) => {
     setSelectedCourseId(courseId)
     updateUrl(courseId, [])
@@ -84,21 +150,66 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
     router.push(`/practice?${params.toString()}`)
   }
   
+  const handleAnswerSubmit = (questionId: string, selectedOptionId: string, isCorrect: boolean) => {
+    setSavedAnswers(prev => {
+      const existing = prev.findIndex(a => a.questionId === questionId)
+      if (existing !== -1) {
+        const updated = [...prev]
+        updated[existing] = { questionId, selectedOptionId, isCorrect }
+        return updated
+      }
+      return [...prev, { questionId, selectedOptionId, isCorrect }]
+    })
+  }
+
+  const getQuestionAnswer = (questionId: string) => {
+    return savedAnswers.find(a => a.questionId === questionId)
+  }
+
   const startPractice = async () => {
     try {
       setIsLoading(true)
+      setError(null)
       await fetchQuestions(1)
       setIsPracticeMode(true)
       setCurrentQuestionIndex(0)
     } catch (error) {
-      console.error(error)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
+      setError(message)
+      toast.error(message)
+      setIsPracticeMode(false)
     } finally {
       setIsLoading(false)
     }
   }
   
+  const continuePractice = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      await fetchQuestions(currentPage)
+      setIsPracticeMode(true)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
+      setError(message)
+      toast.error(message)
+      setIsPracticeMode(false)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const resetProgress = () => {
+    localStorage.removeItem('practiceProgress')
+    setSavedAnswers([])
+    setCurrentPage(1)
+    setCurrentQuestionIndex(0)
+    toast.success('تم مسح التقدم السابق')
+  }
+  
   const fetchQuestions = async (page: number) => {
     try {
+      setError(null)
       const params = new URLSearchParams()
       params.set('courseId', selectedCourseId)
       if (selectedChapterIds.length > 0) {
@@ -107,35 +218,56 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
       params.set('page', page.toString())
       params.set('pageSize', '10')
       
-      const response = await axios.get(`/api/practice/questions?${params.toString()}`)
+      const response = await axios.get<{
+        questions: Question[]
+        totalQuestions: number
+        pageCount: number
+        currentPage: number
+      }>(`/api/practice/questions?${params.toString()}`)
+      console.log(response)
       setQuestions(response.data.questions)
       setTotalQuestions(response.data.totalQuestions)
       setTotalPages(response.data.pageCount)
       setCurrentPage(response.data.currentPage)
     } catch (error) {
-      console.error(error)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
+      setError(message)
+      toast.error(message)
+      throw error
     }
   }
   
-  const nextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1)
-    } else if (currentPage < totalPages) {
-      // Load next page of questions
-      fetchQuestions(currentPage + 1).then(() => {
+  const nextQuestion = async () => {
+    try {
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(prev => prev + 1)
+      } else if (currentPage < totalPages) {
+        setIsLoading(true)
+        await fetchQuestions(currentPage + 1)
         setCurrentQuestionIndex(0)
-      })
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال التالي'
+      toast.error(message)
+    } finally {
+      setIsLoading(false)
     }
   }
   
-  const previousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1)
-    } else if (currentPage > 1) {
-      // Load previous page of questions
-      fetchQuestions(currentPage - 1).then(() => {
+  const previousQuestion = async () => {
+    try {
+      if (currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(prev => prev - 1)
+      } else if (currentPage > 1) {
+        setIsLoading(true)
+        await fetchQuestions(currentPage - 1)
         setCurrentQuestionIndex(questions.length - 1)
-      })
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال السابق'
+      toast.error(message)
+    } finally {
+      setIsLoading(false)
     }
   }
   
@@ -143,6 +275,24 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
     setIsPracticeMode(false)
     setQuestions([])
     setCurrentQuestionIndex(0)
+    setError(null)
+    // Clear saved progress
+    localStorage.removeItem('practiceProgress')
+    setSavedAnswers([])
+    toast.success('تم إنهاء التدريب ومسح التقدم')
+  }
+  
+  if (!selectedCourse) {
+    return (
+      <div className="p-6" dir="rtl">
+        <div className="flex flex-col items-center justify-center h-60 text-center">
+          <h2 className="text-2xl font-bold mb-2">لا توجد دورات متاحة</h2>
+          <p className="text-slate-600 mb-6">
+            لم يتم العثور على أي دورات متاحة للتدريب
+          </p>
+        </div>
+      </div>
+    )
   }
   
   return (
@@ -151,7 +301,7 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="md:col-span-1">
             <CardHeader>
-              <CardTitle>Select Course</CardTitle>
+              <CardTitle>اختر الدورة</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -160,15 +310,15 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                   onValueChange={handleCourseChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a course" />
+                    <SelectValue placeholder="اختر دورة" />
                   </SelectTrigger>
                   <SelectContent>
                     {courses.map((course) => (
                       <SelectItem key={course.id} value={course.id}>
                         <div className="flex items-center gap-2">
                           <span>{course.title}</span>
-                          <Badge variant="outline" className="ml-auto">
-                            {course._count.PracticeQuestion} questions
+                          <Badge variant="outline" className="mr-auto">
+                            {course._count.PracticeQuestion} سؤال
                           </Badge>
                         </div>
                       </SelectItem>
@@ -178,12 +328,12 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
 
                 <div className="mt-4">
                   <h3 className="text-sm font-medium mb-2">
-                    {selectedCourse?.chapters.length 
-                      ? "Select Chapters (Optional)" 
-                      : "No chapters available"}
+                    {selectedCourse.chapters.length 
+                      ? "اختر الفصول (اختياري)" 
+                      : "لا توجد فصول متاحة"}
                   </h3>
                   <div className="space-y-2">
-                    {selectedCourse?.chapters.map((chapter) => (
+                    {selectedCourse.chapters.map((chapter) => (
                       <div key={chapter.id} className="flex items-center space-x-2">
                         <Checkbox
                           id={chapter.id}
@@ -197,7 +347,7 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center justify-between w-full"
                         >
                           <span>{chapter.title}</span>
-                          <Badge variant="outline" className="ml-2">
+                          <Badge variant="outline" className="mr-2">
                             {chapter._count.PracticeQuestion}
                           </Badge>
                         </label>
@@ -215,16 +365,16 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                    جاري التحميل...
                   </>
                 ) : selectedChapterIds.length > 0 ? (
                   <>
-                    Start Chapter Practice
+                    ابدأ التدريب على الفصول المختارة
                   </>
                 ) : (
                   <>
-                    Start Course Practice
+                    ابدأ التدريب على الدورة كاملة
                   </>
                 )}
               </Button>
@@ -235,68 +385,70 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Book className="h-5 w-5" />
-                {selectedCourse?.title}
+                {selectedCourse.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {selectedCourse && (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-medium mb-2">Course Summary</h3>
-                    <p className="text-sm text-slate-600">
-                      This course has {selectedCourse._count.PracticeQuestion} practice questions
-                      across {selectedCourse.chapters.length} chapters.
-                    </p>
-                  </div>
-                  
-                  {selectedChapterIds.length > 0 && (
-                    <div>
-                      <h3 className="font-medium mb-2">Selected Chapters</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedCourse.chapters
-                          .filter(chapter => selectedChapterIds.includes(chapter.id))
-                          .map(chapter => (
-                            <Badge key={chapter.id} variant="secondary">
-                              <BookOpen className="mr-1 h-3 w-3" />
-                              {chapter.title}
-                            </Badge>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <h3 className="font-medium mb-2">Practice Mode</h3>
-                    <p className="text-sm text-slate-600">
-                      You'll get random questions from {selectedCourse.title}
-                      {selectedChapterIds.length > 0 ? ' (selected chapters only)' : ''}. 
-                      Each question will show immediate feedback on your answer.
-                    </p>
-                  </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-medium mb-2">ملخص الدورة</h3>
+                  <p className="text-sm text-slate-600">
+                    تحتوي هذه الدورة على {selectedCourse._count.PracticeQuestion} سؤال تدريبي
+                    موزعة على {selectedCourse.chapters.length} فصل.
+                  </p>
                 </div>
-              )}
+                
+                {selectedChapterIds.length > 0 && (
+                  <div>
+                    <h3 className="font-medium mb-2">الفصول المختارة</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedCourse.chapters
+                        .filter(chapter => selectedChapterIds.includes(chapter.id))
+                        .map(chapter => (
+                          <Badge key={chapter.id} variant="secondary">
+                            <BookOpen className="ml-1 h-3 w-3" />
+                            {chapter.title}
+                          </Badge>
+                        ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div>
+                  <h3 className="font-medium mb-2">وضع التدريب</h3>
+                  <p className="text-sm text-slate-600">
+                    ستحصل على أسئلة عشوائية من {selectedCourse.title}
+                    {selectedChapterIds.length > 0 ? ' (من الفصول المختارة فقط)' : ' (من جميع الفصول)'}. 
+                    ستظهر نتيجة إجابتك فور الإجابة على كل سؤال.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       ) : (
         <>
-          {questions.length > 0 && (
+          {isLoading ? (
+            <div className="flex items-center justify-center h-60">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : questions.length > 0 ? (
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm text-slate-600">
-                    Question {currentQuestionIndex + 1} of {questions.length} 
-                    {totalQuestions > questions.length && `(${totalQuestions} total)`}
+                    السؤال {currentQuestionIndex + 1} من {questions.length} 
+                    {totalQuestions > questions.length && ` (${totalQuestions} إجمالي)`}
                   </p>
                   <h2 className="text-lg font-medium">
-                    {selectedCourse?.title}
+                    {selectedCourse.title}
                     {questions[currentQuestionIndex].chapter && (
                       <> - {questions[currentQuestionIndex].chapter.title}</>
                     )}
                   </h2>
                 </div>
                 <Button variant="outline" onClick={exitPracticeMode}>
-                  Exit Practice
+                  إنهاء التدريب
                 </Button>
               </div>
               
@@ -306,10 +458,56 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                 onPrevious={previousQuestion}
                 isFirstQuestion={currentQuestionIndex === 0 && currentPage === 1}
                 isLastQuestion={currentQuestionIndex === questions.length - 1 && currentPage === totalPages}
+                savedAnswer={getQuestionAnswer(questions[currentQuestionIndex].id)}
+                onAnswerSubmit={handleAnswerSubmit}
               />
+            </div>
+          ) : (
+            <div className="p-6" dir="rtl">
+              <div className="flex flex-col items-center justify-center h-60 text-center">
+                <h2 className="text-2xl font-bold mb-2">لا توجد أسئلة متاحة</h2>
+                <p className="text-slate-600 mb-6">
+                  لم يتم العثور على أسئلة تدريبية للفصول المختارة
+                </p>
+                <Button variant="outline" onClick={exitPracticeMode}>
+                  العودة للاختيار
+                </Button>
+              </div>
             </div>
           )}
         </>
+      )}
+      
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
+      {!isPracticeMode && savedAnswers.length > 0 && (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>التقدم المحفوظ</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <p className="text-sm text-slate-600">
+                لديك {savedAnswers.length} إجابة محفوظة
+              </p>
+              <p className="text-sm text-slate-600">
+                نسبة الإجابات الصحيحة: {Math.round((savedAnswers.filter(a => a.isCorrect).length / savedAnswers.length) * 100)}%
+              </p>
+              <div className="flex gap-2">
+                <Button onClick={continuePractice} disabled={isLoading}>
+                  متابعة التدريب
+                </Button>
+                <Button variant="outline" onClick={resetProgress}>
+                  بدء من جديد
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </>
   )

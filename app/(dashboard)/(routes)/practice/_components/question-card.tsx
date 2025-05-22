@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,12 +20,20 @@ interface Question {
   difficulty?: string
 }
 
+interface SavedAnswer {
+  questionId: string
+  selectedOptionId: string
+  isCorrect: boolean
+}
+
 interface QuestionCardProps {
   question: Question
   onNext: () => void
   onPrevious: () => void
   isFirstQuestion: boolean
   isLastQuestion: boolean
+  savedAnswer?: SavedAnswer
+  onAnswerSubmit?: (questionId: string, selectedOptionId: string, isCorrect: boolean) => void
 }
 
 export const QuestionCard = ({
@@ -33,62 +41,80 @@ export const QuestionCard = ({
   onNext,
   onPrevious,
   isFirstQuestion,
-  isLastQuestion
+  isLastQuestion,
+  savedAnswer,
+  onAnswerSubmit,
 }: QuestionCardProps) => {
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null)
-  const [isAnswered, setIsAnswered] = useState(false)
-  const [isCorrect, setIsCorrect] = useState(false)
+  const [showAnswer, setShowAnswer] = useState(false)
   
-  const handleSelectOption = (optionId: string) => {
-    if (isAnswered) return
-    
-    setSelectedOptionId(optionId)
-    const option = question.options.find(o => o.id === optionId)
-    
-    if (option) {
-      setIsCorrect(option.isCorrect)
-      setIsAnswered(true)
+  // Load saved answer if available
+  useEffect(() => {
+    if (savedAnswer) {
+      setSelectedOptionId(savedAnswer.selectedOptionId)
+      setShowAnswer(true)
+    } else {
+      setSelectedOptionId(null)
+      setShowAnswer(false)
+    }
+  }, [savedAnswer, question.id])
+  
+  const handleOptionSelect = (optionId: string) => {
+    if (!showAnswer) {
+      setSelectedOptionId(optionId)
+      setShowAnswer(true)
+      
+      // Save the answer
+      const selectedOption = question.options.find(opt => opt.id === optionId)
+      if (selectedOption && onAnswerSubmit) {
+        onAnswerSubmit(question.id, optionId, selectedOption.isCorrect)
+      }
     }
   }
   
   const handleNext = () => {
-    setSelectedOptionId(null)
-    setIsAnswered(false)
-    setIsCorrect(false)
     onNext()
   }
   
   const handlePrevious = () => {
-    setSelectedOptionId(null)
-    setIsAnswered(false)
-    setIsCorrect(false)
     onPrevious()
   }
   
+  const getAnswerStatus = () => {
+    if (!showAnswer || !selectedOptionId) return null
+    const selectedOption = question.options.find(opt => opt.id === selectedOptionId)
+    return selectedOption?.isCorrect ? 'صحيح' : 'خطأ'
+  }
+  
+  const answerStatus = getAnswerStatus()
+  
   return (
-    <Card className="shadow-md">
-      <CardHeader className="pb-3">
+    <Card>
+      <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-semibold flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2">
             <FileQuestion className="h-5 w-5" />
-            Question
+            <span>السؤال</span>
           </CardTitle>
-          {question.difficulty && (
-            <Badge variant={
-              question.difficulty === 'EASY' ? 'success' :
-              question.difficulty === 'MEDIUM' ? 'warning' : 'destructive'
-            }>
-              {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {answerStatus && (
+              <Badge variant={answerStatus === 'صحيح' ? 'default' : 'destructive'}>
+                {answerStatus}
+              </Badge>
+            )}
+            {question.difficulty && (
+              <Badge variant="secondary">
+                {question.difficulty === 'EASY' && 'سهل'}
+                {question.difficulty === 'MEDIUM' && 'متوسط'}
+                {question.difficulty === 'HARD' && 'صعب'}
+              </Badge>
+            )}
+          </div>
         </div>
       </CardHeader>
-      
-      <Separator className="mb-4" />
-      
       <CardContent className="space-y-6">
-        <div className="text-lg font-medium">
-          {question.text}
+        <div>
+          <p className="text-lg">{question.text}</p>
         </div>
         
         <div className="space-y-2">
@@ -97,43 +123,41 @@ export const QuestionCard = ({
               key={option.id}
               option={option}
               isSelected={selectedOptionId === option.id}
-              isAnswered={isAnswered}
-              onClick={() => handleSelectOption(option.id)}
+              showAnswer={showAnswer}
+              onSelect={() => handleOptionSelect(option.id)}
+              isDisabled={showAnswer}
             />
           ))}
         </div>
         
-        {isAnswered && (
-          <div className={`p-4 rounded-md ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-            <p className={`font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-              {isCorrect ? 'Correct!' : 'Incorrect!'}
-            </p>
-            <p className="text-sm mt-1">
-              {isCorrect
-                ? 'Great job! You selected the right answer.'
-                : 'The correct answer is: ' + 
-                  question.options.find(o => o.isCorrect)?.text}
-            </p>
+        {showAnswer && (
+          <div className="pt-4">
+            <Separator className="mb-4" />
+            <div className="text-sm">
+              <p className="font-medium mb-1">التوضيح:</p>
+              <p className="text-slate-600">
+                {question.options.find(opt => opt.isCorrect)?.text} هي الإجابة الصحيحة.
+              </p>
+            </div>
           </div>
         )}
       </CardContent>
-      
-      <CardFooter className="border-t pt-4 flex items-center justify-between">
-        <Button 
-          variant="outline" 
+      <CardFooter className="flex justify-between">
+        <Button
+          variant="outline"
           onClick={handlePrevious}
           disabled={isFirstQuestion}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous
+          <ArrowRight className="ml-2 h-4 w-4" />
+          السابق
         </Button>
         
         <Button
           onClick={handleNext}
-          disabled={!isAnswered}
+          disabled={isLastQuestion || !showAnswer}
         >
-          Next
-          <ArrowRight className="h-4 w-4 ml-2" />
+          التالي
+          <ArrowLeft className="mr-2 h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>

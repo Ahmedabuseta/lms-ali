@@ -13,18 +13,18 @@ const PracticePage = async () => {
   // Get all courses that the user has access to (purchased or created)
   const courses = await db.course.findMany({
     where: {
-      OR: [
-        {
-          purchases: {
-            some: {
-              userId,
-            },
-          },
-        },
-        {
-          //createdById: userId,
-        },
-      ],
+      // OR: [
+      //   {
+      //     purchases: {
+      //       some: {
+      //         userId,
+      //       },
+      //     },
+      //   },
+      //   {
+      //     //createdById: userId,
+      //   },
+      // ],
       // Only include courses that have practice questions
       PracticeQuestion: {
         some: {},
@@ -64,14 +64,14 @@ const PracticePage = async () => {
       title: 'asc',
     },
   });
-
+console.log(courses)
   if (courses.length === 0) {
     return (
-      <div className="p-6">
+      <div className="p-6" dir="rtl">
         <div className="flex flex-col items-center justify-center h-60 text-center">
-          <h2 className="text-2xl font-bold mb-2">No Practice Questions Available</h2>
+          <h2 className="text-2xl font-bold mb-2">لا توجد أسئلة تدريبية متاحة</h2>
           <p className="text-slate-600 mb-6">
-            There are no practice questions available for your courses yet.
+            لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن
           </p>
         </div>
       </div>
@@ -79,11 +79,11 @@ const PracticePage = async () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6" dir="rtl">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Practice Questions</h1>
+        <h1 className="text-2xl font-bold">الأسئلة التدريبية</h1>
         <p className="text-slate-600">
-          Test your knowledge with practice questions from your courses
+          اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك
         </p>
       </div>
 

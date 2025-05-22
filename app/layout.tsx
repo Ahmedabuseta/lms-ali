@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Cairo } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ToastProvider } from '@/components/providers/toaster-provider'
 import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/components/providers'
 
 const inter = Inter({ subsets: ['latin'] })
+const cairo = Cairo({ subsets: ['arabic'] })
 
 export const metadata: Metadata = {
-  title: 'LMS (Learning Management System)',
-  description: 'LMS (Learning Management System)',
+  title: 'نظام إدارة التعلم',
+  description: 'نظام إدارة التعلم',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -67,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           />
         </head>
-        <body className={`${inter.className} antialiased bg-background text-foreground`}>
+        <body className={`${cairo.className} antialiased bg-background text-foreground`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 
 interface GetPracticeQuestionsProps {
-  userId: string;
+  // userId: string;
   courseId?: string;
   chapterIds?: string[];
   page?: number;
@@ -9,7 +9,7 @@ interface GetPracticeQuestionsProps {
 }
 
 export const getPracticeQuestions = async ({
-  userId,
+  // userId,
   courseId,
   chapterIds,
   page = 1,
@@ -21,22 +21,22 @@ export const getPracticeQuestions = async ({
 
     // Base query conditions - user must own or have purchased the course
     const baseConditions = {
-      OR: [
-        {
-          course: {
-            purchases: {
-              some: {
-                userId,
-              },
-            },
-          },
-        },
-        {
-          course: {
-            //createdById: userId,
-          },
-        },
-      ],
+      // OR: [
+      //   {
+      //     course: {
+      //       // purchases: {
+      //       //   some: {
+      //       //     userId,
+      //       //   },
+      //       // },
+      //     },
+      //   },
+      //   {
+      //     course: {
+      //       //createdById: userId,
+      //     },
+      //   },
+      // ],
     };
 
     // Add course filter if provided

@@ -15,19 +15,18 @@ export default async function Dashboard() {
 
   const { completedCourses, coursesInProgress } = await getDashboardCourses(userId)
 
+  // Add chaptersLength property to each course
+  const coursesWithChaptersLength = [...coursesInProgress, ...completedCourses].map(course => ({
+    ...course,
+    chaptersLength: course.chapters.length
+  }));
+
   // Mock data for the learning insights component
   const mockRecentActivity = [
-    { type: 'course', title: 'Introduction to Machine Learning', date: '2 hours ago', progress: 45 },
-    { type: 'exam', title: 'React Fundamentals Quiz', date: 'Yesterday', progress: 100 },
-    { type: 'completion', title: 'JavaScript Basics', date: '3 days ago' },
-    { type: 'course', title: 'Advanced CSS Techniques', date: 'Last week', progress: 68 }
-  ];
-
-  const mockRecommendedCourses = [
-    { id: '1', title: 'Data Science Fundamentals', category: 'Data Science' },
-    { id: '2', title: 'Advanced React Patterns', category: 'Web Development' },
-    { id: '3', title: 'UX Design Principles', category: 'Design' },
-    { id: '4', title: 'Blockchain Development', category: 'Blockchain' }
+    { type: 'course', title: 'مقدمة في تعلم الآلة', date: 'قبل ساعتين', progress: 45 },
+    { type: 'exam', title: 'اختبار أساسيات رياكت', date: 'أمس', progress: 100 },
+    { type: 'completion', title: 'أساسيات جافاسكريبت', date: 'قبل 3 أيام' },
+    { type: 'course', title: 'تقنيات CSS متقدمة', date: 'الأسبوع الماضي', progress: 68 }
   ];
 
   // Calculate total hours based on courses (mock data since we don't have actual hours)
@@ -41,14 +40,13 @@ export default async function Dashboard() {
         totalHours={totalHours}
         studyStreak={7}
         recentActivity={mockRecentActivity}
-        recommendedCourses={mockRecommendedCourses}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <InfoCard icon={Clock} label="In Progress" numberOfItems={coursesInProgress.length} />
-        <InfoCard icon={CheckCircle} label="Completed" numberOfItems={completedCourses.length} variant="success" />
+        <InfoCard icon={Clock} label="قيد التقدم" numberOfItems={coursesInProgress.length} />
+        <InfoCard icon={CheckCircle} label="مكتمل" numberOfItems={completedCourses.length} variant="success" />
       </div>
-      <CoursesList items={[...coursesInProgress, ...completedCourses]} />
+      <CoursesList items={coursesWithChaptersLength} />
     </div>
   )
 }

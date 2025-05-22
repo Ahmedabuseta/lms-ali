@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
     
     const questions = await getPracticeQuestions({
-      userId,
+      // userId,
       courseId,
       chapterIds,
       page,

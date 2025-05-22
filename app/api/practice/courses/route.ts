@@ -12,18 +12,18 @@ export async function GET(req: NextRequest) {
     // Get courses that the user has access to and have practice questions
     const courses = await db.course.findMany({
       where: {
-        OR: [
-          {
-            purchases: {
-              some: {
-                userId,
-              },
-            },
-          },
-          {
-            //createdById: userId,
-          },
-        ],
+        // OR: [
+        //   {
+        //     purchases: {
+        //       some: {
+        //         userId,
+        //       },
+        //     },
+        //   },
+        //   {
+        //     //createdById: userId,
+        //   },
+        // ],
         // Only include courses that have practice questions
         PracticeQuestion: {
           some: {},
