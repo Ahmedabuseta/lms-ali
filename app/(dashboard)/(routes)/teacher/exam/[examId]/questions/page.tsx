@@ -1,22 +1,22 @@
-import { auth } from '@clerk/nextjs'
-import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { db } from '@/lib/db'
-import { ArrowLeft, PlusCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { QuestionsList } from './_components/questions-list'
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { db } from '@/lib/db';
+import { ArrowLeft, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { QuestionsList } from './_components/questions-list';
 
 interface PageProps {
   params: {
-    examId: string
-  }
+    examId: string;
+  };
 }
 
 export default async function QuestionsPage({ params }: PageProps) {
-  const { userId } = auth()
-  
+  const { userId } = auth();
+
   if (!userId) {
-    return redirect('/')
+    return redirect('/');
   }
 
   const exam = await db.exam.findUnique({
@@ -26,14 +26,14 @@ export default async function QuestionsPage({ params }: PageProps) {
     include: {
       course: {
         select: {
-          //createdById: true,
+          /*createdById: true,*/
           title: true,
-        }
+        },
       },
       chapter: {
         select: {
           title: true,
-        }
+        },
       },
       questions: {
         orderBy: {
@@ -51,18 +51,18 @@ export default async function QuestionsPage({ params }: PageProps) {
             },
           },
         },
-      }
-    }
-  })
+      },
+    },
+  });
 
   if (!exam) {
-    return redirect('/teacher/exam')
+    return redirect('/teacher/exam');
   }
 
   // Verify ownership
-  if (exam.course.//createdById !== userId) {
+  /*if (exam.course.createdById !== userId) {
     return redirect('/teacher/exam')
-  }
+  }*/
 
   return (
     <div className="p-6">
@@ -70,15 +70,13 @@ export default async function QuestionsPage({ params }: PageProps) {
         <div>
           <Link
             href={`/teacher/exam/${params.examId}`}
-            className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            className="mb-6 flex items-center text-sm transition hover:opacity-75"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back to exam settings
           </Link>
           <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-bold">
-              Exam Questions
-            </h1>
+            <h1 className="text-2xl font-bold">Exam Questions</h1>
             <div className="text-sm text-slate-600">
               <p>Course: {exam.course.title}</p>
               {exam.chapter && <p>Chapter: {exam.chapter.title}</p>}
@@ -89,19 +87,15 @@ export default async function QuestionsPage({ params }: PageProps) {
         {!exam.isPublished && (
           <Link href={`/teacher/exam/${params.examId}/questions/create`}>
             <Button className="flex items-center">
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="mr-2 h-4 w-4" />
               Add Question
             </Button>
           </Link>
         )}
       </div>
       <div className="mt-8">
-        <QuestionsList 
-          examId={params.examId} 
-          questions={exam.questions} 
-          isLocked={exam.isPublished}
-        />
+        <QuestionsList examId={params.examId} questions={exam.questions} isLocked={exam.isPublished} />
       </div>
     </div>
-  )
+  );
 }

@@ -1,17 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { 
-  AlertCircle, 
-  CheckCircle2, 
-  Info, 
-  X, 
-  BellRing, 
-  BookOpen,
-  GraduationCap,
-  Timer,
-  Trophy
-} from 'lucide-react';
+import { AlertCircle, CheckCircle2, Info, X, BellRing, BookOpen, GraduationCap, Timer, Trophy } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Card } from './card';
@@ -79,24 +69,24 @@ export const useNotificationStore = create<NotificationStore>((set) => ({
 }));
 
 // Create notification variants with different styles
-const notificationVariants = cva(
-  'relative flex gap-3 overflow-hidden rounded-lg border p-4 pr-12 shadow-lg',
-  {
-    variants: {
-      type: {
-        default: 'bg-background text-foreground',
-        success: 'bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-100 dark:border-emerald-900',
-        error: 'bg-red-50 text-red-900 border-red-200 dark:bg-red-950/50 dark:text-red-100 dark:border-red-900',
-        warning: 'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/50 dark:text-amber-100 dark:border-amber-900',
-        info: 'bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-950/50 dark:text-blue-100 dark:border-blue-900',
-        achievement: 'bg-violet-50 text-violet-900 border-violet-200 dark:bg-violet-950/50 dark:text-violet-100 dark:border-violet-900',
-      },
+const notificationVariants = cva('relative flex gap-3 overflow-hidden rounded-lg border p-4 pr-12 shadow-lg', {
+  variants: {
+    type: {
+      default: 'bg-background text-foreground',
+      success:
+        'bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-100 dark:border-emerald-900',
+      error: 'bg-red-50 text-red-900 border-red-200 dark:bg-red-950/50 dark:text-red-100 dark:border-red-900',
+      warning:
+        'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/50 dark:text-amber-100 dark:border-amber-900',
+      info: 'bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-950/50 dark:text-blue-100 dark:border-blue-900',
+      achievement:
+        'bg-violet-50 text-violet-900 border-violet-200 dark:bg-violet-950/50 dark:text-violet-100 dark:border-violet-900',
     },
-    defaultVariants: {
-      type: 'default',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    type: 'default',
+  },
+});
 
 interface NotificationProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof notificationVariants> {
   notification: Notification;
@@ -109,28 +99,55 @@ export function NotificationToast({ notification, onClose, type, className, ...p
     // First check if custom icon is specified
     if (notification.icon) {
       switch (notification.icon) {
-        case 'bell': return <BellRing className="h-5 w-5" />;
-        case 'book': return <BookOpen className="h-5 w-5" />;
-        case 'graduation': return <GraduationCap className="h-5 w-5" />;
-        case 'timer': return <Timer className="h-5 w-5" />;
-        case 'trophy': return <Trophy className="h-5 w-5" />;
-        case 'checkmark': return <CheckCircle2 className="h-5 w-5" />;
-        case 'info': return <Info className="h-5 w-5" />;
-        case 'warning': return <AlertCircle className="h-5 w-5" />;
-        case 'error': return <AlertCircle className="h-5 w-5" />;
+        case 'bell':
+          return <BellRing className="h-5 w-5" />;
+        case 'book':
+          return <BookOpen className="h-5 w-5" />;
+        case 'graduation':
+          return <GraduationCap className="h-5 w-5" />;
+        case 'timer':
+          return <Timer className="h-5 w-5" />;
+        case 'trophy':
+          return <Trophy className="h-5 w-5" />;
+        case 'checkmark':
+          return <CheckCircle2 className="h-5 w-5" />;
+        case 'info':
+          return <Info className="h-5 w-5" />;
+        case 'warning':
+          return <AlertCircle className="h-5 w-5" />;
+        case 'error':
+          return <AlertCircle className="h-5 w-5" />;
       }
     }
-    
+
     // Fallback to type-based icons
     switch (notification.type) {
-      case 'success': return <CheckCircle2 className="h-5 w-5" />;
-      case 'error': return <AlertCircle className="h-5 w-5" />;
-      case 'warning': return <AlertCircle className="h-5 w-5" />;
-      case 'info': return <Info className="h-5 w-5" />;
-      case 'achievement': return <Trophy className="h-5 w-5" />;
-      default: return <BellRing className="h-5 w-5" />;
+      case 'success':
+        return <CheckCircle2 className="h-5 w-5" />;
+      case 'error':
+        return <AlertCircle className="h-5 w-5" />;
+      case 'warning':
+        return <AlertCircle className="h-5 w-5" />;
+      case 'info':
+        return <Info className="h-5 w-5" />;
+      case 'achievement':
+        return <Trophy className="h-5 w-5" />;
+      default:
+        return <BellRing className="h-5 w-5" />;
     }
   };
+
+  // Extract conflicting props to avoid conflicts with Framer Motion
+  const { 
+    onDrag, 
+    onDragEnd, 
+    onDragStart, 
+    onAnimationStart, 
+    onAnimationEnd, 
+    onAnimationIteration,
+    onTransitionEnd,
+    ...restProps 
+  } = props;
 
   return (
     <motion.div
@@ -139,16 +156,12 @@ export function NotificationToast({ notification, onClose, type, className, ...p
       exit={{ opacity: 0, y: -10, scale: 0.9 }}
       transition={{ duration: 0.2 }}
       className={cn(notificationVariants({ type: notification.type }), className)}
-      {...props}
+      {...restProps}
     >
-      <div className="flex-shrink-0 text-foreground">
-        {getIcon()}
-      </div>
+      <div className="flex-shrink-0 text-foreground">{getIcon()}</div>
       <div className="flex-1">
         <h3 className="font-medium leading-none tracking-tight">{notification.title}</h3>
-        {notification.description && (
-          <p className="mt-1 text-sm opacity-85">{notification.description}</p>
-        )}
+        {notification.description && <p className="opacity-85 mt-1 text-sm">{notification.description}</p>}
         {notification.action && (
           <button
             onClick={notification.action.onClick}

@@ -1,17 +1,17 @@
-import type { Metadata } from 'next'
-import { Inter, Cairo } from 'next/font/google'
-import './globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
-import { ToastProvider } from '@/components/providers/toaster-provider'
-import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/components/providers'
+import type { Metadata } from 'next';
+import { Inter, Cairo } from 'next/font/google';
+import './globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
+import { ToastProvider } from '@/components/providers/toaster-provider';
+import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/components/providers';
 
-const inter = Inter({ subsets: ['latin'] })
-const cairo = Cairo({ subsets: ['arabic'] })
+const inter = Inter({ subsets: ['latin'] });
+const cairo = Cairo({ subsets: ['arabic'] });
 
 export const metadata: Metadata = {
   title: 'نظام إدارة التعلم',
   description: 'نظام إدارة التعلم',
-}
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" suppressHydrationWarning>
         <head>
           {/* Enhanced dark mode script with better transition handling */}
+          {/* 
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -67,14 +68,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               `,
             }}
           />
+          */}
         </head>
-        <body className={`${cairo.className} antialiased bg-background text-foreground`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            storageKey="theme"
-          >
+        <body className={`${cairo.className} bg-background text-foreground antialiased`}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
             <ConfettiProvider />
             <ToastProvider />
             <NotificationsProvider />
@@ -83,5 +80,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

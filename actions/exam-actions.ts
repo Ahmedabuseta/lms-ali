@@ -1,14 +1,11 @@
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
 
 interface StartExamAttemptProps {
   userId: string;
   examId: string;
 }
 
-export async function startExamAttempt({ 
-  userId, 
-  examId 
-}: StartExamAttemptProps) {
+export async function startExamAttempt({ userId, examId }: StartExamAttemptProps) {
   try {
     // Check if there's already an active attempt
     const existingAttempt = await db.examAttempt.findFirst({
@@ -44,8 +41,8 @@ export async function startExamAttempt({
 
     return attempt;
   } catch (error) {
-    console.error("[START_EXAM_ATTEMPT_ERROR]", error);
-    throw new Error("Failed to start exam attempt");
+    console.error('[START_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error('Failed to start exam attempt');
   }
 }
 
@@ -56,12 +53,7 @@ interface SubmitAnswerProps {
   optionId: string;
 }
 
-export async function submitAnswer({
-  userId,
-  attemptId,
-  questionId,
-  optionId,
-}: SubmitAnswerProps) {
+export async function submitAnswer({ userId, attemptId, questionId, optionId }: SubmitAnswerProps) {
   try {
     // Verify the attempt belongs to the user and is active
     const attempt = await db.examAttempt.findFirst({
@@ -73,7 +65,7 @@ export async function submitAnswer({
     });
 
     if (!attempt) {
-      throw new Error("Exam attempt not found or already completed");
+      throw new Error('Exam attempt not found or already completed');
     }
 
     // Check if the option is correct
@@ -87,7 +79,7 @@ export async function submitAnswer({
     });
 
     if (!option) {
-      throw new Error("Option not found");
+      throw new Error('Option not found');
     }
 
     // Check if there's an existing answer for this question
@@ -121,8 +113,8 @@ export async function submitAnswer({
       },
     });
   } catch (error) {
-    console.error("[SUBMIT_ANSWER_ERROR]", error);
-    throw new Error("Failed to submit answer");
+    console.error('[SUBMIT_ANSWER_ERROR]', error);
+    throw new Error('Failed to submit answer');
   }
 }
 
@@ -131,10 +123,7 @@ interface CompleteExamProps {
   attemptId: string;
 }
 
-export async function completeExam({
-  userId,
-  attemptId,
-}: CompleteExamProps) {
+export async function completeExam({ userId, attemptId }: CompleteExamProps) {
   try {
     // Verify the attempt belongs to the user and is active
     const attempt = await db.examAttempt.findFirst({
@@ -154,14 +143,14 @@ export async function completeExam({
     });
 
     if (!attempt) {
-      throw new Error("Exam attempt not found or already completed");
+      throw new Error('Exam attempt not found or already completed');
     }
 
     // Calculate score
     const totalQuestions = attempt.exam.questions.length;
     const answeredQuestions = attempt.questionAttempts.length;
-    const correctAnswers = attempt.questionAttempts.filter(a => a.isCorrect).length;
-    
+    const correctAnswers = attempt.questionAttempts.filter((a) => a.isCorrect).length;
+
     // Calculate score as percentage
     const score = Math.round((correctAnswers / totalQuestions) * 100);
 
@@ -193,8 +182,8 @@ export async function completeExam({
       },
     });
   } catch (error) {
-    console.error("[COMPLETE_EXAM_ERROR]", error);
-    throw new Error("Failed to complete exam");
+    console.error('[COMPLETE_EXAM_ERROR]', error);
+    throw new Error('Failed to complete exam');
   }
 }
 
@@ -203,10 +192,7 @@ interface GetExamAttemptProps {
   attemptId: string;
 }
 
-export async function getExamAttempt({
-  userId,
-  attemptId,
-}: GetExamAttemptProps) {
+export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps) {
   try {
     const attempt = await db.examAttempt.findUnique({
       where: {
@@ -221,7 +207,7 @@ export async function getExamAttempt({
                 options: true,
               },
               orderBy: {
-                position: "asc",
+                createdAt: 'desc',
               },
             },
           },
@@ -236,13 +222,13 @@ export async function getExamAttempt({
     });
 
     if (!attempt) {
-      throw new Error("Exam attempt not found");
+      throw new Error('Exam attempt not found');
     }
 
     return attempt;
   } catch (error) {
-    console.error("[GET_EXAM_ATTEMPT_ERROR]", error);
-    throw new Error("Failed to get exam attempt");
+    console.error('[GET_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error('Failed to get exam attempt');
   }
 }
 
@@ -251,18 +237,13 @@ interface GetExamStatisticsProps {
   examId: string;
 }
 
-export async function getExamStatistics({
-  userId,
-  examId,
-}: GetExamStatisticsProps) {
+export async function getExamStatistics({ userId, examId }: GetExamStatisticsProps) {
   try {
     // Verify teacher ownership of the exam
     const exam = await db.exam.findUnique({
       where: {
         id: examId,
-        course: {
-          //createdById: userId,
-        },
+        course: {},
       },
       include: {
         questions: true,
@@ -270,7 +251,7 @@ export async function getExamStatistics({
     });
 
     if (!exam) {
-      throw new Error("Exam not found or unauthorized");
+      throw new Error('Exam not found or unauthorized');
     }
 
     // Get all completed attempts for this exam
@@ -288,7 +269,7 @@ export async function getExamStatistics({
 
     // Calculate statistics
     const totalAttempts = attempts.length;
-    
+
     if (totalAttempts === 0) {
       return {
         totalAttempts: 0,
@@ -300,16 +281,14 @@ export async function getExamStatistics({
         studentResults: [],
       };
     }
-    
-    const averageScore = Math.round(
-      attempts.reduce((sum, attempt) => sum + (attempt.score || 0), 0) / totalAttempts
-    );
-    
-    const scores = attempts.map(attempt => attempt.score || 0);
+
+    const averageScore = Math.round(attempts.reduce((sum, attempt) => sum + (attempt.score || 0), 0) / totalAttempts);
+
+    const scores = attempts.map((attempt) => attempt.score || 0);
     const highestScore = Math.max(...scores);
     const lowestScore = Math.min(...scores);
-    
-    const passCount = attempts.filter(attempt => (attempt.score || 0) >= 70).length;
+
+    const passCount = attempts.filter((attempt) => (attempt.score || 0) >= 70).length;
     const passRate = Math.round((passCount / totalAttempts) * 100);
 
     // Question-specific statistics
@@ -338,9 +317,7 @@ export async function getExamStatistics({
           },
         });
 
-        const correctRate = questionAttempts > 0
-          ? Math.round((correctAnswers / questionAttempts) * 100)
-          : 0;
+        const correctRate = questionAttempts > 0 ? Math.round((correctAnswers / questionAttempts) * 100) : 0;
 
         return {
           questionId: question.id,
@@ -348,7 +325,7 @@ export async function getExamStatistics({
           correctRate,
           attemptCount: questionAttempts,
         };
-      })
+      }),
     );
 
     // Get student performance data for the table
@@ -362,8 +339,8 @@ export async function getExamStatistics({
       include: {
         questionAttempts: {
           include: {
-            question: true
-          }
+            question: true,
+          },
         },
       },
       orderBy: {
@@ -374,14 +351,14 @@ export async function getExamStatistics({
     // Get user profiles from Clerk
     // This would usually require a Clerk API call
     // For this example, we'll simulate user data
-    const studentPerformanceData = studentResults.map(attempt => {
+    const studentPerformanceData = studentResults.map((attempt) => {
       // Calculate time taken (in seconds)
       const startTime = new Date(attempt.startedAt);
       const endTime = new Date(attempt.completedAt || new Date());
       const timeTaken = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
-      
+
       // Count correct answers
-      const correct = attempt.questionAttempts.filter(qa => qa.isCorrect).length;
+      const correct = attempt.questionAttempts.filter((qa) => qa.isCorrect).length;
       const total = exam.questions.length;
 
       // In a real implementation, you'd fetch the actual user data
@@ -408,8 +385,8 @@ export async function getExamStatistics({
       studentResults: studentPerformanceData,
     };
   } catch (error) {
-    console.error("[GET_EXAM_STATISTICS_ERROR]", error);
-    throw new Error("Failed to get exam statistics");
+    console.error('[GET_EXAM_STATISTICS_ERROR]', error);
+    throw new Error('Failed to get exam statistics');
   }
 }
 
@@ -418,10 +395,7 @@ interface ResumeExamAttemptProps {
   examId: string;
 }
 
-export async function resumeExamAttempt({
-  userId,
-  examId,
-}: ResumeExamAttemptProps) {
+export async function resumeExamAttempt({ userId, examId }: ResumeExamAttemptProps) {
   try {
     // Find the active attempt
     const activeAttempt = await db.examAttempt.findFirst({
@@ -439,8 +413,8 @@ export async function resumeExamAttempt({
 
     return activeAttempt;
   } catch (error) {
-    console.error("[RESUME_EXAM_ATTEMPT_ERROR]", error);
-    throw new Error("Failed to resume exam attempt");
+    console.error('[RESUME_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error('Failed to resume exam attempt');
   }
 }
 
@@ -450,11 +424,7 @@ interface GetExamsProps {
   courseId?: string;
 }
 
-export async function getExams({
-  userId,
-  examId,
-  courseId,
-}: GetExamsProps) {
+export async function getExams({ userId, examId, courseId }: GetExamsProps) {
   try {
     // If examId is provided, get a specific exam
     if (examId) {
@@ -473,9 +443,7 @@ export async function getExams({
               },
             },
             {
-              course: {
-                //createdById: userId,
-              },
+              course: {},
             },
           ],
         },
@@ -490,7 +458,7 @@ export async function getExams({
               },
             },
             orderBy: {
-              position: "asc",
+              createdAt: 'desc',
             },
           },
           course: {
@@ -529,7 +497,7 @@ export async function getExams({
           },
         },
         orderBy: {
-          completedAt: "desc",
+          completedAt: 'desc',
         },
       });
 
@@ -557,9 +525,7 @@ export async function getExams({
               },
             },
             {
-              course: {
-                //createdById: userId,
-              },
+              course: {},
             },
           ],
         },
@@ -581,7 +547,7 @@ export async function getExams({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
 
@@ -603,9 +569,7 @@ export async function getExams({
             },
           },
           {
-            course: {
-              //createdById: userId,
-            },
+            course: {},
           },
         ],
       },
@@ -627,13 +591,13 @@ export async function getExams({
         },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
     });
 
     return exams;
   } catch (error) {
-    console.error("[GET_EXAMS_ERROR]", error);
-    throw new Error("Failed to get exams");
+    console.error('[GET_EXAMS_ERROR]', error);
+    throw new Error('Failed to get exams');
   }
 }

@@ -16,17 +16,10 @@ export const AITutorClient = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Use custom hooks
-  const {
-    isLoading,
-    thinking,
-    streamingContent,
-    connectionError,
-    sendMessage,
-    abortRequest
-  } = useChatApi();
-  
+  const { isLoading, thinking, streamingContent, connectionError, sendMessage, abortRequest } = useChatApi();
+
   const {
     imagePreview,
     extractedText,
@@ -37,13 +30,13 @@ export const AITutorClient = () => {
     setUseClientSideOCR,
     processImage,
     resetImageProcessing,
-    setExtractedText
+    setExtractedText,
   } = useImageProcessor();
-  
+
   // Image dialog state
   const [imageProcessingOpen, setImageProcessingOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Clean up any active request on unmount
   useEffect(() => {
     return () => {
@@ -73,35 +66,35 @@ export const AITutorClient = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!input.trim() || isLoading) return;
-    
+
     // Add user message to the conversation
     const userMessage = input.trim();
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setInput('');
-    
+
     // Send message to API
     const result = await sendMessage(messages, userMessage);
-    
+
     if (result.success) {
-        // Add assistant response to messages
-      setMessages(prev => [...prev, { role: 'assistant', content: result.text }]);
+      // Add assistant response to messages
+      setMessages((prev) => [...prev, { role: 'assistant', content: result.text }]);
     }
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <Card className="flex-1 flex flex-col border-none shadow-none">
+    <div className="flex h-full flex-col">
+      <Card className="flex flex-1 flex-col border-none shadow-none">
         <ConversationHeader />
-        
+
         <ConversationContent
           messages={messages}
           thinking={thinking}
           streamingContent={streamingContent}
           messagesEndRef={messagesEndRef}
         />
-        
+
         <ConversationFooter
           input={input}
           setInput={setInput}

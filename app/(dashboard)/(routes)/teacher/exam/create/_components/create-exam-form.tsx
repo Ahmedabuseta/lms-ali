@@ -1,38 +1,43 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
-import axios from 'axios'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { cn } from '@/lib/utils';
+import { BookOpen, CheckCircle } from 'lucide-react';
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 
 interface CreateExamFormProps {
   courses: {
-    id: string
-    title: string
-  }[]
-  selectedCourseId?: string
+    id: string;
+    title: string;
+  }[];
+  selectedCourseId?: string;
   chapters: {
-    id: string
-    title: string
-  }[]
-  selectedChapterId?: string
+    id: string;
+    title: string;
+  }[];
+  selectedChapterId?: string;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'Title is required',
-  }).max(100),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Title is required',
+    })
+    .max(100),
   description: z.string().max(500).optional(),
   courseId: z.string().min(1, {
     message: 'Course is required',
@@ -40,16 +45,11 @@ const formSchema = z.object({
   chapterId: z.string().optional(),
   timeLimit: z.coerce.number().int().min(1).max(180).optional(),
   isPublished: z.boolean().default(false),
-})
+});
 
-export const CreateExamForm = ({
-  courses,
-  selectedCourseId,
-  chapters,
-  selectedChapterId,
-}: CreateExamFormProps) => {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export const CreateExamForm = ({ courses, selectedCourseId, chapters, selectedChapterId }: CreateExamFormProps) => {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,28 +61,28 @@ export const CreateExamForm = ({
       timeLimit: 30,
       isPublished: false,
     },
-  })
+  });
 
-  const { watch, setValue } = form
+  const { watch, setValue } = form;
 
   // Watch courseId to update chapters when course changes
-  const watchedCourseId = watch('courseId')
+  const watchedCourseId = watch('courseId');
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setIsSubmitting(true)
-      
-      const response = await axios.post('/api/exam', values)
-      
-      toast.success('Exam created successfully')
-      router.push(`/teacher/exam/${response.data.id}`)
+      setIsSubmitting(true);
+
+      const response = await axios.post('/api/exam', values);
+
+      toast.success('Exam created successfully');
+      router.push(`/teacher/exam/${response.data.id}`);
     } catch (error) {
-      console.error(error)
-      toast.error('Something went wrong')
+      console.error(error);
+      toast.error('Something went wrong');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card>
@@ -101,14 +101,12 @@ export const CreateExamForm = ({
                   <FormControl>
                     <Input placeholder="e.g. Final Exam" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Give your exam a descriptive title.
-                  </FormDescription>
+                  <FormDescription>Give your exam a descriptive title.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="description"
@@ -122,84 +120,108 @@ export const CreateExamForm = ({
                       value={field.value || ''}
                     />
                   </FormControl>
-                  <FormDescription>
-                    This will be visible to students before they start the exam.
-                  </FormDescription>
+                  <FormDescription>This will be visible to students before they start the exam.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+            <div className="space-y-6">
+              {/* Course Selection */}
               <FormField
                 control={form.control}
                 name="courseId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Course</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value)
-                        // Reset chapter when course changes
-                        setValue('chapterId', '')
-                        // Fetch chapters for the selected course
-                        router.push(`/teacher/exam/create?courseId=${value}`)
-                      }}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a course" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
+                    <FormLabel>اختيار الدورة</FormLabel>
+                    <FormControl>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {courses.map((course) => (
-                          <SelectItem key={course.id} value={course.id}>
-                            {course.title}
-                          </SelectItem>
+                          <Card
+                            key={course.id}
+                            className={cn(
+                              'cursor-pointer border-2 transition-all duration-200 hover:scale-105 hover:shadow-lg',
+                              field.value === course.id
+                                ? 'border-primary bg-primary/10 shadow-lg'
+                                : 'border-border/50 bg-card/40 hover:border-primary/50',
+                            )}
+                            onClick={() => {
+                              field.onChange(course.id);
+                              // Reset chapter when course changes
+                              setValue('chapterId', '');
+                              // Fetch chapters for the selected course
+                              router.push(`/teacher/exam/create?courseId=${course.id}`);
+                            }}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={cn(
+                                    'rounded-lg p-2',
+                                    field.value === course.id
+                                      ? 'bg-primary/20 text-primary'
+                                      : 'bg-muted text-muted-foreground',
+                                  )}
+                                >
+                                  <BookOpen className="h-5 w-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <h3
+                                    className={cn(
+                                      'truncate font-medium',
+                                      field.value === course.id ? 'text-primary' : 'text-foreground',
+                                    )}
+                                  >
+                                    {course.title}
+                                  </h3>
+                                  <p className="text-xs text-muted-foreground">انقر للاختيار</p>
+                                </div>
+                                {field.value === course.id && (
+                                  <div className="rounded-full bg-primary p-1 text-primary-foreground">
+                                    <CheckCircle className="h-4 w-4" />
+                                  </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
-                      </SelectContent>
-                    </Select>
+                      </div>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
-              <FormField
-                control={form.control}
-                name="chapterId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Chapter (Optional)</FormLabel>
-                    <Select
-                      value={field.value || ''}
-                      onValueChange={field.onChange}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a chapter" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {/* <SelectItem value="">
-                          No specific chapter
-                        </SelectItem> */}
-                        {chapters.map((chapter) => (
-                          <SelectItem key={chapter.id} value={chapter.id}>
-                            {chapter.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Associate this exam with a specific chapter.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+              {/* Chapter Selection - Only show if course is selected */}
+              {watchedCourseId && (
+                <FormField
+                  control={form.control}
+                  name="chapterId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>الفصل (اختياري)</FormLabel>
+                      <Select value={field.value || ''} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="اختر فصلاً" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {chapters.map((chapter) => (
+                            <SelectItem key={chapter.id} value={chapter.id}>
+                              {chapter.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>ربط هذا الامتحان بفصل محدد (اختياري).</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
-            
+
             <FormField
               control={form.control}
               name="timeLimit"
@@ -207,12 +229,7 @@ export const CreateExamForm = ({
                 <FormItem>
                   <FormLabel>Time Limit (Minutes)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      min="1"
-                      max="180"
-                      {...field}
-                    />
+                    <Input type="number" min="1" max="180" {...field} />
                   </FormControl>
                   <FormDescription>
                     Set a time limit in minutes (1-180), or leave blank for no time limit.
@@ -221,40 +238,31 @@ export const CreateExamForm = ({
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="isPublished"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between border rounded-md p-3">
+                <FormItem className="flex flex-row items-center justify-between rounded-md border p-3">
                   <div className="space-y-0.5">
                     <FormLabel>Publish Exam</FormLabel>
-                    <FormDescription>
-                      When enabled, the exam will be visible to students.
-                    </FormDescription>
+                    <FormDescription>When enabled, the exam will be visible to students.</FormDescription>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}
             />
           </CardContent>
-          
+
           <CardFooter className="border-t bg-slate-50 p-4">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto"
-            >
+            <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
               Create Exam
             </Button>
           </CardFooter>
         </form>
       </Form>
     </Card>
-  )
-}
+  );
+};

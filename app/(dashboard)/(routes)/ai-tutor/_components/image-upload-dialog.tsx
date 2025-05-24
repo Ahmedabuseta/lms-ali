@@ -15,18 +15,14 @@ interface ImageUploadDialogProps {
   onTextExtracted: (text: string) => void;
 }
 
-export const ImageUploadDialog = ({
-  open,
-  onOpenChange,
-  onTextExtracted,
-}: ImageUploadDialogProps) => {
+export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: ImageUploadDialogProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [extractedText, setExtractedText] = useState('');
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [progress, setProgress] = useState(0);
   const [imageError, setImageError] = useState<string | null>(null);
   const [useClientSideOCR, setUseClientSideOCR] = useState(true);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Function to handle image upload
@@ -56,7 +52,7 @@ export const ImageUploadDialog = ({
           });
           setProgress(90);
         } catch (error) {
-          setImageError("Error processing image with client-side OCR. Please try server-side mode.");
+          setImageError('Error processing image with client-side OCR. Please try server-side mode.');
           setIsProcessingImage(false);
           return;
         }
@@ -73,7 +69,7 @@ export const ImageUploadDialog = ({
         if (!response.ok) {
           throw new Error('Failed to process image on server');
         }
-        
+
         setProgress(80);
         const data = await response.json();
         text = data.text;
@@ -81,11 +77,14 @@ export const ImageUploadDialog = ({
 
       setExtractedText(text);
       setProgress(100);
-      showNotification.success("Image processed successfully", "Text has been extracted from your image");
+      showNotification.success('Image processed successfully', 'Text has been extracted from your image');
     } catch (error) {
       console.error('Image processing error:', error);
       setImageError('Failed to process image. Please try again or use a clearer image.');
-      showNotification.error("Image processing failed", "Unable to extract text from the image. Please try again with a clearer image.");
+      showNotification.error(
+        'Image processing failed',
+        'Unable to extract text from the image. Please try again with a clearer image.',
+      );
     } finally {
       setIsProcessingImage(false);
     }
@@ -117,37 +116,28 @@ export const ImageUploadDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Extract Text from Image</DialogTitle>
-          <DialogDescription>
-            Upload an image containing text to extract and add to your message.
-          </DialogDescription>
+          <DialogDescription>Upload an image containing text to extract and add to your message.</DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <OCRModeToggle
             useClientSideOCR={useClientSideOCR}
             onToggle={setUseClientSideOCR}
             disabled={isProcessingImage}
           />
-          
+
           <FileUploadArea
             imagePreview={imagePreview}
             isProcessingImage={isProcessingImage}
             onFileSelect={handleFileChange}
             fileInputRef={fileInputRef}
           />
-          
-          <ProcessingStatus
-            isProcessingImage={isProcessingImage}
-            progress={progress}
-            imageError={imageError}
-          />
-          
-          <ExtractedText
-            text={extractedText}
-            onChange={setExtractedText}
-          />
-          
-          <div className="flex justify-between gap-2 mt-4">
+
+          <ProcessingStatus isProcessingImage={isProcessingImage} progress={progress} imageError={imageError} />
+
+          <ExtractedText text={extractedText} onChange={setExtractedText} />
+
+          <div className="mt-4 flex justify-between gap-2">
             <Button
               variant="outline"
               disabled={isProcessingImage}
@@ -159,18 +149,11 @@ export const ImageUploadDialog = ({
               Cancel
             </Button>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                disabled={isProcessingImage || !imagePreview}
-                onClick={resetImageProcessing}
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
+              <Button variant="outline" disabled={isProcessingImage || !imagePreview} onClick={resetImageProcessing}>
+                <RefreshCw className="mr-2 h-4 w-4" />
                 Reset
               </Button>
-              <Button
-                disabled={isProcessingImage || !extractedText}
-                onClick={handleAddToChat}
-              >
+              <Button disabled={isProcessingImage || !extractedText} onClick={handleAddToChat}>
                 Add to Chat
               </Button>
             </div>
@@ -179,4 +162,4 @@ export const ImageUploadDialog = ({
       </DialogContent>
     </Dialog>
   );
-}; 
+};

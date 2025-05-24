@@ -1,26 +1,26 @@
-'use client'
+'use client';
 
-import qs from 'query-string'
-import { IconType } from 'react-icons'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import qs from 'query-string';
+import { IconType } from 'react-icons';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 interface CategoryItemProps {
-  label: string
-  value?: string
-  icon?: IconType
+  label: string;
+  value?: string;
+  icon?: IconType;
 }
 
 export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => {
-  const pathname = usePathname()
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const currentCategoryId = searchParams.get('categoryId')
-  const currentTitle = searchParams.get('title')
+  const currentCategoryId = searchParams.get('categoryId');
+  const currentTitle = searchParams.get('title');
 
-  const isSelected = currentCategoryId === value
+  const isSelected = currentCategoryId === value;
 
   const onClick = () => {
     const url = qs.stringifyUrl(
@@ -32,10 +32,10 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
         },
       },
       { skipNull: true, skipEmptyString: true },
-    )
+    );
 
-    router.push(url)
-  }
+    router.push(url);
+  };
 
   return (
     <button
@@ -49,5 +49,5 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
       {Icon && <Icon size={20} />}
       <div className="truncate">{label}</div>
     </button>
-  )
-}
+  );
+};

@@ -1,28 +1,28 @@
-'use client'
+'use client';
 
-import { CheckCircleIcon, LockIcon, PlayCircleIcon } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import { CheckCircleIcon, LockIcon, PlayCircleIcon } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 type CourseSidebarItemProps = {
-  id: string
-  label: string
-  isCompleted: boolean
-  courseId: string
-  isLocked: boolean
-}
+  id: string;
+  label: string;
+  isCompleted: boolean;
+  courseId: string;
+  isLocked: boolean;
+};
 
 export default function CourseSidebarItem({ id, label, isCompleted, courseId, isLocked }: CourseSidebarItemProps) {
-  const pathname = usePathname()
-  const router = useRouter()
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const Icon = isLocked ? LockIcon : isCompleted ? CheckCircleIcon : PlayCircleIcon
+  const Icon = isLocked ? LockIcon : isCompleted ? CheckCircleIcon : PlayCircleIcon;
 
-  const isActive = pathname?.includes(id)
+  const isActive = pathname?.includes(id);
 
   const onClick = () => {
-    router.push(`/courses/${courseId}/chapters/${id}`)
-  }
+    router.push(`/courses/${courseId}/chapters/${id}`);
+  };
 
   return (
     <button
@@ -52,5 +52,5 @@ export default function CourseSidebarItem({ id, label, isCompleted, courseId, is
         })}
       />
     </button>
-  )
+  );
 }

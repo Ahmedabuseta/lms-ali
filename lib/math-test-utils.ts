@@ -3,22 +3,22 @@
 
 export const mathExamples = {
   // Simple inline math
-  inlineMath: "The formula for the area of a circle is $A = \\pi r^2$.",
-  
+  inlineMath: 'The formula for the area of a circle is $A = \\pi r^2$.',
+
   // Display math with fractions
   fractions: `
 A fraction example:
 
 $$\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$$
 `,
-  
+
   // Complex equation with multiple elements
   complexEquation: `
 Here's a more complex equation:
 
 $$\\int_{0}^{\\infty} e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}$$
 `,
-  
+
   // Calculus problem example
   calculus: `
 ## Problem:
@@ -62,7 +62,7 @@ $$\\frac{dh}{dt} = \\frac{12}{\\pi} \\approx 3.82 \\text{ m/min}$$
 
 The water level is rising at approximately 3.82 meters per minute when the water is 1 meter deep.
 `,
-  
+
   // Matrix example
   matrix: `
 A matrix example:
@@ -84,7 +84,7 @@ ax + by + cz \\\\
 dx + ey + fz \\\\
 gx + hy + iz
 \\end{pmatrix}$$
-`
+`,
 };
 
 // Function to generate a test message for the AI tutor

@@ -9,14 +9,18 @@ interface ChatMessageProps {
 
 export const ChatMessage = ({ role, content }: ChatMessageProps) => {
   return (
-    <div className={cn(
-      "group relative flex items-start gap-3 p-4",
-      role === 'assistant' ? "bg-muted/30" : "bg-background"
-    )}>
-      <div className={cn(
-        "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full",
-        role === 'assistant' ? "bg-primary/10" : "bg-muted"
-      )}>
+    <div
+      className={cn(
+        'group relative flex items-start gap-3 p-4',
+        role === 'assistant' ? 'bg-muted/30' : 'bg-background',
+      )}
+    >
+      <div
+        className={cn(
+          'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full',
+          role === 'assistant' ? 'bg-primary/10' : 'bg-muted',
+        )}
+      >
         {role === 'assistant' ? (
           <Bot className="h-5 w-5 text-primary" />
         ) : (
@@ -36,4 +40,4 @@ export const ChatMessage = ({ role, content }: ChatMessageProps) => {
       </div>
     </div>
   );
-}; 
+};

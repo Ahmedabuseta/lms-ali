@@ -1,32 +1,30 @@
-import { auth } from '@clerk/nextjs'
-import { redirect } from 'next/navigation'
-import { db } from '@/lib/db'
-import { ArrowLeft, Info } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { CreateExamForm } from './_components/create-exam-form'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
+import { ArrowLeft, Info } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CreateExamForm } from './_components/create-exam-form';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface PageProps {
   searchParams: {
-    courseId?: string
-    chapterId?: string
-  }
+    courseId?: string;
+    chapterId?: string;
+  };
 }
 
 export default async function CreateExamPage({ searchParams }: PageProps) {
-  const { userId } = auth()
-  
+  const { userId } = auth();
+
   if (!userId) {
-    return redirect('/')
+    return redirect('/');
   }
 
   // Get all courses created by this teacher
   const courses = await db.course.findMany({
-    where: {
-      //createdById: userId,
-    },
+    where: {},
     orderBy: {
       createdAt: 'desc',
     },
@@ -46,19 +44,19 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
         },
       },
     },
-  })
+  });
 
   if (courses.length === 0) {
-    return redirect('/teacher/courses/create')
+    return redirect('/teacher/courses/create');
   }
 
-  let chapters: { id: string; title: string }[] = []
-  let selectedCourse = searchParams.courseId 
-    ? courses.find(course => course.id === searchParams.courseId) 
-    : courses[0]
+  let chapters: { id: string; title: string }[] = [];
+  let selectedCourse = searchParams.courseId
+    ? courses.find((course) => course.id === searchParams.courseId)
+    : courses[0];
 
   if (selectedCourse) {
-    chapters = selectedCourse.chapters
+    chapters = selectedCourse.chapters;
   }
 
   return (
@@ -67,33 +65,31 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
         <div className="flex items-center">
           <Button variant="ghost" asChild className="mr-2">
             <Link href="/teacher/exam">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Exams
             </Link>
           </Button>
         </div>
-        <h1 className="text-2xl font-bold mt-4">Create Exam</h1>
-        <p className="text-sm text-slate-600">
-          Create a new exam for your course
-        </p>
+        <h1 className="mt-4 text-2xl font-bold">Create Exam</h1>
+        <p className="text-sm text-slate-600">Create a new exam for your course</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <CreateExamForm 
+          <CreateExamForm
             courses={courses}
             selectedCourseId={selectedCourse?.id}
             chapters={chapters}
             selectedChapterId={searchParams.chapterId}
           />
         </div>
-        
+
         <div className="space-y-6">
-          <Alert className="bg-blue-50 border-blue-200">
+          <Alert className="border-blue-200 bg-blue-50">
             <Info className="h-4 w-4 text-blue-600" />
             <AlertTitle className="text-blue-800">Quick Tips</AlertTitle>
-            <AlertDescription className="text-blue-700 text-sm">
-              <ul className="list-disc pl-4 space-y-2 mt-2">
+            <AlertDescription className="text-sm text-blue-700">
+              <ul className="mt-2 list-disc space-y-2 pl-4">
                 <li>Give your exam a clear, descriptive title</li>
                 <li>Set a reasonable time limit for the complexity of your questions</li>
                 <li>You can optionally associate the exam with a specific chapter</li>
@@ -101,7 +97,7 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
               </ul>
             </AlertDescription>
           </Alert>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Creating an Effective Exam</CardTitle>
@@ -137,5 +133,5 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,17 +1,14 @@
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { examId: string; questionId: string } }
-) {
+export async function PATCH(req: Request, { params }: { params: { examId: string; questionId: string } }) {
   try {
     const { userId } = auth();
     const { text, type, options } = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     // Verify ownership through the course
@@ -25,16 +22,17 @@ export async function PATCH(
     });
 
     if (!examWithCourse) {
-      return new NextResponse("Exam not found", { status: 404 });
+      return new NextResponse('Exam not found', { status: 404 });
     }
 
-    if (examWithCourse.course.//createdById !== userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // TODO: Add course ownership check when createdById field is available
+    // if (examWithCourse.course.createdById !== userId) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
     // Don't allow editing questions for published exams
     if (examWithCourse.isPublished) {
-      return new NextResponse("Cannot edit questions for published exams", {
+      return new NextResponse('Cannot edit questions for published exams', {
         status: 400,
       });
     }
@@ -51,7 +49,7 @@ export async function PATCH(
     });
 
     if (!existingQuestion) {
-      return new NextResponse("Question not found", { status: 404 });
+      return new NextResponse('Question not found', { status: 404 });
     }
 
     // Update the question
@@ -96,20 +94,17 @@ export async function PATCH(
 
     return NextResponse.json(refreshedQuestion);
   } catch (error) {
-    console.error("[QUESTION_PATCH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[QUESTION_PATCH]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { examId: string; questionId: string } }
-) {
+export async function DELETE(req: Request, { params }: { params: { examId: string; questionId: string } }) {
   try {
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     // Verify ownership through the course
@@ -123,16 +118,17 @@ export async function DELETE(
     });
 
     if (!examWithCourse) {
-      return new NextResponse("Exam not found", { status: 404 });
+      return new NextResponse('Exam not found', { status: 404 });
     }
 
-    if (examWithCourse.course.//createdById !== userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // TODO: Add course ownership check when createdById field is available
+    // if (examWithCourse.course.createdById !== userId) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
     // Don't allow deleting questions for published exams
     if (examWithCourse.isPublished) {
-      return new NextResponse("Cannot delete questions for published exams", {
+      return new NextResponse('Cannot delete questions for published exams', {
         status: 400,
       });
     }
@@ -151,24 +147,13 @@ export async function DELETE(
         examId: params.examId,
       },
       orderBy: {
-        position: "asc",
+        createdAt: 'asc',
       },
     });
 
-    for (let i = 0; i < remainingQuestions.length; i++) {
-      await db.question.update({
-        where: {
-          id: remainingQuestions[i].id,
-        },
-        data: {
-          position: i + 1,
-        },
-      });
-    }
-
-    return new NextResponse("OK", { status: 200 });
+    return new NextResponse('OK', { status: 200 });
   } catch (error) {
-    console.error("[QUESTION_DELETE]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[QUESTION_DELETE]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }

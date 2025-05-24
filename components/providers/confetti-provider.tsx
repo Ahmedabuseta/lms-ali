@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import ReactConfetti from 'react-confetti'
-import { useConfettiStore } from '@/hooks/use-confetti'
+import ReactConfetti from 'react-confetti';
+import { useConfettiStore } from '@/hooks/use-confetti';
 
 export function ConfettiProvider() {
-  const confetti = useConfettiStore()
+  const confetti = useConfettiStore();
 
-  if (!confetti.isOpen) return null
+  if (!confetti.isOpen) return null;
 
   return (
     <ReactConfetti
@@ -15,5 +15,5 @@ export function ConfettiProvider() {
       recycle={false}
       onConfettiComplete={confetti.onClose}
     />
-  )
+  );
 }

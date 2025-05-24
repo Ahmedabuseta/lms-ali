@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import axios from 'axios'
-import MuxPlayer from '@mux/mux-player-react'
-import { useState } from 'react'
-import { toast } from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { Loader2, Lock } from 'lucide-react'
+import axios from 'axios';
+import MuxPlayer from '@mux/mux-player-react';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { Loader2, Lock } from 'lucide-react';
 
-import { cn } from '@/lib/utils'
-import { useConfettiStore } from '@/hooks/use-confetti'
+import { cn } from '@/lib/utils';
+import { useConfettiStore } from '@/hooks/use-confetti';
 
 interface VideoPlayerProps {
-  playbackId: string
-  courseId: string
-  chapterId: string
-  nextChapterId?: string
-  isLocked: boolean
-  completeOnEnd: boolean
-  title: string
+  playbackId: string;
+  courseId: string;
+  chapterId: string;
+  nextChapterId?: string;
+  isLocked: boolean;
+  completeOnEnd: boolean;
+  title: string;
 }
 
 export const VideoPlayer = ({
@@ -29,32 +29,32 @@ export const VideoPlayer = ({
   completeOnEnd,
   title,
 }: VideoPlayerProps) => {
-  const [isReady, setIsReady] = useState(false)
-  const router = useRouter()
-  const confetti = useConfettiStore()
+  const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
+  const confetti = useConfettiStore();
 
   const onEnd = async () => {
     try {
       if (completeOnEnd) {
         await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
           isCompleted: true,
-        })
+        });
 
         if (!nextChapterId) {
-          confetti.onOpen()
+          confetti.onOpen();
         }
 
-        toast.success('Progress updated')
-        router.refresh()
+        toast.success('Progress updated');
+        router.refresh();
 
         if (nextChapterId) {
-          router.push(`/courses/${courseId}/chapters/${nextChapterId}`)
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
         }
       }
     } catch {
-      toast.error('Something went wrong')
+      toast.error('Something went wrong');
     }
-  }
+  };
 
   return (
     <div className="relative aspect-video">
@@ -80,5 +80,5 @@ export const VideoPlayer = ({
         />
       )}
     </div>
-  )
-}
+  );
+};

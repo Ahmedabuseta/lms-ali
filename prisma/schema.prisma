@@ -11,7 +11,7 @@ datasource db {
 
 model Course {
   id          String  @id @default(cuid())
-  //createdById String
+  // createdById String
   title       String
   description String?
   imageUrl    String?
@@ -23,7 +23,7 @@ model Course {
   categoryId  String?
   chapters    Chapter[]
   purchases   Purchase[]
-  // flashcards  Flashcard[]
+  // flashcards Flashcard[]
   exams       Exam[]
 
   createdAt DateTime @default(now())
@@ -272,4 +272,44 @@ model PracticeOption {
   updatedAt   DateTime  @updatedAt
   
   @@index([questionId])
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+}
+
+enum StudentAccessType {
+  NO_ACCESS      // Default state - no access
+  FREE_TRIAL     // 3-day free trial
+  FULL_ACCESS    // Paid - full access including videos
+  LIMITED_ACCESS // Paid - access without videos
+}
+
+model User {
+  id       String   @id @default(cuid())
+  userId   String   @unique // Clerk user ID
+  email    String   @unique
+  name     String?
+  role     UserRole @default(STUDENT)
+  
+  // Student access control
+  accessType       StudentAccessType @default(NO_ACCESS)
+  trialStartDate   DateTime?         // When trial started
+  trialEndDate     DateTime?         // When trial ends (3 days from start)
+  isTrialUsed      Boolean @default(false) // Has user used their trial
+  
+  // Manual access control by teacher
+  accessGrantedBy  String?   // Teacher who granted access
+  accessGrantedAt  DateTime? // When access was granted
+  paymentReceived  Boolean @default(false) // Teacher confirms payment received
+  paymentAmount    Float?    // Amount paid (optional tracking)
+  paymentNotes     String?   // Notes about payment/WhatsApp conversation
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([role])
+  @@index([accessType])
 }

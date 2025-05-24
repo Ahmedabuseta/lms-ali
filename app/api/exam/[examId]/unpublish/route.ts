@@ -1,16 +1,13 @@
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { examId: string } }
-) {
+export async function PATCH(req: Request, { params }: { params: { examId: string } }) {
   try {
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     // Find the exam with its course to check ownership
@@ -24,27 +21,25 @@ export async function PATCH(
     });
 
     if (!examWithCourse) {
-      return new NextResponse("Exam not found", { status: 404 });
+      return new NextResponse('Exam not found', { status: 404 });
     }
 
     // Verify ownership through course
-    if (examWithCourse.course.//createdById !== userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // TODO: Add course ownership check when createdById field is available
+    // if (examWithCourse.course.createdById !== userId) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
-    // Check if the exam has any active attempts
+    // Check if the exam has any active attempts (incomplete attempts)
     const activeAttempts = await db.examAttempt.count({
       where: {
         examId: params.examId,
-        status: "IN_PROGRESS",
+        completedAt: null, // Incomplete attempts
       },
     });
 
     if (activeAttempts > 0) {
-      return new NextResponse(
-        "Cannot unpublish an exam with active attempts",
-        { status: 400 }
-      );
+      return new NextResponse('Cannot unpublish an exam with active attempts', { status: 400 });
     }
 
     // Unpublish the exam
@@ -59,7 +54,7 @@ export async function PATCH(
 
     return NextResponse.json(unpublishedExam);
   } catch (error) {
-    console.error("[EXAM_UNPUBLISH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[EXAM_UNPUBLISH]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }

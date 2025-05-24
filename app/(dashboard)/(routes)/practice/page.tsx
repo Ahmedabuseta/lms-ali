@@ -13,19 +13,6 @@ const PracticePage = async () => {
   // Get all courses that the user has access to (purchased or created)
   const courses = await db.course.findMany({
     where: {
-      // OR: [
-      //   {
-      //     purchases: {
-      //       some: {
-      //         userId,
-      //       },
-      //     },
-      //   },
-      //   {
-      //     //createdById: userId,
-      //   },
-      // ],
-      // Only include courses that have practice questions
       PracticeQuestion: {
         some: {},
       },
@@ -64,15 +51,13 @@ const PracticePage = async () => {
       title: 'asc',
     },
   });
-console.log(courses)
+  console.log(courses);
   if (courses.length === 0) {
     return (
       <div className="p-6" dir="rtl">
-        <div className="flex flex-col items-center justify-center h-60 text-center">
-          <h2 className="text-2xl font-bold mb-2">لا توجد أسئلة تدريبية متاحة</h2>
-          <p className="text-slate-600 mb-6">
-            لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن
-          </p>
+        <div className="flex h-60 flex-col items-center justify-center text-center">
+          <h2 className="mb-2 text-2xl font-bold">لا توجد أسئلة تدريبية متاحة</h2>
+          <p className="mb-6 text-slate-600">لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن</p>
         </div>
       </div>
     );
@@ -82,9 +67,7 @@ console.log(courses)
     <div className="p-6" dir="rtl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">الأسئلة التدريبية</h1>
-        <p className="text-slate-600">
-          اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك
-        </p>
+        <p className="text-slate-600">اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك</p>
       </div>
 
       <PracticeClient courses={courses} />

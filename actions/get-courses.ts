@@ -1,19 +1,19 @@
-import { Category, Course } from '@prisma/client'
-import { db } from '@/lib/db'
-import { getProgress } from './get-progress'
+import { Category, Course } from '@prisma/client';
+import { db } from '@/lib/db';
+import { getProgress } from './get-progress';
 
 export type CourseWithProgressAndCategory = Course & {
-  category: Category | null
-  chapters: { id: string }[]
-  progress: number | null
-  chaptersLength: number
-}
+  category: Category | null;
+  chapters: { id: string }[];
+  progress: number | null;
+  chaptersLength: number;
+};
 
 type GetCoursesArgs = {
-  userId: string
-  title?: string
-  categoryId?: string
-}
+  userId: string;
+  title?: string;
+  categoryId?: string;
+};
 
 export async function getCourses({
   userId,
@@ -31,29 +31,29 @@ export async function getCourses({
       orderBy: {
         createdAt: 'desc',
       },
-    })
+    });
 
     const coursesWithProgress: CourseWithProgressAndCategory[] = await Promise.all(
       courses.map(async (course) => {
         if (course.purchases.length === 0) {
-          return { 
-            ...course, 
+          return {
+            ...course,
             progress: null,
-            chaptersLength: course.chapters.length
-          }
+            chaptersLength: course.chapters.length,
+          };
         }
 
-        const progressPercentage = await getProgress(userId, course.id)
+        const progressPercentage = await getProgress(userId, course.id);
         return {
           ...course,
           progress: progressPercentage,
-          chaptersLength: course.chapters.length
-        }
+          chaptersLength: course.chapters.length,
+        };
       }),
-    )
+    );
 
-    return coursesWithProgress
+    return coursesWithProgress;
   } catch {
-    return []
+    return [];
   }
 }

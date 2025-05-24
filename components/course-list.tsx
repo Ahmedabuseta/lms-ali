@@ -1,6 +1,6 @@
 'use client';
 
-import  CourseCard  from '@/components/course-card';
+import CourseCard from '@/components/course-card';
 import { CourseCardSkeleton } from '@/components/course-card-skeleton';
 import { useEffect, useState } from 'react';
 
@@ -37,10 +37,12 @@ const CoursesList = ({ items }: CoursesListProps) => {
   if (!mounted || isLoading) {
     return (
       <div data-tour="course-cards">
-        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
-          {Array(4).fill(0).map((_, i) => (
-            <CourseCardSkeleton key={i} />
-          ))}
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+          {Array(4)
+            .fill(0)
+            .map((_, i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
         </div>
       </div>
     );
@@ -48,7 +50,7 @@ const CoursesList = ({ items }: CoursesListProps) => {
 
   return (
     <div data-tour="course-cards">
-      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
         {items.map((item) => (
           <CourseCard
             key={item.id}
@@ -62,11 +64,7 @@ const CoursesList = ({ items }: CoursesListProps) => {
           />
         ))}
       </div>
-      {items.length === 0 && (
-        <div className="text-center text-sm text-muted-foreground mt-10">
-          لا توجد دورات متاحة
-        </div>
-      )}
+      {items.length === 0 && <div className="mt-10 text-center text-sm text-muted-foreground">لا توجد دورات متاحة</div>}
     </div>
   );
 };

@@ -1,115 +1,115 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import axios from 'axios'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Loader2, Book, BookOpen } from 'lucide-react'
-import { QuestionCard } from './question-card'
-import { PracticeOptions } from './practice-options'
-import { toast } from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import axios from 'axios';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Book, BookOpen } from 'lucide-react';
+import { QuestionCard } from './question-card';
+import { PracticeOptions } from './practice-options';
+import { toast } from 'react-hot-toast';
 
 interface Chapter {
-  id: string
-  title: string
+  id: string;
+  title: string;
   _count: {
-    PracticeQuestion: number
-  }
+    PracticeQuestion: number;
+  };
 }
 
 interface Course {
-  id: string
-  title: string
-  chapters: Chapter[]
+  id: string;
+  title: string;
+  chapters: Chapter[];
   _count: {
-    PracticeQuestion: number
-  }
+    PracticeQuestion: number;
+  };
 }
 
 interface Question {
-  id: string
-  text: string
-  type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE'
-  difficulty: string
+  id: string;
+  text: string;
+  type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE';
+  difficulty: string;
   chapter?: {
-    id: string
-    title: string
-  }
+    id: string;
+    title: string;
+  };
   options: {
-    id: string
-    text: string
-    isCorrect: boolean
-  }[]
+    id: string;
+    text: string;
+    isCorrect: boolean;
+  }[];
 }
 
 interface PracticeClientProps {
-  courses: Course[]
+  courses: Course[];
 }
 
 interface SavedAnswer {
-  questionId: string
-  selectedOptionId: string
-  isCorrect: boolean
+  questionId: string;
+  selectedOptionId: string;
+  isCorrect: boolean;
 }
 
 interface SavedProgress {
-  courseId: string
-  chapterIds: string[]
-  currentPage: number
-  currentQuestionIndex: number
-  answers: SavedAnswer[]
-  lastUpdated: number
+  courseId: string;
+  chapterIds: string[];
+  currentPage: number;
+  currentQuestionIndex: number;
+  answers: SavedAnswer[];
+  lastUpdated: number;
 }
 
 export const PracticeClient = ({ courses }: PracticeClientProps) => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   // Get query params
-  const courseIdParam = searchParams.get('courseId')
-  const chapterIdsParam = searchParams.get('chapterIds')
-  
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(courseIdParam || courses[0]?.id || '')
+  const courseIdParam = searchParams.get('courseId');
+  const chapterIdsParam = searchParams.get('chapterIds');
+
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(courseIdParam || courses[0]?.id || '');
   const [selectedChapterIds, setSelectedChapterIds] = useState<string[]>(
-    chapterIdsParam ? chapterIdsParam.split(',') : []
-  )
-  const [isLoading, setIsLoading] = useState(false)
-  const [isPracticeMode, setIsPracticeMode] = useState(false)
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [totalQuestions, setTotalQuestions] = useState(0)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [error, setError] = useState<string | null>(null)
-  const [savedAnswers, setSavedAnswers] = useState<SavedAnswer[]>([])
-  
-  const selectedCourse = courses.find(course => course.id === selectedCourseId)
-  
+    chapterIdsParam ? chapterIdsParam.split(',') : [],
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+  const [savedAnswers, setSavedAnswers] = useState<SavedAnswer[]>([]);
+
+  const selectedCourse = courses.find((course) => course.id === selectedCourseId);
+
   // Load saved progress on initial mount
   useEffect(() => {
-    const savedProgress = localStorage.getItem('practiceProgress')
+    const savedProgress = localStorage.getItem('practiceProgress');
     if (savedProgress) {
-      const progress: SavedProgress = JSON.parse(savedProgress)
+      const progress: SavedProgress = JSON.parse(savedProgress);
       // Only restore if less than 24 hours old
       if (Date.now() - progress.lastUpdated < 24 * 60 * 60 * 1000) {
-        setSelectedCourseId(progress.courseId)
-        setSelectedChapterIds(progress.chapterIds)
-        setCurrentPage(progress.currentPage)
-        setCurrentQuestionIndex(progress.currentQuestionIndex)
-        setSavedAnswers(progress.answers)
+        setSelectedCourseId(progress.courseId);
+        setSelectedChapterIds(progress.chapterIds);
+        setCurrentPage(progress.currentPage);
+        setCurrentQuestionIndex(progress.currentQuestionIndex);
+        setSavedAnswers(progress.answers);
         // Don't immediately start practice mode - let user choose to continue
         if (progress.answers.length > 0) {
-          toast.success('تم استرجاع تقدمك السابق')
+          toast.success('تم استرجاع تقدمك السابق');
         }
       } else {
-        localStorage.removeItem('practiceProgress')
+        localStorage.removeItem('practiceProgress');
       }
     }
-  }, [])
+  }, []);
 
   // Save progress whenever relevant state changes
   useEffect(() => {
@@ -120,195 +120,188 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
         currentPage,
         currentQuestionIndex,
         answers: savedAnswers,
-        lastUpdated: Date.now()
-      }
-      localStorage.setItem('practiceProgress', JSON.stringify(progress))
+        lastUpdated: Date.now(),
+      };
+      localStorage.setItem('practiceProgress', JSON.stringify(progress));
     }
-  }, [isPracticeMode, selectedCourseId, selectedChapterIds, currentPage, currentQuestionIndex, savedAnswers])
+  }, [isPracticeMode, selectedCourseId, selectedChapterIds, currentPage, currentQuestionIndex, savedAnswers]);
 
   const handleCourseChange = (courseId: string) => {
-    setSelectedCourseId(courseId)
-    updateUrl(courseId, [])
-  }
-  
+    setSelectedCourseId(courseId);
+    updateUrl(courseId, []);
+  };
+
   const handleChapterChange = (chapterId: string, isChecked: boolean) => {
-    setSelectedChapterIds(prev => {
-      const updated = isChecked 
-        ? [...prev, chapterId]
-        : prev.filter(id => id !== chapterId)
-      
-      updateUrl(selectedCourseId, updated)
-      return updated
-    })
-  }
-  
+    setSelectedChapterIds((prev) => {
+      const updated = isChecked ? [...prev, chapterId] : prev.filter((id) => id !== chapterId);
+
+      updateUrl(selectedCourseId, updated);
+      return updated;
+    });
+  };
+
   const updateUrl = (courseId: string, chapterIds: string[]) => {
-    const params = new URLSearchParams()
-    if (courseId) params.set('courseId', courseId)
-    if (chapterIds.length > 0) params.set('chapterIds', chapterIds.join(','))
-    
-    router.push(`/practice?${params.toString()}`)
-  }
-  
+    const params = new URLSearchParams();
+    if (courseId) params.set('courseId', courseId);
+    if (chapterIds.length > 0) params.set('chapterIds', chapterIds.join(','));
+
+    router.push(`/practice?${params.toString()}`);
+  };
+
   const handleAnswerSubmit = (questionId: string, selectedOptionId: string, isCorrect: boolean) => {
-    setSavedAnswers(prev => {
-      const existing = prev.findIndex(a => a.questionId === questionId)
+    setSavedAnswers((prev) => {
+      const existing = prev.findIndex((a) => a.questionId === questionId);
       if (existing !== -1) {
-        const updated = [...prev]
-        updated[existing] = { questionId, selectedOptionId, isCorrect }
-        return updated
+        const updated = [...prev];
+        updated[existing] = { questionId, selectedOptionId, isCorrect };
+        return updated;
       }
-      return [...prev, { questionId, selectedOptionId, isCorrect }]
-    })
-  }
+      return [...prev, { questionId, selectedOptionId, isCorrect }];
+    });
+  };
 
   const getQuestionAnswer = (questionId: string) => {
-    return savedAnswers.find(a => a.questionId === questionId)
-  }
+    return savedAnswers.find((a) => a.questionId === questionId);
+  };
 
   const startPractice = async () => {
     try {
-      setIsLoading(true)
-      setError(null)
-      await fetchQuestions(1)
-      setIsPracticeMode(true)
-      setCurrentQuestionIndex(0)
+      setIsLoading(true);
+      setError(null);
+      await fetchQuestions(1);
+      setIsPracticeMode(true);
+      setCurrentQuestionIndex(0);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
-      setError(message)
-      toast.error(message)
-      setIsPracticeMode(false)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة';
+      setError(message);
+      toast.error(message);
+      setIsPracticeMode(false);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
+
   const continuePractice = async () => {
     try {
-      setIsLoading(true)
-      setError(null)
-      await fetchQuestions(currentPage)
-      setIsPracticeMode(true)
+      setIsLoading(true);
+      setError(null);
+      await fetchQuestions(currentPage);
+      setIsPracticeMode(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
-      setError(message)
-      toast.error(message)
-      setIsPracticeMode(false)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة';
+      setError(message);
+      toast.error(message);
+      setIsPracticeMode(false);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const resetProgress = () => {
-    localStorage.removeItem('practiceProgress')
-    setSavedAnswers([])
-    setCurrentPage(1)
-    setCurrentQuestionIndex(0)
-    toast.success('تم مسح التقدم السابق')
-  }
-  
+    localStorage.removeItem('practiceProgress');
+    setSavedAnswers([]);
+    setCurrentPage(1);
+    setCurrentQuestionIndex(0);
+    toast.success('تم مسح التقدم السابق');
+  };
+
   const fetchQuestions = async (page: number) => {
     try {
-      setError(null)
-      const params = new URLSearchParams()
-      params.set('courseId', selectedCourseId)
+      setError(null);
+      const params = new URLSearchParams();
+      params.set('courseId', selectedCourseId);
       if (selectedChapterIds.length > 0) {
-        params.set('chapterIds', selectedChapterIds.join(','))
+        params.set('chapterIds', selectedChapterIds.join(','));
       }
-      params.set('page', page.toString())
-      params.set('pageSize', '10')
-      
+      params.set('page', page.toString());
+      params.set('pageSize', '10');
+
       const response = await axios.get<{
-        questions: Question[]
-        totalQuestions: number
-        pageCount: number
-        currentPage: number
-      }>(`/api/practice/questions?${params.toString()}`)
-      console.log(response)
-      setQuestions(response.data.questions)
-      setTotalQuestions(response.data.totalQuestions)
-      setTotalPages(response.data.pageCount)
-      setCurrentPage(response.data.currentPage)
+        questions: Question[];
+        totalQuestions: number;
+        pageCount: number;
+        currentPage: number;
+      }>(`/api/practice/questions?${params.toString()}`);
+      console.log(response);
+      setQuestions(response.data.questions);
+      setTotalQuestions(response.data.totalQuestions);
+      setTotalPages(response.data.pageCount);
+      setCurrentPage(response.data.currentPage);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة'
-      setError(message)
-      toast.error(message)
-      throw error
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل الأسئلة';
+      setError(message);
+      toast.error(message);
+      throw error;
     }
-  }
-  
+  };
+
   const nextQuestion = async () => {
     try {
       if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(prev => prev + 1)
+        setCurrentQuestionIndex((prev) => prev + 1);
       } else if (currentPage < totalPages) {
-        setIsLoading(true)
-        await fetchQuestions(currentPage + 1)
-        setCurrentQuestionIndex(0)
+        setIsLoading(true);
+        await fetchQuestions(currentPage + 1);
+        setCurrentQuestionIndex(0);
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال التالي'
-      toast.error(message)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال التالي';
+      toast.error(message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
+
   const previousQuestion = async () => {
     try {
       if (currentQuestionIndex > 0) {
-        setCurrentQuestionIndex(prev => prev - 1)
+        setCurrentQuestionIndex((prev) => prev - 1);
       } else if (currentPage > 1) {
-        setIsLoading(true)
-        await fetchQuestions(currentPage - 1)
-        setCurrentQuestionIndex(questions.length - 1)
+        setIsLoading(true);
+        await fetchQuestions(currentPage - 1);
+        setCurrentQuestionIndex(questions.length - 1);
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال السابق'
-      toast.error(message)
+      const message = error instanceof Error ? error.message : 'حدث خطأ أثناء تحميل السؤال السابق';
+      toast.error(message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
+
   const exitPracticeMode = () => {
-    setIsPracticeMode(false)
-    setQuestions([])
-    setCurrentQuestionIndex(0)
-    setError(null)
+    setIsPracticeMode(false);
+    setQuestions([]);
+    setCurrentQuestionIndex(0);
+    setError(null);
     // Clear saved progress
-    localStorage.removeItem('practiceProgress')
-    setSavedAnswers([])
-    toast.success('تم إنهاء التدريب ومسح التقدم')
-  }
-  
+    localStorage.removeItem('practiceProgress');
+    setSavedAnswers([]);
+    toast.success('تم إنهاء التدريب ومسح التقدم');
+  };
+
   if (!selectedCourse) {
     return (
       <div className="p-6" dir="rtl">
-        <div className="flex flex-col items-center justify-center h-60 text-center">
-          <h2 className="text-2xl font-bold mb-2">لا توجد دورات متاحة</h2>
-          <p className="text-slate-600 mb-6">
-            لم يتم العثور على أي دورات متاحة للتدريب
-          </p>
+        <div className="flex h-60 flex-col items-center justify-center text-center">
+          <h2 className="mb-2 text-2xl font-bold">لا توجد دورات متاحة</h2>
+          <p className="mb-6 text-slate-600">لم يتم العثور على أي دورات متاحة للتدريب</p>
         </div>
       </div>
-    )
+    );
   }
-  
+
   return (
     <>
       {!isPracticeMode ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card className="md:col-span-1">
             <CardHeader>
               <CardTitle>اختر الدورة</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <Select
-                  value={selectedCourseId}
-                  onValueChange={handleCourseChange}
-                >
+                <Select value={selectedCourseId} onValueChange={handleCourseChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="اختر دورة" />
                   </SelectTrigger>
@@ -327,10 +320,8 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                 </Select>
 
                 <div className="mt-4">
-                  <h3 className="text-sm font-medium mb-2">
-                    {selectedCourse.chapters.length 
-                      ? "اختر الفصول (اختياري)" 
-                      : "لا توجد فصول متاحة"}
+                  <h3 className="mb-2 text-sm font-medium">
+                    {selectedCourse.chapters.length ? 'اختر الفصول (اختياري)' : 'لا توجد فصول متاحة'}
                   </h3>
                   <div className="space-y-2">
                     {selectedCourse.chapters.map((chapter) => (
@@ -338,13 +329,11 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                         <Checkbox
                           id={chapter.id}
                           checked={selectedChapterIds.includes(chapter.id)}
-                          onCheckedChange={(checked) => 
-                            handleChapterChange(chapter.id, checked as boolean)
-                          }
+                          onCheckedChange={(checked) => handleChapterChange(chapter.id, checked as boolean)}
                         />
                         <label
                           htmlFor={chapter.id}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center justify-between w-full"
+                          className="flex w-full items-center justify-between text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           <span>{chapter.title}</span>
                           <Badge variant="outline" className="mr-2">
@@ -358,29 +347,21 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                onClick={startPractice}
-                disabled={isLoading}
-                className="w-full"
-              >
+              <Button onClick={startPractice} disabled={isLoading} className="w-full">
                 {isLoading ? (
                   <>
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                     جاري التحميل...
                   </>
                 ) : selectedChapterIds.length > 0 ? (
-                  <>
-                    ابدأ التدريب على الفصول المختارة
-                  </>
+                  <>ابدأ التدريب على الفصول المختارة</>
                 ) : (
-                  <>
-                    ابدأ التدريب على الدورة كاملة
-                  </>
+                  <>ابدأ التدريب على الدورة كاملة</>
                 )}
               </Button>
             </CardFooter>
           </Card>
-          
+
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -391,20 +372,20 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium mb-2">ملخص الدورة</h3>
+                  <h3 className="mb-2 font-medium">ملخص الدورة</h3>
                   <p className="text-sm text-slate-600">
-                    تحتوي هذه الدورة على {selectedCourse._count.PracticeQuestion} سؤال تدريبي
-                    موزعة على {selectedCourse.chapters.length} فصل.
+                    تحتوي هذه الدورة على {selectedCourse._count.PracticeQuestion} سؤال تدريبي موزعة على{' '}
+                    {selectedCourse.chapters.length} فصل.
                   </p>
                 </div>
-                
+
                 {selectedChapterIds.length > 0 && (
                   <div>
-                    <h3 className="font-medium mb-2">الفصول المختارة</h3>
+                    <h3 className="mb-2 font-medium">الفصول المختارة</h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedCourse.chapters
-                        .filter(chapter => selectedChapterIds.includes(chapter.id))
-                        .map(chapter => (
+                        .filter((chapter) => selectedChapterIds.includes(chapter.id))
+                        .map((chapter) => (
                           <Badge key={chapter.id} variant="secondary">
                             <BookOpen className="ml-1 h-3 w-3" />
                             {chapter.title}
@@ -413,13 +394,13 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                     </div>
                   </div>
                 )}
-                
+
                 <div>
-                  <h3 className="font-medium mb-2">وضع التدريب</h3>
+                  <h3 className="mb-2 font-medium">وضع التدريب</h3>
                   <p className="text-sm text-slate-600">
                     ستحصل على أسئلة عشوائية من {selectedCourse.title}
-                    {selectedChapterIds.length > 0 ? ' (من الفصول المختارة فقط)' : ' (من جميع الفصول)'}. 
-                    ستظهر نتيجة إجابتك فور الإجابة على كل سؤال.
+                    {selectedChapterIds.length > 0 ? ' (من الفصول المختارة فقط)' : ' (من جميع الفصول)'}. ستظهر نتيجة
+                    إجابتك فور الإجابة على كل سؤال.
                   </p>
                 </div>
               </div>
@@ -429,29 +410,27 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
       ) : (
         <>
           {isLoading ? (
-            <div className="flex items-center justify-center h-60">
+            <div className="flex h-60 items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : questions.length > 0 ? (
-            <div className="max-w-3xl mx-auto">
-              <div className="flex items-center justify-between mb-4">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-600">
-                    السؤال {currentQuestionIndex + 1} من {questions.length} 
+                    السؤال {currentQuestionIndex + 1} من {questions.length}
                     {totalQuestions > questions.length && ` (${totalQuestions} إجمالي)`}
                   </p>
                   <h2 className="text-lg font-medium">
                     {selectedCourse.title}
-                    {questions[currentQuestionIndex].chapter && (
-                      <> - {questions[currentQuestionIndex].chapter.title}</>
-                    )}
+                    {questions[currentQuestionIndex].chapter && <> - {questions[currentQuestionIndex].chapter?.title}</>}
                   </h2>
                 </div>
                 <Button variant="outline" onClick={exitPracticeMode}>
                   إنهاء التدريب
                 </Button>
               </div>
-              
+
               <QuestionCard
                 question={questions[currentQuestionIndex]}
                 onNext={nextQuestion}
@@ -464,11 +443,9 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
             </div>
           ) : (
             <div className="p-6" dir="rtl">
-              <div className="flex flex-col items-center justify-center h-60 text-center">
-                <h2 className="text-2xl font-bold mb-2">لا توجد أسئلة متاحة</h2>
-                <p className="text-slate-600 mb-6">
-                  لم يتم العثور على أسئلة تدريبية للفصول المختارة
-                </p>
+              <div className="flex h-60 flex-col items-center justify-center text-center">
+                <h2 className="mb-2 text-2xl font-bold">لا توجد أسئلة متاحة</h2>
+                <p className="mb-6 text-slate-600">لم يتم العثور على أسئلة تدريبية للفصول المختارة</p>
                 <Button variant="outline" onClick={exitPracticeMode}>
                   العودة للاختيار
                 </Button>
@@ -477,9 +454,9 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
           )}
         </>
       )}
-      
+
       {error && (
-        <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="fixed bottom-4 right-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
           {error}
         </div>
       )}
@@ -491,11 +468,10 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
+              <p className="text-sm text-slate-600">لديك {savedAnswers.length} إجابة محفوظة</p>
               <p className="text-sm text-slate-600">
-                لديك {savedAnswers.length} إجابة محفوظة
-              </p>
-              <p className="text-sm text-slate-600">
-                نسبة الإجابات الصحيحة: {Math.round((savedAnswers.filter(a => a.isCorrect).length / savedAnswers.length) * 100)}%
+                نسبة الإجابات الصحيحة:{' '}
+                {Math.round((savedAnswers.filter((a) => a.isCorrect).length / savedAnswers.length) * 100)}%
               </p>
               <div className="flex gap-2">
                 <Button onClick={continuePractice} disabled={isLoading}>
@@ -510,5 +486,5 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
         </Card>
       )}
     </>
-  )
-}
+  );
+};

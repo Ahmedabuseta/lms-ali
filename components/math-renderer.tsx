@@ -16,19 +16,15 @@ interface MathRendererProps {
   className?: string;
 }
 
-export const MathRenderer: React.FC<MathRendererProps> = ({
-  content,
-  display = false,
-  className = '',
-}) => {
+export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = false, className = '' }) => {
   const [renderedMath, setRenderedMath] = useState<string>('');
   const [useDirectKatex, setUseDirectKatex] = useState<boolean>(false);
-  
+
   useEffect(() => {
     // Determine if the content is complex enough to warrant direct KaTeX rendering
-    const isComplexMath = 
-      content.includes('\\frac') || 
-      content.includes('\\sum') || 
+    const isComplexMath =
+      content.includes('\\frac') ||
+      content.includes('\\sum') ||
       content.includes('\\int') ||
       content.includes('\\prod') ||
       content.includes('\\begin{') ||
@@ -37,16 +33,16 @@ export const MathRenderer: React.FC<MathRendererProps> = ({
       content.includes('\\mathbb') ||
       content.includes('\\overrightarrow') ||
       content.includes('\\partial');
-    
+
     setUseDirectKatex(isComplexMath);
-    
+
     // For complex equations, use direct KaTeX rendering
     if (isComplexMath) {
       try {
-        const html = katex.renderToString(content, { 
+        const html = katex.renderToString(content, {
           displayMode: display,
           throwOnError: false,
-          trust: true
+          trust: true,
         });
         setRenderedMath(html);
       } catch (err) {
@@ -56,31 +52,24 @@ export const MathRenderer: React.FC<MathRendererProps> = ({
       }
     }
   }, [content, display]);
-  
+
   // For complex math formulas, use direct KaTeX rendering
   if (useDirectKatex) {
     return (
-      <div 
-        className={`math-content ${className} ${display ? 'text-center my-4' : 'inline-block'}`}
+      <div
+        className={`math-content ${className} ${display ? 'my-4 text-center' : 'inline-block'}`}
         dangerouslySetInnerHTML={{ __html: renderedMath }}
       />
     );
   }
-  
+
   // For simpler formulas, use ReactMarkdown with remark-math
   // Don't add extra delimiters if they're already present in the content
-  const mathContent = content.trim().startsWith('$') ? 
-    content : 
-    display ? 
-      `$$${content}$$` : 
-      `$${content}$`;
-  
+  const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content}$$` : `$${content}$`;
+
   return (
-    <div className={`math-content ${className} ${display ? 'block my-4' : 'inline-block'}`}>
-      <ReactMarkdown
-        rehypePlugins={[rehypeKatex, rehypeRaw]}
-        remarkPlugins={[remarkMath]}
-      >
+    <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`}>
+      <ReactMarkdown rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath]}>
         {mathContent}
       </ReactMarkdown>
     </div>

@@ -29,13 +29,9 @@ export const ConversationContent = ({
         ) : (
           <>
             {messages.map((message, index) => (
-              <ChatMessage
-                key={index}
-                role={message.role}
-                content={message.content}
-              />
+              <ChatMessage key={index} role={message.role} content={message.content} />
             ))}
-            
+
             {/* Show thinking indicator */}
             {thinking && (
               <div className="flex justify-start p-4">
@@ -45,18 +41,13 @@ export const ConversationContent = ({
                 </div>
               </div>
             )}
-            
+
             {/* Show streaming response */}
-            {streamingContent && (
-              <ChatMessage
-                role="assistant"
-                content={streamingContent}
-              />
-            )}
+            {streamingContent && <ChatMessage role="assistant" content={streamingContent} />}
           </>
         )}
         <div ref={messagesEndRef} />
       </div>
     </CardContent>
   );
-}; 
+};

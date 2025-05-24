@@ -1,20 +1,20 @@
-import { auth } from '@clerk/nextjs'
-import { Prisma } from '@prisma/client'
-import { redirect } from 'next/navigation'
-import { db } from '@/lib/db'
-import CourseSidebarItem from './course-sidebar-item'
-import { CourseProgress } from '@/components/course-progress'
+import { auth } from '@clerk/nextjs';
+import { Prisma } from '@prisma/client';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
+import CourseSidebarItem from './course-sidebar-item';
+import { CourseProgress } from '@/components/course-progress';
 
 type CourseSidebarProps = {
-  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>
-  progressCount: number
-}
+  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
+  progressCount: number;
+};
 
 export default async function CourseSidebar({ course, progressCount }: CourseSidebarProps) {
-  const { userId } = auth()
+  const { userId } = auth();
 
   if (!userId) {
-    return redirect('/')
+    return redirect('/');
   }
 
   const purchase = await db.purchase.findUnique({
@@ -24,7 +24,7 @@ export default async function CourseSidebar({ course, progressCount }: CourseSid
         courseId: course.id,
       },
     },
-  })
+  });
 
   return (
     <div className="flex h-full flex-col overflow-y-auto border-r shadow-sm">
@@ -49,5 +49,5 @@ export default async function CourseSidebar({ course, progressCount }: CourseSid
         ))}
       </div>
     </div>
-  )
+  );
 }

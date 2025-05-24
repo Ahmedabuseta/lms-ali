@@ -1,27 +1,27 @@
-import { currentUser } from '@clerk/nextjs'
-import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
-import { db } from '@/lib/db'
-import { stripe } from '@/lib/stripe'
+import { currentUser } from '@clerk/nextjs';
+import { NextRequest, NextResponse } from 'next/server';
+import Stripe from 'stripe';
+import { db } from '@/lib/db';
+import { stripe } from '@/lib/stripe';
 
 export async function POST(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
-    const user = await currentUser()
+    const user = await currentUser();
     if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
-      return new NextResponse('Unauthorized', { status: 401 })
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const course = await db.course.findUnique({ where: { id: params.courseId, isPublished: true } })
+    const course = await db.course.findUnique({ where: { id: params.courseId, isPublished: true } });
     if (!course) {
-      return new NextResponse('Course not found!', { status: 404 })
+      return new NextResponse('Course not found!', { status: 404 });
     }
 
     const purchase = await db.purchase.findUnique({
       where: { userId_courseId: { userId: user.id, courseId: params.courseId } },
-    })
+    });
 
     if (purchase) {
-      return new NextResponse('Already purchased', { status: 400 })
+      return new NextResponse('Already purchased', { status: 400 });
     }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
@@ -36,17 +36,17 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
           unit_amount: Math.round(course.price! * 100),
         },
       },
-    ]
+    ];
 
     let stripeCustomer = await db.stripeCustomer.findUnique({
       where: { userid: user.id },
       select: { stripeCustomerId: true },
-    })
+    });
 
     if (!stripeCustomer) {
-      const customer = await stripe.customers.create({ email: user.emailAddresses[0].emailAddress })
+      const customer = await stripe.customers.create({ email: user.emailAddresses[0].emailAddress });
 
-      stripeCustomer = await db.stripeCustomer.create({ data: { userid: user.id, stripeCustomerId: customer.id } })
+      stripeCustomer = await db.stripeCustomer.create({ data: { userid: user.id, stripeCustomerId: customer.id } });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
         courseId: course.id,
         userId: user.id,
       },
-    })
+    });
 
-    return NextResponse.json({ url: session.url })
+    return NextResponse.json({ url: session.url });
   } catch {
-    return new NextResponse('Internal server error', { status: 500 })
+    return new NextResponse('Internal server error', { status: 500 });
   }
 }

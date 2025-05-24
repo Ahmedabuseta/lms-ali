@@ -1,16 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { MathRenderer } from "@/components/math-renderer";
+import * as React from 'react';
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { cn } from '@/lib/utils';
+import { MathRenderer } from '@/components/math-renderer';
 
 export interface MathOption {
   value: string;
@@ -31,14 +27,14 @@ export function MathSelect({
   options,
   value,
   onValueChange,
-  placeholder = "Select an option",
+  placeholder = 'Select an option',
   disabled = false,
   className,
-  emptyMessage = "No options found."
+  emptyMessage = 'No options found.',
 }: MathSelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
     <Popover open={open && !disabled} onOpenChange={setOpen}>
@@ -47,7 +43,7 @@ export function MathSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn('w-full justify-between', className)}
           disabled={disabled}
         >
           {value && selectedOption ? (
@@ -78,9 +74,7 @@ export function MathSelect({
                 <div className="flex-1 truncate">
                   <MathRenderer content={option.label} />
                 </div>
-                {value === option.value && (
-                  <CheckIcon className="ml-2 h-4 w-4 shrink-0" />
-                )}
+                {value === option.value && <CheckIcon className="ml-2 h-4 w-4 shrink-0" />}
               </CommandItem>
             ))}
           </CommandGroup>

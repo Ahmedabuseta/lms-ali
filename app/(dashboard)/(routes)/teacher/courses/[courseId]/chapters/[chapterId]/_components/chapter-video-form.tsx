@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import * as z from 'zod'
-import axios from 'axios'
-import MuxPlayer from '@mux/mux-player-react'
-import { Pencil, PlusCircle, Video } from 'lucide-react'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { Chapter, MuxData } from '@prisma/client'
-import { Button } from '@/components/ui/button'
-import { FileUpload } from '@/components/file-upload'
+import * as z from 'zod';
+import axios from 'axios';
+import MuxPlayer from '@mux/mux-player-react';
+import { Pencil, PlusCircle, Video } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { Chapter, MuxData } from '@prisma/client';
+import { Button } from '@/components/ui/button';
+import { FileUpload } from '@/components/file-upload';
 
 interface ChapterVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null }
-  courseId: string
-  chapterId: string
+  initialData: Chapter & { muxData?: MuxData | null };
+  courseId: string;
+  chapterId: string;
 }
 
 const formSchema = z.object({
   videoUrl: z.string().min(1),
-})
+});
 
 export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVideoFormProps) => {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current)
+  const toggleEdit = () => setIsEditing((current) => !current);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values)
-      toast.success('Chapter updated')
-      toggleEdit()
-      router.refresh()
+      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
+      toast.success('Chapter updated');
+      toggleEdit();
+      router.refresh();
     } catch {
-      toast.error('Something went wrong')
+      toast.error('Something went wrong');
     }
-  }
+  };
 
   return (
     <div className="mt-6 rounded-md border bg-slate-100 p-4">
@@ -75,7 +75,7 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
             endpoint="chapterVideo"
             onChange={(url) => {
               if (url) {
-                onSubmit({ videoUrl: url })
+                onSubmit({ videoUrl: url });
               }
             }}
           />
@@ -88,5 +88,5 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
         </div>
       )}
     </div>
-  )
-}
+  );
+};

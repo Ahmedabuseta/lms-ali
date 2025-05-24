@@ -1,44 +1,44 @@
-'use client'
+'use client';
 
-import * as z from 'zod'
-import axios from 'axios'
-import { Pencil, PlusCircle, ImageIcon } from 'lucide-react'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { Course } from '@prisma/client'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { FileUpload } from '@/components/file-upload'
+import * as z from 'zod';
+import axios from 'axios';
+import { Pencil, PlusCircle, ImageIcon } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { Course } from '@prisma/client';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { FileUpload } from '@/components/file-upload';
 
 interface ImageFormProps {
-  initialData: Course
-  courseId: string
+  initialData: Course;
+  courseId: string;
 }
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
     message: 'Image is required',
   }),
-})
+});
 
 export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current)
+  const toggleEdit = () => setIsEditing((current) => !current);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values)
-      toast.success('Course updated')
-      toggleEdit()
-      router.refresh()
+      await axios.patch(`/api/courses/${courseId}`, values);
+      toast.success('Course updated');
+      toggleEdit();
+      router.refresh();
     } catch {
-      toast.error('Something went wrong')
+      toast.error('Something went wrong');
     }
-  }
+  };
 
   return (
     <div className="mt-6 rounded-md border bg-slate-100 p-4">
@@ -76,7 +76,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
             endpoint="courseImage"
             onChange={(url) => {
               if (url) {
-                onSubmit({ imageUrl: url })
+                onSubmit({ imageUrl: url });
               }
             }}
           />
@@ -84,5 +84,5 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};

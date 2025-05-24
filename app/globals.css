@@ -3,12 +3,12 @@
 @tailwind utilities;
 @import 'katex/dist/katex.min.css';
 
-html, 
-body, 
+html,
+body,
 :root {
   height: 100%;
 }
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -16,31 +16,31 @@ body,
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
+
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
- 
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
+
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
- 
+
     --radius: 0.5rem;
-    
+
     /* Additional color variables for LMS components */
     --success-light: 142 76% 36%;
     --success-dark: 142 69% 58%;
@@ -50,39 +50,39 @@ body,
     --info-dark: 199 89% 60%;
     --code-bg: 220 14% 96%;
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
- 
+
     --card: 222.2 47.4% 11.2%;
     --card-foreground: 210 40% 98%;
- 
+
     --popover: 222.2 47.4% 11.2%;
     --popover-foreground: 210 40% 98%;
- 
+
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
- 
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
- 
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    
+
     /* Dark mode LMS components */
     --success-light: 142 69% 58%;
-    --success-dark: 142 76% 36%; 
+    --success-dark: 142 76% 36%;
     --warning-light: 38 92% 65%;
     --warning-dark: 38 92% 50%;
     --info-light: 199 89% 60%;
@@ -90,23 +90,25 @@ body,
     --code-bg: 222 18% 12%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
-  
+
   /* Improvements for code blocks and markdown */
   pre {
-    @apply bg-[hsl(var(--code-bg))] p-4 rounded-lg overflow-x-auto border;
+    @apply overflow-x-auto rounded-lg border bg-[hsl(var(--code-bg))] p-4;
   }
-  
+
   code:not(pre code) {
-    @apply bg-[hsl(var(--code-bg))] px-1.5 py-0.5 rounded text-sm;
+    @apply rounded bg-[hsl(var(--code-bg))] px-1.5 py-0.5 text-sm;
   }
 }
 
@@ -114,18 +116,18 @@ body,
   font-size: 16px !important;
 }
 
-@import "~@uploadthing/react/styles.css";
+@import '~@uploadthing/react/styles.css';
 
 /* Bidirectional text utility classes */
 .bidi-auto {
   text-align: start;
 }
 
-.bidi-auto[dir="rtl"] {
+.bidi-auto[dir='rtl'] {
   text-align: right;
 }
 
-.bidi-auto[dir="ltr"] {
+.bidi-auto[dir='ltr'] {
   text-align: left;
 }
 
@@ -134,7 +136,7 @@ body,
   text-align: start;
 }
 
-.bidi-paragraph[lang="ar"] {
+.bidi-paragraph[lang='ar'] {
   direction: rtl;
 }
 
@@ -184,12 +186,132 @@ html.dark {
   --transition-duration: 0.15s;
 }
 
-html:not([data-theme-transition="false"]) {
+html:not([data-theme-transition='false']) {
   transition: background-color var(--transition-duration) ease;
 }
 
-html:not([data-theme-transition="false"]) * {
+html:not([data-theme-transition='false']) * {
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
   transition-timing-function: ease;
   transition-duration: var(--transition-duration);
+}
+
+/* Landing Page Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2000ms;
+}
+
+/* Custom Scrollbar Styles */
+@layer utilities {
+  /* For Webkit-based browsers (Chrome, Safari, Edge) - Global */
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300 dark:bg-slate-700;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400 dark:bg-slate-600;
+  }
+
+  /* For Webkit-based browsers - Sidebar specific */
+  .custom-scrollbar-sidebar::-webkit-scrollbar {
+    @apply h-1 w-1;
+  }
+
+  .custom-scrollbar-sidebar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  /* Make thumb transparent by default */
+  .custom-scrollbar-sidebar::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-transparent;
+  }
+
+  /* Show thumb on hover of the sidebar element */
+  .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb {
+    @apply bg-primary bg-opacity-30 dark:bg-primary dark:bg-opacity-20;
+  }
+
+  /* Slightly more opaque thumb when also hovering the thumb itself */
+  .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary bg-opacity-50 dark:bg-primary dark:bg-opacity-40;
+  }
+
+  /* For Firefox - Global */
+  html {
+    scrollbar-width: thin;
+    /* Make thumb very subtle for Firefox, track transparent */
+    scrollbar-color: hsl(var(--muted) / 0.1) transparent;
+  }
+
+  /* For Firefox - Sidebar specific */
+  .custom-scrollbar-sidebar {
+    /* Firefox inherits scrollbar-width: thin */
+    /* To make it more 'hidden' by default for sidebar too: */
+    scrollbar-color: hsl(var(--primary) / 0.05) transparent; /* Almost transparent primary thumb, transparent track */
+  }
+
+  /* Firefox doesn't have a direct CSS way to show scrollbar thumb on element hover like webkit */
+  /* The thumb will become more visible based on its default subtle color if the browser theme has hover effects */
 }

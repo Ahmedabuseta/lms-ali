@@ -1,49 +1,43 @@
-'use client'
+'use client';
 
-import axios from 'axios'
-import { Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
+import axios from 'axios';
+import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface CourseEnrollButtonProps {
-  courseId: string
-  price?: number
+  courseId: string;
+  price?: number;
 }
 
-export const CourseEnrollButton = ({
-  courseId,
-  price
-}: CourseEnrollButtonProps) => {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+export const CourseEnrollButton = ({ courseId, price }: CourseEnrollButtonProps) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onClick = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
-      const response = await axios.post(`/api/courses/${courseId}/checkout`)
+      const response = await axios.post(`/api/courses/${courseId}/checkout`);
 
-      window.location.assign(response.data.url)
+      window.location.assign(response.data.url);
     } catch {
-      toast.error('حدث خطأ ما')
+      toast.error('حدث خطأ ما');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Button
       onClick={onClick}
       disabled={isLoading}
       size="sm"
-      className={cn(
-        "w-full md:w-auto relative",
-        isLoading && "opacity-50 cursor-not-allowed"
-      )}
+      className={cn('relative w-full md:w-auto', isLoading && 'cursor-not-allowed opacity-50')}
     >
       {isLoading ? (
         <>
@@ -51,10 +45,10 @@ export const CourseEnrollButton = ({
           جاري التحميل...
         </>
       ) : (
-        <>
-          {price ? `اشترك الآن (${price} جنيه)` : 'اشترك مجاناً'}
-        </>
+        <>{price ? `اشترك الآن (${price} جنيه)` : 'اشترك مجاناً'}</>
       )}
     </Button>
-  )
-}
+  );
+};
+
+export default CourseEnrollButton;

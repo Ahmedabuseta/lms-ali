@@ -5,13 +5,7 @@ import { GuidedTour, TourButton } from '@/components/ui/guided-tour';
 import { useTourStore } from '@/hooks/use-tour';
 
 export const DashboardTour = () => {
-  const { 
-    isTourOpen, 
-    hasCompletedTour, 
-    openTour, 
-    closeTour, 
-    completeTour 
-  } = useTourStore();
+  const { isTourOpen, hasCompletedTour, openTour, closeTour, completeTour } = useTourStore();
 
   // Auto-show tour for first-time users
   useEffect(() => {
@@ -20,9 +14,9 @@ export const DashboardTour = () => {
         openTour();
       }
     }, 1500);
-    
+
     return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const tourSteps = [
@@ -61,18 +55,13 @@ export const DashboardTour = () => {
       title: 'Exams',
       content: 'Access course exams and assessments to evaluate your progress.',
       placement: 'left' as const,
-    }
+    },
   ];
 
   return (
     <>
       <TourButton onClick={openTour} />
-      <GuidedTour
-        steps={tourSteps}
-        isOpen={isTourOpen}
-        onClose={closeTour}
-        onComplete={completeTour}
-      />
+      <GuidedTour steps={tourSteps} isOpen={isTourOpen} onClose={closeTour} onComplete={completeTour} />
     </>
   );
 };

@@ -1,17 +1,14 @@
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { examId: string } }
-) {
+export async function PUT(req: Request, { params }: { params: { examId: string } }) {
   try {
     const { userId } = auth();
     const { list } = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     // Verify ownership through the course
@@ -25,16 +22,17 @@ export async function PUT(
     });
 
     if (!examWithCourse) {
-      return new NextResponse("Exam not found", { status: 404 });
+      return new NextResponse('Exam not found', { status: 404 });
     }
 
-    if (examWithCourse.course.//createdById !== userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // TODO: Add course ownership check when createdById field is available
+    // if (examWithCourse.course.createdById !== userId) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
 
     // Don't allow reordering questions for published exams
     if (examWithCourse.isPublished) {
-      return new NextResponse("Cannot reorder questions for published exams", {
+      return new NextResponse('Cannot reorder questions for published exams', {
         status: 400,
       });
     }
@@ -46,7 +44,7 @@ export async function PUT(
       const newDate = new Date();
       // Add position as milliseconds to ensure proper ordering
       newDate.setMilliseconds(item.position);
-      
+
       await db.question.update({
         where: {
           id: item.id,
@@ -57,9 +55,9 @@ export async function PUT(
       });
     }
 
-    return new NextResponse("OK", { status: 200 });
+    return new NextResponse('OK', { status: 200 });
   } catch (error) {
-    console.error("[QUESTIONS_REORDER]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[QUESTIONS_REORDER]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }

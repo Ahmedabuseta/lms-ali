@@ -12,62 +12,62 @@ export const useChatApi = () => {
     try {
       // Reset states
       setConnectionError(false);
-      
+
       // Cancel any previous request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
-      
+
       // Create a new controller for this request
       abortControllerRef.current = new AbortController();
-      
+
       setIsLoading(true);
       setThinking(true);
       setStreamingContent('');
-      
+
       // Simple delay to indicate "thinking" state
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Call our server-side API which handles communication with the AI service
       const response = await fetch('/api/ai-tutor', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messages: [...messages, { role: 'user', content: userMessage }],
-          streaming: true
+          streaming: true,
         }),
-        signal: abortControllerRef.current.signal
+        signal: abortControllerRef.current.signal,
       });
-      
+
       // Handle errors
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
-      
+
       setThinking(false);
-      
+
       // Get stream reader
       const reader = response.body?.getReader();
       if (!reader) throw new Error('No response body');
-      
+
       let fullText = '';
       const decoder = new TextDecoder();
-      
+
       // Process the stream
       while (true) {
         // Check if the request was aborted
         if (abortControllerRef.current.signal.aborted) {
           break;
         }
-        
+
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         // Decode the chunk
         const chunk = decoder.decode(value, { stream: true });
-        
+
         // Process SSE format (data: {...})
         const lines = chunk.split('\n');
         for (const line of lines) {
@@ -77,7 +77,7 @@ export const useChatApi = () => {
               if (data.choices?.[0]?.delta?.content) {
                 const content = data.choices[0].delta.content;
                 fullText += content;
-                setStreamingContent(prev => prev + content);
+                setStreamingContent((prev) => prev + content);
               }
             } catch (e) {
               console.error('Error parsing SSE chunk:', e);
@@ -85,31 +85,31 @@ export const useChatApi = () => {
           }
         }
       }
-      
+
       // Reset states
       setIsLoading(false);
       setStreamingContent('');
-      
+
       // Return the full message
       return {
         success: true,
-        text: fullText
+        text: fullText,
       };
     } catch (error) {
       console.error('Chat API error:', error);
-      
+
       // Don't show error if it was an abort
       if ((error as Error).name !== 'AbortError') {
         setConnectionError(true);
       }
-      
+
       setIsLoading(false);
       setThinking(false);
       setStreamingContent('');
-      
+
       return {
         success: false,
-        text: ''
+        text: '',
       };
     }
   }, []);
@@ -127,6 +127,6 @@ export const useChatApi = () => {
     streamingContent,
     connectionError,
     sendMessage,
-    abortRequest
+    abortRequest,
   };
-}; 
+};

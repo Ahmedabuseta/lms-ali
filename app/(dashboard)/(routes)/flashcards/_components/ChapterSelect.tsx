@@ -28,29 +28,25 @@ export default function ChapterSelect({ chapters, courseId }: ChapterSelectProps
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+    <Card className="border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
       <CardHeader>
         <CardTitle className="text-slate-900 dark:text-slate-100">Select Chapter</CardTitle>
-        <CardDescription className="text-slate-500 dark:text-slate-400">Choose a specific chapter or view all</CardDescription>
+        <CardDescription className="text-slate-500 dark:text-slate-400">
+          Choose a specific chapter or view all
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <Select
-          value={currentChapterId || 'all'}
-          onValueChange={handleChapterChange}
-        >
-          <SelectTrigger className="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+        <Select value={currentChapterId || 'all'} onValueChange={handleChapterChange}>
+          <SelectTrigger className="w-full border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <SelectValue placeholder="Select a chapter" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem 
-              value="all"
-              className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
+            <SelectItem value="all" className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800">
               All Chapters
             </SelectItem>
             {chapters.map((chapter) => (
-              <SelectItem 
-                key={chapter.id} 
+              <SelectItem
+                key={chapter.id}
                 value={chapter.id}
                 className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
               >
@@ -62,4 +58,4 @@ export default function ChapterSelect({ chapters, courseId }: ChapterSelectProps
       </CardContent>
     </Card>
   );
-} 
+}

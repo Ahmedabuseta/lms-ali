@@ -1,12 +1,12 @@
-import { Prisma } from '@prisma/client'
-import { MenuIcon } from 'lucide-react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import CourseSidebar from './course-sidebar'
+import { Prisma } from '@prisma/client';
+import { MenuIcon } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import CourseSidebar from './course-sidebar';
 
 type CourseMobileSidebarProps = {
-  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>
-  progressCount: number
-}
+  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
+  progressCount: number;
+};
 
 export default function CourseMobileSidebar({ course, progressCount }: CourseMobileSidebarProps) {
   return (
@@ -19,5 +19,5 @@ export default function CourseMobileSidebar({ course, progressCount }: CourseMob
         <CourseSidebar course={course} progressCount={progressCount} />
       </SheetContent>
     </Sheet>
-  )
+  );
 }

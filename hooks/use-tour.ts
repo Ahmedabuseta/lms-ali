@@ -25,6 +25,6 @@ export const useTourStore = create<TourState>()(
     {
       name: 'lms-tour-storage',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

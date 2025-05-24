@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import axios from 'axios'
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
+import axios from 'axios';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-import { Button } from '@/components/ui/button'
-import { useConfettiStore } from '@/hooks/use-confetti'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button';
+import { useConfettiStore } from '@/hooks/use-confetti';
+import { cn } from '@/lib/utils';
 
 interface CourseProgressButtonProps {
-  chapterId: string
-  courseId: string
-  isCompleted?: boolean
-  nextChapterId?: string
+  chapterId: string;
+  courseId: string;
+  isCompleted?: boolean;
+  nextChapterId?: string;
 }
 
 export const CourseProgressButton = ({
@@ -23,36 +23,36 @@ export const CourseProgressButton = ({
   isCompleted,
   nextChapterId,
 }: CourseProgressButtonProps) => {
-  const router = useRouter()
-  const confetti = useConfettiStore()
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const confetti = useConfettiStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onClick = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
       await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
         isCompleted: !isCompleted,
-      })
+      });
 
       if (!isCompleted && !nextChapterId) {
-        confetti.onOpen()
+        confetti.onOpen();
       }
 
       if (!isCompleted && nextChapterId) {
-        router.push(`/courses/${courseId}/chapters/${nextChapterId}`)
+        router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
       }
 
-      toast.success('تم تحديث التقدم')
-      router.refresh()
+      toast.success('تم تحديث التقدم');
+      router.refresh();
     } catch {
-      toast.error('حدث خطأ ما')
+      toast.error('حدث خطأ ما');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const Icon = isCompleted ? XCircle : CheckCircle
+  const Icon = isCompleted ? XCircle : CheckCircle;
 
   return (
     <Button
@@ -60,10 +60,7 @@ export const CourseProgressButton = ({
       disabled={isLoading}
       type="button"
       variant={isCompleted ? 'outline' : 'success'}
-      className={cn(
-        "w-full md:w-auto relative",
-        isLoading && "opacity-50 cursor-not-allowed"
-      )}
+      className={cn('relative w-full md:w-auto', isLoading && 'cursor-not-allowed opacity-50')}
     >
       {isLoading ? (
         <>
@@ -77,5 +74,5 @@ export const CourseProgressButton = ({
         </>
       )}
     </Button>
-  )
-}
+  );
+};

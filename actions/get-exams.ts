@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
 
 interface GetExamsProps {
   userId: string;
@@ -7,12 +7,7 @@ interface GetExamsProps {
   examId?: string;
 }
 
-export async function getExams({
-  userId,
-  courseId,
-  chapterId,
-  examId,
-}: GetExamsProps) {
+export async function getExams({ userId, courseId, chapterId, examId }: GetExamsProps) {
   try {
     // If examId is provided, get a single exam with its questions and options
     if (examId) {
@@ -25,19 +20,19 @@ export async function getExams({
           course: {
             select: {
               title: true,
-            }
+            },
           },
           chapter: {
             select: {
               title: true,
-            }
+            },
           },
           questions: {
             include: {
               options: true,
             },
             orderBy: {
-              createdAt: "asc",
+              createdAt: 'asc',
             },
           },
         },
@@ -69,7 +64,7 @@ export async function getExams({
           completedAt: null,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
 
@@ -83,7 +78,7 @@ export async function getExams({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
 
@@ -106,18 +101,18 @@ export async function getExams({
 
     // If courseId is specified, verify the user has purchased the course
     // if (courseId) {
-      // const purchase = await db.purchase.findUnique({
-      //   where: {
-      //     userId_courseId: {
-      //       userId,
-      //       courseId,
-      //     },
-      //   },
-      // });
+    // const purchase = await db.purchase.findUnique({
+    //   where: {
+    //     userId_courseId: {
+    //       userId,
+    //       courseId,
+    //     },
+    //   },
+    // });
 
-      // if (!purchase) {
-      //   return { exams: [] };
-      // }
+    // if (!purchase) {
+    //   return { exams: [] };
+    // }
     // }
 
     // Get all courses purchased by the user if no courseId filter
@@ -132,7 +127,7 @@ export async function getExams({
     //   });
 
     //   const courseIds = purchases.map(purchase => purchase.courseId);
-      
+
     //   if (courseIds.length > 0) {
     //     where.courseId = {
     //       in: courseIds,
@@ -149,12 +144,12 @@ export async function getExams({
         course: {
           select: {
             title: true,
-          }
+          },
         },
         chapter: {
           select: {
             title: true,
-          }
+          },
         },
         _count: {
           select: {
@@ -163,12 +158,12 @@ export async function getExams({
         },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
     });
     return { exams };
   } catch (error) {
-    console.error("[GET_EXAMS_ERROR]", error);
+    console.error('[GET_EXAMS_ERROR]', error);
     return { exams: [] };
   }
 }

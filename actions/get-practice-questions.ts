@@ -1,4 +1,5 @@
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 
 interface GetPracticeQuestionsProps {
   // userId: string;
@@ -19,37 +20,17 @@ export const getPracticeQuestions = async ({
     // Calculate pagination
     const skip = (page - 1) * pageSize;
 
-    // Base query conditions - user must own or have purchased the course
-    const baseConditions = {
-      // OR: [
-      //   {
-      //     course: {
-      //       // purchases: {
-      //       //   some: {
-      //       //     userId,
-      //       //   },
-      //       // },
-      //     },
-      //   },
-      //   {
-      //     course: {
-      //       //createdById: userId,
-      //     },
-      //   },
-      // ],
+    // Base query conditions with proper typing
+    const baseConditions: Prisma.PracticeQuestionWhereInput = {
+      courseId: courseId,
+      ...(chapterIds && chapterIds.length > 0
+        ? {
+            chapterId: {
+              in: chapterIds,
+            },
+          }
+        : {}),
     };
-
-    // Add course filter if provided
-    if (courseId) {
-      baseConditions['courseId'] = courseId;
-    }
-
-    // Add chapter filter if provided
-    if (chapterIds && chapterIds.length > 0) {
-      baseConditions['chapterId'] = {
-        in: chapterIds,
-      };
-    }
 
     // Get total count for pagination
     const totalQuestions = await db.practiceQuestion.count({
@@ -90,7 +71,7 @@ export const getPracticeQuestions = async ({
       currentPage: page,
     };
   } catch (error) {
-    console.error("[GET_PRACTICE_QUESTIONS]", error);
-    throw new Error("Failed to fetch practice questions");
+    console.error('[GET_PRACTICE_QUESTIONS]', error);
+    throw new Error('Failed to fetch practice questions');
   }
-}
+};

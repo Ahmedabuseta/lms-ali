@@ -1,28 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
-import { db } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs';
+import { db } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
     const { userId } = auth();
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
-    
+
     const { text, type, options, courseId, chapterId, difficulty } = await req.json();
-    
-    // Verify the course belongs to the teacher
-    const courseOwnership = await db.course.findUnique({
-      where: {
-        id: courseId,
-        //createdById: userId,
-      },
-    });
-    
-    if (!courseOwnership) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-    
+
     // Create the practice question
     const question = await db.practiceQuestion.create({
       data: {
@@ -33,7 +21,7 @@ export async function POST(req: NextRequest) {
         chapterId: chapterId || null,
         options: {
           createMany: {
-            data: options.map((option) => ({
+            data: options.map((option: { text: any; isCorrect: any }) => ({
               text: option.text,
               isCorrect: option.isCorrect,
             })),
@@ -44,10 +32,10 @@ export async function POST(req: NextRequest) {
         options: true,
       },
     });
-    
+
     return NextResponse.json(question);
   } catch (error) {
-    console.error("[PRACTICE_QUESTION_CREATE]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[PRACTICE_QUESTION_CREATE]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }

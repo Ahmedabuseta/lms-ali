@@ -1,11 +1,11 @@
-import { Prisma } from '@prisma/client'
-import CourseMobileSidebar from './course-mobile-sidebar'
-import { NavbarRoutes } from '@/components/navbar-routes'
+import { Prisma } from '@prisma/client';
+import CourseMobileSidebar from './course-mobile-sidebar';
+import { NavbarRoutes } from '@/components/navbar-routes';
 
 type CourseNavbarProps = {
-  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>
-  progressCount: number
-}
+  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
+  progressCount: number;
+};
 
 export default function CourseNavbar({ course, progressCount }: CourseNavbarProps) {
   return (
@@ -13,5 +13,5 @@ export default function CourseNavbar({ course, progressCount }: CourseNavbarProp
       <CourseMobileSidebar course={course} progressCount={progressCount} />
       <NavbarRoutes />
     </div>
-  )
+  );
 }

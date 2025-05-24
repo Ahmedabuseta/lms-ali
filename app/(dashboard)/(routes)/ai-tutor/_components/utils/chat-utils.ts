@@ -14,4 +14,4 @@ export interface Message {
 }
 
 // Constants
-export const CLIENT_TIMEOUT_MS = 60000; // 60 seconds client-side timeout 
+export const CLIENT_TIMEOUT_MS = 60000; // 60 seconds client-side timeout

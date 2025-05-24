@@ -1,69 +1,58 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Trash, Plus, Pencil } from 'lucide-react'
-import axios from 'axios'
-import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import { Trash, Plus, Pencil, MemoryStick, BookOpen, CheckCircle } from 'lucide-react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { IconBadge } from '@/components/icon-badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 interface Course {
-  id: string
-  title: string
+  id: string;
+  title: string;
 }
 
 interface Chapter {
-  id: string
-  title: string
+  id: string;
+  title: string;
 }
 
 interface Flashcard {
-  id: string
-  question: string
-  answer: string
-  chapterId: string
-  createdAt: Date
+  id: string;
+  question: string;
+  answer: string;
+  chapterId: string;
+  createdAt: Date;
 }
 
 interface FlashcardsClientProps {
-  courses: Course[]
+  courses: Course[];
 }
 
 const formSchema = z.object({
-  question: z.string().min(1, { message: 'Question is required' }),
-  answer: z.string().min(1, { message: 'Answer is required' }),
-  chapterId: z.string().min(1, { message: 'Chapter is required' }),
-})
+  question: z.string().min(1, { message: 'السؤال مطلوب' }),
+  answer: z.string().min(1, { message: 'الإجابة مطلوبة' }),
+  chapterId: z.string().min(1, { message: 'الفصل مطلوب' }),
+});
 
 export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
-  const [chapters, setChapters] = useState<Chapter[]>([])
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([])
-  const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,326 +61,405 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
       answer: '',
       chapterId: '',
     },
-  })
+  });
 
   // Fetch chapters when selected course changes
   useEffect(() => {
     if (selectedCourse) {
-      fetchChapters(selectedCourse)
-      fetchFlashcards(selectedCourse)
+      fetchChapters(selectedCourse);
+      fetchFlashcards(selectedCourse);
     }
-  }, [selectedCourse])
+  }, [selectedCourse]);
 
   // Reset form when editing flashcard changes
   useEffect(() => {
     if (editingFlashcardId) {
-      const flashcard = flashcards.find((f) => f.id === editingFlashcardId)
+      const flashcard = flashcards.find((f) => f.id === editingFlashcardId);
       if (flashcard) {
         form.reset({
           question: flashcard.question,
           answer: flashcard.answer,
           chapterId: flashcard.chapterId,
-        })
+        });
       }
     } else {
       form.reset({
         question: '',
         answer: '',
         chapterId: '',
-      })
+      });
     }
-  }, [editingFlashcardId, form, flashcards])
+  }, [editingFlashcardId, form, flashcards]);
 
   const fetchChapters = async (courseId: string) => {
     try {
-      setIsLoading(true)
-      
+      setIsLoading(true);
+
       // Fixed the API endpoint to get published chapters for the course
-      const response = await axios.get(`/api/courses/${courseId}/chapters?isPublished=true`)
-      
+      const response = await axios.get(`/api/courses/${courseId}/chapters?isPublished=true`);
+
       if (Array.isArray(response.data)) {
-        setChapters(response.data)
+        setChapters(response.data);
       } else {
         // Log the unexpected response format
-        console.error("Unexpected chapters response format:", response.data)
-        setChapters([])
-        toast.error('Error loading chapters (unexpected format)')
+        console.error('Unexpected chapters response format:', response.data);
+        setChapters([]);
+        toast.error('خطأ في تحميل الفصول (تنسيق غير متوقع)');
       }
     } catch (error) {
-      console.error("Error fetching chapters:", error)
-      toast.error('Failed to fetch chapters')
-      setChapters([])
+      console.error('Error fetching chapters:', error);
+      toast.error('فشل في جلب الفصول');
+      setChapters([]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const fetchFlashcards = async (courseId: string) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       // In a real implementation, you would fetch flashcards from the API
-      const response = await axios.get(`/api/courses/${courseId}/flashcards`)
-      setFlashcards(response.data)
+      const response = await axios.get(`/api/courses/${courseId}/flashcards`);
+      setFlashcards(response.data);
     } catch (error) {
-      toast.error('Failed to fetch flashcards')
-      console.error(error)
+      toast.error('فشل في جلب البطاقات التعليمية');
+      console.error(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
-      
+
       if (!selectedCourse) {
-        toast.error('Please select a course first');
+        toast.error('يرجى اختيار دورة أولاً');
         return;
       }
-      
+
       if (editingFlashcardId) {
         // Update existing flashcard
         await axios.patch(`/api/flashcards/${editingFlashcardId}`, {
           ...values,
-          courseId: selectedCourse // Ensure courseId is included in the update
+          courseId: selectedCourse, // Ensure courseId is included in the update
         });
-        toast.success('Flashcard updated successfully');
+        toast.success('تم تحديث البطاقة التعليمية بنجاح');
         setEditingFlashcardId(null);
       } else {
         // Create new flashcard
-        
+
         await axios.post(`/api/courses/${selectedCourse}/flashcards`, {
           // courseId: selectedCourse,
           ...values,
         });
-        toast.success('Flashcard created successfully');
+        toast.success('تم إنشاء البطاقة التعليمية بنجاح');
       }
-      
+
       // Refresh flashcards list
       fetchFlashcards(selectedCourse);
-      
+
       // Reset form
       form.reset({
         question: '',
         answer: '',
         chapterId: '',
       });
-      
     } catch (error: any) {
       console.error('Flashcard submission error:', error.response);
-      toast.error(error?.response?.data?.message || 'Failed to save flashcard');
+      toast.error(error?.response?.data?.message || 'فشل في حفظ البطاقة التعليمية');
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const handleDelete = async (flashcardId: string) => {
     try {
-      setIsLoading(true)
-      await axios.delete(`/api/flashcards/${flashcardId}`)
-      toast.success('Flashcard deleted')
-      
+      setIsLoading(true);
+      await axios.delete(`/api/flashcards/${flashcardId}`);
+      toast.success('تم حذف البطاقة التعليمية');
+
       // Refresh flashcards list
       if (selectedCourse) {
-        fetchFlashcards(selectedCourse)
+        fetchFlashcards(selectedCourse);
       }
     } catch (error) {
-      toast.error('Failed to delete flashcard')
-      console.error(error)
+      toast.error('فشل في حذف البطاقة التعليمية');
+      console.error(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const cancelEditing = () => {
-    setEditingFlashcardId(null)
+    setEditingFlashcardId(null);
     form.reset({
       question: '',
       answer: '',
       chapterId: '',
-    })
-  }
+    });
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Flashcards Management</h1>
-        <p className="text-sm text-slate-600">
-          Create and manage flashcards for your courses
-        </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <IconBadge icon={MemoryStick} variant="warning" />
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">إدارة البطاقات التعليمية</h1>
+          <p className="text-muted-foreground">إنشاء وإدارة البطاقات التعليمية لدوراتك</p>
+        </div>
       </div>
 
-      <Separator />
+      <Separator className="bg-border/50" />
 
-      <div className="flex flex-col">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-4">
-            <h2 className="text-lg font-medium mb-4">Select Course</h2>
-            <Select
-              value={selectedCourse || ''}
-              onValueChange={(value) => setSelectedCourse(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a course" />
-              </SelectTrigger>
-              <SelectContent>
-                {courses.map((course) => (
-                  <SelectItem key={course.id} value={course.id}>
-                    {course.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Card>
-
-          <Card className="p-4 md:col-span-2">
-            {selectedCourse ? (
-              <Tabs defaultValue="create">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="create">
-                    {editingFlashcardId ? 'Edit Flashcard' : 'Create Flashcard'}
-                  </TabsTrigger>
-                  <TabsTrigger value="manage">Manage Flashcards</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="create">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="chapterId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Chapter</FormLabel>
-                            <FormControl>
-                              <Select 
-                                value={field.value} 
-                                onValueChange={field.onChange}
-                                disabled={isLoading}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a chapter" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {chapters.map((chapter) => (
-                                    <SelectItem key={chapter.id} value={chapter.id}>
-                                      {chapter.title}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
+      <div className="grid grid-cols-1 gap-6">
+        {/* Course Selection */}
+        <Card className="border border-border/50 bg-card/60 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+              <IconBadge icon={BookOpen} variant="info" size="sm" />
+              اختيار الدورة
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">اختر دورة لإدارة البطاقات التعليمية الخاصة بها</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {courses.map((course) => (
+                <Card
+                  key={course.id}
+                  className={cn(
+                    'cursor-pointer border-2 transition-all duration-200 hover:scale-105 hover:shadow-lg',
+                    selectedCourse === course.id
+                      ? 'border-primary bg-primary/10 shadow-lg'
+                      : 'border-border/50 bg-card/40 hover:border-primary/50',
+                  )}
+                  onClick={() => setSelectedCourse(course.id)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          'rounded-lg p-2',
+                          selectedCourse === course.id
+                            ? 'bg-primary/20 text-primary'
+                            : 'bg-muted text-muted-foreground',
                         )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="question"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Question</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                placeholder="Enter the question"
-                                disabled={isLoading}
-                                rows={3}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="answer"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Answer</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                placeholder="Enter the answer"
-                                disabled={isLoading}
-                                rows={3}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <div className="flex gap-2">
-                        <Button type="submit" disabled={isLoading}>
-                          {editingFlashcardId ? 'Update Flashcard' : 'Create Flashcard'}
-                        </Button>
-                        {editingFlashcardId && (
-                          <Button type="button" variant="outline" onClick={cancelEditing}>
-                            Cancel
-                          </Button>
-                        )}
-                      </div>
-                    </form>
-                  </Form>
-                </TabsContent>
-                
-                <TabsContent value="manage">
-                  {flashcards.length === 0 ? (
-                    <div className="text-center py-6">
-                      <p className="text-sm text-slate-500">No flashcards found for this course</p>
-                      <Button
-                        variant="outline"
-                        className="mt-2"
-                        onClick={() => {
-                          const element = document.querySelector('[data-value="create"]') as HTMLElement | null;
-                          element?.click();
-                        }}
                       >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create your first flashcard
-                      </Button>
+                        <BookOpen className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3
+                          className={cn(
+                            'truncate font-medium',
+                            selectedCourse === course.id ? 'text-primary' : 'text-foreground',
+                          )}
+                        >
+                          {course.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">انقر للاختيار</p>
+                      </div>
+                      {selectedCourse === course.id && (
+                        <div className="rounded-full bg-primary p-1 text-primary-foreground">
+                          <CheckCircle className="h-4 w-4" />
+                        </div>
+                      )}
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {!selectedCourse && (
+              <div className="mt-4 rounded-lg border border-dashed border-border/50 bg-muted/50 p-4">
+                <div className="text-center">
+                  <BookOpen className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">يرجى اختيار دورة لبدء إدارة البطاقات التعليمية</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Main Content */}
+        {selectedCourse && (
+          <Card className="border border-border/50 bg-card/60 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <Tabs defaultValue="create" className="space-y-6">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/50">
+                  <TabsTrigger value="create" className="data-[state=active]:bg-background/80">
+                    {editingFlashcardId ? 'تحرير البطاقة' : 'إنشاء بطاقة'}
+                  </TabsTrigger>
+                  <TabsTrigger value="manage" className="data-[state=active]:bg-background/80">
+                    إدارة البطاقات
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="create" className="space-y-6">
+                  <div className="rounded-lg border border-border/30 bg-muted/20 p-4">
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <FormField
+                          control={form.control}
+                          name="chapterId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="font-medium text-foreground">الفصل</FormLabel>
+                              <FormControl>
+                                <Select value={field.value} onValueChange={field.onChange} disabled={isLoading}>
+                                  <SelectTrigger className="border-border/60 bg-background/50">
+                                    <SelectValue placeholder="اختر فصلاً" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {chapters.map((chapter) => (
+                                      <SelectItem key={chapter.id} value={chapter.id}>
+                                        {chapter.title}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="question"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="font-medium text-foreground">السؤال</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  placeholder="أدخل السؤال"
+                                  disabled={isLoading}
+                                  rows={3}
+                                  className="resize-none border-border/60 bg-background/50"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="answer"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="font-medium text-foreground">الإجابة</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  placeholder="أدخل الإجابة"
+                                  disabled={isLoading}
+                                  rows={3}
+                                  className="resize-none border-border/60 bg-background/50"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="flex gap-3 pt-2">
+                          <Button type="submit" disabled={isLoading} className="flex-1">
+                            {editingFlashcardId ? 'تحديث البطاقة' : 'إنشاء البطاقة'}
+                          </Button>
+                          {editingFlashcardId && (
+                            <Button type="button" variant="outline" onClick={cancelEditing} className="flex-1">
+                              إلغاء
+                            </Button>
+                          )}
+                        </div>
+                      </form>
+                    </Form>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="manage" className="space-y-4">
+                  {flashcards.length === 0 ? (
+                    <Card className="border-dashed bg-muted/30 backdrop-blur-sm">
+                      <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="mb-4 rounded-full bg-gradient-to-br from-orange-500/10 to-red-500/10 p-6">
+                          <MemoryStick className="h-12 w-12 text-orange-500 dark:text-orange-400" />
+                        </div>
+                        <h3 className="mb-2 text-lg font-semibold text-foreground">لا توجد بطاقات تعليمية</h3>
+                        <p className="mb-4 max-w-sm text-muted-foreground">
+                          لم يتم العثور على بطاقات تعليمية لهذه الدورة. ابدأ بإنشاء أول بطاقة تعليمية.
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            const element = document.querySelector('[data-value="create"]') as HTMLElement | null;
+                            element?.click();
+                          }}
+                          className="hover:bg-primary/10"
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          إنشاء أول بطاقة تعليمية
+                        </Button>
+                      </CardContent>
+                    </Card>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="grid gap-4">
                       {flashcards.map((flashcard) => {
                         const chapter = chapters.find((c) => c.id === flashcard.chapterId);
-                        
+
                         return (
-                          <Card key={flashcard.id} className="p-4">
-                            <div className="flex flex-col space-y-4">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <p className="text-sm font-medium text-slate-500">
-                                    Chapter: {chapter?.title || 'Unknown'}
-                                  </p>
-                                  <h3 className="font-semibold mt-1">Q: {flashcard.question}</h3>
+                          <Card
+                            key={flashcard.id}
+                            className="border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:scale-[1.01] hover:shadow-lg"
+                          >
+                            <CardContent className="p-6">
+                              <div className="space-y-4">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="mb-2 flex items-center gap-2">
+                                      <IconBadge icon={BookOpen} variant="info" size="sm" />
+                                      <span className="text-sm font-medium text-muted-foreground">
+                                        الفصل: {chapter?.title || 'غير معروف'}
+                                      </span>
+                                    </div>
+                                    <div className="rounded-lg border border-border/30 bg-muted/20 p-3">
+                                      <p className="mb-1 text-sm font-medium text-muted-foreground">السؤال:</p>
+                                      <h3 className="font-semibold text-foreground">{flashcard.question}</h3>
+                                    </div>
+                                  </div>
+                                  <div className="ml-4 flex space-x-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setEditingFlashcardId(flashcard.id)}
+                                      className="hover:bg-primary/10"
+                                    >
+                                      <Pencil className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleDelete(flashcard.id)}
+                                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </div>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setEditingFlashcardId(flashcard.id)}
-                                  >
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleDelete(flashcard.id)}
-                                  >
-                                    <Trash className="h-4 w-4 text-red-500" />
-                                  </Button>
+
+                                <Separator className="bg-border/30" />
+
+                                <div className="rounded-lg border border-border/30 bg-muted/20 p-3">
+                                  <p className="mb-1 text-sm font-medium text-muted-foreground">الإجابة:</p>
+                                  <p className="text-foreground">{flashcard.answer}</p>
+                                </div>
+
+                                <div className="text-xs text-muted-foreground">
+                                  تم الإنشاء: {new Date(flashcard.createdAt).toLocaleDateString('ar-SA')}
                                 </div>
                               </div>
-                              <Separator />
-                              <div>
-                                <p className="text-sm font-medium text-slate-500">Answer:</p>
-                                <p className="mt-1">{flashcard.answer}</p>
-                              </div>
-                            </div>
+                            </CardContent>
                           </Card>
                         );
                       })}
@@ -399,16 +467,10 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
                   )}
                 </TabsContent>
               </Tabs>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-10">
-                <p className="text-center text-sm text-slate-500 mb-4">
-                  Select a course to manage its flashcards
-                </p>
-              </div>
-            )}
+            </CardContent>
           </Card>
-        </div>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};

@@ -16,9 +16,6 @@ const QuestionsPage = async () => {
   }
 
   const courses = await db.course.findMany({
-    where: {
-      //createdById: userId,
-    },
     include: {
       chapters: {
         select: {
@@ -45,7 +42,7 @@ const QuestionsPage = async () => {
     },
   });
 
-  const coursesWithQuestions: CourseWithQuestionsCount[] = courses.map(course => ({
+  const coursesWithQuestions: CourseWithQuestionsCount[] = courses.map((course) => ({
     id: course.id,
     title: course.title,
     chapters: course.chapters,
@@ -54,7 +51,7 @@ const QuestionsPage = async () => {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Question Bank</h1>
         <Button asChild>
           <Link href="/teacher/questions-bank/create">

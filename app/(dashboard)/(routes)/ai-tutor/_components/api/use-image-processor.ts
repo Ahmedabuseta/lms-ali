@@ -11,68 +11,74 @@ export const useImageProcessor = () => {
   const [useClientSideOCR, setUseClientSideOCR] = useState(true);
 
   // Function to handle image upload
-  const processImage = useCallback(async (file: File) => {
-    try {
-      setImageError(null);
-      setIsProcessingImage(true);
-      setProgress(10);
+  const processImage = useCallback(
+    async (file: File) => {
+      try {
+        setImageError(null);
+        setIsProcessingImage(true);
+        setProgress(10);
 
-      // Create file preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setImagePreview(e.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-      setProgress(20);
+        // Create file preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            setImagePreview(e.target.result as string);
+          }
+        };
+        reader.readAsDataURL(file);
+        setProgress(20);
 
-      let text = '';
+        let text = '';
 
-      if (useClientSideOCR) {
-        // Client-side OCR
-        try {
-          text = await performOptimizedOCR(file, (progress: number) => {
-            setProgress(20 + Math.round(progress * 60)); // Scale to 20%-80%
+        if (useClientSideOCR) {
+          // Client-side OCR
+          try {
+            text = await performOptimizedOCR(file, (progress: number) => {
+              setProgress(20 + Math.round(progress * 60)); // Scale to 20%-80%
+            });
+            setProgress(90);
+          } catch (error) {
+            setImageError('Error processing image with client-side OCR. Please try server-side mode.');
+            setIsProcessingImage(false);
+            return { success: false };
+          }
+        } else {
+          // Server-side OCR
+          const formData = new FormData();
+          formData.append('image', file);
+
+          const response = await fetch('/api/image-processing/ocr', {
+            method: 'POST',
+            body: formData,
           });
-          setProgress(90);
-        } catch (error) {
-          setImageError("Error processing image with client-side OCR. Please try server-side mode.");
-          setIsProcessingImage(false);
-          return { success: false };
-        }
-      } else {
-        // Server-side OCR
-        const formData = new FormData();
-        formData.append('image', file);
 
-        const response = await fetch('/api/image-processing/ocr', {
-          method: 'POST',
-          body: formData,
-        });
+          if (!response.ok) {
+            throw new Error('Failed to process image on server');
+          }
 
-        if (!response.ok) {
-          throw new Error('Failed to process image on server');
+          setProgress(80);
+          const data = await response.json();
+          text = data.text;
         }
-        
-        setProgress(80);
-        const data = await response.json();
-        text = data.text;
+
+        setExtractedText(text);
+        setProgress(100);
+        showNotification.success('Image processed successfully', 'Text has been extracted from your image');
+        return { success: true };
+      } catch (error) {
+        console.error('Image processing error:', error);
+        setImageError('Failed to process image. Please try again or use a clearer image.');
+        showNotification.error(
+          'Image processing failed',
+          'Unable to extract text from the image. Please try again with a clearer image.',
+        );
+        return { success: false };
+      } finally {
+        setIsProcessingImage(false);
       }
-
-      setExtractedText(text);
-      setProgress(100);
-      showNotification.success("Image processed successfully", "Text has been extracted from your image");
-      return { success: true };
-    } catch (error) {
-      console.error('Image processing error:', error);
-      setImageError('Failed to process image. Please try again or use a clearer image.');
-      showNotification.error("Image processing failed", "Unable to extract text from the image. Please try again with a clearer image.");
-      return { success: false };
-    } finally {
-      setIsProcessingImage(false);
-    }
-  }, [useClientSideOCR]);
+    },
+    [useClientSideOCR],
+  );
 
   // Reset image processing
   const resetImageProcessing = useCallback(() => {
@@ -92,6 +98,6 @@ export const useImageProcessor = () => {
     setUseClientSideOCR,
     processImage,
     resetImageProcessing,
-    setExtractedText
+    setExtractedText,
   };
-}; 
+};

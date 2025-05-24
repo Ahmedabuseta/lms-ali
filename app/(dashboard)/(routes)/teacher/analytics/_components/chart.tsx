@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
-import { Card } from '@/components/ui/card'
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Card } from '@/components/ui/card';
 
 type ChartProps = {
-  data: { name: string; total: number }[]
-}
+  data: { name: string; total: number }[];
+};
 
 export default function Chart({ data }: ChartProps) {
   return (
@@ -25,5 +25,5 @@ export default function Chart({ data }: ChartProps) {
         </BarChart>
       </ResponsiveContainer>
     </Card>
-  )
+  );
 }

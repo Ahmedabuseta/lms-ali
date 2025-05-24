@@ -46,12 +46,14 @@ A comprehensive and modern learning management system (LMS) built with Next.js, 
 ### Installation
 
 1. Clone the repository
+
    ```bash
    git clone https://github.com/yourusername/lms-ali.git
    cd lms-ali
    ```
 
 2. Install dependencies
+
    ```bash
    npm install
    # or
@@ -59,17 +61,21 @@ A comprehensive and modern learning management system (LMS) built with Next.js, 
    ```
 
 3. Set up environment variables
+
    ```bash
    cp .env.example .env
    ```
+
    Then edit the `.env` file with your configuration values.
 
 4. Set up the database
+
    ```bash
    npx prisma migrate dev
    ```
 
 5. Start the development server
+
    ```bash
    npm run dev
    # or

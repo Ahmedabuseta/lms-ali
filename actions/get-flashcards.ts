@@ -1,4 +1,4 @@
- import { db } from "@/lib/db";
+import { db } from '@/lib/db';
 
 interface GetFlashcardsProps {
   userId: string;
@@ -8,13 +8,7 @@ interface GetFlashcardsProps {
   pageSize?: number;
 }
 
-export async function getFlashcards({
-  userId,
-  courseId,
-  chapterId,
-  page = 1,
-  pageSize = 10,
-}: GetFlashcardsProps) {
+export async function getFlashcards({ userId, courseId, chapterId, page = 1, pageSize = 10 }: GetFlashcardsProps) {
   try {
     // Check if the user has purchased the course
     if (courseId) {
@@ -34,29 +28,21 @@ export async function getFlashcards({
 
     // Create the base query
     const where: any = {};
-    
+
     // Add filters if provided
-    if (courseId) {
-      where.courseId = courseId;
-    }
-    
     if (chapterId) {
       where.chapterId = chapterId;
     } else if (courseId) {
-      // If only courseId is specified, we need to make sure we only get flashcards
-      // for chapters that are published
-      where.course = {
-        chapters: {
-          some: {
-            isPublished: true,
-          },
-        },
+      // Filter flashcards by course through the chapter relationship
+      where.chapter = {
+        courseId: courseId,
+        isPublished: true,
       };
     }
-    
+
     // Calculate pagination
     const skip = (page - 1) * pageSize;
-    
+
     // Get total count for pagination
     const totalCount = await db.flashcard.count({ where });
 
@@ -69,14 +55,14 @@ export async function getFlashcards({
         createdAt: 'desc',
       },
       include: {
-        course: {
-          select: {
-            title: true,
-          },
-        },
         chapter: {
           select: {
             title: true,
+            course: {
+              select: {
+                title: true,
+              },
+            },
           },
         },
       },
@@ -87,7 +73,7 @@ export async function getFlashcards({
       totalCount,
     };
   } catch (error) {
-    console.error("[GET_FLASHCARDS_ERROR]", error);
+    console.error('[GET_FLASHCARDS_ERROR]', error);
     return { flashcards: [], totalCount: 0 };
   }
 }

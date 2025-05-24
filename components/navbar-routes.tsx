@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { UserButton, useAuth } from '@clerk/nextjs'
-import { usePathname } from 'next/navigation'
-import { LogOut } from 'lucide-react'
-import Link from 'next/link'
+import { UserButton, useAuth } from '@clerk/nextjs';
+import { usePathname } from 'next/navigation';
+import { LogOut } from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from '@/components/ui/button'
-import { SearchInput } from './search-input'
-import { isTeacher } from '@/lib/teacher'
-import { ThemeToggle } from './theme-toggle'
+import { Button } from '@/components/ui/button';
+import { SearchInput } from './search-input';
+import { isTeacher } from '@/lib/teacher';
+import { ThemeToggle } from './theme-toggle';
 
 export const NavbarRoutes = () => {
-  const { userId } = useAuth()
+  const { userId } = useAuth();
 
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const isTeacherPage = pathname?.startsWith('/teacher')
-  const isCoursePage = pathname?.includes('/courses')
-  const isSearchPage = pathname?.includes('/search')
+  const isTeacherPage = pathname?.startsWith('/teacher');
+  const isCoursePage = pathname?.includes('/courses');
+  const isSearchPage = pathname?.includes('/search');
 
   return (
     <>
@@ -45,5 +45,5 @@ export const NavbarRoutes = () => {
         <UserButton afterSignOutUrl="/" />
       </div>
     </>
-  )
-}
+  );
+};

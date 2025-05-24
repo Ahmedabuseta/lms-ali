@@ -1,56 +1,60 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import axios from 'axios'
-import { toast } from 'react-hot-toast'
-import { Button } from '@/components/ui/button'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Loader2, SendHorizonal } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Loader2, SendHorizonal } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ExamSubmitActionProps {
-  examId: string
-  attemptId: string
+  examId: string;
+  attemptId: string;
   // userId is no longer needed since we'll get it from auth in the API
 }
 
-export const ExamSubmitAction = ({
-  examId,
-  attemptId
-}: ExamSubmitActionProps) => {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+export const ExamSubmitAction = ({ examId, attemptId }: ExamSubmitActionProps) => {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSubmit = async () => {
     try {
-      setIsSubmitting(true)
-      
+      setIsSubmitting(true);
+
       // Clear any locally stored answers for this attempt
-      localStorage.removeItem(`exam_answers_${attemptId}`)
-      
+      localStorage.removeItem(`exam_answers_${attemptId}`);
+
       // Submit the exam
-      await axios.post(`/api/exam/${examId}/attempt/${attemptId}/submit`)
-      
-      toast.success('تم تسليم الامتحان بنجاح')
-      router.push(`/exam/${examId}/results/${attemptId}`)
+      await axios.post(`/api/exam/${examId}/attempt/${attemptId}/submit`);
+
+      toast.success('تم تسليم الامتحان بنجاح');
+      router.push(`/exam/${examId}/results/${attemptId}`);
     } catch (error) {
-      console.error('Error submitting exam:', error)
-      toast.error('فشل في تسليم الامتحان')
-      setIsDialogOpen(false)
+      console.error('Error submitting exam:', error);
+      toast.error('فشل في تسليم الامتحان');
+      setIsDialogOpen(false);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <AlertDialogTrigger asChild>
-        <Button 
-          variant="default"
-          className="w-full"
-        >
+        <Button variant="default" className="w-full">
           <SendHorizonal className="ml-2 h-4 w-4" />
           تسليم الامتحان
         </Button>
@@ -67,10 +71,7 @@ export const ExamSubmitAction = ({
           <AlertDialogAction
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={cn(
-              "relative",
-              isSubmitting && "opacity-50 cursor-not-allowed"
-            )}
+            className={cn('relative', isSubmitting && 'cursor-not-allowed opacity-50')}
           >
             {isSubmitting ? (
               <>
@@ -78,11 +79,11 @@ export const ExamSubmitAction = ({
                 جاري التسليم...
               </>
             ) : (
-              "تسليم نهائي"
+              'تسليم نهائي'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

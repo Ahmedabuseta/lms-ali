@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import { useRouter } from 'next/navigation';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CourseFilterProps {
   courses: any[];
@@ -15,8 +15,8 @@ export function CourseFilter({ courses, currentCourseId }: CourseFilterProps) {
     <Select
       defaultValue={currentCourseId}
       onValueChange={(value) => {
-        if (value === "all") {
-          router.push("/exam");
+        if (value === 'all') {
+          router.push('/exam');
         } else {
           router.push(`/exam?courseId=${value}`);
         }
@@ -26,9 +26,7 @@ export function CourseFilter({ courses, currentCourseId }: CourseFilterProps) {
         <SelectValue placeholder="All courses" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">
-          All courses
-        </SelectItem>
+        <SelectItem value="all">All courses</SelectItem>
         {courses.map((course) => (
           <SelectItem key={course.id} value={course.id}>
             {course.title}

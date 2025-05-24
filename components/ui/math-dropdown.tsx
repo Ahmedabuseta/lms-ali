@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -27,27 +27,23 @@ export const MathDropdown: React.FC<MathDropdownProps> = ({
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div className={cn("border rounded-md overflow-hidden", className)}>
+    <div className={cn('overflow-hidden rounded-md border', className)}>
       <button
         onClick={toggle}
         className={cn(
-          "flex items-center justify-between w-full p-4 text-left bg-slate-50 hover:bg-slate-100 transition-colors",
-          titleClassName
+          'flex w-full items-center justify-between bg-slate-50 p-4 text-left transition-colors hover:bg-slate-100',
+          titleClassName,
         )}
         aria-expanded={isOpen}
       >
         <div className="font-medium">
           <MathRenderer content={title} />
         </div>
-        {isOpen ? (
-          <ChevronUp className="h-4 w-4 text-slate-500" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-slate-500" />
-        )}
+        {isOpen ? <ChevronUp className="h-4 w-4 text-slate-500" /> : <ChevronDown className="h-4 w-4 text-slate-500" />}
       </button>
-      
+
       {isOpen && (
-        <div className={cn("p-4 bg-white", contentClassName)}>
+        <div className={cn('bg-white p-4', contentClassName)}>
           <MathRenderer content={content} />
         </div>
       )}

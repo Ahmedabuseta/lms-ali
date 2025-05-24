@@ -1,53 +1,51 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import axios from 'axios'
-import toast from 'react-hot-toast'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface BasicExamFormProps {
   initialData: {
-    title: string
-    description: string
-    chapterId: string
-    timeLimit?: number
-  }
-  examId: string
-  courseId: string
+    title: string;
+    description: string;
+    chapterId: string;
+    timeLimit?: number;
+  };
+  examId: string;
+  courseId: string;
   chapters: {
-    id: string
-    title: string
-  }[]
+    id: string;
+    title: string;
+  }[];
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'Title is required',
-  }).max(100),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Title is required',
+    })
+    .max(100),
   description: z.string().max(500).optional(),
   chapterId: z.string().optional(),
   timeLimit: z.coerce.number().int().min(1).max(180).optional(),
-})
+});
 
-export const BasicExamForm = ({
-  initialData,
-  examId,
-  courseId,
-  chapters,
-}: BasicExamFormProps) => {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  
+export const BasicExamForm = ({ initialData, examId, courseId, chapters }: BasicExamFormProps) => {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,24 +54,24 @@ export const BasicExamForm = ({
       chapterId: initialData.chapterId || '',
       timeLimit: initialData.timeLimit || undefined,
     },
-  })
+  });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setIsSubmitting(true)
-      
-      await axios.patch(`/api/exam/${examId}`, values)
-      
-      toast.success('Exam updated')
-      router.push(`/teacher/exam/${examId}`)
-      router.refresh()
+      setIsSubmitting(true);
+
+      await axios.patch(`/api/exam/${examId}`, values);
+
+      toast.success('Exam updated');
+      router.push(`/teacher/exam/${examId}`);
+      router.refresh();
     } catch {
-      toast.error('Something went wrong')
+      toast.error('Something went wrong');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-  
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -89,17 +87,13 @@ export const BasicExamForm = ({
                 <FormItem>
                   <FormLabel>Exam Title</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'Final Exam'"
-                      {...field}
-                    />
+                    <Input disabled={isSubmitting} placeholder="e.g. 'Final Exam'" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="description"
@@ -114,14 +108,12 @@ export const BasicExamForm = ({
                       value={field.value || ''}
                     />
                   </FormControl>
-                  <FormDescription>
-                    This will be shown to students before they start the exam.
-                  </FormDescription>
+                  <FormDescription>This will be shown to students before they start the exam.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="chapterId"
@@ -136,34 +128,24 @@ export const BasicExamForm = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue 
-                          placeholder="No specific chapter"
-                          defaultValue=""
-                        />
+                        <SelectValue placeholder="No specific chapter" defaultValue="" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">
-                        No specific chapter
-                      </SelectItem>
+                      <SelectItem value="">No specific chapter</SelectItem>
                       {chapters.map((chapter) => (
-                        <SelectItem
-                          key={chapter.id}
-                          value={chapter.id}
-                        >
+                        <SelectItem key={chapter.id} value={chapter.id}>
                           {chapter.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Associate this exam with a specific chapter (optional).
-                  </FormDescription>
+                  <FormDescription>Associate this exam with a specific chapter (optional).</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="timeLimit"
@@ -181,16 +163,14 @@ export const BasicExamForm = ({
                       value={field.value || ''}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Time limit in minutes (1-180). Leave empty for no time limit.
-                  </FormDescription>
+                  <FormDescription>Time limit in minutes (1-180). Leave empty for no time limit.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
-          
-          <CardFooter className="border-t bg-slate-50 p-4 flex justify-between">
+
+          <CardFooter className="flex justify-between border-t bg-slate-50 p-4">
             <Button
               type="button"
               disabled={isSubmitting}
@@ -199,15 +179,12 @@ export const BasicExamForm = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" disabled={isSubmitting}>
               Save Changes
             </Button>
           </CardFooter>
         </form>
       </Form>
     </Card>
-  )
-}
+  );
+};

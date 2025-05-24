@@ -1,59 +1,53 @@
-'use client'
+'use client';
 
-import { Check, X } from 'lucide-react'
+import { Check, X } from 'lucide-react';
 
 interface Option {
-  id: string
-  text: string
-  isCorrect: boolean
+  id: string;
+  text: string;
+  isCorrect: boolean;
 }
 
 interface OptionItemProps {
-  option: Option
-  isSelected: boolean
-  showAnswer: boolean
-  onSelect: () => void
-  isDisabled?: boolean
+  option: Option;
+  isSelected: boolean;
+  showAnswer: boolean;
+  onSelect: () => void;
+  isDisabled?: boolean;
 }
 
-export const OptionItem = ({
-  option,
-  isSelected,
-  showAnswer,
-  onSelect,
-  isDisabled = false,
-}: OptionItemProps) => {
+export const OptionItem = ({ option, isSelected, showAnswer, onSelect, isDisabled = false }: OptionItemProps) => {
   const getOptionClasses = () => {
-    const baseClasses = 'p-4 rounded-lg border transition-all flex items-center justify-between'
-    const cursorClasses = isDisabled ? 'cursor-default' : 'cursor-pointer'
-    
+    const baseClasses = 'p-4 rounded-lg border transition-all flex items-center justify-between';
+    const cursorClasses = isDisabled ? 'cursor-default' : 'cursor-pointer';
+
     if (!showAnswer) {
       return `${baseClasses} ${cursorClasses} ${
         isSelected
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-          : isDisabled 
+          : isDisabled
             ? 'border-slate-200 dark:border-slate-700'
             : 'hover:border-slate-300 dark:hover:border-slate-600'
-      }`
+      }`;
     }
-    
+
     if (option.isCorrect) {
-      return `${baseClasses} ${cursorClasses} border-green-500 bg-green-50 dark:bg-green-900/20`
+      return `${baseClasses} ${cursorClasses} border-green-500 bg-green-50 dark:bg-green-900/20`;
     }
-    
+
     if (isSelected && !option.isCorrect) {
-      return `${baseClasses} ${cursorClasses} border-red-500 bg-red-50 dark:bg-red-900/20`
+      return `${baseClasses} ${cursorClasses} border-red-500 bg-red-50 dark:bg-red-900/20`;
     }
-    
-    return `${baseClasses} ${cursorClasses} opacity-50`
-  }
-  
+
+    return `${baseClasses} ${cursorClasses} opacity-50`;
+  };
+
   const handleClick = () => {
     if (!isDisabled) {
-      onSelect()
+      onSelect();
     }
-  }
-  
+  };
+
   return (
     <div
       className={getOptionClasses()}
@@ -66,9 +60,9 @@ export const OptionItem = ({
       {showAnswer && (
         <div className="flex items-center gap-2">
           {option.isCorrect ? (
-            <span className="text-green-600 dark:text-green-400 text-sm">صحيح</span>
+            <span className="text-sm text-green-600 dark:text-green-400">صحيح</span>
           ) : isSelected ? (
-            <span className="text-red-600 dark:text-red-400 text-sm">خطأ</span>
+            <span className="text-sm text-red-600 dark:text-red-400">خطأ</span>
           ) : null}
           {option.isCorrect ? (
             <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -78,5 +72,5 @@ export const OptionItem = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

@@ -1,20 +1,20 @@
-import { auth } from '@clerk/nextjs'
-import { redirect } from 'next/navigation'
-import { db } from '@/lib/db'
-import CourseNavbar from './_components/course-navbar'
-import CourseSidebar from './_components/course-sidebar'
-import { getProgress } from '@/actions/get-progress'
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
+import CourseNavbar from './_components/course-navbar';
+import CourseSidebar from './_components/course-sidebar';
+import { getProgress } from '@/actions/get-progress';
 
 export default async function CourseLayout({
   children,
   params,
 }: {
-  children: React.ReactNode
-  params: { courseId: string }
+  children: React.ReactNode;
+  params: { courseId: string };
 }) {
-  const { userId } = auth()
+  const { userId } = auth();
   if (!userId) {
-    return redirect('/')
+    return redirect('/');
   }
 
   const course = await db.course.findUnique({
@@ -26,25 +26,25 @@ export default async function CourseLayout({
         orderBy: { position: 'asc' },
       },
     },
-  })
+  });
 
   if (!course) {
-    return redirect('/')
+    return redirect('/');
   }
 
-  const progressCount = await getProgress(userId, course.id)
+  const progressCount = await getProgress(userId, course.id);
 
   return (
     <div className="h-full bg-background text-foreground">
-      <div className="fixed inset-y-0 z-50 h-20 w-full md:pl-80 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="fixed inset-y-0 z-50 h-20 w-full border-b border-border bg-background/95 backdrop-blur-sm md:pl-80">
         <CourseNavbar course={course} progressCount={progressCount} />
       </div>
 
-      <div className="fixed inset-y-0 z-50 hidden h-full w-80 flex-col md:flex border-r border-border bg-background">
+      <div className="fixed inset-y-0 z-50 hidden h-full w-80 flex-col border-r border-border bg-background md:flex">
         <CourseSidebar course={course} progressCount={progressCount} />
       </div>
 
       <main className="h-full pt-20 md:pl-80">{children}</main>
     </div>
-  )
+  );
 }

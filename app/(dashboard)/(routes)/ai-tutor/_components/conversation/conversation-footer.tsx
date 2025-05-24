@@ -22,18 +22,18 @@ export const ConversationFooter = ({
   onSubmit,
   onImageClick,
   hasMessages,
-  onReset
+  onReset,
 }: ConversationFooterProps) => {
   return (
-    <CardFooter className="p-3 sm:p-4 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <CardFooter className="border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:p-4">
       <div className="w-full">
-        <form onSubmit={onSubmit} className="flex flex-col w-full gap-2">
+        <form onSubmit={onSubmit} className="flex w-full flex-col gap-2">
           <div className="relative flex items-center">
-            <Textarea 
-              placeholder="اكتب سؤالك هنا..." 
-              value={input} 
+            <Textarea
+              placeholder="اكتب سؤالك هنا..."
+              value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 min-h-[48px] resize-none pr-24 pl-10 py-3 rounded-full"
+              className="min-h-[48px] flex-1 resize-none rounded-full py-3 pl-10 pr-24"
               disabled={isLoading}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -44,7 +44,7 @@ export const ConversationFooter = ({
                 }
               }}
             />
-            
+
             {/* Image button - positioned at left */}
             <div className="absolute left-2">
               <TooltipProvider>
@@ -66,17 +66,17 @@ export const ConversationFooter = ({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            
+
             {/* Buttons - positioned at right */}
             <div className="absolute right-2 flex items-center gap-1">
               {hasMessages && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
                         className="h-7 w-7 rounded-full"
                         onClick={onReset}
                       >
@@ -89,24 +89,20 @@ export const ConversationFooter = ({
                   </Tooltip>
                 </TooltipProvider>
               )}
-              
+
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button 
-                      type="submit" 
-                      size="icon" 
+                    <Button
+                      type="submit"
+                      size="icon"
                       className={cn(
-                        "h-7 w-7 rounded-full",
-                        (isLoading || !input.trim()) && "opacity-50 cursor-not-allowed"
+                        'h-7 w-7 rounded-full',
+                        (isLoading || !input.trim()) && 'cursor-not-allowed opacity-50',
                       )}
                       disabled={isLoading || !input.trim()}
                     >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Send className="h-4 w-4" />
-                      )}
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
@@ -116,12 +112,12 @@ export const ConversationFooter = ({
               </TooltipProvider>
             </div>
           </div>
-          
-          <div className="text-xs text-muted-foreground text-center">
+
+          <div className="text-center text-xs text-muted-foreground">
             Press Enter to send, Shift+Enter for a new line
           </div>
         </form>
       </div>
     </CardFooter>
   );
-} 
+};

@@ -1,17 +1,14 @@
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
-export async function POST(
-  req: Request,
-  { params }: { params: { examId: string } }
-) {
+export async function POST(req: Request, { params }: { params: { examId: string } }) {
   try {
     const { userId } = auth();
     const { text, type, options } = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     // Verify ownership through the course
@@ -23,23 +20,23 @@ export async function POST(
         course: true,
         questions: {
           orderBy: {
-            createdAt: "asc",
+            createdAt: 'asc',
           },
         },
       },
     });
 
     if (!examWithCourse) {
-      return new NextResponse("Exam not found", { status: 404 });
+      return new NextResponse('Exam not found', { status: 404 });
     }
 
-    if (examWithCourse.course.//createdById !== userId) {
+    /*if (examWithCourse.course.createdById !== userId) {
       return new NextResponse("Unauthorized", { status: 401 });
-    }
+    }*/
 
     // Don't allow adding questions to published exams
     if (examWithCourse.isPublished) {
-      return new NextResponse("Cannot add questions to published exams", {
+      return new NextResponse('Cannot add questions to published exams', {
         status: 400,
       });
     }
@@ -66,7 +63,7 @@ export async function POST(
 
     return NextResponse.json(newQuestion);
   } catch (error) {
-    console.error("[QUESTIONS_POST]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error('[QUESTIONS_POST]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }
