@@ -74,7 +74,7 @@ async function createCategories() {
   return await database.category.findMany({});
 }
 
-async function createCourses(categories) {
+async function createCourses(categories: any[]) {
   const courses = [];
 
   // English Course
@@ -142,7 +142,7 @@ async function createCourses(categories) {
   return courses;
 }
 
-async function createChapters(courses) {
+async function createChapters(courses: any[]) {
   const chapters = [];
 
   // English Course Chapters
@@ -291,7 +291,7 @@ async function createChapters(courses) {
   return chapters;
 }
 
-async function createFlashcards(chapters, courses) {
+async function createFlashcards(chapters: any[], courses: any[]) {
   // English flashcards
   const englishCourse = courses.find((c) => c.title.includes('English'));
   const englishChapters = chapters.filter((c) => c.courseId === englishCourse.id);
@@ -527,7 +527,7 @@ async function createFlashcards(chapters, courses) {
   }
 }
 
-async function createPracticeQuestions(chapters, courses) {
+async function createPracticeQuestions(chapters: any[], courses: any[]) {
   // English practice questions
   const englishCourse = courses.find((c) => c.title.includes('English'));
   const englishChapters = chapters.filter((c) => c.courseId === englishCourse.id);
@@ -627,7 +627,7 @@ async function createPracticeQuestions(chapters, courses) {
   );
 }
 
-async function createMultipleChoiceQuestion(text, options, correctIndex, difficulty, courseId, chapterId) {
+async function createMultipleChoiceQuestion(text: string, options: string[], correctIndex: number, difficulty: string, courseId: string, chapterId: string) {
   const practiceQuestion = await database.practiceQuestion.create({
     data: {
       text,
@@ -652,7 +652,7 @@ async function createMultipleChoiceQuestion(text, options, correctIndex, difficu
   return practiceQuestion;
 }
 
-async function createExams(chapters, courses) {
+async function createExams(chapters: any[], courses: any[]) {
   // English exam
   const englishCourse = courses.find((c) => c.title.includes('English'));
   const englishChapters = chapters.filter((c) => c.courseId === englishCourse.id);
@@ -776,7 +776,7 @@ async function createExams(chapters, courses) {
   );
 }
 
-async function createExamQuestion(examId, text, type, options) {
+async function createExamQuestion(examId: string, text: string, type: string, options: any[]) {
   const question = await database.question.create({
     data: {
       text,
