@@ -54,20 +54,20 @@ const PracticePage = async () => {
   console.log(courses);
   if (courses.length === 0) {
     return (
-      <div className="p-6" dir="rtl">
-        <div className="flex h-60 flex-col items-center justify-center text-center">
-          <h2 className="mb-2 text-2xl font-bold">لا توجد أسئلة تدريبية متاحة</h2>
-          <p className="mb-6 text-slate-600">لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن</p>
+      <div className="p-4 sm:p-6" dir="rtl">
+        <div className="flex h-48 flex-col items-center justify-center text-center sm:h-60">
+          <h2 className="mb-2 text-xl font-bold sm:text-2xl">لا توجد أسئلة تدريبية متاحة</h2>
+          <p className="mb-4 text-sm text-slate-600 sm:mb-6 sm:text-base">لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6" dir="rtl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">الأسئلة التدريبية</h1>
-        <p className="text-slate-600">اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك</p>
+    <div className="p-4 sm:p-6" dir="rtl">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl font-bold sm:text-2xl">الأسئلة التدريبية</h1>
+        <p className="text-sm text-slate-600 sm:text-base">اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك</p>
       </div>
 
       <PracticeClient courses={courses} />

@@ -37,15 +37,15 @@ export default async function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
-      <div className="space-y-8 p-6">
+      <div className="space-y-6 p-4 sm:space-y-8 sm:p-6">
         {/* Welcome Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-8 text-white">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-6 text-white sm:rounded-3xl sm:p-8">
           <div className="relative z-10">
-            <h1 className="animate-slide-up mb-2 text-3xl font-bold md:text-4xl">مرحباً بك في رحلة التعلم! 🎓</h1>
-            <p className="animate-slide-up animation-delay-200 mb-6 text-lg text-blue-100">
+            <h1 className="animate-slide-up mb-2 text-2xl font-bold sm:text-3xl md:text-4xl">مرحباً بك في رحلة التعلم! 🎓</h1>
+            <p className="animate-slide-up animation-delay-200 mb-4 text-base text-blue-100 sm:mb-6 sm:text-lg">
               استمر في تطوير مهاراتك وحقق أهدافك التعليمية
             </p>
-            <div className="animate-slide-up animation-delay-400 flex flex-wrap gap-4">
+            <div className="animate-slide-up animation-delay-400 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
               <Button
                 size="lg"
                 className="transform border border-white/20 bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/30"
@@ -65,11 +65,11 @@ export default async function Dashboard() {
           </div>
 
           {/* Floating Elements */}
-          <div className="animate-float absolute right-4 top-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
-            <Sparkles className="h-8 w-8 text-white" />
+          <div className="animate-float absolute right-2 top-2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 sm:right-4 sm:top-4 sm:h-16 sm:w-16">
+            <Sparkles className="h-6 w-6 text-white sm:h-8 sm:w-8" />
           </div>
-          <div className="animate-float animation-delay-1000 absolute bottom-4 left-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
-            <Award className="h-6 w-6 text-white" />
+          <div className="animate-float animation-delay-1000 absolute bottom-2 left-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 sm:bottom-4 sm:left-4 sm:h-12 sm:w-12">
+            <Award className="h-5 w-5 text-white sm:h-6 sm:w-6" />
           </div>
         </div>
 
@@ -85,61 +85,61 @@ export default async function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           <Card className="group transform overflow-hidden border-0 bg-gradient-to-br from-blue-50 to-indigo-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl dark:from-blue-900/20 dark:to-indigo-900/20">
-            <CardContent className="relative p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 transition-transform duration-300 group-hover:scale-110">
-                  <Clock className="h-6 w-6 text-white" />
+            <CardContent className="relative p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12">
+                  <Clock className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-300">قيد التقدم</p>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">{coursesInProgress.length}</p>
+                  <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{coursesInProgress.length}</p>
                 </div>
               </div>
-              <div className="absolute right-2 top-2 h-8 w-8 animate-pulse rounded-full bg-blue-500/20"></div>
+              <div className="absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8"></div>
             </CardContent>
           </Card>
 
           <Card className="group transform overflow-hidden border-0 bg-gradient-to-br from-green-50 to-emerald-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl dark:from-green-900/20 dark:to-emerald-900/20">
-            <CardContent className="relative p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 transition-transform duration-300 group-hover:scale-110">
-                  <CheckCircle className="h-6 w-6 text-white" />
+            <CardContent className="relative p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12">
+                  <CheckCircle className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-300">مكتمل</p>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">{completedCourses.length}</p>
+                  <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{completedCourses.length}</p>
                 </div>
               </div>
-              <div className="animation-delay-200 absolute right-2 top-2 h-8 w-8 animate-pulse rounded-full bg-green-500/20"></div>
+              <div className="animation-delay-200 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-green-500/20 sm:h-8 sm:w-8"></div>
             </CardContent>
           </Card>
 
           <Card className="group transform overflow-hidden border-0 bg-gradient-to-br from-purple-50 to-pink-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl dark:from-purple-900/20 dark:to-pink-900/20">
-            <CardContent className="relative p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 transition-transform duration-300 group-hover:scale-110">
-                  <Brain className="h-6 w-6 text-white" />
+            <CardContent className="relative p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12">
+                  <Brain className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-300">ساعات التعلم</p>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">{totalHours}</p>
+                  <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{totalHours}</p>
                 </div>
               </div>
-              <div className="animation-delay-400 absolute right-2 top-2 h-8 w-8 animate-pulse rounded-full bg-purple-500/20"></div>
+              <div className="animation-delay-400 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-purple-500/20 sm:h-8 sm:w-8"></div>
             </CardContent>
           </Card>
 
           <Card className="group transform overflow-hidden border-0 bg-gradient-to-br from-orange-50 to-red-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl dark:from-orange-900/20 dark:to-red-900/20">
-            <CardContent className="relative p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 transition-transform duration-300 group-hover:scale-110">
-                  <TrendingUp className="h-6 w-6 text-white" />
+            <CardContent className="relative p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-red-500 transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12">
+                  <TrendingUp className="h-5 w-5 text-white sm:h-6 sm:w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-300">معدل الإنجاز</p>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">
+                  <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
                     {Math.round(
                       (completedCourses.length / (completedCourses.length + coursesInProgress.length)) * 100,
                     ) || 0}
@@ -147,48 +147,48 @@ export default async function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="animation-delay-600 absolute right-2 top-2 h-8 w-8 animate-pulse rounded-full bg-orange-500/20"></div>
+              <div className="animation-delay-600 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-orange-500/20 sm:h-8 sm:w-8"></div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
         <Card className="border-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 shadow-lg dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-              <Target className="h-6 w-6 text-indigo-600" />
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+              <Target className="h-5 w-5 text-indigo-600 sm:h-6 sm:w-6" />
               إجراءات سريعة
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
               <Button
                 size="lg"
-                className="flex h-auto transform flex-col gap-2 bg-gradient-to-r from-blue-600 to-purple-600 p-6 transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700"
+                className="flex h-auto transform flex-col gap-2 bg-gradient-to-r from-blue-600 to-purple-600 p-4 transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 sm:p-6"
               >
-                <BookOpen className="h-8 w-8" />
-                <span className="text-lg font-semibold">استكشف الدورات</span>
-                <span className="text-sm opacity-90">اكتشف دورات جديدة</span>
+                <BookOpen className="h-6 w-6 sm:h-8 sm:w-8" />
+                <span className="text-base font-semibold sm:text-lg">استكشف الدورات</span>
+                <span className="text-xs opacity-90 sm:text-sm">اكتشف دورات جديدة</span>
               </Button>
 
               <Button
                 size="lg"
                 variant="outline"
-                className="flex h-auto transform flex-col gap-2 border-2 border-purple-600 p-6 text-purple-600 transition-all duration-300 hover:scale-105 hover:bg-purple-600 hover:text-white"
+                className="flex h-auto transform flex-col gap-2 border-2 border-purple-600 p-4 text-purple-600 transition-all duration-300 hover:scale-105 hover:bg-purple-600 hover:text-white sm:p-6"
               >
-                <Brain className="h-8 w-8" />
-                <span className="text-lg font-semibold">المدرس الذكي</span>
-                <span className="text-sm opacity-90">احصل على مساعدة فورية</span>
+                <Brain className="h-6 w-6 sm:h-8 sm:w-8" />
+                <span className="text-base font-semibold sm:text-lg">المدرس الذكي</span>
+                <span className="text-xs opacity-90 sm:text-sm">احصل على مساعدة فورية</span>
               </Button>
 
               <Button
                 size="lg"
                 variant="outline"
-                className="flex h-auto transform flex-col gap-2 border-2 border-indigo-600 p-6 text-indigo-600 transition-all duration-300 hover:scale-105 hover:bg-indigo-600 hover:text-white"
+                className="flex h-auto transform flex-col gap-2 border-2 border-indigo-600 p-4 text-indigo-600 transition-all duration-300 hover:scale-105 hover:bg-indigo-600 hover:text-white sm:p-6"
               >
-                <Trophy className="h-8 w-8" />
-                <span className="text-lg font-semibold">التمارين</span>
-                <span className="text-sm opacity-90">اختبر معلوماتك</span>
+                <Trophy className="h-6 w-6 sm:h-8 sm:w-8" />
+                <span className="text-base font-semibold sm:text-lg">التمارين</span>
+                <span className="text-xs opacity-90 sm:text-sm">اختبر معلوماتك</span>
               </Button>
             </div>
           </CardContent>
@@ -196,13 +196,13 @@ export default async function Dashboard() {
 
         {/* Courses Section */}
         <Card className="border-0 bg-white shadow-lg backdrop-blur-sm dark:bg-gray-800/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-              <BookOpen className="h-6 w-6 text-blue-600" />
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+              <BookOpen className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
               دوراتي
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <CoursesList items={coursesWithChaptersLength} />
           </CardContent>
         </Card>

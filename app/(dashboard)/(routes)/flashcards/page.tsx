@@ -86,68 +86,68 @@ export default async function FlashcardsPage({ searchParams }: PageProps) {
     >
       {/* Enhanced light mode decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="to-red-300/15 absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-orange-200/20 blur-3xl"></div>
+        <div className="to-red-300/15 absolute right-10 top-20 h-56 w-56 animate-pulse rounded-full bg-gradient-to-br from-orange-200/20 blur-3xl"></div>
         <div className="to-pink-300/15 animation-delay-2000 absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-red-200/20 blur-3xl"></div>
         <div className="to-orange-300/15 animation-delay-4000 absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-amber-200/20 blur-3xl"></div>
       </div>
 
-      <div className="relative z-10 space-y-8 p-6">
+      <div className="relative z-10 space-y-6 p-4 sm:space-y-8 sm:p-6">
         {/* Header Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 p-8 text-white">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 p-6 text-white sm:rounded-3xl sm:p-8">
           <div className="relative z-10">
-            <h1 className="animate-slide-up mb-2 flex items-center gap-3 text-3xl font-bold md:text-4xl">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Zap className="h-6 w-6 text-white" />
+            <h1 className="animate-slide-up mb-2 flex items-center gap-3 text-2xl font-bold sm:text-3xl md:text-4xl">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm sm:h-12 sm:w-12">
+                <Zap className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
               البطاقات التعليمية
             </h1>
-            <p className="animate-slide-up animation-delay-200 mb-6 text-lg text-orange-100">
+            <p className="animate-slide-up animation-delay-200 mb-4 text-base text-orange-100 sm:mb-6 sm:text-lg">
               راجع واختبر معرفتك باستخدام البطاقات التعليمية التفاعلية
             </p>
           </div>
 
           {/* Floating Elements */}
-          <div className="animate-float absolute right-4 top-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
-            <Brain className="h-8 w-8 text-white" />
+          <div className="animate-float absolute right-2 top-2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 sm:right-4 sm:top-4 sm:h-16 sm:w-16">
+            <Brain className="h-6 w-6 text-white sm:h-8 sm:w-8" />
           </div>
-          <div className="animate-float animation-delay-1000 absolute bottom-4 left-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
-            <Target className="h-6 w-6 text-white" />
+          <div className="animate-float animation-delay-1000 absolute bottom-2 left-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 sm:bottom-4 sm:left-4 sm:h-12 sm:w-12">
+            <Target className="h-5 w-5 text-white sm:h-6 sm:w-6" />
           </div>
         </div>
 
         {/* Course Selection Cards */}
         {!selectedCourse && (
           <Card className="border-0 bg-white/80 shadow-lg backdrop-blur-sm dark:bg-gray-800/80">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-                <BookOpen className="h-6 w-6 text-blue-600" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+                <BookOpen className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
                 اختر دورة للبدء
               </CardTitle>
-              <CardDescription className="text-lg text-gray-600 dark:text-gray-300">
+              <CardDescription className="text-base text-gray-600 dark:text-gray-300 sm:text-lg">
                 اختر من دوراتك المتاحة لعرض البطاقات التعليمية الخاصة بها
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {courses.map((course) => (
                   <Link key={course.id} href={`/flashcards?courseId=${course.id}`}>
                     <Card className="group h-full transform cursor-pointer overflow-hidden border-0 bg-gradient-to-br from-white via-blue-50/50 to-purple-50/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl dark:from-gray-800 dark:via-blue-900/10 dark:to-purple-900/10">
-                      <CardContent className="relative p-6">
-                        <div className="mb-4 flex items-start gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg transition-transform duration-300 group-hover:scale-110">
-                            <BookOpen className="h-8 w-8 text-white" />
+                      <CardContent className="relative p-4 sm:p-6">
+                        <div className="mb-3 flex items-start gap-3 sm:mb-4 sm:gap-4">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg transition-transform duration-300 group-hover:scale-110 sm:h-16 sm:w-16">
+                            <BookOpen className="h-6 w-6 text-white sm:h-8 sm:w-8" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="mb-2 line-clamp-2 text-lg font-bold text-gray-800 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                            <h3 className="mb-2 line-clamp-2 text-base font-bold text-gray-800 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 sm:text-lg">
                               {course.title}
                             </h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 sm:gap-4 sm:text-sm">
                               <div className="flex items-center gap-1">
-                                <Users className="h-4 w-4" />
+                                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span>متاح</span>
                               </div>
                               <div className="flex items-center gap-1">
-                                <Zap className="h-4 w-4" />
+                                <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span>بطاقات تفاعلية</span>
                               </div>
                             </div>
@@ -155,15 +155,15 @@ export default async function FlashcardsPage({ searchParams }: PageProps) {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 font-medium text-blue-600 dark:text-blue-400">
+                          <div className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 sm:text-base">
                             <span>ابدأ المراجعة</span>
-                            <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                            <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" />
                           </div>
-                          <div className="h-8 w-8 animate-pulse rounded-full bg-blue-500/20"></div>
+                          <div className="h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8"></div>
                         </div>
 
                         {/* Floating decoration */}
-                        <div className="absolute right-4 top-4 h-6 w-6 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150"></div>
+                        <div className="absolute right-3 top-3 h-4 w-4 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150 sm:right-4 sm:top-4 sm:h-6 sm:w-6"></div>
                       </CardContent>
                     </Card>
                   </Link>
@@ -176,22 +176,22 @@ export default async function FlashcardsPage({ searchParams }: PageProps) {
         {/* Chapter Selection Cards */}
         {selectedCourse && chapters.length > 0 && (
           <Card className="border-0 bg-white/80 shadow-lg backdrop-blur-sm dark:bg-gray-800/80">
-            <CardHeader>
-              <div className="flex items-center justify-between">
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
-                    <Target className="h-6 w-6 text-purple-600" />
+                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+                    <Target className="h-5 w-5 text-purple-600 sm:h-6 sm:w-6" />
                     اختر الفصل
                   </CardTitle>
-                  <CardDescription className="text-lg text-gray-600 dark:text-gray-300">
+                  <CardDescription className="text-base text-gray-600 dark:text-gray-300 sm:text-lg">
                     من دورة: {selectedCourse.title}
                   </CardDescription>
                 </div>
                 <Link href="/flashcards">
                   <Card className="group transform cursor-pointer border-0 bg-gradient-to-r from-gray-100 to-gray-200 transition-all duration-300 hover:scale-105 hover:shadow-lg dark:from-gray-700 dark:to-gray-800">
-                    <CardContent className="p-3">
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                        <ChevronRight className="h-4 w-4 rotate-180" />
+                    <CardContent className="p-2 sm:p-3">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300 sm:text-sm">
+                        <ChevronRight className="h-3 w-3 rotate-180 sm:h-4 sm:w-4" />
                         <span>تغيير الدورة</span>
                       </div>
                     </CardContent>
