@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="overlay-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg-gradient)"/>
+  <rect width="1920" height="1080" fill="url(#overlay-gradient)"/>
+  
+  <!-- Play Button Circle -->
+  <circle cx="960" cy="540" r="80" fill="rgba(255,255,255,0.9)" opacity="0.95"/>
+  <circle cx="960" cy="540" r="78" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Play Icon -->
+  <polygon points="930,510 930,570 990,540" fill="#667eea"/>
+  
+  <!-- Main Title -->
+  <text x="960" y="300" font-family="Arial, sans-serif" font-size="64" font-weight="bold" text-anchor="middle" fill="white">
+    منصة التعلم الذكية
+  </text>
+  
+  <!-- Arabic Slogan -->
+  <text x="960" y="380" font-family="Arial, sans-serif" font-size="42" font-weight="600" text-anchor="middle" fill="rgba(255,255,255,0.9)">
+    من P2S إلى كلية التجارة .. خطوة بثقة!
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="960" y="700" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="rgba(255,255,255,0.8)">
+    شاهد العرض التوضيحي للمنصة
+  </text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="200" cy="200" r="4" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="1720" cy="880" r="6" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="150" cy="900" r="3" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="1800" cy="150" r="5" fill="rgba(255,255,255,0.35)"/>
+  
+  <!-- Brand Logo Area -->
+  <rect x="80" y="80" width="120" height="60" rx="12" fill="rgba(255,255,255,0.1)"/>
+  <text x="140" y="115" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">
+    LMS Ali
+  </text>
+</svg> 

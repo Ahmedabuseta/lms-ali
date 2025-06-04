@@ -38,6 +38,10 @@ interface UserPermissions {
   isTrialExpired: boolean;
 }
 
+interface SidebarRoutesProps {
+  collapsed?: boolean;
+}
+
 const getAllRoutes = (permissions: UserPermissions) => {
   const studentRoutes = [
     {
@@ -126,7 +130,7 @@ const getAllRoutes = (permissions: UserPermissions) => {
   return { studentRoutes: filteredStudentRoutes, teacherRoutes };
 };
 
-export const SidebarRoutes = () => {
+export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
   const pathname = usePathname();
   const [permissions, setPermissions] = useState<UserPermissions | null>(null);
   const [loading, setLoading] = useState(true);
@@ -193,43 +197,36 @@ export const SidebarRoutes = () => {
     if (permissions.accessType === 'NO_ACCESS') {
       return (
         <div className="flex w-full flex-col space-y-4 p-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-center">مرحباً بك!</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-                لا يمكنك الوصول إلى محتوى المنصة حالياً
-              </div>
-
-              {permissions.canStartTrial && (
-                <div className="space-y-3">
-                  <div className="text-center">
-                    <Clock className="mx-auto mb-2 h-8 w-8 text-blue-500" />
-                    <h3 className="font-medium">تجربة مجانية لمدة 3 أيام</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">جرب جميع ميزات المنصة مجاناً</p>
-                  </div>
-                  <Button onClick={startTrial} className="w-full">
-                    بدء التجربة المجانية
-                  </Button>
-                </div>
-              )}
-
-              <div className="space-y-2 border-t pt-3">
-                <div className="text-center">
-                  <CreditCard className="mx-auto mb-2 h-8 w-8 text-green-500" />
-                  <h3 className="font-medium">للحصول على الوصول الكامل</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">تواصل معنا عبر واتساب للاشتراك</p>
-                </div>
-                <Button variant="outline" className="w-full" asChild>
-                  <a href="https://wa.me/YOUR_WHATSAPP_NUMBER" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    تواصل عبر واتساب
-                  </a>
+          {!collapsed && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-center font-arabic">مرحباً بك!</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-center text-sm text-muted-foreground font-arabic">
+                  ابدأ تجربتك المجانية للوصول إلى المحتوى
+                </p>
+                <Button 
+                  onClick={startTrial} 
+                  className="w-full font-arabic"
+                  disabled={!permissions.canStartTrial}
+                >
+                  بدء التجربة المجانية
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
+          <div className="flex w-full flex-col space-y-1">
+            {routes.map((route) => (
+              <SidebarItem
+                key={route.href}
+                icon={route.icon}
+                label={route.label}
+                href={route.href}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
         </div>
       );
     }
@@ -313,7 +310,13 @@ export const SidebarRoutes = () => {
         )}
 
       {routes.map((route) => (
-        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
+        <SidebarItem
+          key={route.href}
+          icon={route.icon}
+          label={route.label}
+          href={route.href}
+          collapsed={collapsed}
+        />
       ))}
     </div>
   );

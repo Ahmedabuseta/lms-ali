@@ -4,7 +4,7 @@ import * as z from 'zod';
 import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Pencil } from 'lucide-react';
+import { Pencil, FileText } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -23,7 +23,9 @@ interface ChapterDescriptionFormProps {
 }
 
 const formSchema = z.object({
-  description: z.string().min(1),
+  description: z.string().min(1, {
+    message: 'وصف الفصل مطلوب',
+  }),
 });
 
 export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDescriptionFormProps) => {
@@ -45,57 +47,87 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
-      toast.success('Chapter updated');
+      toast.success('تم تحديث الفصل بنجاح');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما، يرجى المحاولة مرة أخرى');
     }
   };
 
   return (
-    <div className="mt-6 rounded-md border bg-slate-100 p-4">
-      <div className="flex items-center justify-between font-medium">
-        Chapter description
-        <Button onClick={toggleEdit} variant="ghost">
+    <div className="rounded-xl border border-emerald-200/60 bg-emerald-50/60 backdrop-blur-xl p-6 shadow-lg transition-all duration-300 hover:bg-emerald-50/80 dark:border-emerald-400/20 dark:bg-emerald-900/10 dark:hover:bg-emerald-900/15">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-700/50">
+            <FileText className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
+          </div>
+          <h4 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 font-arabic">وصف الفصل</h4>
+        </div>
+        <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100">
           {isEditing ? (
-            <>Cancel</>
+            <span className="font-arabic">إلغاء</span>
           ) : (
             <>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit description
+              <Pencil className="ml-2 h-4 w-4" />
+              <span className="font-arabic">تعديل</span>
             </>
           )}
         </Button>
       </div>
+      
       {!isEditing && (
-        <div className={cn('mt-2 text-sm', !initialData.description && 'italic text-slate-500')}>
-          {!initialData.description && 'No description'}
-          {initialData.description && <Preview value={initialData.description} />}
+        <div className="mt-4">
+          {initialData.description ? (
+            <div className="rounded-lg border border-emerald-200/50 bg-emerald-100/50 p-4 backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-800/20">
+              <Preview value={initialData.description} />
+            </div>
+          ) : (
+            <div className="rounded-lg border border-emerald-200/50 bg-emerald-50/40 p-4 text-center backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-900/20">
+              <FileText className="mx-auto h-8 w-8 text-emerald-400 dark:text-emerald-500" />
+              <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-300 font-arabic">لا يوجد وصف للفصل بعد</p>
+            </div>
+          )}
         </div>
       )}
+      
       {isEditing && (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Editor {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
-                Save
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <div className="mt-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Editor {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center gap-3">
+                <Button 
+                  disabled={!isValid || isSubmitting} 
+                  type="submit"
+                  className="font-arabic"
+                  variant="default"
+                >
+                  حفظ
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={toggleEdit}
+                  className="font-arabic"
+                >
+                  إلغاء
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       )}
     </div>
   );

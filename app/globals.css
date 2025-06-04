@@ -3,6 +3,11 @@
 @tailwind utilities;
 @import 'katex/dist/katex.min.css';
 
+/* Import Arabic fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
 html,
 body,
 :root {
@@ -116,8 +121,6 @@ body,
   font-size: 16px !important;
 }
 
-@import '~@uploadthing/react/styles.css';
-
 /* Bidirectional text utility classes */
 .bidi-auto {
   text-align: start;
@@ -154,6 +157,160 @@ body,
 /* Ensure proper bidirectional isolation for inline elements */
 .bidi-isolate {
   unicode-bidi: isolate;
+}
+
+/* Numbers should always be LTR */
+.numbers-ltr {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
+/* Animation delay classes */
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-600 {
+  animation-delay: 600ms;
+}
+
+.animation-delay-800 {
+  animation-delay: 800ms;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2000ms;
+}
+
+/* Enhanced Arabic Typography */
+.font-arabic {
+  font-family: 'Cairo', 'Tajawal', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+}
+
+.font-arabic-heading {
+  font-family: 'Cairo', 'Tajawal', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.font-arabic-body {
+  font-family: 'Noto Sans Arabic', 'Tajawal', 'Cairo', system-ui, -apple-system, sans-serif;
+  line-height: 1.8;
+  letter-spacing: 0.015em;
+}
+
+/* RTL Layout Enhancements */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Enhanced Arabic text rendering */
+.text-arabic {
+  direction: rtl;
+  unicode-bidi: embed;
+  text-align: right;
+  font-family: 'Cairo', 'Tajawal', 'Noto Sans Arabic', system-ui, sans-serif;
+}
+
+.text-arabic-mixed {
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+/* Enhanced button styles for Arabic */
+[dir="rtl"] .btn-with-icon {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .btn-with-icon .icon {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Improved card layouts for RTL */
+[dir="rtl"] .card-grid {
+  direction: rtl;
+}
+
+[dir="rtl"] .card-content {
+  text-align: right;
+}
+
+/* Enhanced animations for RTL */
+[dir="rtl"] .slide-from-right {
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .slide-from-left {
+  transform: translateX(-100%);
+}
+
+/* Arabic-optimized spacing */
+.arabic-spacing h1,
+.arabic-spacing h2,
+.arabic-spacing h3,
+.arabic-spacing h4,
+.arabic-spacing h5,
+.arabic-spacing h6 {
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.arabic-spacing p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.arabic-spacing ul,
+.arabic-spacing ol {
+  margin-bottom: 1rem;
+  padding-right: 1.5rem;
+}
+
+[dir="rtl"] .arabic-spacing ul,
+[dir="rtl"] .arabic-spacing ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* Enhanced focus styles for RTL */
+[dir="rtl"] .focus-within\:ring-offset-2:focus-within {
+  --tw-ring-offset-width: 2px;
+}
+
+/* Better form styling for Arabic */
+[dir="rtl"] .form-input {
+  text-align: right;
+  padding-right: 0.75rem;
+  padding-left: 2.5rem;
+}
+
+[dir="rtl"] .form-select {
+  background-position: left 0.5rem center;
+  padding-right: 0.75rem;
+  padding-left: 2.5rem;
 }
 
 /* Dark mode fixes */
@@ -239,22 +396,6 @@ html:not([data-theme-transition='false']) * {
   animation: float 3s ease-in-out infinite;
 }
 
-.animation-delay-200 {
-  animation-delay: 200ms;
-}
-
-.animation-delay-400 {
-  animation-delay: 400ms;
-}
-
-.animation-delay-1000 {
-  animation-delay: 1000ms;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2000ms;
-}
-
 /* Custom Scrollbar Styles */
 @layer utilities {
   /* For Webkit-based browsers (Chrome, Safari, Edge) - Global */
@@ -314,4 +455,192 @@ html:not([data-theme-transition='false']) * {
 
   /* Firefox doesn't have a direct CSS way to show scrollbar thumb on element hover like webkit */
   /* The thumb will become more visible based on its default subtle color if the browser theme has hover effects */
+}
+
+/* Enhanced Glass Morphism Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glass-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes float-glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-2px) scale(1.05);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    border-color: rgba(147, 51, 234, 0.5);
+    box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.2);
+  }
+}
+
+/* Glass morphism utility classes */
+.glass-shimmer {
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.glass-pulse {
+  animation: glass-pulse 4s ease-in-out infinite;
+}
+
+.float-glow {
+  animation: float-glow 6s ease-in-out infinite;
+}
+
+.gradient-shift {
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease-in-out infinite;
+}
+
+.border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Enhanced scrollbar for glass components */
+.custom-scrollbar-glass::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar-glass::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.custom-scrollbar-glass::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.6),
+    rgba(147, 51, 234, 0.6)
+  );
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.custom-scrollbar-glass::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.8),
+    rgba(147, 51, 234, 0.8)
+  );
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Navbar and Sidebar specific enhancements */
+.navbar-glass {
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+.sidebar-glass {
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+/* Ultra-premium texture overlay */
+.texture-overlay {
+  position: relative;
+}
+
+.texture-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.15) 1px, transparent 0);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.dark .texture-overlay::before {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(147, 197, 253, 0.1) 1px, transparent 0);
+  opacity: 0.2;
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .mobile-glass {
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .glass-shimmer,
+  .glass-pulse,
+  .float-glow,
+  .gradient-shift,
+  .border-glow,
+  .animate-scroll-horizontal {
+    animation: none;
+  }
+}
+
+/* Horizontal scrolling animation for testimonials */
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-horizontal {
+  animation: scroll-horizontal 25s linear infinite;
+}
+
+/* Pause animation on hover for better UX */
+.animate-scroll-horizontal:hover {
+  animation-play-state: paused;
 }

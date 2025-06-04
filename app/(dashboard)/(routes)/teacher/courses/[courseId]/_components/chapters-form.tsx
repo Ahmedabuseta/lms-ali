@@ -4,7 +4,7 @@ import * as z from 'zod';
 import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,9 @@ interface ChaptersFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, {
+    message: 'عنوان الفصل مطلوب',
+  }),
 });
 
 export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
@@ -46,11 +48,12 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(`/api/courses/${courseId}/chapters`, values);
-      toast.success('Chapter created');
+      toast.success('تم إنشاء الفصل بنجاح');
       toggleCreating();
       router.refresh();
+      form.reset();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما، يرجى المحاولة مرة أخرى');
     }
   };
 
@@ -61,10 +64,10 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
         list: updateData,
       });
-      toast.success('Chapters reordered');
+      toast.success('تم إعادة ترتيب الفصول بنجاح');
       router.refresh();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما، يرجى المحاولة مرة أخرى');
     } finally {
       setIsUpdating(false);
     }
@@ -75,53 +78,102 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   };
 
   return (
-    <div className="relative mt-6 rounded-md border bg-slate-100 p-4">
+    <div className="relative rounded-xl border border-indigo-200/60 bg-indigo-50/60 backdrop-blur-xl p-6 shadow-lg transition-all duration-300 hover:bg-indigo-50/80 dark:border-indigo-400/20 dark:bg-indigo-900/10 dark:hover:bg-indigo-900/15">
       {isUpdating && (
-        <div className="rounded-m absolute right-0 top-0 flex h-full w-full items-center justify-center bg-slate-500/20">
-          <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
+        <div className="absolute inset-0 z-50 flex items-center justify-center rounded-xl bg-indigo-500/20 backdrop-blur-sm">
+          <div className="flex items-center gap-2 rounded-lg bg-white/90 px-4 py-2 shadow-lg dark:bg-indigo-900/90">
+            <Loader2 className="h-5 w-5 animate-spin text-indigo-600 dark:text-indigo-400" />
+            <span className="text-sm font-medium text-indigo-900 dark:text-indigo-100 font-arabic">جاري إعادة الترتيب...</span>
+          </div>
         </div>
       )}
-      <div className="flex items-center justify-between font-medium">
-        Course chapters
-        <Button onClick={toggleCreating} variant="ghost">
+      
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-200/80 dark:bg-indigo-700/50">
+            <BookOpen className="h-4 w-4 text-indigo-700 dark:text-indigo-300" />
+          </div>
+          <h4 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 font-arabic">فصول الدورة</h4>
+        </div>
+        <Button onClick={toggleCreating} variant="ghost" size="sm" className="text-indigo-700 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-100">
           {isCreating ? (
-            <>Cancel</>
+            <span className="font-arabic">إلغاء</span>
           ) : (
             <>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add a chapter
+              <PlusCircle className="ml-2 h-4 w-4" />
+              <span className="font-arabic">إضافة فصل</span>
             </>
           )}
         </Button>
       </div>
+      
       {isCreating && (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input disabled={isSubmitting} placeholder="e.g. 'Introduction to the course'" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={!isValid || isSubmitting} type="submit">
-              Create
-            </Button>
-          </form>
-        </Form>
-      )}
-      {!isCreating && (
-        <div className={cn('mt-2 text-sm', !initialData.chapters.length && 'italic text-slate-500')}>
-          {!initialData.chapters.length && 'No chapters'}
-          <ChaptersList onEdit={onEdit} onReorder={onReorder} items={initialData.chapters || []} />
+        <div className="mt-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input 
+                        disabled={isSubmitting} 
+                        placeholder="مثال: 'مقدمة في البرمجة'" 
+                        className="text-right"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center gap-3">
+                <Button 
+                  disabled={!isValid || isSubmitting} 
+                  type="submit"
+                  className="font-arabic"
+                  variant="default"
+                >
+                  إنشاء
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={toggleCreating}
+                  className="font-arabic"
+                >
+                  إلغاء
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       )}
-      {!isCreating && <p className="mt-4 text-xs text-muted-foreground">Drag and drop to reorder the chapters</p>}
+      
+      {!isCreating && (
+        <div className="mt-4">
+          {!initialData.chapters.length ? (
+            <div className="rounded-lg border border-indigo-200/50 bg-indigo-50/40 p-6 text-center backdrop-blur-sm dark:border-indigo-400/30 dark:bg-indigo-900/20">
+              <BookOpen className="mx-auto h-12 w-12 text-indigo-400 dark:text-indigo-500" />
+              <p className="mt-2 text-sm text-indigo-600 dark:text-indigo-300 font-arabic">لا توجد فصول بعد</p>
+              <p className="text-xs text-indigo-500 dark:text-indigo-400 font-arabic">انقر على "إضافة فصل" لبدء إنشاء محتوى الدورة</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <ChaptersList onEdit={onEdit} onReorder={onReorder} items={initialData.chapters || []} />
+            </div>
+          )}
+        </div>
+      )}
+      
+      {!isCreating && initialData.chapters.length > 0 && (
+        <div className="mt-4 rounded-lg bg-indigo-100/50 p-3 backdrop-blur-sm dark:bg-indigo-800/20">
+          <p className="text-xs text-indigo-700 dark:text-indigo-300 font-arabic">
+            اسحب واسقط لإعادة ترتيب الفصول حسب التسلسل المطلوب
+          </p>
+        </div>
+      )}
     </div>
   );
 };

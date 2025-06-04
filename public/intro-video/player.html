@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+        }
+        .quality-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HLS Adaptive Streaming Video</h1>
+        <video id="video" controls autoplay muted>
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="info">
+            <h3>About This Stream:</h3>
+            <p>This video uses HLS (HTTP Live Streaming) with adaptive bitrate streaming. It automatically adjusts quality based on your internet connection:</p>
+            <ul>
+                <li><strong>1080p (2.5 Mbps):</strong> High quality for fast connections</li>
+                <li><strong>720p (1.5 Mbps):</strong> Medium quality for moderate connections</li>
+                <li><strong>480p (800 kbps):</strong> Lower quality for slower connections</li>
+            </ul>
+            <div class="quality-info" id="qualityInfo">
+                Current quality: Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const qualityInfo = document.getElementById('qualityInfo');
+        
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource('master.m3u8');
+            hls.attachMedia(video);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                console.log('Manifest loaded, starting playback');
+            });
+            
+            hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+                const level = hls.levels[data.level];
+                qualityInfo.textContent = `Current quality: ${level.height}p (${Math.round(level.bitrate/1000)} kbps)`;
+            });
+            
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Safari native HLS support
+            video.src = 'master.m3u8';
+            qualityInfo.textContent = 'Current quality: Auto (Safari native HLS)';
+        } else {
+            qualityInfo.textContent = 'HLS is not supported in this browser';
+        }
+    </script>
+</body>
+</html> 

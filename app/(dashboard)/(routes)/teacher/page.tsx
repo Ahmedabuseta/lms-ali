@@ -162,7 +162,7 @@ const TeacherDashboard = async () => {
             <div className="text-2xl font-bold text-foreground">
               {recentActivity.reduce(
                 (acc, course) =>
-                  acc + course.chapters.reduce((chAcc, chapter) => chAcc + chapter.userProgress.length, 0),
+                  acc + course.chapters.reduce((chAcc: number, chapter: any) => chAcc + chapter.userProgress.length, 0),
                 0,
               )}
             </div>
@@ -342,8 +342,8 @@ const TeacherDashboard = async () => {
             {recentActivity
               .slice(0, 4)
               .map((course) =>
-                course.chapters.map((chapter) =>
-                  chapter.userProgress.slice(0, 2).map((progress) => (
+                course.chapters.map((chapter: any) =>
+                  chapter.userProgress.slice(0, 2).map((progress: any) => (
                     <div
                       key={`${chapter.id}-${progress.userId}`}
                       className="flex items-center justify-between rounded-lg bg-muted/50 p-3"
@@ -372,7 +372,7 @@ const TeacherDashboard = async () => {
               .flat()
               .slice(0, 5)}
             {recentActivity.every((course) =>
-              course.chapters.every((chapter) => chapter.userProgress.length === 0),
+              course.chapters.every((chapter: any) => chapter.userProgress.length === 0),
             ) && (
               <div className="py-8 text-center">
                 <Activity className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />

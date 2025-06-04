@@ -8,9 +8,10 @@ interface SidebarItemProps {
   label: string;
   href: string;
   tourId?: string;
+  collapsed?: boolean;
 }
 
-export const SidebarItem = ({ icon: Icon, label, href, tourId }: SidebarItemProps) => {
+export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false }: SidebarItemProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -25,33 +26,104 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId }: SidebarItemProp
       onClick={onClick}
       type="button"
       className={cn(
-        'group mx-2 mb-2 flex transform items-center gap-x-3 rounded-xl p-3 text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg',
+        'group relative flex transform items-center gap-x-3 rounded-xl p-4 text-sm font-medium font-arabic transition-all duration-300 hover:scale-105 overflow-hidden',
+        collapsed ? 'mx-1 mb-2 justify-center' : 'mx-2 mb-3',
         isActive
-          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-          : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 dark:text-gray-300 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 dark:hover:text-blue-400',
+          ? 'shadow-xl'
+          : 'hover:shadow-lg',
       )}
       data-tour={tourId}
+      title={collapsed ? label : undefined}
     >
+      {/* Active state backgrounds */}
+      {isActive ? (
+        <>
+          {/* Primary active background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+          
+          {/* Glass overlay for active */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20"></div>
+          
+          {/* Active shimmer */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+          
+          {/* Active glow */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/50 to-purple-600/50 blur-lg"></div>
+        </>
+      ) : (
+        <>
+          {/* Inactive hover backgrounds */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/80 to-purple-50/80 dark:from-blue-900/30 dark:to-purple-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          
+          {/* Glass overlay for hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-white/10 dark:from-white/5 dark:via-white/2 dark:to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          
+          {/* Hover glow */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+        </>
+      )}
+
+      {/* Icon container */}
       <div
         className={cn(
-          'flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-300',
+          'relative flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 shrink-0',
+          collapsed ? 'h-10 w-10' : 'h-12 w-12',
           isActive
-            ? 'bg-white/20 backdrop-blur-sm'
-            : 'bg-gray-100 group-hover:bg-blue-100 dark:bg-gray-800 dark:group-hover:bg-blue-900/30',
+            ? 'bg-white/25 backdrop-blur-sm shadow-lg'
+            : 'bg-gray-100/80 group-hover:bg-blue-100/80 dark:bg-gray-800/80 dark:group-hover:bg-blue-900/50',
         )}
       >
+        {/* Icon glow for active state */}
+        {isActive && (
+          <div className="absolute inset-0 rounded-xl bg-white/20 blur-sm"></div>
+        )}
+        
         <Icon
-          size={20}
+          size={collapsed ? 18 : 22}
           className={cn(
-            'transition-all duration-300',
+            'relative z-10 transition-all duration-300',
             isActive
-              ? 'text-white'
+              ? 'text-white drop-shadow-lg'
               : 'text-gray-600 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400',
           )}
         />
       </div>
-      <span className="flex-1 text-left">{label}</span>
-      {isActive && <div className="h-2 w-2 animate-pulse rounded-full bg-white" />}
+
+      {/* Label - hidden when collapsed */}
+      {!collapsed && (
+        <span 
+          className={cn(
+            'relative z-10 flex-1 text-right transition-all duration-300',
+            isActive
+              ? 'text-white font-semibold drop-shadow-sm'
+              : 'text-gray-700 group-hover:text-blue-700 dark:text-gray-300 dark:group-hover:text-blue-300'
+          )}
+        >
+          {label}
+        </span>
+      )}
+
+      {/* Active indicator - adjusted for collapsed state */}
+      {isActive && !collapsed && (
+        <>
+          <div className="relative z-10 h-3 w-3 animate-pulse rounded-full bg-white shadow-lg" />
+          <div className="absolute right-4 h-3 w-3 rounded-full bg-white/50 blur-sm" />
+        </>
+      )}
+
+      {/* Active indicator for collapsed state */}
+      {isActive && collapsed && (
+        <div className="absolute -right-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-white shadow-lg animate-pulse" />
+      )}
+
+      {/* Subtle border for definition */}
+      <div className={cn(
+        "absolute inset-0 rounded-xl border transition-all duration-300",
+        isActive 
+          ? "border-white/20" 
+          : "border-transparent group-hover:border-blue-200/50 dark:group-hover:border-blue-400/30"
+      )}></div>
     </button>
   );
 };

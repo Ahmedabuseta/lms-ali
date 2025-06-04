@@ -4,7 +4,7 @@ import * as z from 'zod';
 import axios from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Pencil } from 'lucide-react';
+import { Pencil, Type } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,9 @@ interface ChapterTitleFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, {
+    message: 'عنوان الفصل مطلوب',
+  }),
 });
 
 export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTitleFormProps) => {
@@ -42,52 +44,92 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
-      toast.success('Chapter updated');
+      toast.success('تم تحديث الفصل بنجاح');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما، يرجى المحاولة مرة أخرى');
     }
   };
 
   return (
-    <div className="mt-6 rounded-md border bg-slate-100 p-4">
-      <div className="flex items-center justify-between font-medium">
-        Chapter title
-        <Button onClick={toggleEdit} variant="ghost">
+    <div className="rounded-xl border border-emerald-200/60 bg-emerald-50/60 backdrop-blur-xl p-6 shadow-lg transition-all duration-300 hover:bg-emerald-50/80 dark:border-emerald-400/20 dark:bg-emerald-900/10 dark:hover:bg-emerald-900/15">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-700/50">
+            <Type className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
+          </div>
+          <h4 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 font-arabic">عنوان الفصل</h4>
+        </div>
+        <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100">
           {isEditing ? (
-            <>Cancel</>
+            <span className="font-arabic">إلغاء</span>
           ) : (
             <>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit title
+              <Pencil className="ml-2 h-4 w-4" />
+              <span className="font-arabic">تعديل</span>
             </>
           )}
         </Button>
       </div>
-      {!isEditing && <p className="mt-2 text-sm">{initialData.title}</p>}
-      {isEditing && (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input disabled={isSubmitting} placeholder="e.g. 'Introduction to the course'" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
-                Save
-              </Button>
+      
+      {!isEditing && (
+        <div className="mt-4">
+          {initialData.title ? (
+            <div className="rounded-lg border border-emerald-200/50 bg-emerald-100/50 p-4 backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-800/20">
+              <p className="text-emerald-900 dark:text-emerald-100 font-medium font-arabic">{initialData.title}</p>
             </div>
-          </form>
-        </Form>
+          ) : (
+            <div className="rounded-lg border border-emerald-200/50 bg-emerald-50/40 p-4 text-center backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-900/20">
+              <Type className="mx-auto h-8 w-8 text-emerald-400 dark:text-emerald-500" />
+              <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-300 font-arabic">لم يتم إضافة عنوان بعد</p>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {isEditing && (
+        <div className="mt-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input 
+                        disabled={isSubmitting} 
+                        placeholder="مثال: 'مقدمة في البرمجة'" 
+                        className="text-right"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center gap-3">
+                <Button 
+                  disabled={!isValid || isSubmitting} 
+                  type="submit"
+                  className="font-arabic"
+                  variant="default"
+                >
+                  حفظ
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={toggleEdit}
+                  className="font-arabic"
+                >
+                  إلغاء
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       )}
     </div>
   );

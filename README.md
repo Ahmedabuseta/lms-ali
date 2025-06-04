@@ -1,140 +1,225 @@
-# LMS-Ali - Modern Learning Management System
+# 🎓 LMS Ali - Complete Learning Management System
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-6-darkblue)](https://www.prisma.io/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-teal)](https://tailwindcss.com/)
+A modern, full-featured Learning Management System built with Next.js 14, featuring comprehensive course management, interactive learning tools, and AI-powered assistance.
 
-A comprehensive and modern learning management system (LMS) built with Next.js, TypeScript, and Prisma. This platform allows educators to create and manage courses with rich content, while students can learn through interactive materials, take exams, and track their progress.
+## ✨ Features
 
-![LMS-Ali Screenshot](public/logo.svg)
+### 🎯 Core Functionality
+- **Course Management**: Complete CRUD operations for courses and chapters
+- **File Uploads**: DigitalOcean Spaces integration for images, videos, and documents
+- **Video Streaming**: Mux integration for high-quality video content
+- **Progress Tracking**: Detailed student progress monitoring
+- **Purchase System**: Stripe integration for course purchases
+- **Authentication**: Secure user management with Clerk
 
-## 🌟 Features
+### 🤖 AI-Powered Features
+- **AI Tutor**: Intelligent chat assistant for student support
+- **Image-to-Text**: OCR functionality for extracting text from images
+- **Interactive Learning**: Real-time assistance and guidance
 
-- **Authentication & Authorization** - Secure user management with Clerk
-- **Course Management** - Create, update, and organize educational content
-- **Interactive Learning** - Rich content editing with MDX and math support
-- **Exam System** - Create and take exams with time limits
-- **Flashcards** - Study with flashcards for better retention
-- **Practice Questions** - Test your knowledge with practice questions
-- **Progress Tracking** - Monitor student performance and learning journey
-- **AI Tutor** - Get help from an AI-powered tutor (experimental)
-- **Video Content** - Integrated video streaming with Mux
-- **Image Processing** - OCR capabilities for extracting text from images
-- **Mobile Responsive** - Works on all devices and screen sizes
-- **Analytics Dashboard** - Visualize learning data with Recharts
+### 📚 Learning Tools
+- **Rich Text Editor**: Advanced content creation with React Quill
+- **Math Support**: LaTeX rendering for mathematical expressions
+- **Responsive Design**: Optimized for all devices
+- **Dark Mode**: Complete theme support
+- **Arabic Support**: Full RTL and Arabic language support
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, React 18, Tailwind CSS, shadcn/ui
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: Compatible with PostgreSQL, MySQL, SQLite (via Prisma)
+- **Database**: PostgreSQL with Prisma
 - **Authentication**: Clerk
-- **Content**: MDX, React-Markdown, KaTeX for math rendering
-- **Media**: Mux for video, UploadThing for file uploads
-- **Payment Processing**: Stripe
-- **Deployment**: Docker-ready with docker-compose
+- **Payments**: Stripe
+- **Media**: Mux for video, DigitalOcean Spaces for file storage
+- **Styling**: Tailwind CSS, Shadcn/ui components
+- **Deployment**: Vercel
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Database (PostgreSQL recommended)
+- Node.js 18+ 
+- PostgreSQL database
+- DigitalOcean Spaces account
+- Mux account (for video)
+- Stripe account (for payments)
+- Clerk account (for authentication)
 
 ### Installation
 
-1. Clone the repository
-
+1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/lms-ali.git
    cd lms-ali
    ```
 
-2. Install dependencies
-
+2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn
    ```
 
-3. Set up environment variables
-
+3. **Set up environment variables**
    ```bash
    cp .env.example .env
    ```
 
-   Then edit the `.env` file with your configuration values.
-
-4. Set up the database
-
-   ```bash
-   npx prisma migrate dev
+4. **Configure your environment variables**
+   ```env
+   # Database
+   DATABASE_URL="your_postgresql_connection_string"
+   
+   # Clerk Authentication
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+   
+   # DigitalOcean Spaces
+   DO_SPACES_KEY=your_spaces_access_key
+   DO_SPACES_SECRET=your_spaces_secret_key
+   DO_SPACES_ENDPOINT=your_endpoint_url
+   DO_SPACES_BUCKET=your_bucket_name
+   DO_SPACES_REGION=nyc3
+   
+   # Mux (for video processing)
+   MUX_TOKEN_ID=
+   MUX_TOKEN_SECRET=
+   
+   # Stripe
+   STRIPE_API_KEY=
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   STRIPE_WEBHOOK_SECRET=
+   
+   # Teacher Authorization
+   NEXT_PUBLIC_TEACHER_ID=your_teacher_user_id
    ```
 
-5. Start the development server
+5. **Set up the database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
+6. **Run the development server**
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Docker Deployment
-
-```bash
-docker-compose up -d
-```
-
-## 📊 Project Structure
+## 📁 Project Structure
 
 ```
-lms-ali/
-├── actions/          # Server actions for data fetching
-├── app/              # App router components and routes
-│   ├── (auth)/       # Authentication routes
-│   ├── (course)/     # Course content pages
-│   ├── (dashboard)/  # User dashboard
-│   └── api/          # API routes
-├── components/       # Reusable UI components
-├── hooks/            # Custom React hooks
-├── lib/              # Utility functions
-├── prisma/           # Database schema and migrations
-└── public/           # Static assets
+├── app/                    # Next.js 14 app directory
+│   ├── (course)/          # Course pages
+│   ├── (dashboard)/       # Dashboard pages
+│   ├── api/               # API routes
+│   └── globals.css        # Global styles
+├── components/            # Reusable components
+│   ├── ui/               # Shadcn/ui components
+│   ├── landing/          # Landing page components
+│   └── ...
+├── lib/                   # Utility functions
+│   ├── digitalocean-spaces.ts  # File upload utilities
+│   ├── db.ts             # Database connection
+│   └── ...
+├── prisma/               # Database schema
+└── public/               # Static assets
 ```
+
+## 🎨 Features Showcase
+
+### Course Management
+- Create and edit courses with rich content
+- Chapter-based course structure
+- Video upload and streaming
+- File attachments and resources
+- Progress tracking
+
+### AI Integration
+- **AI Tutor**: Intelligent chat assistant
+- **Image-to-Text**: OCR for text extraction
+- **Interactive Learning**: Real-time guidance
+
+### User Experience
+- **Responsive Design**: Works on all devices
+- **Dark Mode**: Complete theme support
+- **Arabic Support**: Full RTL language support
+- **Smooth Animations**: Enhanced user interactions
+
+## 🌍 Internationalization
+
+The platform supports:
+- **Arabic (العربية)**: Full RTL support with Arabic fonts
+- **English**: Default language
+- **Mixed Content**: Seamless Arabic-English content mixing
 
 ## 🔧 Configuration
 
-The application can be configured through environment variables:
+### DigitalOcean Spaces Setup
 
-- **Database**: Connection strings for your database
-- **Authentication**: Clerk API keys
-- **Storage**: UploadThing API keys
-- **Video**: Mux API keys
-- **Payment**: Stripe API keys
+1. Create a DigitalOcean Spaces bucket
+2. Generate API keys
+3. Configure CORS settings
+4. Update environment variables
+
+See [DIGITALOCEAN_SPACES_SETUP.md](./DIGITALOCEAN_SPACES_SETUP.md) for detailed instructions.
+
+### Video Setup
+
+For HLS video streaming, see [VIDEO_SETUP.md](./VIDEO_SETUP.md) for configuration instructions.
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. **Push to GitHub**
+2. **Connect to Vercel**
+3. **Configure environment variables**
+4. **Deploy**
+
+### Environment Variables for Production
+
+Make sure to set all required environment variables in your production environment:
+
+- Database connection string
+- Clerk authentication keys
+- DigitalOcean Spaces credentials
+- Mux API keys
+- Stripe API keys
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📬 Contact
+## 🆘 Support
 
-If you have any questions, feel free to reach out or open an issue.
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation files
+- Review the setup guides
+
+## 🎯 Roadmap
+
+- [ ] Mobile app development
+- [ ] Advanced analytics dashboard
+- [ ] Live streaming capabilities
+- [ ] Multi-language course content
+- [ ] Gamification features
+- [ ] Advanced AI tutoring features
 
 ---
 
-Built with ❤️ using Next.js and TypeScript
+**Built with ❤️ by LMS Ali Team**

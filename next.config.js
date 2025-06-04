@@ -29,7 +29,19 @@ const nextConfig = async () => {
     },
 
     images: {
-      domains: ['utfs.io', 'images.unsplash.com'],
+      domains: [
+        'images.unsplash.com',
+        // Add your DigitalOcean Spaces domain here
+        // Example: 'your-space-name.your-region.digitaloceanspaces.com'
+      ],
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: '*.digitaloceanspaces.com',
+          port: '',
+          pathname: '/**',
+        },
+      ],
     },
 
     // MDX configuration

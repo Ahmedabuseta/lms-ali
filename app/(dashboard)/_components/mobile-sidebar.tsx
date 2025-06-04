@@ -10,7 +10,7 @@ export const MobileSidebar = () => {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="bg-white/98 border-r border-blue-200/50 p-0 shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/95"
+        className="p-0 bg-white/90 backdrop-blur-lg border-r border-white/30 dark:bg-gray-900/90 dark:border-white/10"
       >
         <SideBar />
       </SheetContent>
