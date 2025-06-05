@@ -395,10 +395,10 @@ export default function LandingPage() {
             {/* Promo Video */}
             <div className="relative">
               <VideoPlayer 
-                src="https://drive.google.com/file/d/1sKkn1hxG6WMA32LVXzYb6lnqYSgP4Cn9/view?usp=sharing"
+                src="/video-proxy/https://fra1.digitaloceanspaces.com/lms-ali-p2s/promo1/480p.m3u8"
                 poster="/promo-poster.svg"
-                title="عرض توضيحي للمنصة - من P2S إلى كلية التجارة .. خطوة بثقة!"
-                description="اكتشف جميع الميزات والوظائف المتقدمة في منصة التعلم الذكية (جودة 480p - فيديو كامل)"
+                title="من P2S إلى كلية التجارة .. خطوة بثقة!"
+                description=" "
               />
               
               {/* Floating UI Elements */}

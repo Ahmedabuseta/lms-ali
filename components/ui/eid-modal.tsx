@@ -85,5 +85,3 @@ export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
     </div>
   );
 };
-
- 
