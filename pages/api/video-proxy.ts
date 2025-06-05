@@ -22,21 +22,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    console.log('Proxying video request for:', url);
-    
     // Fetch the video from the original source
     const response = await fetch(url, {
       method: req.method || 'GET',
       headers: {
         'User-Agent': 'LMS-Ali-Video-Proxy/1.0',
-        'Accept': '*/*',
+        Accept: '*/*',
         'Accept-Encoding': 'identity', // Disable compression for streaming
       },
     });
     
     if (!response.ok) {
-      console.error('Failed to fetch video:', response.status, response.statusText);
-      return res.status(response.status).json({ 
+      return res.status(response.status).json({
         error: 'Failed to fetch video',
         status: response.status,
         statusText: response.statusText
@@ -78,8 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.send(Buffer.from(data));
     
   } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error'
     });

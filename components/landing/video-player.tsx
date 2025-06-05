@@ -15,9 +15,9 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({ 
   src, 
   poster, 
-  className = "",
-  title = "عرض توضيحي للمنصة",
-  description = "اكتشف جميع الميزات والوظائف"
+  className = '',
+  title = 'عرض توضيحي للمنصة',
+  description = 'اكتشف جميع الميزات والوظائف'
 }: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -34,17 +34,16 @@ export const VideoPlayer = ({
     const video = videoRef.current;
     if (!video || !src) return;
 
-      setIsLoading(true);
-      setHasError(false);
+    setIsLoading(true);
+    setHasError(false);
 
     const initializeVideo = async () => {
       try {
         // Check if browser supports HLS natively (Safari)
-      if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          console.log('Using native HLS support (Safari)');
-        video.src = src;
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = src;
           setCurrentQuality('Auto (Safari)');
-        setIsLoading(false);
+          setIsLoading(false);
           return;
         }
 
@@ -52,22 +51,20 @@ export const VideoPlayer = ({
         const Hls = (await import('hls.js')).default;
         
         if (Hls.isSupported()) {
-          console.log('Using HLS.js for video playback');
-          
           // Destroy existing HLS instance
-            if (hlsRef.current) {
-              hlsRef.current.destroy();
+          if (hlsRef.current) {
+            hlsRef.current.destroy();
             hlsRef.current = null;
-            }
+          }
 
           // Create new HLS instance with CORS-friendly config
           const hls = new Hls({
-            debug: true, // Enable debug to see CORS errors
-              enableWorker: true,
-              lowLatencyMode: false,
-              backBufferLength: 90,
-              maxBufferLength: 30,
-              maxBufferSize: 60 * 1000 * 1000, // 60MB
+            debug: false,
+            enableWorker: true,
+            lowLatencyMode: false,
+            backBufferLength: 90,
+            maxBufferLength: 30,
+            maxBufferSize: 60 * 1000 * 1000, // 60MB
             maxLoadingDelay: 4,
             startLevel: -1, // Auto-select level
             testBandwidth: false,
@@ -75,23 +72,18 @@ export const VideoPlayer = ({
             fragLoadingTimeOut: 30000, // Increased timeout
             manifestLoadingTimeOut: 20000, // Increased timeout
             // CORS configuration - try to handle cross-origin requests
-            xhrSetup: function(xhr: XMLHttpRequest, url: string) {
-              console.log('Setting up XHR for:', url);
+            xhrSetup: function(xhr: XMLHttpRequest) {
               xhr.withCredentials = false; // Don't send credentials
             }
-            });
+          });
             
-            hlsRef.current = hls;
+          hlsRef.current = hls;
           
           // Set up event listeners
           hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-            console.log('HLS manifest parsed successfully');
-              console.log('Available levels:', data.levels);
-              
             // Prefer 480p if available (it has the complete video)
             const level480p = data.levels.findIndex((level: any) => level.height === 480);
             if (level480p >= 0) {
-              console.log('Found 480p level, setting as current');
               hls.currentLevel = level480p;
               const level = data.levels[level480p];
               setCurrentQuality(`${level.height}p`);
@@ -105,101 +97,84 @@ export const VideoPlayer = ({
           });
 
           hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-              const level = hls.levels[data.level];
+            const level = hls.levels[data.level];
             setCurrentQuality(`${level.height}p`);
-            console.log(`Quality switched to: ${level.height}p`);
-            });
+          });
 
           hls.on(Hls.Events.ERROR, (event, data) => {
-              console.error('HLS error:', data);
-            
             // Check if it's a CORS error
             if (data.details === 'manifestLoadError' && data.response?.code === 0) {
-              console.error('CORS Error detected - server not sending proper headers');
               setHasError(true);
               setIsLoading(false);
               return;
             }
             
-              if (data.fatal) {
-                switch (data.type) {
+            if (data.fatal) {
+              switch (data.type) {
                 case Hls.ErrorTypes.NETWORK_ERROR:
-                  console.log('Network error, attempting recovery...');
                   if (data.details === 'manifestLoadError') {
-                    console.error('Cannot load manifest - likely CORS issue');
                     setHasError(true);
                     setIsLoading(false);
                   } else {
                     hls.startLoad();
                   }
-                    break;
+                  break;
                 case Hls.ErrorTypes.MEDIA_ERROR:
-                  console.log('Media error, attempting recovery...');
-                    hls.recoverMediaError();
-                    break;
-                  default:
-                  console.error('Fatal error, destroying HLS instance');
+                  hls.recoverMediaError();
+                  break;
+                default:
                   setHasError(true);
-                    setIsLoading(false);
-                    hls.destroy();
+                  setIsLoading(false);
+                  hls.destroy();
                   hlsRef.current = null;
-                    break;
-                }
+                  break;
               }
-            });
-
-          hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-            console.log(`Fragment loaded: ${data.frag.relurl}`);
-            });
+            }
+          });
 
           // Load the source and attach to video
           hls.loadSource(src);
           hls.attachMedia(video);
-
-          } else {
-          console.error('HLS.js is not supported in this browser');
-            setHasError(true);
+        } else {
+          setHasError(true);
           setIsLoading(false);
         }
       } catch (error) {
-        console.error('Error initializing video:', error);
-          setHasError(true);
+        setHasError(true);
         setIsLoading(false);
       }
     };
 
     // Set up video event listeners
-        const handleLoadedData = () => {
-          setIsLoading(false);
-          setDuration(video.duration);
-      console.log('Video data loaded successfully');
-        };
+    const handleLoadedData = () => {
+      setIsLoading(false);
+      setDuration(video.duration);
+    };
         
-        const handleError = () => {
-      console.error('Video element error');
-          setIsLoading(false);
-          setHasError(true);
-        };
+    const handleError = () => {
+      setIsLoading(false);
+      setHasError(true);
+    };
 
-        const handleTimeUpdate = () => {
+    const handleTimeUpdate = () => {
       if (video.duration > 0) {
-            setProgress((video.currentTime / video.duration) * 100);
-          }
-        };
+        setProgress((video.currentTime / video.duration) * 100);
+      }
+    };
 
-        const handleLoadedMetadata = () => {
-          setDuration(video.duration);
-        };
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration);
+    };
 
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => setIsPlaying(false);
 
     // Add event listeners
-        video.addEventListener('loadeddata', handleLoadedData);
-        video.addEventListener('error', handleError);
-        video.addEventListener('timeupdate', handleTimeUpdate);
-        video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('error', handleError);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
     video.addEventListener('ended', handleEnded);
@@ -208,11 +183,11 @@ export const VideoPlayer = ({
     initializeVideo();
 
     // Cleanup function
-        return () => {
-          video.removeEventListener('loadeddata', handleLoadedData);
-          video.removeEventListener('error', handleError);
-          video.removeEventListener('timeupdate', handleTimeUpdate);
-          video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('ended', handleEnded);
@@ -229,8 +204,7 @@ export const VideoPlayer = ({
       if (isPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play().catch((error) => {
-          console.error('Error playing video:', error);
+        videoRef.current.play().catch(() => {
           setHasError(true);
         });
       }
@@ -249,8 +223,8 @@ export const VideoPlayer = ({
       if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
-        videoRef.current.requestFullscreen().catch((error) => {
-          console.error('Error entering fullscreen:', error);
+        videoRef.current.requestFullscreen().catch(() => {
+          // Handle fullscreen error silently
         });
       }
     }
@@ -268,7 +242,6 @@ export const VideoPlayer = ({
       if (level480p >= 0) {
         hlsRef.current.currentLevel = level480p;
         setCurrentQuality('480p (Manual)');
-        console.log('Manually set to 480p quality');
       }
     }
   };
@@ -330,7 +303,6 @@ export const VideoPlayer = ({
             muted={isMuted}
             crossOrigin="anonymous"
             controls={false}
-            volume={0.7}
           />
           
           {/* Loading State */}
@@ -350,25 +322,25 @@ export const VideoPlayer = ({
           
           {/* Video Controls Overlay */}
           {!isLoading && (
-          <div 
-            className={`absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-300 ${
-              showControls ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            {/* Center Play Button */}
+            <div 
+              className={`absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-300 ${
+                showControls ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {/* Center Play Button */}
               {!isPlaying && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Button
-                  size="lg"
-                  onClick={togglePlay}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Button
+                    size="lg"
+                    onClick={togglePlay}
                     className="h-20 w-20 rounded-full bg-white/90 text-blue-600 shadow-lg transition-all duration-300 hover:scale-110 hover:bg-white"
-                >
-                  <Play className="h-10 w-10 ml-1" />
-                </Button>
-              </div>
-            )}
+                  >
+                    <Play className="h-10 w-10 ml-1" />
+                  </Button>
+                </div>
+              )}
 
-            {/* Bottom Controls */}
+              {/* Bottom Controls */}
               <div className="absolute bottom-4 left-4 right-4">
                 {/* Progress Bar */}
                 <div className="mb-4">
@@ -430,7 +402,7 @@ export const VideoPlayer = ({
                 </div>
               </div>
 
-            {/* Video Title Overlay */}
+              {/* Video Title Overlay */}
               <div className="absolute top-4 left-4 right-4">
                 <div className="rounded-lg bg-black/50 p-3 backdrop-blur-sm">
                   <h3 className="text-lg font-bold text-white font-arabic">{title}</h3>

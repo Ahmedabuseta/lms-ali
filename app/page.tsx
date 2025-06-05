@@ -394,11 +394,11 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             {/* Promo Video */}
             <div className="relative">
-              <VideoPlayer 
-                src="/video-proxy/https://fra1.digitaloceanspaces.com/lms-ali-p2s/promo1/480p.m3u8"
-                poster="/promo-poster.svg"
-                title="من P2S إلى كلية التجارة .. خطوة بثقة!"
-                description=" "
+                              <VideoPlayer 
+                  src="/video-proxy/https://fra1.digitaloceanspaces.com/lms-ali-p2s/promo1/480p.m3u8"
+                  poster="/thumbnail.jpg"
+                  title="من P2S إلى كلية التجارة .. خطوة بثقة!"
+                  description=" "
               />
               
               {/* Floating UI Elements */}
