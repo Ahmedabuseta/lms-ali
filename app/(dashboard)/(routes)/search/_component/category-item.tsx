@@ -25,7 +25,7 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
   const onClick = () => {
     const url = qs.stringifyUrl(
       {
-        url: pathname,
+        url: pathname || '',
         query: {
           title: currentTitle,
           categoryId: isSelected ? null : value,

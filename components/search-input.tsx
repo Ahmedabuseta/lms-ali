@@ -21,7 +21,7 @@ export const SearchInput = () => {
   useEffect(() => {
     const url = qs.stringifyUrl(
       {
-        url: pathname,
+        url: pathname || '/',
         query: {
           categoryId: currentCategoryId,
           title: debouncedValue,

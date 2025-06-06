@@ -15,7 +15,7 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
   const pathname = usePathname();
   const router = useRouter();
 
-  const isActive = (pathname === '/' && href === '/') || pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (pathname === '/' && href === '/') || pathname === href || pathname?.startsWith(`${href}/`);
 
   const onClick = () => {
     router.push(href);

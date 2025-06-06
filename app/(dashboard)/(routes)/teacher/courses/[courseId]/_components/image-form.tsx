@@ -73,7 +73,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
       {isEditing && (
         <div>
           <FileUploadSpaces
-            value={initialData.imageUrl}
+            value={initialData.imageUrl || undefined}
             onChange={(url) => {
               if (url) {
                 onSubmit({ imageUrl: url });
