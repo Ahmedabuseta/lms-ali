@@ -23,7 +23,7 @@ type Chapter = {
   title: string;
   position: number;
   isFree: boolean;
-  videoUrl?: string;
+  videoUrl: string | null;
   userProgress?: { isCompleted: boolean }[];
 };
 

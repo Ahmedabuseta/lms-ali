@@ -73,11 +73,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Stream the video data
     const data = await response.arrayBuffer();
     res.send(Buffer.from(data));
-    
   } catch (error) {
     res.status(500).json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-} 
+}

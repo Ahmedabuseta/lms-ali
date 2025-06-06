@@ -17,7 +17,7 @@ interface ChapterSelectProps {
 export default function ChapterSelect({ chapters, courseId }: ChapterSelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentChapterId = searchParams.get('chapterId');
+  const currentChapterId = searchParams?.get('chapterId');
 
   const handleChapterChange = (chapterId: string) => {
     if (chapterId === 'all') {
