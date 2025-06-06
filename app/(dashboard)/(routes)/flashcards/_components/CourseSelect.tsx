@@ -16,7 +16,7 @@ interface CourseSelectProps {
 export default function CourseSelect({ courses }: CourseSelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentCourseId = searchParams.get('courseId');
+  const currentCourseId = searchParams?.get('courseId');
 
   const handleCourseChange = (courseId: string) => {
     router.push(`/flashcards?courseId=${courseId}`);

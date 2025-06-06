@@ -70,8 +70,8 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
   const searchParams = useSearchParams();
 
   // Get query params
-  const courseIdParam = searchParams.get('courseId');
-  const chapterIdsParam = searchParams.get('chapterIds');
+  const courseIdParam = searchParams?.get('courseId');
+  const chapterIdsParam = searchParams?.get('chapterIds');
 
   const [selectedCourseId, setSelectedCourseId] = useState<string>(courseIdParam || courses[0]?.id || '');
   const [selectedChapterIds, setSelectedChapterIds] = useState<string[]>(

@@ -17,8 +17,8 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentCategoryId = searchParams.get('categoryId');
-  const currentTitle = searchParams.get('title');
+  const currentCategoryId = searchParams?.get('categoryId');
+  const currentTitle = searchParams?.get('title');
 
   const isSelected = currentCategoryId === value;
 
