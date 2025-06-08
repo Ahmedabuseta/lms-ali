@@ -1,34 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
-import { getPracticeQuestions } from '@/actions/get-practice-questions';
+import { getAuthenticatedUser } from '@/lib/api-auth';
+import { db } from '@/lib/db';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    const user = await getAuthenticatedUser();
+
+    if (!user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const url = new URL(req.url);
+    const { searchParams } = new URL(req.url);
+    const courseId = searchParams.get('courseId');
 
-    // Get query parameters
-    const courseId = url.searchParams.get('courseId') || undefined;
-    const chapterIdsParam = url.searchParams.get('chapterIds') || '';
-    const chapterIds = chapterIdsParam ? chapterIdsParam.split(',') : undefined;
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
+    if (!courseId) {
+      return new NextResponse('Course ID required', { status: 400 });
+    }
 
-    const questions = await getPracticeQuestions({
-      // userId,
-      courseId,
-      chapterIds,
-      page,
-      pageSize,
+    const questions = await db.practiceQuestion.findMany({
+      where: {
+        courseId,
+      },
+      include: {
+        options: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
+
+    console.log(`Found ${questions.length} practice questions for course ${courseId}`);
 
     return NextResponse.json(questions);
   } catch (error) {
-    console.error('[PRACTICE_QUESTIONS_GET]', error);
+    console.log('[PRACTICE_QUESTIONS_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

@@ -109,8 +109,7 @@ export default function SimpleLandingPage() {
                 عيد مبارك! 🌙
               </h3>
               <p className="text-gray-600 dark:text-gray-300 font-arabic leading-relaxed mb-6">
-                ستكون المنصة متاحة بعد انتهاء إجازة العيد المبارك
-              </p>
+                ستكون المنصة متاحة من يوم 20/6/2025              </p>
               <Button
                 onClick={closeModal}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-arabic"

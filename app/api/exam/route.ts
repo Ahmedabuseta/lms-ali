@@ -1,14 +1,10 @@
-import { auth } from '@clerk/nextjs';
+import { requireTeacher } from '@/lib/api-auth';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    const user = await requireTeacher();
 
     const { title, description, courseId, chapterId, timeLimit, isPublished } = await req.json();
 

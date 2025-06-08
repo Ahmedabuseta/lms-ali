@@ -1,72 +1,40 @@
-import { auth } from '@clerk/nextjs';
-import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
+import { z } from 'zod';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
-    const { userId } = auth();
+    const user = await getAuthenticatedUser();
     const { searchParams } = new URL(req.url);
 
-    const courseId = searchParams.get('courseId');
-    const chapterId = searchParams.get('chapterId');
-    const offset = parseInt(searchParams.get('offset') || '0');
-
-    if (!userId) {
+    if (!user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Verify user has access to the course (purchased or is creator)
-    if (courseId) {
-      const courseAccess = await db.course.findFirst({
-        where: {
-          id: courseId,
-          OR: [
-            {
-              purchases: {
-                some: {
-                  userId,
-                },
-              },
-            },
-            {},
-          ],
-        },
-      });
+    const courseId = searchParams.get('courseId');
 
-      if (!courseAccess) {
-        return new NextResponse('No access to this course', { status: 403 });
-      }
+    if (!courseId) {
+      return new NextResponse('Course ID required', { status: 400 });
     }
 
-    // Get flashcards with pagination
     const flashcards = await db.flashcard.findMany({
       where: {
-        ...(courseId
-          ? {
-              Course: {
-                some: {
-                  id: courseId,
-                },
-              },
-            }
-          : {}),
-        ...(chapterId ? { chapterId } : {}),
+        chapter: {
+          courseId,
+        },
       },
-      take: 20,
-      skip: offset,
       orderBy: {
         createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        question: true,
-        answer: true,
       },
     });
 
     return NextResponse.json(flashcards);
   } catch (error) {
-    console.error('[FLASHCARDS_GET]', error);
+    console.log('[FLASHCARDS_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

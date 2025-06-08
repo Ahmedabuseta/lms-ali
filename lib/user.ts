@@ -1,54 +1,16 @@
-import { auth } from '@clerk/nextjs';
+import { getCurrentUser as getAuthUser } from '@/lib/auth-helpers';
 import { db } from './db';
 import { UserRole, StudentAccessType } from '@prisma/client';
 
 export const getCurrentUser = async () => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return null;
-  }
-
-  const user = await db.user.findUnique({
-    where: {
-      userId: userId,
-    },
-  });
-
-  return user;
+  return await getAuthUser();
 };
 
 export const ensureUserExists = async () => {
-  const { userId } = auth();
-
-  if (!userId) {
-    throw new Error('Unauthorized');
-  }
-
-  // Check if user exists in our database
-  let user = await db.user.findUnique({
-    where: {
-      userId: userId,
-    },
-  });
-
-  // If user doesn't exist, create them with NO_ACCESS by default
+  const user = await getCurrentUser();
+  
   if (!user) {
-    const clerkUser = await fetch(`https://api.clerk.dev/v1/users/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-      },
-    }).then((res) => res.json());
-
-    user = await db.user.create({
-      data: {
-        userId: userId,
-        email: clerkUser.email_addresses[0]?.email_address || '',
-        name: `${clerkUser.first_name || ''} ${clerkUser.last_name || ''}`.trim() || null,
-        role: UserRole.STUDENT,
-        accessType: StudentAccessType.NO_ACCESS,
-      },
-    });
+    throw new Error('Unauthorized');
   }
 
   return user;
@@ -60,15 +22,11 @@ export const isTeacher = async () => {
 };
 
 export const startFreeTrial = async () => {
-  const { userId } = auth();
+  const user = await getCurrentUser();
 
-  if (!userId) {
+  if (!user) {
     throw new Error('Unauthorized');
   }
-
-  const user = await db.user.findUnique({
-    where: { userId },
-  });
 
   if (!user) {
     throw new Error('User not found');
@@ -86,7 +44,7 @@ export const startFreeTrial = async () => {
   const trialEndDate = new Date(trialStartDate.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
   return await db.user.update({
-    where: { userId },
+    where: { id: user.id },
     data: {
       accessType: StudentAccessType.FREE_TRIAL,
       trialStartDate,

@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { Search, BookOpen, Filter } from 'lucide-react';
+import { Suspense } from 'react';
 
 import { db } from '@/lib/db';
 import { Categories } from './_component/category';
@@ -71,7 +72,9 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
         <div className="block md:hidden">
           <Card className="border-0 bg-white/80 shadow-lg backdrop-blur-sm dark:bg-gray-800/80">
             <CardContent className="p-3 sm:p-4">
-              <SearchInput />
+              <Suspense fallback={<div className="h-10 w-full animate-pulse rounded-md bg-gray-200" />}>
+                <SearchInput />
+              </Suspense>
             </CardContent>
           </Card>
         </div>

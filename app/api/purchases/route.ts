@@ -1,35 +1,36 @@
-import { auth } from '@clerk/nextjs';
-import { NextResponse } from 'next/server';
-// import { db } from '@/lib/db'
-import { Purchase } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
 
-export async function GET() {
-  try {
-    const { userId } = auth();
+export const dynamic = 'force-dynamic';
 
-    if (!userId) {
+export async function GET(req: NextRequest) {
+  try {
+    const user = await getAuthenticatedUser();
+
+    if (!user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const purchases = await db.purchase.findMany({
+    const { searchParams } = new URL(req.url);
+    const courseId = searchParams.get('courseId');
+
+    if (!courseId) {
+      return new NextResponse('Course ID is required', { status: 400 });
+    }
+
+    const purchase = await db.purchase.findUnique({
       where: {
-        userId,
-      },
-      include: {
-        course: {
-          select: {
-            id: true,
-            title: true,
-          },
+        userId_courseId: {
+          userId: user.id,
+          courseId,
         },
       },
     });
 
-    // Return just the courses from the purchases
-    const courses = purchases.map((purchase: Purchase) => purchase.courseId);
+    console.log(`Purchase check for user ${user.id} and course ${courseId}:`, !!purchase);
 
-    return NextResponse.json(courses);
+    return NextResponse.json({ purchased: !!purchase });
   } catch (error) {
     console.log('[PURCHASES_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });

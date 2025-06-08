@@ -1,48 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    const user = await getAuthenticatedUser();
+
+    if (!user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Get courses that the user has access to and have practice questions
+    const { searchParams } = new URL(req.url);
+    const categoryId = searchParams.get('categoryId');
+
     const courses = await db.course.findMany({
       where: {
-        PracticeQuestion: {
-          some: {},
-        },
+        isPublished: true,
+        ...(categoryId && { categoryId }),
       },
-      select: {
-        id: true,
-        title: true,
+      include: {
+        category: true,
         chapters: {
           where: {
             isPublished: true,
-            // Only include chapters that have practice questions
-            PracticeQuestion: {
-              some: {},
-            },
           },
           select: {
             id: true,
-            title: true,
-            _count: {
-              select: {
-                PracticeQuestion: true,
-              },
-            },
-          },
-          orderBy: {
-            position: 'asc',
           },
         },
-        _count: {
-          select: {
-            PracticeQuestion: true,
+        purchases: {
+          where: {
+            userId: user.id,
           },
         },
       },
@@ -51,9 +41,17 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(courses);
+    const coursesWithProgress = courses.map((course) => ({
+      ...course,
+      progress: null, // Add progress calculation if needed
+      isPurchased: course.purchases.length > 0,
+    }));
+
+    console.log(`Found ${coursesWithProgress.length} courses for practice`);
+
+    return NextResponse.json(coursesWithProgress);
   } catch (error) {
-    console.error('[PRACTICE_COURSES_GET]', error);
+    console.log('[PRACTICE_COURSES_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

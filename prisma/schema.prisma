@@ -1,8 +1,8 @@
+
 generator client {
   provider   = "prisma-client-js"
   engineType = "binary"
 }
-
 
 datasource db {
   provider = "postgresql"
@@ -130,29 +130,24 @@ model Flashcard {
   chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  
   // courses Course[]
-  
   @@index([chapterId])
 }
 
 model Exam {
-  id          String    @id @default(cuid())
+  id          String        @id @default(cuid())
   title       String
   description String?
-  timeLimit   Int?      // Time limit in minutes, null means no time limit
-  isPublished Boolean   @default(false)
-  
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  timeLimit   Int? // Time limit in minutes, null means no time limit
+  isPublished Boolean       @default(false)
+  course      Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId    String
-  chapter     Chapter?  @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapter     Chapter?      @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   chapterId   String?
-  
   questions   Question[]
   attempts    ExamAttempt[]
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([courseId])
   @@index([chapterId])
@@ -164,75 +159,60 @@ enum QuestionType {
 }
 
 model Question {
-  id          String      @id @default(cuid())
-  text        String
-  type        QuestionType
-  points      Int         @default(1)
-  
-  exam        Exam        @relation(fields: [examId], references: [id], onDelete: Cascade)
-  examId      String
-  
-  options     Option[]
-  attempts    QuestionAttempt[]
-  
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id        String            @id @default(cuid())
+  text      String
+  type      QuestionType
+  points    Int               @default(1)
+  exam      Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examId    String
+  options   Option[]
+  attempts  QuestionAttempt[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
   @@index([examId])
 }
 
 model Option {
-  id          String    @id @default(cuid())
-  text        String
-  isCorrect   Boolean   @default(false)
-  
-  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId  String
-  
-  attempts    QuestionAttempt[]
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String            @id @default(cuid())
+  text       String
+  isCorrect  Boolean           @default(false)
+  question   Question          @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  attempts   QuestionAttempt[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 
   @@index([questionId])
 }
 
 model ExamAttempt {
-  id          String    @id @default(cuid())
-  userId      String
-  
-  exam        Exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
-  examId      String
-  
-  startedAt   DateTime  @default(now())
-  completedAt DateTime?
-  score       Int?
-  
+  id               String            @id @default(cuid())
+  userId           String
+  exam             Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examId           String
+  startedAt        DateTime          @default(now())
+  completedAt      DateTime?
+  score            Int?
   questionAttempts QuestionAttempt[]
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   @@index([userId])
   @@index([examId])
 }
 
 model QuestionAttempt {
-  id          String    @id @default(cuid())
-  
-  examAttempt ExamAttempt @relation(fields: [examAttemptId], references: [id], onDelete: Cascade)
-  examAttemptId String
-  
-  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId  String
-  
-  selectedOption Option? @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+  id               String      @id @default(cuid())
+  examAttempt      ExamAttempt @relation(fields: [examAttemptId], references: [id], onDelete: Cascade)
+  examAttemptId    String
+  question         Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId       String
+  selectedOption   Option?     @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
   selectedOptionId String?
-  
-  isCorrect   Boolean?
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isCorrect        Boolean?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   @@index([examAttemptId])
   @@index([questionId])
@@ -240,37 +220,31 @@ model QuestionAttempt {
 }
 
 model PracticeQuestion {
-  id          String      @id @default(cuid())
-  text        String
-  type        QuestionType
-  difficulty  String?     // Easy, Medium, Hard
-  
-  course      Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId    String
-  
-  chapter     Chapter?    @relation(fields: [chapterId], references: [id], onDelete: SetNull)
-  chapterId   String?
-  
-  options     PracticeOption[]
-  
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  
+  id         String           @id @default(cuid())
+  text       String
+  type       QuestionType
+  difficulty String? // Easy, Medium, Hard
+  course     Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId   String
+  chapter    Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapterId  String?
+  options    PracticeOption[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
   @@index([courseId])
   @@index([chapterId])
 }
 
 model PracticeOption {
-  id          String    @id @default(cuid())
-  text        String
-  isCorrect   Boolean   @default(false)
-  
-  question    PracticeQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId  String
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
+  id         String           @id @default(cuid())
+  text       String
+  isCorrect  Boolean          @default(false)
+  question   PracticeQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
   @@index([questionId])
 }
 
@@ -280,36 +254,103 @@ enum UserRole {
 }
 
 enum StudentAccessType {
-  NO_ACCESS      // Default state - no access
-  FREE_TRIAL     // 3-day free trial
-  FULL_ACCESS    // Paid - full access including videos
+  NO_ACCESS // Default state - no access
+  FREE_TRIAL // 3-day free trial
+  FULL_ACCESS // Paid - full access including videos
   LIMITED_ACCESS // Paid - access without videos
 }
 
 model User {
-  id       String   @id @default(cuid())
-  userId   String   @unique // Clerk user ID
-  email    String   @unique
-  name     String?
-  role     UserRole @default(STUDENT)
-  
+  id              String            @id @default(cuid())
+  email           String            @unique
+  name            String?
+  image           String?
+  role            UserRole          @default(STUDENT)
   // Student access control
-  accessType       StudentAccessType @default(NO_ACCESS)
-  trialStartDate   DateTime?         // When trial started
-  trialEndDate     DateTime?         // When trial ends (3 days from start)
-  isTrialUsed      Boolean @default(false) // Has user used their trial
-  
+  accessType      StudentAccessType @default(NO_ACCESS)
+  trialStartDate  DateTime? // When trial started
+  trialEndDate    DateTime? // When trial ends (3 days from start)
+  isTrialUsed     Boolean           @default(false) // Has user used their trial
   // Manual access control by teacher
-  accessGrantedBy  String?   // Teacher who granted access
-  accessGrantedAt  DateTime? // When access was granted
-  paymentReceived  Boolean @default(false) // Teacher confirms payment received
-  paymentAmount    Float?    // Amount paid (optional tracking)
-  paymentNotes     String?   // Notes about payment/WhatsApp conversation
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  @@index([userId])
+  accessGrantedBy String? // Teacher who granted access
+  accessGrantedAt DateTime? // When access was granted
+  paymentReceived Boolean           @default(false) // Teacher confirms payment received
+  paymentAmount   Float? // Amount paid (optional tracking)
+  paymentNotes    String? // Notes about payment/WhatsApp conversation
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  accounts        Account[]
+  sessions        Session[]
+  emailVerified   Boolean
+  banned          Boolean?
+  banReason       String?
+  banExpires      DateTime?
+
   @@index([role])
   @@index([accessType])
+  @@map("user")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expiresAt      DateTime
+  token          String
+  ipAddress      String?
+  userAgent      String?
+  impersonatedBy String?
+
+  @@index([userId])
+  @@unique([token])
+  @@map("session")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }

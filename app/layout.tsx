@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Cairo } from 'next/font/google';
 import './globals.css';
-import { ClerkProvider } from '@clerk/nextjs';
 import { ToastProvider } from '@/components/providers/toaster-provider';
 import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/components/providers';
 
@@ -25,9 +24,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
+    <html lang="en" suppressHydrationWarning>
+      <head>
           {/* Enhanced dark mode script with better transition handling */}
           {/* 
           <script
@@ -89,6 +87,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

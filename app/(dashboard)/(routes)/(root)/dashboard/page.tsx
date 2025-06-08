@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { CheckCircle, Clock, BookOpen, Trophy, Brain, Target, Sparkles, TrendingUp, Award, Users } from 'lucide-react';
 import CoursesList from '@/components/course-list';
@@ -8,15 +7,16 @@ import { LearningInsights } from './_components/learning-insights';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { getCurrentUser } from '@/lib/auth-helpers';
 
 export default async function Dashboard() {
-  const { userId } = auth();
+  const user = await getCurrentUser();
 
-  if (!userId) {
-    return redirect('/');
+  if (!user) {
+    return redirect('/sign-in');
   }
 
-  const { completedCourses, coursesInProgress } = await getDashboardCourses(userId);
+  const { completedCourses, coursesInProgress } = await getDashboardCourses(user.id);
 
   // Add chaptersLength property to each course
   const coursesWithChaptersLength = [...coursesInProgress, ...completedCourses].map((course) => ({

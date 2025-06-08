@@ -27,17 +27,17 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent md:text-5xl font-arabic">
-            كيفية الاستفادة القصوى من المنصة
+            ازاي تستفيد من المنصة بأقصى شكل
           </h2>
           <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-300 font-arabic leading-relaxed">
-            دليل شامل لاستخدام جميع ميزات المنصة بأقصى فعالية وتحقيق أفضل النتائج في رحلتك التعليمية
+            دليل شامل عشان تستخدم كل مميزات المنصة بكفاءة وتحقق أحسن نتايج في رحلة تعليمك
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Left Column - Platform Features Usage */}
           <div className="space-y-6">
-            <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استخدام ميزات المنصة بذكاء</h3>
+            <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استخدام مميزات المنصة بشطارة</h3>
             
             {/* Feature 1 - Interactive Content */}
             <div className="flex items-start gap-4 rounded-xl bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800">
@@ -47,7 +47,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
               <div>
                 <h4 className="mb-2 text-lg font-bold text-gray-800 dark:text-white font-arabic">المحتوى التفاعلي والملاحظات</h4>
                 <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                  استخدم أدوات الملاحظات والإشارات المرجعية أثناء مشاهدة الدروس. اكتب ملاحظاتك الشخصية وارجع إليها لاحقاً للمراجعة السريعة.
+                  استخدم أدوات الملاحظات والبوكماركس وانت بتتفرج على الدروس. اكتب ملاحظاتك الشخصية وارجعلها بعدين للمراجعة السريعة.
                 </p>
               </div>
             </div>
@@ -60,7 +60,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
               <div>
                 <h4 className="mb-2 text-lg font-bold text-gray-800 dark:text-white font-arabic">المدرس الذكي والمساعدة الفورية</h4>
                 <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                  لا تتردد في سؤال المدرس الذكي عن أي مفهوم غير واضح. يمكنه تقديم شروحات مبسطة وأمثلة إضافية وحلول للمسائل المعقدة.
+                  متترددش تسأل المدرس الذكي عن أي حاجة مش فاهمها. هيقدر يشرحلك بطريقة سهلة ويديك أمثلة إضافية وحلول للمسائل الصعبة.
                 </p>
               </div>
             </div>
@@ -71,9 +71,9 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
                 <BarChart3 className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h4 className="mb-2 text-lg font-bold text-gray-800 dark:text-white font-arabic">تتبع التقدم والإحصائيات</h4>
+                <h4 className="mb-2 text-lg font-bold text-gray-800 dark:text-white font-arabic">متابعة التقدم والإحصائيات</h4>
                 <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                  راجع لوحة التحكم يومياً لمتابعة تقدمك. حلل نقاط قوتك وضعفك من خلال الإحصائيات المفصلة وركز على المواضيع التي تحتاج تحسين.
+                  شوف لوحة التحكم كل يوم عشان تتابع تقدمك. حلل نقط قوتك وضعفك من الإحصائيات المفصلة وركز على المواضيع اللي محتاجة تحسين.
                 </p>
               </div>
             </div>
@@ -86,7 +86,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
               <div>
                 <h4 className="mb-2 text-lg font-bold text-gray-800 dark:text-white font-arabic">البطاقات التعليمية الذكية</h4>
                 <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                  أنشئ بطاقات تعليمية للمفاهيم المهمة والمصطلحات. استخدم نظام التكرار المتباعد للمراجعة الفعالة وتقوية الذاكرة طويلة المدى.
+                  اعمل بطاقات تعليمية للمفاهيم المهمة والمصطلحات. استخدم نظام المراجعة المتباعدة عشان تذاكر بشكل فعال وتقوي ذاكرتك.
                 </p>
               </div>
             </div>
@@ -94,16 +94,16 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
 
           {/* Right Column - Advanced Study Strategies */}
           <div className="space-y-6">
-            <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استراتيجيات الدراسة المتقدمة</h3>
+            <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استراتيجيات المذاكرة المتقدمة</h3>
             
             {/* Strategy 1 - Time Management */}
             <div className="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-6 dark:from-blue-900/20 dark:to-indigo-900/20">
               <div className="mb-4 flex items-center gap-3">
                 <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">إدارة الوقت بذكاء</h4>
+                <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">تنظيم الوقت بذكاء</h4>
               </div>
               <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                استخدم تقنية البومودورو: 25 دقيقة دراسة مركزة ثم 5 دقائق راحة. تابع وقت دراستك من خلال المنصة وحدد أهدافاً يومية واقعية.
+                استخدم طريقة البومودورو: 25 دقيقة مذاكرة وبعدين 5 دقايق راحة. تابع وقت مذاكرتك من المنصة وحط أهداف يومية واقعية.
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
                 <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">التعلم النشط والتطبيق</h4>
               </div>
               <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                لا تكتفِ بمشاهدة الفيديوهات فقط. حل التمارين فور انتهاء كل درس، وطبق المفاهيم على أمثلة جديدة، واستخدم الاختبارات التفاعلية.
+                مش كفاية تتفرج على الفيديوهات وبس. حل التمارين على طول بعد كل درس، وطبق اللي اتعلمته على أمثلة جديدة، واستخدم الاختبارات.
               </p>
             </div>
 
@@ -125,7 +125,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
                 <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">التعلم الجماعي والمناقشات</h4>
               </div>
               <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                شارك في المناقشات مع زملائك، اطرح أسئلة في المنتديات، وساعد الآخرين. التعليم للآخرين يقوي فهمك ويكشف الثغرات في معرفتك.
+                شارك في المناقشات مع زمايلك، اسأل في المنتديات، وساعد غيرك. لما تشرح لغيرك بتفهم أحسن وبتكتشف الثغرات في معلوماتك.
               </p>
             </div>
 
@@ -136,7 +136,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
                 <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">التقييم المستمر والمراجعة</h4>
               </div>
               <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                اختبر نفسك بانتظام باستخدام الاختبارات القصيرة. راجع الأخطاء وتعلم منها. استخدم نظام المراجعة المتباعدة للمواد المهمة.
+                اختبر نفسك على طول بالكويزات. راجع أخطاءك واتعلم منها. استخدم نظام المراجعة المتباعدة للمواد المهمة.
               </p>
             </div>
 
@@ -144,45 +144,12 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
             <div className="rounded-xl bg-gradient-to-br from-teal-50 to-cyan-100 p-6 dark:from-teal-900/20 dark:to-cyan-900/20">
               <div className="mb-4 flex items-center gap-3">
                 <Target className="h-6 w-6 text-teal-600 dark:text-teal-400" />
-                <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">وضع الأهداف والتحفيز</h4>
+                <h4 className="text-lg font-bold text-gray-800 dark:text-white font-arabic">تحديد الأهداف والتحفيز</h4>
               </div>
               <p className="text-gray-600 dark:text-gray-300 font-arabic text-sm leading-relaxed">
-                حدد أهدافاً قصيرة وطويلة المدى. احتفل بإنجازاتك الصغيرة، وتابع شاراتك وإنجازاتك على المنصة لتحافظ على دافعيتك.
+                حط أهداف قصيرة وطويلة المدى. احتفل بإنجازاتك الصغيرة، وتابع الشارات والإنجازات بتاعتك على المنصة عشان تحافظ على حماسك.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="mt-16 text-center">
-          <div className="mx-auto max-w-2xl rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
-            <h3 className="mb-4 text-2xl font-bold font-arabic">ابدأ رحلتك التعليمية الذكية الآن</h3>
-            <p className="mb-6 text-blue-100 font-arabic leading-relaxed">
-              طبق هذه الاستراتيجيات واستفد من جميع ميزات المنصة لتحقيق أقصى استفادة من وقت دراستك
-            </p>
-            {onStartClick ? (
-              <Button
-                size="lg"
-                onClick={onStartClick}
-                className="bg-white text-blue-600 hover:bg-gray-100 font-arabic"
-              >
-                <span className="flex items-center gap-2">
-                  ابدأ الدراسة الذكية مجاناً
-                  <ArrowRight className="h-5 w-5 rotate-180" />
-                </span>
-              </Button>
-            ) : (
-              <Button
-                size="lg"
-                asChild
-                className="bg-white text-white hover:bg-gray-100 font-arabic"
-              >
-                <Link href="/dashboard" className="flex items-center text-white gap-2">
-                  ابدأ الدراسة الذكية مجاناً
-                  <ArrowRight className="h-5 w-5 rotate-180" />
-                </Link>
-              </Button>
-            )}
           </div>
         </div>
       </div>

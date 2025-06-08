@@ -10,7 +10,7 @@
     "postinstall": "bun prisma generate"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.27.5",
+    "better-auth": "^1.2.8",
     "@hello-pangea/dnd": "^16.5.0",
     "@hookform/resolvers": "^3.3.2",
     "@mdx-js/mdx": "^3.1.0",

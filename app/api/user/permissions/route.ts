@@ -1,17 +1,24 @@
-import { NextResponse } from 'next/server';
-import { ensureUserExists, getUserPermissions } from '@/lib/user';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getUserPermissions } from '@/lib/user';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
   try {
-    // Ensure user exists in our database
-    await ensureUserExists();
+    const user = await getAuthenticatedUser();
 
-    // Get user permissions
+    if (!user) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    console.log('[USER_PERMISSIONS] Getting permissions for user:', user.id);
+
     const permissions = await getUserPermissions();
 
     return NextResponse.json(permissions);
   } catch (error) {
-    console.error('[USER_PERMISSIONS]', error);
+    console.log('[USER_PERMISSIONS]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

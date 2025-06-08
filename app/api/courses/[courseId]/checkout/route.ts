@@ -1,14 +1,14 @@
-import { currentUser } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { db } from '@/lib/db';
 import { stripe } from '@/lib/stripe';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
-    const user = await currentUser();
-    if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    const user = await requireAuth();
+    if (!user.email) {
+      return new NextResponse('User email not found', { status: 400 });
     }
 
     const course = await db.course.findUnique({ where: { id: params.courseId, isPublished: true } });
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
     });
 
     if (!stripeCustomer) {
-      const customer = await stripe.customers.create({ email: user.emailAddresses[0].emailAddress });
+      const customer = await stripe.customers.create({ email: user.email });
 
       stripeCustomer = await db.stripeCustomer.create({ data: { userid: user.id, stripeCustomerId: customer.id } });
     }

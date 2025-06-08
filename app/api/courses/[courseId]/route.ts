@@ -1,20 +1,15 @@
-import { auth } from '@clerk/nextjs';
+import { requireTeacher } from '@/lib/api-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import Mux from '@mux/mux-node';
 import { db } from '@/lib/db';
-import { isTeacher } from '@/lib/teacher';
 
 const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!);
 
 export async function PATCH(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
+    const user = await requireTeacher();
     const { courseId } = params;
     const values = await req.json();
-
-    if (!userId || !isTeacher(userId)) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     const course = await db.course.update({
       where: {
@@ -38,11 +33,7 @@ export async function PATCH(req: Request, { params }: { params: { courseId: stri
 
 export async function DELETE(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId || !isTeacher(userId)) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    const user = await requireTeacher();
 
     const course = await db.course.findUnique({
       where: { id: params.courseId },
