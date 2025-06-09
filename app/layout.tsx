@@ -79,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           */}
         </head>
         <body className={`${cairo.className} bg-background text-foreground antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="theme">
             <ConfettiProvider />
             <ToastProvider />
             <NotificationsProvider />

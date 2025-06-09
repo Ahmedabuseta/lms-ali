@@ -16,6 +16,11 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
+  account: {
+    accountLinking: {
+        enabled: true, 
+    } 
+  },
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 24 hours
@@ -64,9 +69,10 @@ export const auth = betterAuth({
       },
     },
   },
+
   plugins: [
     admin({
-      defaultRole: "user",
+      defaultRole: "STUDENT",
       adminEmails: process.env.ADMIN_EMAIL ? [process.env.ADMIN_EMAIL] : [],
     }),
     nextCookies(),

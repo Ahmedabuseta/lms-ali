@@ -18,12 +18,12 @@ export default function SignInPage() {
         provider: 'google',
         callbackURL: '/dashboard',
       });
-      await authClient.revokeOtherSessions()
     } catch (error) {
       console.error('Sign in error:', error);
       toast.error('خطأ في تسجيل الدخول');
     } finally {
       setIsLoading(false);
+      await authClient.revokeOtherSessions();
     }
   };
 
@@ -59,4 +59,4 @@ export default function SignInPage() {
       </div>
     </div>
   );
-} 
+}

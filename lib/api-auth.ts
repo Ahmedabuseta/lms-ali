@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { auth } from "./auth";
-import { db } from "./db";
 import { NextResponse } from "next/server";
 
 export async function getAuthenticatedUser() {
