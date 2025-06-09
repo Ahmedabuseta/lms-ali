@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
+import { Flashcard } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export async function GET(req: Request) {
     const courseId = searchParams.get('courseId');
     const chapterId = searchParams.get('chapterId');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const limit = parseInt(searchParams.get('limit') || '20');
 
     if (!courseId) {
       return new NextResponse('Course ID required', { status: 400 });
@@ -42,28 +43,55 @@ export async function GET(req: Request) {
       where: whereClause,
     });
 
-    // Get flashcards with pagination and randomization
-    const flashcards = await db.flashcard.findMany({
-      where: whereClause,
-      include: {
-        chapter: {
-          select: {
-            id: true,
-            title: true,
-            courseId: true,
-          },
-        },
-      },
-      skip: offset,
-      take: limit,
-      orderBy: {
-        // Use a combination of random ordering
-        createdAt: 'desc',
-      },
-    });
+    // Get flashcards with true database-level randomization
+    let flashcards: Flashcard[] = [];
+    
+    if (chapterId) {
+      // Use raw SQL for true randomization when filtering by chapter
+      flashcards = await db.$queryRaw`
+        SELECT 
+          f.*,
+          c.id as "chapter_id",
+          c.title as "chapter_title",
+          c."courseId" as "chapter_courseId"
+        FROM "Flashcard" f
+        JOIN "Chapter" c ON f."chapterId" = c.id
+        WHERE f."chapterId" = ${chapterId}
+        AND c."courseId" = ${courseId}
+        ORDER BY RANDOM()
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+    } else {
+      // Use raw SQL for true randomization across all chapters in course
+      flashcards = await db.$queryRaw`
+        SELECT 
+          f.*,
+          c.id as "chapter_id", 
+          c.title as "chapter_title",
+          c."courseId" as "chapter_courseId"
+        FROM "Flashcard" f
+        JOIN "Chapter" c ON f."chapterId" = c.id
+        WHERE c."courseId" = ${courseId}
+        ORDER BY RANDOM()
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+    }
 
-    // Randomize the results after fetching
-    const randomizedFlashcards = flashcards.sort(() => Math.random() - 0.5);
+    // Transform the raw result to match expected structure
+    const randomizedFlashcards = flashcards.map((flashcard: Flashcard) => ({
+      ...flashcard,
+      chapter: {
+        id: flashcard.chapter_id,
+        title: flashcard.chapter_title,
+        courseId: flashcard.chapter_courseId,
+      },
+      // Remove the flattened chapter fields
+      chapter_id: undefined,
+      chapter_title: undefined,
+      chapter_courseId: undefined,
+    }));
 
     // Calculate pagination metadata
     const totalPages = Math.ceil(totalCount / limit);
