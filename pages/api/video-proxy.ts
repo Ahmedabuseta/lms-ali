@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader('Access-Control-Allow-Headers', '*');
 
   const { url } = req.query;
-  
+
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'URL parameter is required' });
   }
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         'Accept-Encoding': 'identity', // Disable compression for streaming
       },
     });
-    
+
     if (!response.ok) {
       return res.status(response.status).json({
         error: 'Failed to fetch video',
@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const contentLength = response.headers.get('content-length');
     const acceptRanges = response.headers.get('accept-ranges');
     const contentRange = response.headers.get('content-range');
-    
+
     if (contentType) {
       res.setHeader('Content-Type', contentType);
     }

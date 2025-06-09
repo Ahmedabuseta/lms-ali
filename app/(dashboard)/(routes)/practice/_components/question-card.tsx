@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, FileQuestion } from 'lucide-react';
+import { OptionItem } from './option-item';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, ArrowRight, FileQuestion } from 'lucide-react';
-import { OptionItem } from './option-item';
 
 interface Question {
   id: string;

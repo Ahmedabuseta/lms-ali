@@ -1,5 +1,5 @@
-import { requireTeacher } from '@/lib/api-auth';
 import { NextResponse } from 'next/server';
+import { requireTeacher } from '@/lib/api-auth';
 import { db } from '@/lib/db';
 
 export async function POST(req: Request) {

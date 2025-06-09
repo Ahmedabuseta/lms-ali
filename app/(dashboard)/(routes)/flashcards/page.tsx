@@ -1,10 +1,10 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap, BookOpen, Brain, Target, ChevronRight, Users, Clock, Award } from 'lucide-react';
 import Link from 'next/link';
 import FlashcardClient from './_components/FlashcardClient';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { db } from '@/lib/db';
 
 interface PageProps {
   searchParams: {
@@ -86,9 +86,9 @@ export default async function FlashcardsPage({ searchParams }: PageProps) {
     >
       {/* Enhanced light mode decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="to-red-300/15 absolute right-10 top-20 h-56 w-56 animate-pulse rounded-full bg-gradient-to-br from-orange-200/20 blur-3xl"></div>
-        <div className="to-pink-300/15 animation-delay-2000 absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-red-200/20 blur-3xl"></div>
-        <div className="to-orange-300/15 animation-delay-4000 absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-amber-200/20 blur-3xl"></div>
+        <div className="to-red-300/15 absolute right-10 top-20 h-56 w-56 animate-pulse rounded-full bg-gradient-to-br from-orange-200/20 blur-3xl" />
+        <div className="to-pink-300/15 animation-delay-2000 absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-red-200/20 blur-3xl" />
+        <div className="to-orange-300/15 animation-delay-4000 absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-amber-200/20 blur-3xl" />
       </div>
 
       <div className="relative z-10 space-y-6 p-4 sm:space-y-8 sm:p-6">
@@ -159,11 +159,11 @@ export default async function FlashcardsPage({ searchParams }: PageProps) {
                             <span>ابدأ المراجعة</span>
                             <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" />
                           </div>
-                          <div className="h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8"></div>
+                          <div className="h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8" />
                         </div>
 
                         {/* Floating decoration */}
-                        <div className="absolute right-3 top-3 h-4 w-4 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150 sm:right-4 sm:top-4 sm:h-6 sm:w-6"></div>
+                        <div className="absolute right-3 top-3 h-4 w-4 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150 sm:right-4 sm:top-4 sm:h-6 sm:w-6" />
                       </CardContent>
                     </Card>
                   </Link>

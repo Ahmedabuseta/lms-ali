@@ -1,6 +1,6 @@
-import { requireTeacher } from '@/lib/api-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import Mux from '@mux/mux-node';
+import { requireTeacher } from '@/lib/api-auth';
 import { db } from '@/lib/db';
 
 const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!);

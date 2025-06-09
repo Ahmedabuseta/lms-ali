@@ -1,6 +1,6 @@
-import { getCurrentUser as getAuthUser } from '@/lib/auth-helpers';
-import { db } from './db';
 import { UserRole, StudentAccessType } from '@prisma/client';
+import { db } from './db';
+import { getCurrentUser as getAuthUser } from '@/lib/auth-helpers';
 
 export const getCurrentUser = async () => {
   return await getAuthUser();
@@ -8,7 +8,7 @@ export const getCurrentUser = async () => {
 
 export const ensureUserExists = async () => {
   const user = await getCurrentUser();
-  
+
   if (!user) {
     throw new Error('Unauthorized');
   }

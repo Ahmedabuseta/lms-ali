@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Rotate3D, ChevronUp, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useSpring, animated, to } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
+import { Button } from '@/components/ui/button';
 import { MathRenderer } from '@/components/math-renderer';
 
 interface FlashcardProps {
@@ -259,9 +259,9 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
       {/* Background stack effect */}
       {hasCard && currentIndex + 1 < cards.length && (
         <div className="absolute left-0 right-0 top-2 -z-10">
-          <div className="h-80 w-full translate-y-2 scale-[0.98] transform rounded-xl border border-slate-200 bg-white opacity-70 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/30"></div>
+          <div className="h-80 w-full translate-y-2 scale-[0.98] transform rounded-xl border border-slate-200 bg-white opacity-70 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/30" />
           {currentIndex + 2 < cards.length && (
-            <div className="absolute left-0 right-0 top-0 h-80 w-full translate-y-4 scale-[0.96] transform rounded-xl border border-slate-200 bg-white opacity-40 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/20"></div>
+            <div className="absolute left-0 right-0 top-0 h-80 w-full translate-y-4 scale-[0.96] transform rounded-xl border border-slate-200 bg-white opacity-40 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/20" />
           )}
         </div>
       )}

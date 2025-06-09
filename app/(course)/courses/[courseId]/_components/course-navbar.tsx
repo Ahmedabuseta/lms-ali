@@ -1,9 +1,9 @@
 import { Prisma } from '@prisma/client';
+import { BookOpen, Award, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { NavbarRoutes } from '@/components/navbar-routes';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Award, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
 type CourseNavbarProps = {
   course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
@@ -11,10 +11,10 @@ type CourseNavbarProps = {
 };
 
 export default function CourseNavbar({ course, progressCount }: CourseNavbarProps) {
-  const completedChapters = course.chapters.filter(chapter => 
+  const completedChapters = course.chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
   ).length;
-  
+
   const totalChapters = course.chapters.length;
 
   return (
@@ -28,7 +28,7 @@ export default function CourseNavbar({ course, progressCount }: CourseNavbarProp
             العودة للوحة التحكم
           </Button>
         </Link>
-        
+
         {/* Course info */}
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">

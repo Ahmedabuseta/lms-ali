@@ -25,7 +25,7 @@ export const CourseCard = ({
   iconGradientFrom,
   iconGradientTo,
   priceColor,
-  href = "/dashboard",
+  href = '/dashboard',
   onStartClick
 }: CourseCardProps) => {
   return (
@@ -43,8 +43,8 @@ export const CourseCard = ({
         <div className="flex items-center justify-between">
           <span className={`text-lg font-bold ${priceColor} font-arabic`}>جرب مجاناً</span>
           {onStartClick ? (
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               onClick={onStartClick}
               className={`bg-gradient-to-r ${iconGradientFrom} ${iconGradientTo} font-arabic`}
             >
@@ -61,4 +61,4 @@ export const CourseCard = ({
       </CardContent>
     </Card>
   );
-}; 
+};

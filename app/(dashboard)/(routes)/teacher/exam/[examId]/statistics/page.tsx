@@ -1,9 +1,9 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft, BarChart, Trophy, Users } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getExamStatistics } from '@/actions/exam-actions';
-import { ArrowLeft, BarChart, Trophy, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';

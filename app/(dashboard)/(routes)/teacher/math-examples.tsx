@@ -46,7 +46,7 @@ export default function MathExamples() {
         'The probability density function of a normal distribution is:\n\n$$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$',
     },
     {
-      title: "Physics - Einstein's Equation",
+      title: 'Physics - Einstein\'s Equation',
       content: 'The mass-energy equivalence is given by:\n\n$$E = mc^2$$',
     },
   ];
@@ -55,11 +55,11 @@ export default function MathExamples() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Enhanced decorative elements for both themes */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
       </div>
 
       <div className="relative z-10 space-y-6 p-6">

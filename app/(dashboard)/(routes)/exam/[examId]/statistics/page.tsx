@@ -65,8 +65,8 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
         userName: 'Student', // Since we don't have user relation, use placeholder
         email: 'student@example.com', // Since we don't have user relation, use placeholder
         score: attempt.score || 0,
-        timeTaken: attempt.completedAt && attempt.startedAt 
-          ? Math.round((attempt.completedAt.getTime() - attempt.startedAt.getTime()) / 1000 / 60) 
+        timeTaken: attempt.completedAt && attempt.startedAt
+          ? Math.round((attempt.completedAt.getTime() - attempt.startedAt.getTime()) / 1000 / 60)
           : 0,
         completedAt: attempt.completedAt!, // We know this is not null due to filter
         correct: attempt.questionAttempts.filter((qa) => qa.isCorrect).length,

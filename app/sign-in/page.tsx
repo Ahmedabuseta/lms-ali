@@ -1,11 +1,11 @@
 'use client';
 
-import { authClient, signIn } from '@/lib/auth-client';
-import { Button } from '@/components/ui/button';
 import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { authClient, signIn } from '@/lib/auth-client';
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +48,7 @@ export default function SignInPage() {
               <FcGoogle className="w-6 h-6 mr-3" />
               {isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول بنقرة واحدة'}
             </Button>
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400 font-arabic">
                 تسجيل دخول آمن وسريع بحساب Google

@@ -1,14 +1,14 @@
 import { Star } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { useEffect, useRef, useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 
 const testimonials = [
-  { name: "أحمد محمد", role: "طالب تجارة", initial: "أ", review: "والله يا جدعان انتو ساعدتوني كتير في دخول تجارة، المحتوى بتاعكم والشرح الجامد خلاني افهم كل حاجة. ربنا يكرمكم!" },
-  { name: "فاطمة أحمد", role: "طالبة تجارة", initial: "ف", review: "بجد مش عارفة اشكركم ازاي، بفضلكم قدرت احقق حلمي وادخل تجارة. الشرح كان واضح جداً والدعم مكنش بيتأخر عليا!" },
-  { name: "محمد علي", role: "طالب تجارة", initial: "م", review: "يا جماعة انتو زي العسل، ساعدتوني اوي في التحضير لتجارة. الامتحانات التجريبية دي كانت جامدة جداً!" },
-  { name: "نور الهدى", role: "طالبة تجارة", initial: "ن", review: "الله يخليكم ليا يارب، من غيركم مكنتش هعرف ادخل تجارة. المنصة بتاعتكم سهلت عليا المذاكرة اوي!" },
-  { name: "عمر حسن", role: "طالب تجارة", initial: "ع", review: "تسلم ايديكم يا احلى ناس، خليتو حلم دخول تجارة سهل. كل حاجة كانت واضحة وبسيطة، ربنا يباركلكم!" },
-  { name: "مريم سالم", role: "طالبة تجارة", initial: "م", review: "بجد مفيش اجدع منكم، ساعدتوني اوصل لحلمي في تجارة. المنصة كانت فيها كل اللي محتاجاه، تسلم ايديكم!" }
+  { name: 'أحمد محمد', role: 'طالب تجارة', initial: 'أ', review: 'والله يا جدعان انتو ساعدتوني كتير في دخول تجارة، المحتوى بتاعكم والشرح الجامد خلاني افهم كل حاجة. ربنا يكرمكم!' },
+  { name: 'فاطمة أحمد', role: 'طالبة تجارة', initial: 'ف', review: 'بجد مش عارفة اشكركم ازاي، بفضلكم قدرت احقق حلمي وادخل تجارة. الشرح كان واضح جداً والدعم مكنش بيتأخر عليا!' },
+  { name: 'محمد علي', role: 'طالب تجارة', initial: 'م', review: 'يا جماعة انتو زي العسل، ساعدتوني اوي في التحضير لتجارة. الامتحانات التجريبية دي كانت جامدة جداً!' },
+  { name: 'نور الهدى', role: 'طالبة تجارة', initial: 'ن', review: 'الله يخليكم ليا يارب، من غيركم مكنتش هعرف ادخل تجارة. المنصة بتاعتكم سهلت عليا المذاكرة اوي!' },
+  { name: 'عمر حسن', role: 'طالب تجارة', initial: 'ع', review: 'تسلم ايديكم يا احلى ناس، خليتو حلم دخول تجارة سهل. كل حاجة كانت واضحة وبسيطة، ربنا يباركلكم!' },
+  { name: 'مريم سالم', role: 'طالبة تجارة', initial: 'م', review: 'بجد مفيش اجدع منكم، ساعدتوني اوصل لحلمي في تجارة. المنصة كانت فيها كل اللي محتاجاه، تسلم ايديكم!' }
 ];
 
 export const Testimonials = () => {
@@ -21,7 +21,7 @@ export const Testimonials = () => {
 
   const startAutoScroll = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    
+
     intervalRef.current = setInterval(() => {
       const scrollContainer = scrollRef.current;
       if (!scrollContainer || !isAutoScrolling) return;
@@ -150,7 +150,7 @@ export const Testimonials = () => {
 
         <div className="relative">
           {/* Swipable Auto-scrolling Testimonials Container */}
-          <div 
+          <div
             ref={scrollRef}
             className={`flex overflow-x-hidden gap-6 pb-4 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             style={{ scrollBehavior: isDragging ? 'auto' : 'smooth' }}
@@ -189,14 +189,14 @@ export const Testimonials = () => {
               </Card>
             ))}
           </div>
-          
+
           {/* Scroll Indicator */}
           <div className="flex justify-center mt-6 space-x-2">
-            <div className="h-2 w-8 bg-blue-200 rounded-full animate-pulse dark:bg-blue-800"></div>
-            <div className="h-2 w-2 bg-gray-300 rounded-full dark:bg-gray-600"></div>
-            <div className="h-2 w-2 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+            <div className="h-2 w-8 bg-blue-200 rounded-full animate-pulse dark:bg-blue-800" />
+            <div className="h-2 w-2 bg-gray-300 rounded-full dark:bg-gray-600" />
+            <div className="h-2 w-2 bg-gray-300 rounded-full dark:bg-gray-600" />
           </div>
-          
+
           {/* Instructions */}
           <p className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400 font-arabic">
             اسحب للتنقل أو انتظر للتمرير التلقائي

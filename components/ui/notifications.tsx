@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, Info, X, BellRing, BookOpen, GraduationCap, Timer, Trophy } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
-import { Card } from './card';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Create a store for notifications
 import { create } from 'zustand';
+import { Card } from './card';
+import { cn } from '@/lib/utils';
 
 type NotificationType = 'success' | 'error' | 'info' | 'warning' | 'achievement';
 type NotificationPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -138,15 +138,15 @@ export function NotificationToast({ notification, onClose, type, className, ...p
   };
 
   // Extract conflicting props to avoid conflicts with Framer Motion
-  const { 
-    onDrag, 
-    onDragEnd, 
-    onDragStart, 
-    onAnimationStart, 
-    onAnimationEnd, 
+  const {
+    onDrag,
+    onDragEnd,
+    onDragStart,
+    onAnimationStart,
+    onAnimationEnd,
     onAnimationIteration,
     onTransitionEnd,
-    ...restProps 
+    ...restProps
   } = props;
 
   return (

@@ -1,10 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import {
   BookOpen,
   CheckCircle,
@@ -17,6 +13,10 @@ import {
   BarChart,
   PieChart,
 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { showNotification } from '@/components/ui/notifications';
 
 interface LearningInsightsProps {
@@ -72,8 +72,8 @@ export function LearningInsights({
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-white/10 sm:h-8 sm:w-8"></div>
-        <div className="animation-delay-1000 absolute bottom-2 left-2 h-4 w-4 animate-pulse rounded-full bg-white/10 sm:h-6 sm:w-6"></div>
+        <div className="absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-white/10 sm:h-8 sm:w-8" />
+        <div className="animation-delay-1000 absolute bottom-2 left-2 h-4 w-4 animate-pulse rounded-full bg-white/10 sm:h-6 sm:w-6" />
       </CardHeader>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -113,7 +113,7 @@ export function LearningInsights({
                 {completedCourses}/{totalCourses}
               </div>
               <Progress value={overallProgress} className="h-2 bg-gray-200 dark:bg-gray-700 sm:h-3" />
-              <div className="absolute right-2 top-2 h-4 w-4 animate-pulse rounded-full bg-blue-500/20 sm:h-6 sm:w-6"></div>
+              <div className="absolute right-2 top-2 h-4 w-4 animate-pulse rounded-full bg-blue-500/20 sm:h-6 sm:w-6" />
             </div>
 
             <div className="group flex transform items-start gap-3 rounded-2xl border border-purple-200/50 bg-gradient-to-br from-purple-50 to-pink-100 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-purple-700/50 dark:from-purple-900/20 dark:to-pink-900/20 sm:gap-4 sm:p-6">
@@ -239,7 +239,7 @@ export function LearningInsights({
                         <div
                           className={`absolute inset-0 bg-gradient-to-r ${subject.color} rounded-full transition-all duration-300 group-hover:shadow-lg`}
                           style={{ width: `${(subject.hours / 8) * 100}%` }}
-                        ></div>
+                         />
                       </div>
                     </div>
                   ))}

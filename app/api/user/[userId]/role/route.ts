@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { UserRole, StudentAccessType } from '@prisma/client';
 import { db } from '@/lib/db';
 import { requireTeacher } from '@/lib/api-auth';
-import { UserRole, StudentAccessType } from '@prisma/client';
 
 export async function PATCH(request: NextRequest, { params }: { params: { userId: string } }) {
   try {

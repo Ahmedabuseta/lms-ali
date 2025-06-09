@@ -1,6 +1,5 @@
 'use client';
 
-import { useSession } from '@/lib/auth-client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -27,6 +26,7 @@ import {
   Calculator,
   MapPin,
 } from 'lucide-react';
+import { useSession } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { FAQSection } from '@/components/faq-section';
 import { CourseCard } from '@/components/landing/course-card';
@@ -41,7 +41,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 export default function LandingPage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
@@ -67,7 +67,7 @@ export default function LandingPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-300 font-arabic">جاري التحميل...</p>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function LandingPage() {
                   من P2S لكلية التجارة .. معانا هتوصل بثقة!
                 </p>
               </div>
-              
+
               <h1 className="animate-slide-up mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-5xl font-bold text-transparent md:text-7xl font-arabic leading-tight">
                 طريقك لكلية التجارة
                 <br />
@@ -585,10 +585,10 @@ export default function LandingPage() {
 
       {/* Coming Soon Modal */}
       <ComingSoonModal isOpen={isModalOpen} onClose={closeModal} />
-      
+
       {/* Eid Modal - Will be used later */}
       {/* <EidModal isOpen={isModalOpen} onClose={closeModal} /> */}
-      
+
       {/* Floating WhatsApp Button */}
       <a
         href="https://whatsapp.com/channel/0029VagArxy42DcfmFVEJP1e"
@@ -603,7 +603,7 @@ export default function LandingPage() {
         {/* Tooltip */}
         <div className="absolute bottom-16 right-0 mb-2 hidden min-w-max rounded-lg bg-gray-800 px-3 py-2 text-sm text-white shadow-lg group-hover:block dark:bg-gray-700">
           <span className="font-arabic">تواصل معانا</span>
-          <div className="absolute -bottom-1 right-4 h-2 w-2 rotate-45 bg-gray-800 dark:bg-gray-700"></div>
+          <div className="absolute -bottom-1 right-4 h-2 w-2 rotate-45 bg-gray-800 dark:bg-gray-700" />
         </div>
       </a>
     </div>

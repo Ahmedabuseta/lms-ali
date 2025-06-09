@@ -62,4 +62,4 @@ export const getSignedUrl = (key: string, expires: number = 3600) => {
     console.error('Error generating signed URL:', error);
     throw error;
   }
-}; 
+};

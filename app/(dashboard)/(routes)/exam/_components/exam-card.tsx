@@ -1,11 +1,11 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, File, FileQuestion } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ExamCardProps {
   exam: any;
@@ -55,7 +55,7 @@ export function ExamCard({ exam }: ExamCardProps) {
           </div>
         </CardContent>
         <CardFooter className="mt-auto border-t border-border bg-slate-50 p-4 dark:bg-slate-900/50">
-          <div className="h-10 w-full rounded-md bg-primary/20 dark:bg-primary/10"></div>
+          <div className="h-10 w-full rounded-md bg-primary/20 dark:bg-primary/10" />
         </CardFooter>
       </Card>
     );

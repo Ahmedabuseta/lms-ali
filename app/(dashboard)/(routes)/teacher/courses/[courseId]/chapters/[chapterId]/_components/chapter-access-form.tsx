@@ -75,14 +75,14 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
           )}
         </Button>
       </div>
-      
+
       {!isEditing && (
         <div className="mt-4">
           <div className={cn(
-            "rounded-lg border p-4 backdrop-blur-sm",
-            initialData.isFree 
-              ? "border-emerald-200/50 bg-emerald-100/50 dark:border-emerald-400/30 dark:bg-emerald-800/20"
-              : "border-orange-200/50 bg-orange-100/50 dark:border-orange-400/30 dark:bg-orange-800/20"
+            'rounded-lg border p-4 backdrop-blur-sm',
+            initialData.isFree
+              ? 'border-emerald-200/50 bg-emerald-100/50 dark:border-emerald-400/30 dark:bg-emerald-800/20'
+              : 'border-orange-200/50 bg-orange-100/50 dark:border-orange-400/30 dark:bg-orange-800/20'
           )}>
             <div className="flex items-center gap-3">
               {initialData.isFree ? (
@@ -106,7 +106,7 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
           </div>
         </div>
       )}
-      
+
       {isEditing && (
         <div className="mt-4">
           <Form {...form}>
@@ -128,17 +128,17 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

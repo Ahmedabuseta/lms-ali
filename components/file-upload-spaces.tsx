@@ -2,8 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { Upload, X, File, Image, Video, FileText, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 interface FileUploadSpacesProps {
@@ -150,7 +150,7 @@ export const FileUploadSpaces = ({
     const fileName = value.split('/').pop() || 'Uploaded File';
 
     return (
-      <div className={cn("relative", className)}>
+      <div className={cn('relative', className)}>
         {isImage ? (
           <div className="relative group">
             <img
@@ -194,7 +194,7 @@ export const FileUploadSpaces = ({
   }
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn('w-full', className)}>
       <input
         ref={fileInputRef}
         type="file"
@@ -203,7 +203,7 @@ export const FileUploadSpaces = ({
         disabled={disabled || isUploading}
         className="hidden"
       />
-      
+
       <div
         onClick={openFileDialog}
         onDrop={handleDrop}
@@ -238,8 +238,8 @@ export const FileUploadSpaces = ({
                   Drop your file here, or click to browse
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  {acceptedFileTypes === '*/*' 
-                    ? 'All file types supported' 
+                  {acceptedFileTypes === '*/*'
+                    ? 'All file types supported'
                     : `Supported formats: ${acceptedFileTypes}`}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
@@ -252,4 +252,4 @@ export const FileUploadSpaces = ({
       </div>
     </div>
   );
-}; 
+};

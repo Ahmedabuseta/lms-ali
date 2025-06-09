@@ -2,9 +2,9 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { BasicExamForm } from './_components/basic-exam-form';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
-import { BasicExamForm } from './_components/basic-exam-form';
 
 interface PageProps {
   params: {
@@ -26,7 +26,7 @@ export default async function ExamBasicPage({ params }: PageProps) {
     include: {
       course: {
         select: {
-          /*createdById: true,*/
+          /* createdById: true, */
         },
       },
       chapter: {
@@ -43,9 +43,9 @@ export default async function ExamBasicPage({ params }: PageProps) {
   }
 
   // Verify ownership
-  /*if (exam.course.createdById !== userId) {
+  /* if (exam.course.createdById !== userId) {
     return redirect('/teacher/exam')
-  }*/
+  } */
 
   // Get course chapters for the chapter selection dropdown
   const chapters = await db.chapter.findMany({

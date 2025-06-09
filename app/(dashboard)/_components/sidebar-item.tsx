@@ -39,28 +39,28 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
       {isActive ? (
         <>
           {/* Primary active background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600" />
+
           {/* Glass overlay for active */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20" />
+
           {/* Active shimmer */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+
           {/* Active glow */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/50 to-purple-600/50 blur-lg"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/50 to-purple-600/50 blur-lg" />
         </>
       ) : (
         <>
           {/* Inactive hover backgrounds */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/80 to-purple-50/80 dark:from-blue-900/30 dark:to-purple-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/80 to-purple-50/80 dark:from-blue-900/30 dark:to-purple-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-400/10 dark:to-purple-400/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+
           {/* Glass overlay for hover */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-white/10 dark:from-white/5 dark:via-white/2 dark:to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-white/10 dark:from-white/5 dark:via-white/2 dark:to-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+
           {/* Hover glow */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-300" />
         </>
       )}
 
@@ -76,9 +76,9 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
       >
         {/* Icon glow for active state */}
         {isActive && (
-          <div className="absolute inset-0 rounded-xl bg-white/20 blur-sm"></div>
+          <div className="absolute inset-0 rounded-xl bg-white/20 blur-sm" />
         )}
-        
+
         <Icon
           size={collapsed ? 18 : 22}
           className={cn(
@@ -92,7 +92,7 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
 
       {/* Label - hidden when collapsed */}
       {!collapsed && (
-        <span 
+        <span
           className={cn(
             'relative z-10 flex-1 text-right transition-all duration-300',
             isActive
@@ -119,11 +119,11 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
 
       {/* Subtle border for definition */}
       <div className={cn(
-        "absolute inset-0 rounded-xl border transition-all duration-300",
-        isActive 
-          ? "border-white/20" 
-          : "border-transparent group-hover:border-blue-200/50 dark:group-hover:border-blue-400/30"
-      )}></div>
+        'absolute inset-0 rounded-xl border transition-all duration-300',
+        isActive
+          ? 'border-white/20'
+          : 'border-transparent group-hover:border-blue-200/50 dark:group-hover:border-blue-400/30'
+      )} />
     </button>
   );
 };

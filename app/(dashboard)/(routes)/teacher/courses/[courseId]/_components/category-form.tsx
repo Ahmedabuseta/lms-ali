@@ -109,9 +109,9 @@ export default function CategoryForm({ initialData, courseId, options }: Categor
                 <Button disabled={!isValid || isSubmitting} type="submit" className="font-arabic">
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

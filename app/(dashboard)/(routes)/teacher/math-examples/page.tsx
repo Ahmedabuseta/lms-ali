@@ -46,7 +46,7 @@ export default function MathExamples() {
         'The probability density function of a normal distribution is:\n\n$$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$',
     },
     {
-      title: "Physics - Einstein's Equation",
+      title: 'Physics - Einstein\'s Equation',
       content: 'The mass-energy equivalence is given by:\n\n$$E = mc^2$$',
     },
   ];

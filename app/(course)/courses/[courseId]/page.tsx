@@ -1,5 +1,18 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
+import {
+  BookOpen,
+  Clock,
+  Users,
+  Award,
+  PlayCircle,
+  CheckCircle,
+  Lock,
+  Star,
+  Calendar,
+  Target
+} from 'lucide-react';
+import Link from 'next/link';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
 import { Preview } from '@/components/preview';
@@ -7,23 +20,10 @@ import { CourseProgress } from '@/components/course-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  BookOpen, 
-  Clock, 
-  Users, 
-  Award, 
-  PlayCircle, 
-  CheckCircle, 
-  Lock,
-  Star,
-  Calendar,
-  Target
-} from 'lucide-react';
-import Link from 'next/link';
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
-  
+
   if (!userId) {
     return redirect('/');
   }
@@ -57,7 +57,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   }
 
   const progressCount = await getProgress(userId, course.id);
-  
+
   const purchase = await db.purchase.findUnique({
     where: {
       userId_courseId: {
@@ -67,7 +67,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     },
   });
 
-  const completedChapters = course.chapters.filter(chapter => 
+  const completedChapters = course.chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
   ).length;
 
@@ -78,8 +78,8 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
       {/* Decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl" />
+        <div className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl p-6 space-y-8">
@@ -191,7 +191,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                     <div className="flex items-center gap-4">
                       {/* Chapter Number */}
                       <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
-                        isCompleted 
+                        isCompleted
                           ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
                           : isLocked
                           ? 'bg-gray-200 text-gray-500'

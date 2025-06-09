@@ -14,9 +14,9 @@ const AITutorPage = async () => {
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/40 via-white to-indigo-50/60 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
       {/* Enhanced light mode decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="to-indigo-300/15 absolute right-16 top-20 h-52 w-52 animate-pulse rounded-full bg-gradient-to-br from-purple-200/20 blur-3xl"></div>
-        <div className="to-blue-300/15 animation-delay-2000 absolute bottom-1/4 left-16 h-60 w-60 animate-pulse rounded-full bg-gradient-to-br from-indigo-200/20 blur-3xl"></div>
-        <div className="to-purple-300/15 animation-delay-4000 absolute left-1/4 top-1/3 h-36 w-36 animate-pulse rounded-full bg-gradient-to-br from-blue-200/20 blur-3xl"></div>
+        <div className="to-indigo-300/15 absolute right-16 top-20 h-52 w-52 animate-pulse rounded-full bg-gradient-to-br from-purple-200/20 blur-3xl" />
+        <div className="to-blue-300/15 animation-delay-2000 absolute bottom-1/4 left-16 h-60 w-60 animate-pulse rounded-full bg-gradient-to-br from-indigo-200/20 blur-3xl" />
+        <div className="to-purple-300/15 animation-delay-4000 absolute left-1/4 top-1/3 h-36 w-36 animate-pulse rounded-full bg-gradient-to-br from-blue-200/20 blur-3xl" />
       </div>
 
       <div className="relative z-10 space-y-6 p-4 sm:space-y-8 sm:p-6">

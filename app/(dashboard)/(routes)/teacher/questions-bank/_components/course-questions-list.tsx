@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, FileQuestion, Plus, BookOpen, Target, Eye } from 'lucide-react';
+import { CourseWithQuestionsCount } from '../types';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CourseWithQuestionsCount } from '../types';
 
 interface CourseQuestionsListProps {
   course: CourseWithQuestionsCount;
@@ -23,8 +23,8 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
 
   return (
     <Card className="group overflow-hidden border-0 bg-white/80 shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800/80 backdrop-blur-sm">
-      <CardHeader 
-        className="flex cursor-pointer flex-row items-center justify-between p-6 transition-all duration-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/50" 
+      <CardHeader
+        className="flex cursor-pointer flex-row items-center justify-between p-6 transition-all duration-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/50"
         onClick={toggleExpand}
       >
         <div className="flex items-center gap-4">
@@ -45,10 +45,10 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
             </div>
           </div>
         </div>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
+
+        <Button
+          variant="outline"
+          size="sm"
           asChild
           className="transform transition-all duration-300 hover:scale-105 hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900/20 font-arabic"
           onClick={(e) => e.stopPropagation()}
@@ -59,15 +59,15 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
           </Link>
         </Button>
       </CardHeader>
-      
+
       {isExpanded && hasChaptersWithQuestions && (
         <CardContent className="border-t border-gray-200/50 bg-gray-50/30 pb-6 pt-6 dark:border-gray-700/50 dark:bg-gray-800/30">
           <div className="space-y-4 pr-6">
             {course.chapters
               .filter((chapter) => chapter._count.PracticeQuestion > 0)
               .map((chapter) => (
-                <div 
-                  key={chapter.id} 
+                <div
+                  key={chapter.id}
                   className="flex items-center justify-between rounded-lg bg-white/60 p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-gray-700/60"
                 >
                   <div className="flex items-center gap-3">
@@ -82,9 +82,9 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
                       </Badge>
                     </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     asChild
                     className="hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/20 font-arabic"
                   >
@@ -95,7 +95,7 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
                   </Button>
                 </div>
               ))}
-              
+
             {/* Questions not assigned to chapters */}
             <div className="flex items-center justify-between rounded-lg border border-dashed border-gray-300 bg-white/40 p-4 dark:border-gray-600 dark:bg-gray-700/40">
               <div className="flex items-center gap-3">
@@ -104,9 +104,9 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
                 </div>
                 <span className="font-medium text-gray-700 dark:text-gray-300 font-arabic">أسئلة غير مصنفة في فصول</span>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 asChild
                 className="hover:bg-orange-100 hover:text-orange-700 dark:hover:bg-orange-900/20 font-arabic"
               >

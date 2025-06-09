@@ -181,7 +181,7 @@ export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) =>
               </Draggable>
             ))}
             {provided.placeholder}
-            
+
             {/* Compact Empty State */}
             {chapters.length === 0 && (
               <div className="rounded-lg border border-indigo-200/60 bg-indigo-50/40 p-6 text-center backdrop-blur-sm dark:border-indigo-400/30 dark:bg-indigo-900/20">

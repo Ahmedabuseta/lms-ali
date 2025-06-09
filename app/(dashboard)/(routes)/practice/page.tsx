@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
 import { PracticeClient } from './_components/practice-client';
+import { db } from '@/lib/db';
 
 const PracticePage = async () => {
   const { userId } = auth();

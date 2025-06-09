@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
 import CourseNavbar from './_components/course-navbar';
+import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
 
 export default async function CourseLayout({

@@ -1,13 +1,13 @@
 import { useState, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { performOptimizedOCR } from './ocr';
-import { showNotification } from '@/components/ui/notifications';
 import { OCRModeToggle } from './image-upload/ocr-mode-toggle';
 import { FileUploadArea } from './image-upload/file-upload-area';
 import { ProcessingStatus } from './image-upload/processing-status';
 import { ExtractedText } from './image-upload/extracted-text';
+import { showNotification } from '@/components/ui/notifications';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface ImageUploadDialogProps {
   open: boolean;

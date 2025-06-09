@@ -1,8 +1,8 @@
 'use client';
 
 import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
-import { NavbarRoutes } from '@/components/navbar-routes';
 import { MobileSidebar } from './mobile-sidebar';
+import { NavbarRoutes } from '@/components/navbar-routes';
 import { useSidebarStore } from '@/hooks/use-sidebar-store';
 
 export const Navbar = () => {

@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import { CheckCircle, Clock, BookOpen, Trophy, Brain, Target, Sparkles, TrendingUp, Award, Users } from 'lucide-react';
-import CoursesList from '@/components/course-list';
-import { getDashboardCourses } from '@/actions/get-dashboard-courses';
 import { InfoCard } from './_components/info-card';
 import { LearningInsights } from './_components/learning-insights';
+import CoursesList from '@/components/course-list';
+import { getDashboardCourses } from '@/actions/get-dashboard-courses';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -97,7 +97,7 @@ export default async function Dashboard() {
                   <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{coursesInProgress.length}</p>
                 </div>
               </div>
-              <div className="absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8"></div>
+              <div className="absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-blue-500/20 sm:h-8 sm:w-8" />
             </CardContent>
           </Card>
 
@@ -112,7 +112,7 @@ export default async function Dashboard() {
                   <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{completedCourses.length}</p>
                 </div>
               </div>
-              <div className="animation-delay-200 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-green-500/20 sm:h-8 sm:w-8"></div>
+              <div className="animation-delay-200 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-green-500/20 sm:h-8 sm:w-8" />
             </CardContent>
           </Card>
 
@@ -127,7 +127,7 @@ export default async function Dashboard() {
                   <p className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">{totalHours}</p>
                 </div>
               </div>
-              <div className="animation-delay-400 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-purple-500/20 sm:h-8 sm:w-8"></div>
+              <div className="animation-delay-400 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-purple-500/20 sm:h-8 sm:w-8" />
             </CardContent>
           </Card>
 
@@ -147,7 +147,7 @@ export default async function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="animation-delay-600 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-orange-500/20 sm:h-8 sm:w-8"></div>
+              <div className="animation-delay-600 absolute right-2 top-2 h-6 w-6 animate-pulse rounded-full bg-orange-500/20 sm:h-8 sm:w-8" />
             </CardContent>
           </Card>
         </div>

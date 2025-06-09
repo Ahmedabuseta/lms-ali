@@ -1,8 +1,8 @@
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
-import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 

@@ -14,8 +14,8 @@ const Logo = ({ collapsed = false }: LogoProps) => {
           <GraduationCap className="h-6 w-6 text-white" />
         </div>
         <span className={cn(
-          "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent transition-all duration-300 group-hover:from-purple-600 group-hover:to-blue-600 font-arabic",
-          collapsed && "opacity-0 w-0 overflow-hidden"
+          'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent transition-all duration-300 group-hover:from-purple-600 group-hover:to-blue-600 font-arabic',
+          collapsed && 'opacity-0 w-0 overflow-hidden'
         )}>
           LMS Ali
         </span>

@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface CourseCardsProps {
   courses: any[];

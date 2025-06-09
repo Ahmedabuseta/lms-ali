@@ -1,9 +1,9 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { db } from '@/lib/db';
 import { ArrowLeft } from 'lucide-react';
 import { QuestionForm } from './_components/question-form';
+import { db } from '@/lib/db';
 
 interface PageProps {
   searchParams: {

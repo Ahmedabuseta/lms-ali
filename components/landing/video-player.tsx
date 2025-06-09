@@ -12,9 +12,9 @@ interface VideoPlayerProps {
   description?: string;
 }
 
-export const VideoPlayer = ({ 
-  src, 
-  poster, 
+export const VideoPlayer = ({
+  src,
+  poster,
   className = '',
   title = 'عرض توضيحي للمنصة',
   description = 'اكتشف جميع الميزات والوظائف'
@@ -49,7 +49,7 @@ export const VideoPlayer = ({
 
         // Use HLS.js for other browsers
         const Hls = (await import('hls.js')).default;
-        
+
         if (Hls.isSupported()) {
           // Destroy existing HLS instance
           if (hlsRef.current) {
@@ -76,9 +76,9 @@ export const VideoPlayer = ({
               xhr.withCredentials = false; // Don't send credentials
             }
           });
-            
+
           hlsRef.current = hls;
-          
+
           // Set up event listeners
           hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
             // Prefer 480p if available (it has the complete video)
@@ -92,7 +92,7 @@ export const VideoPlayer = ({
               const level = data.levels[0];
               setCurrentQuality(`${level.height}p`);
             }
-            
+
             setIsLoading(false);
           });
 
@@ -108,7 +108,7 @@ export const VideoPlayer = ({
               setIsLoading(false);
               return;
             }
-            
+
             if (data.fatal) {
               switch (data.type) {
                 case Hls.ErrorTypes.NETWORK_ERROR:
@@ -150,7 +150,7 @@ export const VideoPlayer = ({
       setIsLoading(false);
       setDuration(video.duration);
     };
-        
+
     const handleError = () => {
       setIsLoading(false);
       setHasError(true);
@@ -191,7 +191,7 @@ export const VideoPlayer = ({
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('ended', handleEnded);
-      
+
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
@@ -286,7 +286,7 @@ export const VideoPlayer = ({
   }
 
   return (
-    <div 
+    <div
       className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 p-1 shadow-2xl max-w-4xl max-h-[600px] mx-auto ${className}`}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(!isPlaying)}
@@ -304,7 +304,7 @@ export const VideoPlayer = ({
             crossOrigin="anonymous"
             controls={false}
           />
-          
+
           {/* Loading State */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50">
@@ -319,10 +319,10 @@ export const VideoPlayer = ({
               </div>
             </div>
           )}
-          
+
           {/* Video Controls Overlay */}
           {!isLoading && (
-            <div 
+            <div
               className={`absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-300 ${
                 showControls ? 'opacity-100' : 'opacity-0'
               }`}
@@ -345,13 +345,13 @@ export const VideoPlayer = ({
                 {/* Progress Bar */}
                 <div className="mb-4">
                   <div className="h-1 bg-black/30 rounded-full">
-                    <div 
+                    <div
                       className="h-full bg-blue-500 rounded-full transition-all duration-300"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Button
@@ -362,7 +362,7 @@ export const VideoPlayer = ({
                     >
                       {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
                     </Button>
-                    
+
                     <Button
                       size="sm"
                       variant="ghost"
@@ -371,7 +371,7 @@ export const VideoPlayer = ({
                     >
                       {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                     </Button>
-                    
+
                     {/* Quality Indicator */}
                     {currentQuality && (
                       <Button
@@ -383,7 +383,7 @@ export const VideoPlayer = ({
                         {currentQuality}
                       </Button>
                     )}
-                    
+
                     {duration > 0 && (
                       <span className="text-white text-sm font-mono">
                         {formatTime((progress / 100) * duration)} / {formatTime(duration)}
@@ -409,7 +409,7 @@ export const VideoPlayer = ({
                   <p className="text-sm text-gray-200 font-arabic">{description}</p>
                   {currentQuality && (
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
                       <span className="text-xs text-gray-300 font-arabic">جودة: {currentQuality}</span>
                     </div>
                   )}

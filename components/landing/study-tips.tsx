@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { 
-  Calendar, 
-  MessageSquare, 
-  Brain, 
-  Target, 
-  BookOpen, 
-  Trophy, 
-  Users, 
+import {
+  Calendar,
+  MessageSquare,
+  Brain,
+  Target,
+  BookOpen,
+  Trophy,
+  Users,
   Zap,
   ArrowRight,
   Monitor,
@@ -38,7 +38,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
           {/* Left Column - Platform Features Usage */}
           <div className="space-y-6">
             <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استخدام مميزات المنصة بشطارة</h3>
-            
+
             {/* Feature 1 - Interactive Content */}
             <div className="flex items-start gap-4 rounded-xl bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800">
               <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500">
@@ -95,7 +95,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
           {/* Right Column - Advanced Study Strategies */}
           <div className="space-y-6">
             <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استراتيجيات المذاكرة المتقدمة</h3>
-            
+
             {/* Strategy 1 - Time Management */}
             <div className="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-6 dark:from-blue-900/20 dark:to-indigo-900/20">
               <div className="mb-4 flex items-center gap-3">
@@ -155,4 +155,4 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
       </div>
     </section>
   );
-}; 
+};

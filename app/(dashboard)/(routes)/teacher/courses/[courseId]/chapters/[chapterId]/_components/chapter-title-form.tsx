@@ -72,7 +72,7 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
           )}
         </Button>
       </div>
-      
+
       {!isEditing && (
         <div className="mt-4">
           {initialData.title ? (
@@ -87,7 +87,7 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
           )}
         </div>
       )}
-      
+
       {isEditing && (
         <div className="mt-4">
           <Form {...form}>
@@ -98,11 +98,11 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input 
-                        disabled={isSubmitting} 
-                        placeholder="مثال: 'مقدمة في البرمجة'" 
+                      <Input
+                        disabled={isSubmitting}
+                        placeholder="مثال: 'مقدمة في البرمجة'"
                         className="text-right"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -110,17 +110,17 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

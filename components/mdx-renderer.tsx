@@ -6,13 +6,12 @@ import * as runtime from 'react/jsx-runtime';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
+import ReactMarkdown, { Components } from 'react-markdown';
+import { useTheme } from 'next-themes';
 import { MDXContent } from './mdx-provider';
 import 'katex/dist/katex.min.css';
-import ReactMarkdown from 'react-markdown';
-import { Components } from 'react-markdown';
 import { MathRenderer } from './math-renderer';
 import { cn } from '@/lib/utils';
-import { useTheme } from 'next-themes';
 
 interface MDXRendererProps {
   content: string;
@@ -270,7 +269,7 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
   if (!Component) {
     return (
       <div className="flex items-center justify-center p-4">
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         <span className="ml-3 text-sm text-muted-foreground">Processing content...</span>
       </div>
     );

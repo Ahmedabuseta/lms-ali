@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
+import { StudentAccessType } from '@prisma/client';
 import { db } from '@/lib/db';
 import { isTeacher } from '@/lib/user';
-import { StudentAccessType } from '@prisma/client';
 
 export async function PATCH(request: NextRequest, { params }: { params: { userId: string } }) {
   try {

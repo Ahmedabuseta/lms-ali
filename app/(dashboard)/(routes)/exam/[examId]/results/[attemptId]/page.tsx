@@ -1,12 +1,12 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import { CheckCircle2, XCircle, ArrowLeft, Trophy, AlertTriangle, TimerIcon } from 'lucide-react';
+import { QuestionReview } from './_components/question-review';
 import { db } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, XCircle, ArrowLeft, Trophy, AlertTriangle, TimerIcon } from 'lucide-react';
-import { QuestionReview } from './_components/question-review';
 
 interface PageProps {
   params: {

@@ -4,7 +4,7 @@ export function isTeacher(userRole?: UserRole | string | null, userEmail?: strin
   // Check if user has teacher role OR is the admin email
   const isTeacherRole = userRole === 'TEACHER' || userRole === UserRole.TEACHER;
   const isAdminEmail = userEmail === process.env.ADMIN_EMAIL;
-  
+
   return isTeacherRole || isAdminEmail;
 }
 

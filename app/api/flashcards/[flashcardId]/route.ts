@@ -30,9 +30,9 @@ export async function PATCH(req: Request, { params }: { params: { flashcardId: s
     }
 
     // Verify course ownership
-    /*if (flashcard.chapter.course.createdById !== userId) {
+    /* if (flashcard.chapter.course.createdById !== userId) {
       return new NextResponse('Unauthorized', { status: 401 })
-    }*/
+    } */
 
     // If changing the chapter, verify it belongs to the same course
     if (chapterId && chapterId !== flashcard.chapterId) {
@@ -49,9 +49,9 @@ export async function PATCH(req: Request, { params }: { params: { flashcardId: s
         return new NextResponse('Chapter not found', { status: 404 });
       }
 
-      /*if (newChapter.course.createdById !== userId) {
+      /* if (newChapter.course.createdById !== userId) {
         return new NextResponse('Unauthorized', { status: 401 })
-      }*/
+      } */
     }
 
     // Update the flashcard
@@ -100,9 +100,9 @@ export async function DELETE(req: Request, { params }: { params: { flashcardId: 
     }
 
     // Verify course ownership
-    /*if (flashcard.chapter.course.createdById !== userId) {
+    /* if (flashcard.chapter.course.createdById !== userId) {
       return new NextResponse('Unauthorized', { status: 401 })
-    }*/
+    } */
 
     // Delete the flashcard
     await db.flashcard.delete({

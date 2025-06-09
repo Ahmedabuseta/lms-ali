@@ -1,22 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { User, UserRole, StudentAccessType } from '@/lib/types';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import {
   CheckCircle,
   XCircle,
@@ -37,6 +21,22 @@ import {
   Users,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { User, UserRole, StudentAccessType } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 interface UserManagementProps {
@@ -92,9 +92,9 @@ export const UserManagement = ({ users }: UserManagementProps) => {
 
   // Filtered and Sorted Users
   const filteredAndSortedUsers = useMemo(() => {
-    let filtered = localUsers.filter((user) => {
+    const filtered = localUsers.filter((user) => {
       // Search filter
-      const searchMatch = 
+      const searchMatch =
         user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -388,7 +388,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         <CardTitle className="text-foreground font-arabic">
           إدارة المستخدمين ({filteredAndSortedUsers.length} من أصل {localUsers.length})
         </CardTitle>
-        
+
         {/* Search and Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-4">
           {/* Search */}
@@ -506,11 +506,11 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             </TableHeader>
             <TableBody>
               {paginatedUsers.map((user, index) => (
-                <TableRow 
-                  key={user.id} 
+                <TableRow
+                  key={user.id}
                   className={cn(
-                    "border-b border-white/10 transition-all duration-200 hover:bg-white/20 dark:hover:bg-white/10",
-                    index % 2 === 0 ? "bg-white/5" : "bg-white/10 dark:bg-white/5"
+                    'border-b border-white/10 transition-all duration-200 hover:bg-white/20 dark:hover:bg-white/10',
+                    index % 2 === 0 ? 'bg-white/5' : 'bg-white/10 dark:bg-white/5'
                   )}
                 >
                   <TableCell className="py-4">
@@ -628,7 +628,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {paginatedUsers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-12">
@@ -660,14 +660,14 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                 <span className="font-semibold text-foreground">{Math.min(currentPage * itemsPerPage, filteredAndSortedUsers.length)}</span> من أصل{' '}
                 <span className="font-semibold text-foreground">{filteredAndSortedUsers.length}</span> مستخدم
               </div>
-              
+
               {totalPages > 1 && (
                 <div className="text-sm text-muted-foreground font-arabic">
                   صفحة {currentPage} من {totalPages}
                 </div>
               )}
             </div>
-            
+
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center">
@@ -682,7 +682,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   >
                     <ChevronsRight className="h-4 w-4" />
                   </Button>
-                  
+
                   <Button
                     variant="ghost"
                     size="sm"
@@ -693,7 +693,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
-                  
+
                   <div className="flex items-center gap-1 mx-2">
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNumber;
@@ -706,18 +706,18 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                       } else {
                         pageNumber = currentPage - 2 + i;
                       }
-                      
+
                       return (
                         <Button
                           key={pageNumber}
-                          variant={currentPage === pageNumber ? "default" : "ghost"}
+                          variant={currentPage === pageNumber ? 'default' : 'ghost'}
                           size="sm"
                           onClick={() => setCurrentPage(pageNumber)}
                           className={cn(
-                            "h-9 w-9 p-0 transition-all duration-200",
-                            currentPage === pageNumber 
-                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:from-blue-700 hover:to-purple-700" 
-                              : "hover:bg-white/50 dark:hover:bg-white/20"
+                            'h-9 w-9 p-0 transition-all duration-200',
+                            currentPage === pageNumber
+                              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:from-blue-700 hover:to-purple-700'
+                              : 'hover:bg-white/50 dark:hover:bg-white/20'
                           )}
                         >
                           {pageNumber}
@@ -725,7 +725,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                       );
                     })}
                   </div>
-                  
+
                   <Button
                     variant="ghost"
                     size="sm"
@@ -736,7 +736,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  
+
                   <Button
                     variant="ghost"
                     size="sm"

@@ -1,14 +1,14 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
+import { AlertTriangle, TimerIcon } from 'lucide-react';
 import { QuestionForm } from './_components/question-form';
 import { ExamNavigation } from './_components/exam-navigation';
+import { ExamTimer } from './_components/exam-timer';
+import { db } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ProgressIndicator } from '@/components/ui/progress-indicator';
 import { Separator } from '@/components/ui/separator';
-import { ExamTimer } from './_components/exam-timer';
-import { AlertTriangle, TimerIcon } from 'lucide-react';
 
 interface PageProps {
   params: {

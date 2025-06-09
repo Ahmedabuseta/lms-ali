@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { BookOpenIcon, Clock, User, Star } from 'lucide-react';
-import { formatPrice } from '@/lib/format';
 import { IconBadge } from './icon-badge';
 import { CourseProgress } from './course-progress';
+import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 type CourseCardProps = {
@@ -130,7 +130,7 @@ export default function CourseCard({
         </div>
 
         {/* Floating decoration */}
-        <div className="absolute left-4 top-4 h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150"></div>
+        <div className="absolute left-4 top-4 h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150" />
       </div>
     </Link>
   );

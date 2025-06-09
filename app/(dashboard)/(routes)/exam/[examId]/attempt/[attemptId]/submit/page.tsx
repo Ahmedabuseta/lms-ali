@@ -1,10 +1,10 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { ExamSubmitAction } from './_components/exam-submit-action';
 import { db } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
-import { ExamSubmitAction } from './_components/exam-submit-action';
 
 interface PageProps {
   params: {

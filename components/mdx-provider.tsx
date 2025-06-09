@@ -1,15 +1,14 @@
 'use client';
 
 import { MDXProvider } from '@mdx-js/react';
-import { MathRenderer } from './math-renderer';
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { ReactNode, useState } from 'react';
 import Link from 'next/link';
+import { InfoIcon, AlertTriangleIcon, CheckCircleIcon, FileIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { InfoIcon, AlertTriangleIcon, CheckCircleIcon, FileIcon, ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { MathRenderer } from './math-renderer';
+import { cn } from '@/lib/utils';
 
 interface DetailsProps {
   children: ReactNode;
@@ -117,7 +116,7 @@ const components = {
       <CardContent className="p-4">{children}</CardContent>
     </Card>
   ),
-  Details: Details,
+  Details,
   Info: ({ children, title = 'Information' }: { children: ReactNode; title?: string }) => (
     <Alert className="my-4 border-blue-500 bg-blue-50">
       <InfoIcon className="h-4 w-4 text-blue-500" />

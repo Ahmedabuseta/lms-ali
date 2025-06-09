@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { showNotification } from '@/components/ui/notifications';
 import { performOptimizedOCR } from '../ocr';
+import { showNotification } from '@/components/ui/notifications';
 
 export const useImageProcessor = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);

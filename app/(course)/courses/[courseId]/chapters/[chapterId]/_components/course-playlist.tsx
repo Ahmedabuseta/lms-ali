@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  PlayCircle, 
-  CheckCircle, 
-  Lock, 
+import {
+  ChevronDown,
+  ChevronUp,
+  PlayCircle,
+  CheckCircle,
+  Lock,
   List,
   Clock,
   Award
@@ -48,7 +48,7 @@ export const CoursePlaylist = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const completedChapters = chapters.filter(chapter => 
+  const completedChapters = chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
   ).length;
 
@@ -216,4 +216,4 @@ export const CoursePlaylist = ({
       )}
     </Card>
   );
-}; 
+};

@@ -72,7 +72,7 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
           )}
         </Button>
       </div>
-      
+
       {!isEditing && (
         <div className="mt-4">
           {initialData.description ? (
@@ -87,7 +87,7 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
           )}
         </div>
       )}
-      
+
       {isEditing && (
         <div className="mt-4">
           <Form {...form}>
@@ -98,11 +98,11 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Textarea 
-                        disabled={isSubmitting} 
-                        placeholder="مثال: 'هذه الدورة تتناول أساسيات تطوير الويب المتقدم باستخدام أحدث التقنيات...'" 
+                      <Textarea
+                        disabled={isSubmitting}
+                        placeholder="مثال: 'هذه الدورة تتناول أساسيات تطوير الويب المتقدم باستخدام أحدث التقنيات...'"
                         className="text-right min-h-[120px]"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -110,17 +110,17 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

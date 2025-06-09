@@ -1,6 +1,6 @@
-import { headers } from "next/headers";
-import { auth } from "./auth";
-import { NextResponse } from "next/server";
+import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+import { auth } from './auth';
 
 export async function getAuthenticatedUser() {
   try {
@@ -10,7 +10,7 @@ export async function getAuthenticatedUser() {
 
     return session?.user ?? null;
   } catch (error) {
-    console.error("Error getting authenticated user:", error);
+    console.error('Error getting authenticated user:', error);
     return null;
   }
 }
@@ -29,4 +29,4 @@ export async function requireTeacher() {
     throw new NextResponse('Forbidden - Teacher access required', { status: 403 });
   }
   return user;
-} 
+}

@@ -9,11 +9,11 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Chapter, Course } from '@prisma/client';
+import { ChaptersList } from './chapters-list';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { ChaptersList } from './chapters-list';
 
 interface ChaptersFormProps {
   initialData: Course & { chapters: Chapter[] };
@@ -87,7 +87,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           </div>
         </div>
       )}
-      
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-200/80 dark:bg-indigo-700/50">
@@ -106,7 +106,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           )}
         </Button>
       </div>
-      
+
       {isCreating && (
         <div className="mt-4">
           <Form {...form}>
@@ -117,11 +117,11 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input 
-                        disabled={isSubmitting} 
-                        placeholder="مثال: 'مقدمة في البرمجة'" 
+                      <Input
+                        disabled={isSubmitting}
+                        placeholder="مثال: 'مقدمة في البرمجة'"
                         className="text-right"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -129,17 +129,17 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   إنشاء
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleCreating}
                   className="font-arabic"
                 >
@@ -150,7 +150,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           </Form>
         </div>
       )}
-      
+
       {!isCreating && (
         <div className="mt-4">
           {!initialData.chapters.length ? (
@@ -166,7 +166,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           )}
         </div>
       )}
-      
+
       {!isCreating && initialData.chapters.length > 0 && (
         <div className="mt-4 rounded-lg bg-indigo-100/50 p-3 backdrop-blur-sm dark:bg-indigo-800/20">
           <p className="text-xs text-indigo-700 dark:text-indigo-300 font-arabic">

@@ -75,7 +75,7 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
           )}
         </Button>
       </div>
-      
+
       {!isEditing && (
         <div className="mt-4">
           {initialData.description ? (
@@ -90,7 +90,7 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
           )}
         </div>
       )}
-      
+
       {isEditing && (
         <div className="mt-4">
           <Form {...form}>
@@ -108,17 +108,17 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

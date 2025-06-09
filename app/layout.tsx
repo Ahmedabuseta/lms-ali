@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
           {/* Enhanced dark mode script with better transition handling */}
-          {/* 
+          {/*
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     // Get stored theme preference or detect system preference
                     const storedTheme = localStorage.getItem('theme');
                     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    
+
                     // Apply theme class immediately to avoid flash
                     if (storedTheme === 'dark' || (!storedTheme && systemPrefersDark)) {
                       document.documentElement.classList.add('dark');
@@ -45,17 +45,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       document.documentElement.classList.remove('dark');
                       document.documentElement.style.colorScheme = 'light';
                     }
-                    
+
                     // Temporarily disable transitions on initial load
                     document.documentElement.setAttribute('data-theme-transition', 'false');
-                    
+
                     // Re-enable transitions after a short delay
                     window.addEventListener('DOMContentLoaded', () => {
                       setTimeout(() => {
                         document.documentElement.removeAttribute('data-theme-transition');
                       }, 250);
                     });
-                    
+
                     // Listen for system theme changes
                     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                       const currentTheme = localStorage.getItem('theme');

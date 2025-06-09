@@ -35,4 +35,4 @@ export const FeatureCard = ({
       </CardContent>
     </Card>
   );
-}; 
+};

@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
 import { Message } from './utils/chat-utils';
-import { showNotification } from '@/components/ui/notifications';
 import { ConversationHeader } from './conversation/conversation-header';
 import { ConversationContent } from './conversation/conversation-content';
 import { ConversationFooter } from './conversation/conversation-footer';
 import { useChatApi } from './api/use-chat-api';
 import { useImageProcessor } from './api/use-image-processor';
 import { ImageUploadDialog } from './image-upload-dialog';
+import { showNotification } from '@/components/ui/notifications';
+import { Card } from '@/components/ui/card';
 
 export const AITutorClient = () => {
   // Message state

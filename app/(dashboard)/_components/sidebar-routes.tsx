@@ -18,11 +18,11 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { SidebarItem } from './sidebar-item';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { SidebarItem } from './sidebar-item';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'react-hot-toast';
 
 interface UserPermissions {
   canAccessVideos: boolean;
@@ -206,8 +206,8 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
                 <p className="text-center text-sm text-muted-foreground font-arabic">
                   ابدأ تجربتك المجانية للوصول إلى المحتوى
                 </p>
-                <Button 
-                  onClick={startTrial} 
+                <Button
+                  onClick={startTrial}
                   className="w-full font-arabic"
                   disabled={!permissions.canStartTrial}
                 >

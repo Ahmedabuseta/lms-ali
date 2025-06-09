@@ -133,9 +133,9 @@ export async function POST(req: Request) {
     }
 
     // Build the request payload based on whether an image is included
-    let payload: any = {
+    const payload: any = {
       model: 'deepseek-ai/DeepSeek-V3',
-      messages: messages,
+      messages,
       stream: streaming,
       max_tokens: 1024,
       temperature: 0.7,
@@ -152,7 +152,7 @@ export async function POST(req: Request) {
           {
             role: 'system',
             content:
-              "You are an AI tutor that specializes in explaining concepts from images. When a user uploads an image, analyze it carefully and provide detailed explanations based on the image content and the user's question. For educational materials, explain the concepts thoroughly.",
+              'You are an AI tutor that specializes in explaining concepts from images. When a user uploads an image, analyze it carefully and provide detailed explanations based on the image content and the user\'s question. For educational materials, explain the concepts thoroughly.',
           },
           ...messages,
         ];
@@ -224,7 +224,7 @@ export async function POST(req: Request) {
                     {
                       delta: {
                         content:
-                          "I'm sorry, but I couldn't connect to the AI service right now. Please try again in a moment.",
+                          'I\'m sorry, but I couldn\'t connect to the AI service right now. Please try again in a moment.',
                       },
                     },
                   ],

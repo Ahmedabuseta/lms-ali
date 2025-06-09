@@ -1,15 +1,15 @@
 'use client';
 
-import { useSession, signOut } from '@/lib/auth-client';
 import { usePathname } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { SearchInput } from './search-input';
-import { isTeacher } from '@/lib/teacher';
 import { ThemeToggle } from './theme-toggle';
+import { Button } from '@/components/ui/button';
+import { isTeacher } from '@/lib/teacher';
+import { useSession, signOut } from '@/lib/auth-client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,15 +61,15 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : null}
-        
+
         {session?.user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 {session.user.image ? (
-                  <img 
-                    src={session.user.image} 
-                    alt={session.user.name || ''} 
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name || ''}
                     className="h-8 w-8 rounded-full"
                   />
                 ) : (

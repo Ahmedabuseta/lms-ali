@@ -1,9 +1,9 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { db } from '@/lib/db';
 import { ArrowLeft } from 'lucide-react';
 import { QuestionForm } from '../../_components/question-form';
+import { db } from '@/lib/db';
 
 interface PageProps {
   params: {
@@ -29,7 +29,7 @@ export default async function EditQuestionPage({ params }: PageProps) {
         include: {
           course: {
             select: {
-              /*createdById: true,*/
+              /* createdById: true, */
             },
           },
         },
@@ -47,9 +47,9 @@ export default async function EditQuestionPage({ params }: PageProps) {
   }
 
   // Verify ownership
-  /*if (question.exam.course.createdById !== userId) {
+  /* if (question.exam.course.createdById !== userId) {
     return redirect('/teacher/exam')
-  }*/
+  } */
 
   // Don't allow editing questions of published exams
   if (question.exam.isPublished) {

@@ -1,9 +1,6 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { db } from '@/lib/db';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Plus,
   Clock,
@@ -16,6 +13,9 @@ import {
   Users,
   BarChart3,
 } from 'lucide-react';
+import { db } from '@/lib/db';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,15 +65,15 @@ export default async function TeacherExamPage() {
     <div className="min-h-screen space-y-8 bg-gradient-to-br from-background via-muted/30 to-background p-6">
       {/* Enhanced decorative elements for both themes */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
         <div
           className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-secondary/5 to-accent/5 blur-3xl"
           style={{ animationDelay: '4s' }}
-        ></div>
+         />
       </div>
 
       {/* Header */}

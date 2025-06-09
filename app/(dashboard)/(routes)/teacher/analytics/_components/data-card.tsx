@@ -1,7 +1,7 @@
+import { DollarSign, TrendingUp, LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBadge } from '@/components/icon-badge';
 import { formatPrice } from '@/lib/format';
-import { DollarSign, TrendingUp, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type DataCardProps = {

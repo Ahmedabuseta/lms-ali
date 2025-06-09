@@ -26,10 +26,10 @@ export async function POST(req: NextRequest) {
 
     // Upload to DigitalOcean Spaces
     const fileUrl = await uploadToSpaces(buffer, file.name, file.type, folder);
-    
+
     return NextResponse.json({ url: fileUrl });
   } catch (error) {
     console.error('[UPLOAD_ERROR]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
-} 
+}

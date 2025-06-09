@@ -1,10 +1,10 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { db } from '@/lib/db';
 import { ArrowLeft, PlusCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { QuestionsList } from './_components/questions-list';
+import { db } from '@/lib/db';
+import { Button } from '@/components/ui/button';
 
 interface PageProps {
   params: {
@@ -26,7 +26,7 @@ export default async function QuestionsPage({ params }: PageProps) {
     include: {
       course: {
         select: {
-          /*createdById: true,*/
+          /* createdById: true, */
           title: true,
         },
       },
@@ -60,9 +60,9 @@ export default async function QuestionsPage({ params }: PageProps) {
   }
 
   // Verify ownership
-  /*if (exam.course.createdById !== userId) {
+  /* if (exam.course.createdById !== userId) {
     return redirect('/teacher/exam')
-  }*/
+  } */
 
   return (
     <div className="p-6">

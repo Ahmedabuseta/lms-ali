@@ -1,11 +1,11 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
 import { ArrowLeft, Info } from 'lucide-react';
+import Link from 'next/link';
+import { CreateExamForm } from './_components/create-exam-form';
+import { db } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CreateExamForm } from './_components/create-exam-form';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 interface PageProps {
@@ -51,7 +51,7 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
   }
 
   let chapters: { id: string; title: string }[] = [];
-  let selectedCourse = searchParams.courseId
+  const selectedCourse = searchParams.courseId
     ? courses.find((course) => course.id === searchParams.courseId)
     : courses[0];
 

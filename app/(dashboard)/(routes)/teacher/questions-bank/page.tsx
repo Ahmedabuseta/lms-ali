@@ -1,12 +1,12 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Plus, Brain, BookOpen, Target } from 'lucide-react';
 import { CourseWithQuestionsCount } from './types';
 import { QuestionsEmptyState } from './_components/questions-empty-state';
 import { CourseQuestionsList } from './_components/course-questions-list';
+import { Button } from '@/components/ui/button';
+import { db } from '@/lib/db';
 
 const QuestionsPage = async () => {
   const { userId } = auth();
@@ -55,7 +55,7 @@ const QuestionsPage = async () => {
     <div className="p-6 space-y-8">
       {/* Enhanced Header Section */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 shadow-lg dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20">
-        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25"></div>
+        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
         <div className="relative">
           <div className="flex items-center justify-between">
             <div className="space-y-4">
@@ -68,7 +68,7 @@ const QuestionsPage = async () => {
                   <p className="text-gray-600 dark:text-gray-300 font-arabic">إدارة وتنظيم أسئلة الاختبارات والممارسة</p>
                 </div>
               </div>
-              
+
               {/* Statistics */}
               <div className="flex gap-6">
                 <div className="flex items-center gap-2">
@@ -85,9 +85,9 @@ const QuestionsPage = async () => {
                 </div>
               </div>
             </div>
-            
-            <Button 
-              asChild 
+
+            <Button
+              asChild
               size="lg"
               className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
             >

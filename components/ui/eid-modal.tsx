@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { X, Calendar, Gift, Star, LogIn } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 interface EidModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface EidModalProps {
 
 export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
   const router = useRouter();
-  
+
   const handleSignInRedirect = () => {
     router.push('/sign-in?auto=true'); // Auto-trigger sign-in for one-tap experience
     onClose();
@@ -23,11 +23,11 @@ export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md transform rounded-2xl bg-white p-6 shadow-2xl transition-all dark:bg-gray-800">
         {/* Close Button */}
@@ -55,7 +55,7 @@ export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
             <p className="text-gray-600 dark:text-gray-300 font-arabic leading-relaxed">
               للدخول إلى منصة التعلم، يرجى تسجيل الدخول باستخدام حساب Google الخاص بك
             </p>
-            
+
             <div className="rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:from-blue-900/20 dark:to-purple-900/20">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <LogIn className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -84,7 +84,7 @@ export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
               <LogIn className="mr-2 h-4 w-4" />
               تسجيل الدخول
             </Button>
-            
+
             <Button
               onClick={onClose}
               variant="outline"

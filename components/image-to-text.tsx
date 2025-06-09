@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { Upload, Image, Copy, Check, Loader2, AlertCircle, RefreshCw, RotateCw, Maximize2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { createWorker } from 'tesseract.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { Upload, Image, Copy, Check, Loader2, AlertCircle, RefreshCw, RotateCw, Maximize2 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import { createWorker } from 'tesseract.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
@@ -231,7 +231,7 @@ export const ImageToText = ({
         setState((prev) => ({
           ...prev,
           extractedText: text,
-          confidence: confidence,
+          confidence,
           progress: 100,
           isProcessing: false,
         }));

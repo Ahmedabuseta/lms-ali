@@ -2,8 +2,6 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { CircleDollarSign, File, LayoutDashboard, ListChecks } from 'lucide-react';
 
-import { db } from '@/lib/db';
-import { IconBadge } from '@/components/icon-badge';
 import { TitleForm } from './_components/title-form';
 import { DescriptionForm } from './_components/description-form';
 import { ImageForm } from './_components/image-form';
@@ -11,8 +9,10 @@ import CategoryForm from './_components/category-form';
 import { PriceForm } from './_components/price-form';
 import { AttachmentForm } from './_components/attachment-form';
 import { ChaptersForm } from './_components/chapters-form';
-import { Banner } from '@/components/banner';
 import Actions from './_components/actions';
+import { Banner } from '@/components/banner';
+import { IconBadge } from '@/components/icon-badge';
+import { db } from '@/lib/db';
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -56,19 +56,19 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50/30 dark:from-slate-900 dark:via-blue-900/30 dark:to-indigo-900/20">
       {/* Enhanced decorative elements with cohesive blue/indigo theme */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-400/25 to-indigo-400/15 blur-3xl dark:from-blue-400/40 dark:to-indigo-400/25"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-400/25 to-indigo-400/15 blur-3xl dark:from-blue-400/40 dark:to-indigo-400/25" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-400/25 to-pink-400/15 blur-3xl dark:from-purple-400/40 dark:to-pink-400/25"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-400/15 blur-3xl dark:from-cyan-400/40 dark:to-blue-400/25"
           style={{ animationDelay: '4s' }}
-        ></div>
+         />
         <div
           className="absolute right-1/3 bottom-1/3 h-40 w-40 animate-pulse rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/12 blur-3xl dark:from-indigo-400/35 dark:to-purple-400/20"
           style={{ animationDelay: '1s' }}
-        ></div>
+         />
       </div>
 
       <div className="relative z-10">
@@ -94,7 +94,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                   <div
                     className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
                     style={{ width: `${(completedFields / totalFields) * 100}%` }}
-                  ></div>
+                   />
                 </div>
               </div>
               <Actions disabled={!isComplete} courseId={params.courseId} isPublished={course.isPublished} />

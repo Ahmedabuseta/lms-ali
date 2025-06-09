@@ -10,7 +10,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 export default function SimpleLandingPage() {
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
@@ -28,7 +28,7 @@ export default function SimpleLandingPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-300 font-arabic">جاري التحميل...</p>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function SimpleLandingPage() {
       {/* Simple Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={closeModal}
           />
@@ -122,4 +122,4 @@ export default function SimpleLandingPage() {
       )}
     </div>
   );
-} 
+}

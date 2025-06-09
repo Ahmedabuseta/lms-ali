@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBadge } from '@/components/icon-badge';
-import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 
 // FAQ Dropdown Component
 const FAQDropdown = ({ question, answer }: { question: string; answer: React.ReactNode }) => {
@@ -51,7 +51,7 @@ export const FAQSection = () => {
           </p>
         </CardHeader>
         <CardContent className="space-y-4 md:space-y-6 px-4 md:px-8 pb-6 md:pb-8 w-full">
-          <FAQDropdown 
+          <FAQDropdown
             question="ما هي معادلة كلية التجارة؟"
             answer={
               <div className="space-y-4">
@@ -67,8 +67,8 @@ export const FAQSection = () => {
               </div>
             }
           />
-          
-          <FAQDropdown 
+
+          <FAQDropdown
             question="ما هي شروط التقديم للامتحان معادلة كلية التجارة؟"
             answer={
               <div className="space-y-4">
@@ -79,8 +79,8 @@ export const FAQSection = () => {
               </div>
             }
           />
-          
-          <FAQDropdown 
+
+          <FAQDropdown
             question="ما هي عدد مرات دخول الامتحان؟"
             answer={
               <div className="bg-amber-50/50 dark:bg-amber-900/20 p-4 rounded-lg">
@@ -88,8 +88,8 @@ export const FAQSection = () => {
               </div>
             }
           />
-          
-          <FAQDropdown 
+
+          <FAQDropdown
             question="ما هي المواد المطلوبة في الامتحان؟"
             answer={
               <div className="space-y-6">
@@ -114,20 +114,20 @@ export const FAQSection = () => {
               </div>
             }
           />
-          
-          <FAQDropdown 
+
+          <FAQDropdown
             question="ما هي درجات النجاح في الامتحان؟"
             answer={
               <div className="bg-emerald-50/50 dark:bg-emerald-900/20 p-5 rounded-lg">
                 <p className="text-gray-700 dark:text-gray-200 leading-relaxed font-medium">
-                  درجة كل مادة 20 درجة، يطلب من الطالب أن يحقق 10 درجات ويحصل على الإجمالي 40 من 80 يدخل كلية تجارة انتساب. 
+                  درجة كل مادة 20 درجة، يطلب من الطالب أن يحقق 10 درجات ويحصل على الإجمالي 40 من 80 يدخل كلية تجارة انتساب.
                   وفي حال حصول الطالب على 65% يدخل كلية تجارة انتظام، أما طلاب نظام خمس سنوات فيحتاجون إلى تحقيق 50% للنجاح.
                 </p>
               </div>
             }
           />
-          
-          <FAQDropdown 
+
+          <FAQDropdown
             question="ما هي الأوراق المطلوبة وخطوات التقديم لمعادلة كلية التجارة؟"
             answer={
               <div className="space-y-4">
@@ -145,7 +145,7 @@ export const FAQSection = () => {
             }
           />
 
-          <FAQDropdown 
+          <FAQDropdown
             question="ما هي مواقع الامتحانات وأماكن انعقادها؟"
             answer={
               <div className="space-y-6">
@@ -160,7 +160,7 @@ export const FAQSection = () => {
                       <li className="border border-blue-200 dark:border-blue-700 p-3 rounded-lg bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 font-medium">كلية التجارة - جامعة الزقازيق</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-5 rounded-xl">
                     <h4 className="font-bold text-lg mb-4 text-green-800 dark:text-green-300">المحافظات</h4>
                     <ul className="space-y-3">
@@ -171,7 +171,7 @@ export const FAQSection = () => {
                       <li className="border border-green-200 dark:border-green-700 p-3 rounded-lg bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 text-sm leading-relaxed">الشرقية - الدقهلية - المنوفية - الإسماعيلية - السويس - دمياط - بورسعيد - شمال سيناء - جنوب سيناء</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 p-5 rounded-xl">
                     <h4 className="font-bold text-lg mb-4 text-purple-800 dark:text-purple-300">القطاع الجغرافي</h4>
                     <ul className="space-y-3">
@@ -195,4 +195,4 @@ export const FAQSection = () => {
       </Card>
     </div>
   );
-}; 
+};

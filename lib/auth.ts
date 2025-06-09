@@ -1,14 +1,14 @@
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { admin } from "better-auth/plugins";
-import { nextCookies } from "better-auth/next-js";
-import { PrismaClient } from "@prisma/client";
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { admin } from 'better-auth/plugins';
+import { nextCookies } from 'better-auth/next-js';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql",
+    provider: 'postgresql',
   }),
   socialProviders: {
     google: {
@@ -18,8 +18,8 @@ export const auth = betterAuth({
   },
   account: {
     accountLinking: {
-        enabled: true, 
-    } 
+        enabled: true,
+    }
   },
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -28,43 +28,43 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: "string",
-        defaultValue: "STUDENT",
+        type: 'string',
+        defaultValue: 'STUDENT',
       },
       accessType: {
-        type: "string", 
-        defaultValue: "NO_ACCESS",
+        type: 'string',
+        defaultValue: 'NO_ACCESS',
       },
       trialStartDate: {
-        type: "date",
+        type: 'date',
         required: false,
       },
       trialEndDate: {
-        type: "date",
+        type: 'date',
         required: false,
       },
       isTrialUsed: {
-        type: "boolean",
+        type: 'boolean',
         defaultValue: false,
       },
       accessGrantedBy: {
-        type: "string",
+        type: 'string',
         required: false,
       },
       accessGrantedAt: {
-        type: "date",
+        type: 'date',
         required: false,
       },
       paymentReceived: {
-        type: "boolean",
+        type: 'boolean',
         defaultValue: false,
       },
       paymentAmount: {
-        type: "number",
+        type: 'number',
         required: false,
       },
       paymentNotes: {
-        type: "string",
+        type: 'string',
         required: false,
       },
     },
@@ -72,11 +72,11 @@ export const auth = betterAuth({
 
   plugins: [
     admin({
-      defaultRole: "STUDENT",
+      defaultRole: 'STUDENT',
       adminEmails: process.env.ADMIN_EMAIL ? [process.env.ADMIN_EMAIL] : [],
     }),
     nextCookies(),
   ],
 });
 
-export type Session = typeof auth.$Infer.Session; 
+export type Session = typeof auth.$Infer.Session;

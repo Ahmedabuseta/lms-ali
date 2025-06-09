@@ -3,15 +3,14 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Eye, LayoutDashboard, Video } from 'lucide-react';
 
-import { db } from '@/lib/db';
-import { IconBadge } from '@/components/icon-badge';
-import { Banner } from '@/components/banner';
-
 import { ChapterTitleForm } from './_components/chapter-title-form';
 import { ChapterDescriptionForm } from './_components/chapter-description-form';
 import { ChapterAccessForm } from './_components/chapter-access-form';
 import { ChapterVideoForm } from './_components/chapter-video-form';
 import { ChapterActions } from './_components/chapter-actions';
+import { Banner } from '@/components/banner';
+import { IconBadge } from '@/components/icon-badge';
+import { db } from '@/lib/db';
 
 const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
   const { userId } = auth();
@@ -47,19 +46,19 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50/50 to-teal-50/30 dark:from-slate-900 dark:via-emerald-900/30 dark:to-teal-900/20">
       {/* Enhanced decorative elements with emerald/green theme */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-emerald-400/25 to-green-400/15 blur-3xl dark:from-emerald-400/40 dark:to-green-400/25"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-emerald-400/25 to-green-400/15 blur-3xl dark:from-emerald-400/40 dark:to-green-400/25" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-teal-400/25 to-cyan-400/15 blur-3xl dark:from-teal-400/40 dark:to-cyan-400/25"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-400/25 to-emerald-400/15 blur-3xl dark:from-green-400/40 dark:to-emerald-400/25"
           style={{ animationDelay: '4s' }}
-        ></div>
+         />
         <div
           className="absolute right-1/3 bottom-1/3 h-40 w-40 animate-pulse rounded-full bg-gradient-to-br from-mint-400/20 to-teal-400/12 blur-3xl dark:from-mint-400/35 dark:to-teal-400/20"
           style={{ animationDelay: '1s' }}
-        ></div>
+         />
       </div>
 
       <div className="relative z-10">
@@ -94,7 +93,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500 ease-out"
                       style={{ width: `${(completedFields / totalFields) * 100}%` }}
-                    ></div>
+                     />
                   </div>
                 </div>
                 <ChapterActions

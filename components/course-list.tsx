@@ -1,8 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import CourseCard from '@/components/course-card';
 import { CourseCardSkeleton } from '@/components/course-card-skeleton';
-import { useEffect, useState } from 'react';
 
 type CourseWithProgressWithCategory = {
   id: string;

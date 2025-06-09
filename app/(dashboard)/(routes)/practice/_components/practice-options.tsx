@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Settings, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Settings, RefreshCw } from 'lucide-react';
 
 interface PracticeOptionsProps {
   onRefresh: () => void;

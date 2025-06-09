@@ -30,9 +30,9 @@ export async function POST(req: Request, { params }: { params: { examId: string 
       return new NextResponse('Exam not found', { status: 404 });
     }
 
-    /*if (examWithCourse.course.createdById !== userId) {
+    /* if (examWithCourse.course.createdById !== userId) {
       return new NextResponse("Unauthorized", { status: 401 });
-    }*/
+    } */
 
     // Don't allow adding questions to published exams
     if (examWithCourse.isPublished) {

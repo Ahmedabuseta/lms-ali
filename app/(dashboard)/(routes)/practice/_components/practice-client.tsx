@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { Loader2, Book, BookOpen } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { QuestionCard } from './question-card';
+import { PracticeOptions } from './practice-options';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Book, BookOpen } from 'lucide-react';
-import { QuestionCard } from './question-card';
-import { PracticeOptions } from './practice-options';
-import { toast } from 'react-hot-toast';
 
 interface Chapter {
   id: string;

@@ -15,11 +15,11 @@ export const ComingSoonModal = ({ isOpen, onClose }: ComingSoonModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md transform rounded-2xl bg-white p-6 shadow-2xl transition-all dark:bg-gray-800">
         {/* Close Button */}
@@ -47,7 +47,7 @@ export const ComingSoonModal = ({ isOpen, onClose }: ComingSoonModalProps) => {
             <p className="text-gray-600 dark:text-gray-300 font-arabic leading-relaxed">
               منصة التعلم ستكون متاحة قريباً بإذن الله
             </p>
-            
+
             <div className="rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:from-blue-900/20 dark:to-purple-900/20">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -84,4 +84,4 @@ export const ComingSoonModal = ({ isOpen, onClose }: ComingSoonModalProps) => {
       </div>
     </div>
   );
-}; 
+};

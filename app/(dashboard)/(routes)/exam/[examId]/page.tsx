@@ -1,11 +1,11 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
+import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { ExamClient } from './_components/exam-client';
 import { getExams } from '@/actions/get-exams';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { ExamClient } from './_components/exam-client';
 
 interface PageProps {
   params: {

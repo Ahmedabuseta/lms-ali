@@ -13,12 +13,12 @@ export default function MathDropdownDemo() {
     {
       title: 'Calculus: Integration by Parts',
       content:
-        "The integration by parts formula is:\n\n$$\\int u(x)v'(x)\\,dx = u(x)v(x) - \\int u'(x)v(x)\\,dx$$\n\nThis is often remembered with the mnemonic: 'LIATE' (Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential).",
+        'The integration by parts formula is:\n\n$$\\int u(x)v\'(x)\\,dx = u(x)v(x) - \\int u\'(x)v(x)\\,dx$$\n\nThis is often remembered with the mnemonic: \'LIATE\' (Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential).',
     },
     {
       title: 'Multiple Choice Question Example',
       content:
-        "If $f(x) = 3x^2 - 4x + 2$, what is the value of $f'(2)$?\n\n**Options:**\n\nA. $8$\n\nB. $8 - 4 = 4$\n\nC. $12 - 4 = 8$\n\nD. $2$\n\n**Answer:** Option B is correct because $f'(x) = 6x - 4$, so $f'(2) = 6(2) - 4 = 12 - 4 = 8$.",
+        'If $f(x) = 3x^2 - 4x + 2$, what is the value of $f\'(2)$?\n\n**Options:**\n\nA. $8$\n\nB. $8 - 4 = 4$\n\nC. $12 - 4 = 8$\n\nD. $2$\n\n**Answer:** Option B is correct because $f\'(x) = 6x - 4$, so $f\'(2) = 6(2) - 4 = 12 - 4 = 8$.',
     },
     {
       title: 'Statistics: Normal Distribution',
@@ -36,11 +36,11 @@ export default function MathDropdownDemo() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Enhanced decorative elements for both themes */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl"></div>
+        <div className="absolute left-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 right-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
       </div>
 
       <div className="relative z-10 space-y-6 p-6">

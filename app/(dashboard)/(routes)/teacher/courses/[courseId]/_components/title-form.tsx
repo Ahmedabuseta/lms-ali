@@ -70,7 +70,7 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
           )}
         </Button>
       </div>
-      
+
       {!isEditing && (
         <div className="mt-4">
           {initialData.title ? (
@@ -85,7 +85,7 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
           )}
         </div>
       )}
-      
+
       {isEditing && (
         <div className="mt-4">
           <Form {...form}>
@@ -96,11 +96,11 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input 
-                        disabled={isSubmitting} 
-                        placeholder="مثال: 'تطوير الويب المتقدم'" 
+                      <Input
+                        disabled={isSubmitting}
+                        placeholder="مثال: 'تطوير الويب المتقدم'"
                         className="text-right"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -108,17 +108,17 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                 )}
               />
               <div className="flex items-center gap-3">
-                <Button 
-                  disabled={!isValid || isSubmitting} 
+                <Button
+                  disabled={!isValid || isSubmitting}
                   type="submit"
                   className="font-arabic"
                   variant="default"
                 >
                   حفظ
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={toggleEdit}
                   className="font-arabic"
                 >

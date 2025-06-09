@@ -1,7 +1,7 @@
 import { Loader2 } from 'lucide-react';
-import { CardContent } from '@/components/ui/card';
 import { ChatMessage } from '../chat-message';
 import { EmptyConversation } from './empty-conversation';
+import { CardContent } from '@/components/ui/card';
 
 interface Message {
   role: 'user' | 'assistant';

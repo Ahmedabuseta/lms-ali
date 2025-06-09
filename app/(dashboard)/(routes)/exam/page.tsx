@@ -2,14 +2,14 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { Clock, File, FileQuestion } from 'lucide-react';
 
+import { ExamCard } from './_components/exam-card';
+import { CourseCards } from './_components/course-cards';
 import { getExams } from '@/actions/get-exams';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { getCourses } from '@/actions/get-courses';
-import { ExamCard } from './_components/exam-card';
-import { CourseCards } from './_components/course-cards';
 
 interface PageProps {
   searchParams: {

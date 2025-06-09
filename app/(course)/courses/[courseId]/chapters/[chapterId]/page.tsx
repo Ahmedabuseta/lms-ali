@@ -1,16 +1,16 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { Banner } from '@/components/banner';
-import { Preview } from '@/components/preview';
+import { File, Clock, BookOpen, Award, ArrowLeft, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { VideoPlayer } from './_components/video-player';
-import { getChapter } from '@/actions/get-chapter';
 import { CourseProgressButton } from './_components/course-progress-button';
 import { CoursePlaylist } from './_components/course-playlist';
-import { File, Clock, BookOpen, Award, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Banner } from '@/components/banner';
+import { Preview } from '@/components/preview';
+import { getChapter } from '@/actions/get-chapter';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
-import Link from 'next/link';
 
 export default async function ChapterDetails({ params }: { params: { courseId: string; chapterId: string } }) {
   const { userId } = auth();
@@ -59,15 +59,15 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
       {/* Enhanced decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl"></div>
+        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl"
           style={{ animationDelay: '2s' }}
-        ></div>
+         />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-500/8 to-emerald-500/4 dark:from-green-400/8 dark:to-emerald-400/4 blur-3xl"
           style={{ animationDelay: '4s' }}
-        ></div>
+         />
       </div>
 
       <div className="relative z-10">
@@ -75,16 +75,16 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
         <div className="space-y-2">
           {userProgress?.isCompleted && (
             <div className="p-2 md:p-4">
-              <Banner 
-                label="🎉 تهانينا! لقد أكملت هذا الفصل بنجاح" 
-                variant="success" 
+              <Banner
+                label="🎉 تهانينا! لقد أكملت هذا الفصل بنجاح"
+                variant="success"
               />
             </div>
           )}
           {isLocked && (
             <div className="p-2 md:p-4">
-              <Banner 
-                label="🔒 هذا الفصل مقفل. تحتاج إلى صلاحيات للوصول إليه" 
+              <Banner
+                label="🔒 هذا الفصل مقفل. تحتاج إلى صلاحيات للوصول إليه"
                 variant="warning"
               />
             </div>
@@ -99,7 +99,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
               <div className="flex flex-col gap-4">
                 {/* Breadcrumb */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Link 
+                  <Link
                     href={`/courses/${fullCourse.id}`}
                     className="hover:text-foreground transition-colors font-arabic truncate"
                   >
