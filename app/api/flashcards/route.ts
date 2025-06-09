@@ -80,17 +80,18 @@ export async function GET(req: Request) {
     }
 
     // Transform the raw result to match expected structure
-    const randomizedFlashcards = flashcards.map((flashcard: Flashcard) => ({
-      ...flashcard,
+    const randomizedFlashcards = flashcards.map((flashcard: any) => ({
+      id: flashcard.id,
+      question: flashcard.question,
+      answer: flashcard.answer,
+      chapterId: flashcard.chapterId,
+      createdAt: flashcard.createdAt,
+      updatedAt: flashcard.updatedAt,
       chapter: {
         id: flashcard.chapter_id,
         title: flashcard.chapter_title,
         courseId: flashcard.chapter_courseId,
       },
-      // Remove the flattened chapter fields
-      chapter_id: undefined,
-      chapter_title: undefined,
-      chapter_courseId: undefined,
     }));
 
     // Calculate pagination metadata
