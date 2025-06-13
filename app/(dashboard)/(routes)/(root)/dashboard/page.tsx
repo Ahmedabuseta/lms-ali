@@ -67,7 +67,7 @@ export default async function Dashboard() {
                   </div>
                   أهلاً وسهلاً، {user.name || user.email}! 🎓
                 </h1>
-                <p className="animate-slide-up animation-delay-200 mb-4 text-base text-blue-100 sm:mb-6 sm:text-lg">
+            <p className="animate-slide-up animation-delay-200 mb-4 text-base text-blue-100 sm:mb-6 sm:text-lg">
                   استمر في رحلتك التعليمية وحقق أهدافك الأكاديمية
                 </p>
               </div>
@@ -148,11 +148,11 @@ export default async function Dashboard() {
           <CardContent className="p-4 sm:p-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 dark:from-blue-900/20 dark:to-indigo-900/20">
-                <CardContent className="relative p-4 sm:p-6">
+            <CardContent className="relative p-4 sm:p-6">
                   <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 p-3 transition-all duration-300 group-hover:from-blue-500/30 group-hover:to-indigo-500/30">
                       <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400 sm:h-6 sm:w-6" />
-                    </div>
+                </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-slate-800 transition-colors group-hover:text-blue-600 dark:text-slate-200 dark:group-hover:text-blue-400">
                         دوراتي التعليمية
@@ -160,8 +160,8 @@ export default async function Dashboard() {
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         تابع تقدمك في الدورات
                       </p>
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <Button
                     asChild
                     className="w-full border-0 bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 shadow-lg"
@@ -171,15 +171,15 @@ export default async function Dashboard() {
                       استكشف الدورات
                     </Link>
                   </Button>
-                </CardContent>
-              </Card>
+            </CardContent>
+          </Card>
 
               <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-emerald-50/80 to-teal-50/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 dark:from-emerald-900/20 dark:to-teal-900/20">
-                <CardContent className="relative p-4 sm:p-6">
+            <CardContent className="relative p-4 sm:p-6">
                   <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="rounded-lg bg-gradient-to-br from-emerald-500/20 to-teal-500/20 p-3 transition-all duration-300 group-hover:from-emerald-500/30 group-hover:to-teal-500/30">
                       <FileQuestion className="h-5 w-5 text-emerald-600 dark:text-emerald-400 sm:h-6 sm:w-6" />
-                    </div>
+                </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-slate-800 transition-colors group-hover:text-emerald-600 dark:text-slate-200 dark:group-hover:text-emerald-400">
                         الامتحانات والاختبارات
@@ -187,8 +187,8 @@ export default async function Dashboard() {
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         اختبر معلوماتك ومهاراتك
                       </p>
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <Button
                     asChild
                     className="w-full border-0 bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 shadow-lg"
@@ -198,15 +198,15 @@ export default async function Dashboard() {
                       ابدأ امتحان
                     </Link>
                   </Button>
-                </CardContent>
-              </Card>
+            </CardContent>
+          </Card>
 
               <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-purple-50/80 to-pink-50/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 dark:from-purple-900/20 dark:to-pink-900/20">
-                <CardContent className="relative p-4 sm:p-6">
+            <CardContent className="relative p-4 sm:p-6">
                   <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 p-3 transition-all duration-300 group-hover:from-purple-500/30 group-hover:to-pink-500/30">
                       <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400 sm:h-6 sm:w-6" />
-                    </div>
+                </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-slate-800 transition-colors group-hover:text-purple-600 dark:text-slate-200 dark:group-hover:text-purple-400">
                         المدرس الذكي
@@ -214,8 +214,8 @@ export default async function Dashboard() {
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         مساعدة ذكية بالذكاء الاصطناعي
                       </p>
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <Button
                     asChild
                     className="w-full border-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg"
@@ -225,24 +225,24 @@ export default async function Dashboard() {
                       ابدأ المحادثة
                     </Link>
                   </Button>
-                </CardContent>
-              </Card>
+            </CardContent>
+          </Card>
 
               <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-orange-50/80 to-amber-50/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 dark:from-orange-900/20 dark:to-amber-900/20">
-                <CardContent className="relative p-4 sm:p-6">
+            <CardContent className="relative p-4 sm:p-6">
                   <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
                     <div className="rounded-lg bg-gradient-to-br from-orange-500/20 to-amber-500/20 p-3 transition-all duration-300 group-hover:from-orange-500/30 group-hover:to-amber-500/30">
                       <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400 sm:h-6 sm:w-6" />
-                    </div>
+                </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-slate-800 transition-colors group-hover:text-orange-600 dark:text-slate-200 dark:group-hover:text-orange-400">
                         البطاقات التعليمية
                       </h3>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         مراجعة سريعة وفعالة
-                      </p>
-                    </div>
-                  </div>
+                  </p>
+                </div>
+              </div>
                   <Button
                     asChild
                     className="w-full border-0 bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 shadow-lg"
@@ -252,8 +252,8 @@ export default async function Dashboard() {
                       ابدأ المراجعة
                     </Link>
                   </Button>
-                </CardContent>
-              </Card>
+            </CardContent>
+          </Card>
             </div>
           </CardContent>
         </Card>

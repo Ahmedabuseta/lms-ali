@@ -32,7 +32,7 @@ export async function GET(req: Request, { params }: { params: { examId: string }
         },
         examQuestions: { include: {
             question: {
-              include: {
+      include: {
                 options: {
                   select: {
                     id: true,
@@ -109,11 +109,11 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
         },
         _count: { select: {
             attempts: {
-              where: {
+      where: {
                 completedAt: null, // Active attempts },
             },
           },
-        },
+      },
       },
     });
 
@@ -139,7 +139,7 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
 
     // If chapterId is provided, verify it belongs to the course
     if (validatedData.chapterId) { const chapter = await db.chapter.findFirst({
-        where: {
+      where: {
           id: validatedData.chapterId,
           courseId: existingExam.course.id,
           isPublished: true, },

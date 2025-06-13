@@ -365,7 +365,7 @@ export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps)
         },
         questionAttempts: { include: {
             question: {
-              include: {
+          include: {
                 options: true,
                 passage: true, },
             },
@@ -545,7 +545,7 @@ export async function resumeExamAttempt({ userId, examId }: ResumeExamAttemptPro
       if (timeElapsed >= activeAttempt.exam.timeLimit) {
         // Auto-complete the timed-out attempt and start a new one
         await completeExam({ userId, attemptId: activeAttempt.id });
-        return await startExamAttempt({ userId, examId });
+      return await startExamAttempt({ userId, examId });
       }
     }
 

@@ -31,7 +31,7 @@ export const ExamNavigation = ({ questions,
   };
 
   const isQuestionAnswered = (questionId: string) => {
-    return questionAttempts.some((qa) => qa.questionId === questionId);
+      return questionAttempts.some((qa) => qa.questionId === questionId);
   };
 
   return (

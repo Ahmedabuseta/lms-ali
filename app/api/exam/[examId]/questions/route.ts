@@ -221,7 +221,7 @@ export async function POST(req: Request, { params }: { params: { examId: string 
       });
 
       if (!questionBank) { questionBank = await db.questionBank.create({
-          data: {
+      data: {
             title: `أسئلة ${exam.title }`,
             description: `بنك أسئلة للامتحان: ${exam.title}`,
             courseId: exam.courseId,

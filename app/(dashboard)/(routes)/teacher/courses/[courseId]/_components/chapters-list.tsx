@@ -16,7 +16,8 @@ interface ChaptersListProps { items: Chapter[];
   onEdit: (id: string) => void;
 }
 
-export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) => { const [isMounted, setIsMounted] = useState(false);
+export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) => { 
+  const [isMounted, setIsMounted] = useState(false);
   const [chapters, setChapters] = useState(items);
   const [dragError, setDragError] = useState<string | null>(null);
 
@@ -27,7 +28,8 @@ export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) =>
     setChapters(items);
   }, [items]);
 
-  const onDragEnd = (result: DropResult) => { try {
+  const onDragEnd = (result: DropResult) => {
+    try {
       if (!result.destination) return;
 
       const items = Array.from(chapters);
@@ -43,13 +45,16 @@ export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) =>
 
       const bulkUpdateData = updatedChapters.map((chapter) => ({
         id: chapter.id,
-        position: items.findIndex((item) => item.id === chapter.id), }));
+        position: items.findIndex((item) => item.id === chapter.id),
+      }));
 
       onReorder(bulkUpdateData);
       setDragError(null);
-    } catch (error) { console.error('Drag and drop error:', error);
+    } catch (error) {
+      console.error('Drag and drop error:', error);
       setDragError('حدث خطأ أثناء إعادة ترتيب الفصول');
-      setChapters(items); // Reset to original state }
+      setChapters(items); // Reset to original state
+    }
   };
 
   if (!isMounted) { return (
@@ -290,3 +295,5 @@ export const ChaptersList = ({ items, onReorder, onEdit }: ChaptersListProps) =>
     return null;
   }
 };
+
+export default ChaptersList;

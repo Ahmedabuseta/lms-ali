@@ -89,7 +89,7 @@ export const QuestionForm = ({ question,
   // Initialize local answers from localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
+    
     const savedAnswers = localStorage.getItem(`exam_answers_${attemptId}`);
     if (savedAnswers) {
       try {

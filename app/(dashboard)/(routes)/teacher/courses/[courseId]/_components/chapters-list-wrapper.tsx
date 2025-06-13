@@ -3,11 +3,11 @@
 import { Chapter } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-
+import ChaptersList from './chapters-list';
 // Dynamically import the chapters list to avoid SSR issues with drag and drop
 const ChaptersListComponent = dynamic(
-  () => import('./chapters-list').then((mod) => ({ default: mod.ChaptersList })),
-  {
+  () => import('./chapters-list'),
+  { 
     ssr: false,
     loading: () => (
       <div className="space-y-2">
@@ -55,7 +55,7 @@ export const ChaptersListWrapper = ({ items, onReorder, onEdit }: ChaptersListWr
   }
 
   return (
-    <ChaptersListComponent
+    <ChaptersList
       items={items}
       onReorder={onReorder}
       onEdit={onEdit}

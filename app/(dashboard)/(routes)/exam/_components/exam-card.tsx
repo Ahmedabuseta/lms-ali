@@ -29,7 +29,7 @@ export function ExamCard({ exam }: ExamCardProps) { const [isMounted, setIsMount
             <div className="flex-1">
               <CardTitle className="text-lg font-semibold text-foreground font-arabic line-clamp-1 text-right">
                 {exam.title }
-              </CardTitle>
+          </CardTitle>
               <CardDescription className="text-xs text-muted-foreground font-arabic line-clamp-1 text-right">
                 الكورس: {exam.course.title}
                 { exam.chapter && ` • الفصل: ${exam.chapter.title }`}
@@ -76,7 +76,7 @@ export function ExamCard({ exam }: ExamCardProps) { const [isMounted, setIsMount
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground font-arabic line-clamp-1 text-right">
               {exam.title}
-            </CardTitle>
+        </CardTitle>
             <CardDescription className="text-xs text-muted-foreground font-arabic line-clamp-1 text-right">
               الكورس: {exam.course.title}
               { exam.chapter && ` • الفصل: ${exam.chapter.title }`}
