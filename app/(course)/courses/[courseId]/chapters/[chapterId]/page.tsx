@@ -177,6 +177,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                   playbackId={muxData?.playbackId!}
                   isLocked={isLocked}
                   completeOnEnd={completedOnEnd}
+                  videoUrl={chapter.videoUrl}
                 />
               </div>
             </div>
