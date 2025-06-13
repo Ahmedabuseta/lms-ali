@@ -10,7 +10,7 @@ jobs:
   production-build:
     name: Production Build
     runs-on: self-hosted
-    environment: ${{ github.event.inputs.environment || 'production' }}
+    environment: production
 
     strategy:
       matrix:
@@ -50,7 +50,7 @@ jobs:
         run: npx prisma generate
 
       - name: Database backup (production only)
-        if: github.event.inputs.environment == 'production'
+        if: github.ref == 'refs/heads/main'
         run: |
           echo "Creating database backup..."
           # Add your database backup commands here
@@ -68,7 +68,7 @@ jobs:
 
       - name: Deploy to production
         run: |
-          echo "Deploying to ${{ github.event.inputs.environment || 'production' }}..."
+          echo "Deploying to production..."
           # Restart your application service here
           # Example: pm2 restart your-app-name
 
@@ -79,3 +79,4 @@ jobs:
           curl -f http://localhost:3000/api/health || exit 1
 
       - name: Notify deployment
+        run: echo "Deployment completed successfully!"
