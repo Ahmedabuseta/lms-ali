@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireTeacher } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, BarChart, Trophy, Users } from 'lucide-react';
@@ -16,11 +17,7 @@ interface PageProps {
 }
 
 export default async function ExamStatisticsPage({ params }: PageProps) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+  const user = await requireTeacher();
 
   // Verify ownership of the exam through the course
   const exam = await db.exam.findUnique({
@@ -32,7 +29,7 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
       chapter: true,
       _count: {
         select: {
-          questions: true,
+          examQuestions: true,
         },
       },
     },
@@ -44,24 +41,24 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
 
   // Get statistics for the exam
   const statistics = await getExamStatistics({
-    userId,
+    userId: user.id,
     examId: params.examId,
   });
 
   return (
-    <div className="p-6">
+    <div className="p-6" dir="rtl">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <Link
             href={`/teacher/exam/${params.examId}`}
-            className="mb-4 flex items-center text-sm transition hover:opacity-75"
+            className="mb-4 flex items-center text-sm transition hover:opacity-75 font-arabic"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to exam
+            <ArrowLeft className="ml-2 h-4 w-4" />
+            العودة إلى الاختبار
           </Link>
-          <h1 className="text-2xl font-bold">{exam.title} - Statistics</h1>
-          <p className="text-sm text-slate-600">
-            Performance analytics for {exam.course.title}
+          <h1 className="text-2xl font-bold font-arabic">{exam.title} - الإحصائيات</h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400 font-arabic">
+            تحليلات الأداء لـ {exam.course.title}
             {exam.chapter && ` - ${exam.chapter.title}`}
           </p>
         </div>

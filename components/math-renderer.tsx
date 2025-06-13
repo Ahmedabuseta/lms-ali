@@ -19,8 +19,16 @@ interface MathRendererProps {
 export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = false, className = '' }) => {
   const [renderedMath, setRenderedMath] = useState<string>('');
   const [useDirectKatex, setUseDirectKatex] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  // Track if we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
+    if (!isClient) return;
+
     // Determine if the content is complex enough to warrant direct KaTeX rendering
     const isComplexMath =
       content.includes('\\frac') ||
@@ -51,7 +59,19 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
         setUseDirectKatex(false);
       }
     }
-  }, [content, display]);
+  }, [content, display, isClient]);
+
+  // Show initial render (server-safe) while client is loading
+  if (!isClient) {
+    const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content}$$` : `$${content}$`;
+    return (
+      <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`}>
+        <ReactMarkdown rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath]}>
+          {mathContent}
+        </ReactMarkdown>
+      </div>
+    );
+  }
 
   // For complex math formulas, use direct KaTeX rendering
   if (useDirectKatex) {
@@ -59,6 +79,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
       <div
         className={`math-content ${className} ${display ? 'my-4 text-center' : 'inline-block'}`}
         dangerouslySetInnerHTML={{ __html: renderedMath }}
+        suppressHydrationWarning={true}
       />
     );
   }
@@ -68,7 +89,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
   const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content}$$` : `$${content}$`;
 
   return (
-    <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`}>
+    <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`} suppressHydrationWarning={true}>
       <ReactMarkdown rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath]}>
         {mathContent}
       </ReactMarkdown>

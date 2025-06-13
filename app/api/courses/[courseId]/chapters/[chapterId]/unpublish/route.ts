@@ -1,15 +1,12 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type Params = { chapterId: string; courseId: string };
 
 export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+requireAuth()
 
     const ownCourse = await db.course.findUnique({ where: { id: params.courseId } });
     if (!ownCourse) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, X } from 'lucide-react';
+import { MathRenderer } from '@/components/math-renderer';
 
 interface Option {
   id: string;
@@ -56,13 +57,15 @@ export const OptionItem = ({ option, isSelected, showAnswer, onSelect, isDisable
       tabIndex={isDisabled ? -1 : 0}
       aria-disabled={isDisabled}
     >
-      <span className="flex-1">{option.text}</span>
+      <div className="flex-1">
+        <MathRenderer content={option.text} />
+      </div>
       {showAnswer && (
         <div className="flex items-center gap-2">
           {option.isCorrect ? (
-            <span className="text-sm text-green-600 dark:text-green-400">صحيح</span>
+            <span className="text-sm text-green-600 dark:text-green-400 font-arabic">صحيح</span>
           ) : isSelected ? (
-            <span className="text-sm text-red-600 dark:text-red-400">خطأ</span>
+            <span className="text-sm text-red-600 dark:text-red-400 font-arabic">خطأ</span>
           ) : null}
           {option.isCorrect ? (
             <Check className="h-5 w-5 text-green-600 dark:text-green-400" />

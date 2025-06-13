@@ -1,6 +1,7 @@
-import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { PageProtection } from '@/components/page-protection';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { StudentPerformanceTable } from '@/components/StudentPerformanceTable';
@@ -12,11 +13,8 @@ interface PageProps {
 }
 
 export default async function ExamStatisticsPage({ params }: PageProps) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+  const user = await getCurrentUser();
+  if (!user) redirect('/sign-in');
 
   const exam = await db.exam.findUnique({
     where: {

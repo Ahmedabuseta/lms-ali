@@ -14,7 +14,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -139,22 +138,16 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
-                  <Select
-                    disabled={isSubmitting}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a question type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="MULTIPLE_CHOICE">Multiple Choice</SelectItem>
-                      <SelectItem value="TRUE_FALSE">True/False</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <select
+                      {...field}
+                      disabled={isSubmitting}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+                      <option value="TRUE_FALSE">True/False</option>
+                    </select>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -166,23 +159,17 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Difficulty</FormLabel>
-                  <Select
-                    disabled={isSubmitting}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select difficulty" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="EASY">Easy</SelectItem>
-                      <SelectItem value="MEDIUM">Medium</SelectItem>
-                      <SelectItem value="HARD">Hard</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <select
+                      {...field}
+                      disabled={isSubmitting}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="EASY">Easy</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HARD">Hard</option>
+                    </select>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -200,10 +187,10 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
                         <Card
                           key={course.id}
                           className={cn(
-                            'cursor-pointer border-2 transition-all duration-200 hover:scale-105 hover:shadow-lg',
+                            'cursor-pointer border-2 transition-all duration-200 hover:border-primary/70',
                             field.value === course.id
-                              ? 'border-primary bg-primary/10 shadow-lg'
-                              : 'border-border/50 bg-card/40 hover:border-primary/50',
+                              ? 'border-primary bg-primary/10 shadow-sm'
+                              : 'border-gray-200 bg-white hover:border-primary/50',
                           )}
                           onClick={() => {
                             field.onChange(course.id);
@@ -255,26 +242,20 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Chapter (Optional)</FormLabel>
-                  <Select
-                    disabled={isSubmitting || !selectedCourseId}
-                    onValueChange={field.onChange}
-                    value={field.value || ''}
-                    defaultValue={field.value || ''}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a chapter" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {/* <SelectItem value="">No specific chapter</SelectItem> */}
+                  <FormControl>
+                    <select
+                      {...field}
+                      disabled={isSubmitting || !selectedCourseId}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="">No specific chapter</option>
                       {chapters.map((chapter) => (
-                        <SelectItem key={chapter.id} value={chapter.id}>
+                        <option key={chapter.id} value={chapter.id}>
                           {chapter.title}
-                        </SelectItem>
+                        </option>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </select>
+                  </FormControl>
                   <FormDescription>Associate this question with a specific chapter</FormDescription>
                   <FormMessage />
                 </FormItem>

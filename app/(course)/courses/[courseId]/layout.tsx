@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import CourseNavbar from './_components/course-navbar';
 import { db } from '@/lib/db';
@@ -11,17 +12,16 @@ export default async function CourseLayout({
   children: React.ReactNode;
   params: { courseId: string };
 }) {
-  const { userId } = auth();
-  if (!userId) {
+  const {session} = await requireAuth();
+  if (!session) {
     return redirect('/');
   }
-
   const course = await db.course.findUnique({
     where: { id: params.courseId },
     include: {
       chapters: {
         where: { isPublished: true },
-        include: { userProgress: { where: { userId } } },
+        include: { userProgress: { where: { userId: session.userId } } },
         orderBy: { position: 'asc' },
       },
     },
@@ -31,7 +31,7 @@ export default async function CourseLayout({
     return redirect('/');
   }
 
-  const progressCount = await getProgress(userId, course.id);
+  const progressCount = await getProgress(session.userId, course.id);
 
   return (
     <div className="h-full bg-background text-foreground">

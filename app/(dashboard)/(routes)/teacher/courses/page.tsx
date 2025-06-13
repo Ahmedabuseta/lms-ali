@@ -1,15 +1,12 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import { DataTable } from './_component/data-table';
 import { columns } from './_component/columns';
 import { db } from '@/lib/db';
 
 export default async function Courses() {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+   requireAuth()
 
   const courses = await db.course.findMany({ orderBy: { createdAt: 'desc' } });
 

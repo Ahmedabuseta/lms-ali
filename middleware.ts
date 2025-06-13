@@ -12,6 +12,7 @@ export default async function middleware(request: NextRequest) {
     '/sign-in',
     '/sign-up',
     '/api/auth/callback/google',
+    '/banned', // Allow access to banned page
   ];
   
   // Check if the current path is public
@@ -31,6 +32,19 @@ export default async function middleware(request: NextRequest) {
     
     if (!session) {
       return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+
+    // Check if user is banned
+    if (session.user?.banned) {
+      // Don't redirect if already on banned page
+      if (pathname !== '/banned') {
+        return NextResponse.redirect(new URL('/banned', request.url));
+      }
+    } else {
+      // If user is not banned but trying to access banned page, redirect to dashboard
+      if (pathname === '/banned') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
     
     return NextResponse.next();

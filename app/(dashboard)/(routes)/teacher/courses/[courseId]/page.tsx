@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import { CircleDollarSign, File, LayoutDashboard, ListChecks } from 'lucide-react';
 
@@ -15,11 +16,7 @@ import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+   requireAuth()
 
   const course = await db.course.findUnique({
     where: { id: params.courseId },

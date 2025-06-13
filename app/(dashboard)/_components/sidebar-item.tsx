@@ -26,8 +26,8 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
       onClick={onClick}
       type="button"
       className={cn(
-        'group relative flex transform items-center gap-x-3 rounded-xl p-4 text-sm font-medium font-arabic transition-all duration-300 hover:scale-105 overflow-hidden',
-        collapsed ? 'mx-1 mb-2 justify-center' : 'mx-2 mb-3',
+        'group relative flex transform items-center gap-x-3  text-sm font-medium font-arabic transition-all duration-300     overflow-hidden',
+        collapsed ? 'mx1 px-6 py-2 mb-3 justify-center rounded-md ' : ' rounded-xl mx-2 mb-3 p-4',
         isActive
           ? 'shadow-xl'
           : 'hover:shadow-lg',
@@ -67,7 +67,7 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
       {/* Icon container */}
       <div
         className={cn(
-          'relative flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 shrink-0',
+          'relative flex items-center justify-center rounded-xl transition-all duration-300 group- e-110 shrink-0',
           collapsed ? 'h-10 w-10' : 'h-12 w-12',
           isActive
             ? 'bg-white/25 backdrop-blur-sm shadow-lg'
@@ -80,7 +80,7 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
         )}
 
         <Icon
-          size={collapsed ? 18 : 22}
+          size={collapsed ? 16 : 22}
           className={cn(
             'relative z-10 transition-all duration-300',
             isActive

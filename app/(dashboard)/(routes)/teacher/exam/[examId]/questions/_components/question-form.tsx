@@ -34,13 +34,13 @@ interface QuestionFormProps {
 }
 
 const formSchema = z.object({
-  text: z.string().min(1, { message: 'Question text is required' }),
+  text: z.string().min(1, { message: 'نص السؤال مطلوب' }),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE']),
   options: z
     .array(
       z.object({
         id: z.string().optional(),
-        text: z.string().min(1, { message: 'Option text is required' }),
+        text: z.string().min(1, { message: 'نص الخيار مطلوب' }),
         isCorrect: z.boolean().default(false),
       }),
     )
@@ -49,7 +49,7 @@ const formSchema = z.object({
         return options.some((option) => option.isCorrect);
       },
       {
-        message: 'At least one option must be marked as correct',
+        message: 'يجب تحديد خيار واحد على الأقل كإجابة صحيحة',
       },
     ),
 });
@@ -90,8 +90,8 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
 
     if (questionType === 'TRUE_FALSE') {
       setValue('options', [
-        { text: 'True', isCorrect: false },
-        { text: 'False', isCorrect: false },
+        { text: 'صحيح', isCorrect: false },
+        { text: 'خطأ', isCorrect: false },
       ]);
     } else if (!initialData && questionType === 'MULTIPLE_CHOICE' && fields.length < 2) {
       // Restore default options for multiple choice if needed
@@ -110,16 +110,16 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
 
       if (initialData) {
         await axios.patch(`/api/exam/${examId}/questions/${initialData.id}`, values);
-        toast.success('Question updated');
+        toast.success('تم تحديث السؤال');
       } else {
         await axios.post(`/api/exam/${examId}/questions`, values);
-        toast.success('Question created');
+        toast.success('تم إنشاء السؤال');
       }
 
       router.push(`/teacher/exam/${examId}/questions`);
       router.refresh();
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما');
     } finally {
       setIsSubmitting(false);
     }
@@ -129,20 +129,20 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
     try {
       setIsDeleting(true);
       await axios.delete(`/api/exam/${examId}/questions/${initialData?.id}`);
-      toast.success('Question deleted');
+      toast.success('تم حذف السؤال');
       router.push(`/teacher/exam/${examId}/questions`);
       router.refresh();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما');
     } finally {
       setIsDeleting(false);
     }
   };
 
   return (
-    <div className="mt-6 rounded-md border bg-slate-50 p-4">
-      <div className="flex items-center justify-between font-medium">
-        Question Details
+    <div className="mt-6 rounded-md border bg-slate-50 dark:bg-slate-800 p-4" dir="rtl">
+      <div className="flex items-center justify-between font-medium font-arabic">
+        تفاصيل السؤال
         {initialData && (
           <ConfirmModal onConfirm={onDelete}>
             <Button disabled={isDeleting} variant="destructive" size="sm">
@@ -158,11 +158,11 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
             name="text"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Question</FormLabel>
+                <FormLabel className="font-arabic">السؤال</FormLabel>
                 <FormControl>
-                  <Textarea disabled={isSubmitting} placeholder="Enter the question text" {...field} />
+                  <Textarea disabled={isSubmitting} placeholder="أدخل نص السؤال" {...field} />
                 </FormControl>
-                <FormDescription>This is the question that will be shown to students.</FormDescription>
+                <FormDescription className="font-arabic">هذا هو السؤال الذي سيظهر للطلاب.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -173,7 +173,7 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Question Type</FormLabel>
+                <FormLabel className="font-arabic">نوع السؤال</FormLabel>
                 <div className="space-y-2">
                   <FormControl>
                     <RadioGroup
@@ -186,13 +186,13 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
                         <FormControl>
                           <RadioGroupItem value="MULTIPLE_CHOICE" />
                         </FormControl>
-                        <FormLabel className="font-normal">Multiple Choice</FormLabel>
+                        <FormLabel className="font-normal font-arabic">اختيار متعدد</FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem value="TRUE_FALSE" />
                         </FormControl>
-                        <FormLabel className="font-normal">True / False</FormLabel>
+                        <FormLabel className="font-normal font-arabic">صح / خطأ</FormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
@@ -203,13 +203,13 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
           />
 
           <div className="space-y-4">
-            <div className="font-medium">Answer Options</div>
+            <div className="font-medium font-arabic">خيارات الإجابة</div>
 
             {form.formState.errors.options && form.formState.errors.options.root && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{form.formState.errors.options.root.message}</AlertDescription>
+                <AlertTitle className="font-arabic">خطأ</AlertTitle>
+                <AlertDescription className="font-arabic">{form.formState.errors.options.root.message}</AlertDescription>
               </Alert>
             )}
 
@@ -223,7 +223,7 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
                       <FormControl>
                         <Input
                           disabled={isSubmitting || questionType === 'TRUE_FALSE'}
-                          placeholder={`Option ${index + 1}`}
+                          placeholder={`الخيار ${index + 1}`}
                           {...textField}
                         />
                       </FormControl>
@@ -256,7 +256,7 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
                           disabled={isSubmitting}
                         />
                       </FormControl>
-                      <FormLabel className="ml-2 text-sm font-normal">Correct</FormLabel>
+                      <FormLabel className="ml-2 text-sm font-normal font-arabic">صحيح</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -279,26 +279,27 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
                 type="button"
                 onClick={() => append({ text: '', isCorrect: false })}
                 variant="outline"
-                className="flex items-center"
+                className="flex items-center font-arabic"
                 disabled={isSubmitting}
               >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Option
+                <Plus className="ml-2 h-4 w-4" />
+                إضافة خيار
               </Button>
             )}
           </div>
 
           <div className="flex items-center gap-x-2">
-            <Button disabled={!form.formState.isValid || isSubmitting} type="submit">
-              {initialData ? 'Save Changes' : 'Create Question'}
+            <Button disabled={!form.formState.isValid || isSubmitting} type="submit" className="font-arabic">
+              {initialData ? 'حفظ التغييرات' : 'إنشاء السؤال'}
             </Button>
             <Button
               type="button"
               variant="ghost"
               onClick={() => router.push(`/teacher/exam/${examId}/questions`)}
               disabled={isSubmitting}
+              className="font-arabic"
             >
-              Cancel
+              إلغاء
             </Button>
           </div>
         </form>

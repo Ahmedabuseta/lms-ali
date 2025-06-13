@@ -165,7 +165,7 @@ export const Testimonials = () => {
             {[...testimonials, ...testimonials, ...testimonials].map((testimonial, i) => (
               <Card
                 key={i}
-                className="flex-shrink-0 w-[300px] md:w-[350px] border-0 bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800 rounded-2xl hover:scale-105 pointer-events-none"
+                className="flex-shrink-0 w-[300px] md:w-[350px] border-0 bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800 rounded-2xl     pointer-events-none"
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center">

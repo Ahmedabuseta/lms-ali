@@ -30,11 +30,6 @@ export async function GET(req: NextRequest) {
             id: true,
           },
         },
-        purchases: {
-          where: {
-            userId: user.id,
-          },
-        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -44,7 +39,6 @@ export async function GET(req: NextRequest) {
     const coursesWithProgress = courses.map((course) => ({
       ...course,
       progress: null, // Add progress calculation if needed
-      isPurchased: course.purchases.length > 0,
     }));
 
     console.log(`Found ${coursesWithProgress.length} courses for practice`);

@@ -1,5 +1,6 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
+import { getUserPermissions } from '@/lib/user';
+import { requireAuth } from '@/lib/api-auth';
 
 // Define the format for messages
 interface Message {
@@ -109,11 +110,12 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+ requireAuth()
 
-    // Check for authentication
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    // Check user permissions - block trial users from AI access
+    const permissions = await getUserPermissions();
+    if (!permissions.canAccessAI) {
+      return new NextResponse('AI access not available in your current plan. Please upgrade to access AI features.', { status: 403 });
     }
 
     // Get conversation messages from request

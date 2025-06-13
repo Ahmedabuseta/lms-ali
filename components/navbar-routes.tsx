@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 import { SearchInput } from './search-input';
 import { ThemeToggle } from './theme-toggle';
@@ -19,6 +19,7 @@ import {
 
 export const NavbarRoutes = () => {
   const { data: session } = useSession();
+  const [imageError, setImageError] = useState(false);
 
   const pathname = usePathname();
 
@@ -35,6 +36,27 @@ export const NavbarRoutes = () => {
       },
     });
   };
+
+  const handleImageError = () => {
+    console.log('Image failed to load:', session?.user?.image);
+    setImageError(true);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully:', session?.user?.image);
+    setImageError(false);
+  };
+
+  // Check if we have a valid image URL
+  const hasValidImage = session?.user?.image && 
+    session.user.image.trim() !== '' && 
+    !imageError &&
+    (session.user.image.startsWith('http') || session.user.image.startsWith('data:'));
+
+  console.log('Session user:', session?.user);
+  console.log('Image URL:', session?.user?.image);
+  console.log('Has valid image:', hasValidImage);
+  console.log('Image error state:', imageError);
 
   return (
     <>
@@ -55,7 +77,7 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : isTeacher(session?.user?.email) ? (
-          <Link href="/teacher/courses">
+          <Link href="/teacher/">
             <Button size="sm" variant="ghost">
               Teacher mode
             </Button>
@@ -65,16 +87,22 @@ export const NavbarRoutes = () => {
         {session?.user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                {session.user.image ? (
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0 overflow-hidden">
+                {hasValidImage ? (
                   <img
-                    src={session.user.image}
-                    alt={session.user.name || ''}
-                    className="h-8 w-8 rounded-full"
+                    src={session.user?.image || ''}
+                    alt={session.user.name || 'User avatar'}
+                    className="h-full w-full rounded-full object-cover"
+                    onError={handleImageError}
+                    onLoad={handleImageLoad}
+                    style={{ display: 'block' }}
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
-                    <User className="h-4 w-4" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-xs">
+                    {session.user.name 
+                      ? session.user.name.charAt(0).toUpperCase() 
+                      : session.user.email?.charAt(0).toUpperCase() 
+                      || <User className="h-4 w-4" />}
                   </div>
                 )}
               </Button>

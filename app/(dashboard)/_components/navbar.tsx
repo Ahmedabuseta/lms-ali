@@ -14,7 +14,7 @@ export const Navbar = () => {
         {/* Desktop Sidebar Toggle */}
         <button
           onClick={toggle}
-          className="hidden md:flex items-center justify-center h-10 w-10 rounded-lg bg-white/30 hover:bg-white/40 dark:bg-gray-800/30 dark:hover:bg-gray-800/40 transition-all duration-200 mr-4 hover:scale-105"
+          className="hidden md:flex items-center justify-center h-10 w-10 rounded-lg bg-white/30 hover:bg-white/40 dark:bg-gray-800/30 dark:hover:bg-gray-800/40 transition-all duration-200 mr-4    "
           title={isCollapsed ? 'توسيع الشريط الجانبي' : 'طي الشريط الجانبي'}
         >
           {isCollapsed ? (

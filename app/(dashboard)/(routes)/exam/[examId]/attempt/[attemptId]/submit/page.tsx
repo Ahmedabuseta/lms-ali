@@ -1,10 +1,12 @@
-import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { ExamSubmitAction } from './_components/exam-submit-action';
 import { db } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+// import { SubmitExamClient } from './_components/submit-exam-client';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { PageProtection } from '@/components/page-protection';
 
 interface PageProps {
   params: {
@@ -14,24 +16,29 @@ interface PageProps {
 }
 
 export default async function ExamSubmitPage({ params }: PageProps) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+  const user = await getCurrentUser();
+  if (!user) redirect('/sign-in');
 
   // Get the active attempt and make sure it's valid
   const attempt = await db.examAttempt.findUnique({
     where: {
       id: params.attemptId,
-      userId,
+      userId: user.id,
       examId: params.examId,
       completedAt: null,
     },
     include: {
       exam: {
         include: {
-          questions: true,
+          examQuestions: {
+            include: {
+              question: {
+                include: {
+                  options: true,
+                },
+              },
+            },
+          },
         },
       },
       questionAttempts: true,
@@ -43,7 +50,7 @@ export default async function ExamSubmitPage({ params }: PageProps) {
   }
 
   // Calculate stats for the summary
-  const totalQuestions = attempt.exam.questions.length;
+  const totalQuestions = attempt.exam.examQuestions.length;
   const answeredQuestions = attempt.questionAttempts.length;
   const unansweredQuestions = totalQuestions - answeredQuestions;
   const answeredPercentage = Math.round((answeredQuestions / totalQuestions) * 100);
@@ -100,12 +107,12 @@ export default async function ExamSubmitPage({ params }: PageProps) {
           <div>
             <h3 className="text-right font-medium">حالة الأسئلة</h3>
             <div className="mt-3 grid grid-cols-10 gap-2">
-              {attempt.exam.questions.map((question, index) => {
-                const isAnswered = attempt.questionAttempts.some((qa) => qa.questionId === question.id);
+              {attempt.exam.examQuestions.map((question, index) => {
+                const isAnswered = attempt.questionAttempts.some((qa) => qa.questionId === question.question.id);
 
                 return (
                   <div
-                    key={question.id}
+                    key={question.question.id}
                     className={`flex h-8 w-8 items-center justify-center rounded-md text-sm ${
                       isAnswered
                         ? 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400'

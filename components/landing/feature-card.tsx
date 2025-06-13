@@ -24,7 +24,7 @@ export const FeatureCard = ({
     <Card className={`group transform border-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} transition-all duration-500 hover:shadow-2xl dark:${gradientFrom.replace('50', '900/20')} dark:${gradientTo.replace('100', '900/20')}`}>
       <CardContent className="p-6 md:p-8">
         <div className="flex items-center gap-4 mb-6">
-          <div className={`flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r ${iconGradientFrom} ${iconGradientTo} transition-transform duration-300 group-hover:scale-110`}>
+          <div className={`flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r ${iconGradientFrom} ${iconGradientTo} transition-transform duration-300 group- e-110`}>
             <Icon className="h-8 w-8 text-white" />
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white font-arabic">{title}</h3>

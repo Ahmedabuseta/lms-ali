@@ -1,20 +1,17 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+import { requireAuth } from '@/lib/api-auth';
 export async function PUT(req: NextRequest, { params }: { params: { courseId: string; chapterId: string } }) {
   try {
-    const { userId } = auth();
+     const user = await requireAuth()
     const { isCompleted } = await req.json();
 
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     const userProgress = await db.userProgress.upsert({
-      where: { userId_chapterId: { userId, chapterId: params.chapterId } },
+      where: { userId_chapterId: { userId: user.id, chapterId: params.chapterId } },
       update: { isCompleted },
-      create: { userId, chapterId: params.chapterId, isCompleted },
+      create: { userId: user.id, chapterId: params.chapterId, isCompleted },
     });
 
     return NextResponse.json(userProgress);

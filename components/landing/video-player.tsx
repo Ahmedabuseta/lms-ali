@@ -333,7 +333,7 @@ export const VideoPlayer = ({
                   <Button
                     size="lg"
                     onClick={togglePlay}
-                    className="h-20 w-20 rounded-full bg-white/90 text-blue-600 shadow-lg transition-all duration-300 hover:scale-110 hover:bg-white"
+                    className="h-20 w-20 rounded-full bg-white/90 text-blue-600 shadow-lg transition-all duration-300  e-110 hover:bg-white"
                   >
                     <Play className="h-10 w-10 ml-1" />
                   </Button>

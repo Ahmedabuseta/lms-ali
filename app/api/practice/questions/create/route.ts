@@ -1,24 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    await requireAuth();
 
     const { text, type, options, courseId, chapterId, difficulty } = await req.json();
 
-    // Create the practice question
-    const question = await db.practiceQuestion.create({
+    // Find or create question bank
+    let questionBank = await db.questionBank.findFirst({
+      where: { courseId, chapterId: chapterId || null }
+    });
+
+    if (!questionBank) {
+      questionBank = await db.questionBank.create({
+        data: {
+          title: `Practice Questions - ${chapterId ? 'Chapter' : 'Course'}`,
+          courseId,
+          chapterId: chapterId || null,
+        }
+      });
+    }
+
+    // Create the question
+    const question = await db.question.create({
       data: {
         text,
         type,
-        difficulty: difficulty || null,
-        courseId,
-        chapterId: chapterId || null,
+        difficulty: difficulty || 'MEDIUM',
+        questionBankId: questionBank.id,
         options: {
           createMany: {
             data: options.map((option: { text: any; isCorrect: any }) => ({

@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { MathRenderer } from '@/components/math-renderer';
 
 interface Question {
   id: string;
@@ -112,7 +113,9 @@ export const QuestionCard = ({
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <p className="text-lg">{question.text}</p>
+          <div className="text-lg leading-relaxed">
+            <MathRenderer content={question.text} />
+          </div>
         </div>
 
         <div className="space-y-2">

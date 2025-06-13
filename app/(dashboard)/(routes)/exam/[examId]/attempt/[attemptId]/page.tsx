@@ -1,14 +1,15 @@
-import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { AlertTriangle, TimerIcon } from 'lucide-react';
 import { QuestionForm } from './_components/question-form';
 import { ExamNavigation } from './_components/exam-navigation';
 import { ExamTimer } from './_components/exam-timer';
 import { db } from '@/lib/db';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressIndicator } from '@/components/ui/progress-indicator';
-import { Separator } from '@/components/ui/separator';
+import { PageProtection } from '@/components/page-protection';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { ClientOnlyWrapper } from './_components/client-only-wrapper';
+import { FileQuestion, Clock, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface PageProps {
   params: {
@@ -21,33 +22,33 @@ interface PageProps {
 }
 
 export default async function ExamAttemptPage({ params, searchParams }: PageProps) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+  const user = await getCurrentUser();
+  if (!user) redirect('/sign-in');
 
   // Get current question index from search params or default to 0
   const questionIndex = searchParams.questionIndex ? parseInt(searchParams.questionIndex) : 0;
-
-  // Make sure we have a valid index
   const safeIndex = isNaN(questionIndex) ? 0 : questionIndex;
 
   // Fetch exam attempt with questions
   const attempt = await db.examAttempt.findUnique({
     where: {
       id: params.attemptId,
-      userId,
+      userId: user.id,
     },
     include: {
       exam: {
         include: {
-          questions: {
+          examQuestions: {
             include: {
-              options: true,
+              question: {
+                include: {
+                  options: true,
+                  passage: true,
+                },
+              },
             },
             orderBy: {
-              id: 'asc', // Order by ID until we add a position field
+              position: 'asc',
             },
           },
         },
@@ -65,7 +66,7 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
     return redirect(`/exam/${params.examId}/results/${params.attemptId}`);
   }
 
-  const questions = attempt.exam.questions;
+  const questions = attempt.exam.examQuestions.map((eq) => eq.question);
   const totalQuestions = questions.length;
   const currentQuestion = questions[safeIndex];
 
@@ -74,95 +75,135 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
 
   // Count answered questions for progress
   const answeredQuestions = attempt.questionAttempts.length;
-  const progress = Math.round((answeredQuestions / totalQuestions) * 100);
-
-  // Calculate time remaining
-  const startTime = new Date(attempt.startedAt).getTime();
-  const timeLimit = attempt.exam.timeLimit || 0;
-  const endTime = startTime + timeLimit * 60 * 1000;
-  const now = new Date().getTime();
-  const timeRemaining = Math.max(0, endTime - now);
-
-  // Calculate unanswered questions
   const unansweredQuestions = totalQuestions - answeredQuestions;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6" dir="rtl">
-      <div>
-        <h1 className="text-right text-2xl font-bold">{attempt.exam.title}</h1>
-        <p className="mt-1 text-right text-sm text-muted-foreground">{attempt.exam.description}</p>
-
-        {attempt.exam.timeLimit && (
-          <div className="mt-2">
-            <ExamTimer
-              timeLimit={attempt.exam.timeLimit}
-              startedAt={attempt.createdAt.toISOString()}
-              attemptId={params.attemptId}
-              examId={params.examId}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Progress indicator */}
-      <ProgressIndicator
-        totalQuestions={totalQuestions}
-        answeredQuestions={answeredQuestions}
-        hasUnsavedChanges={false}
-      />
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        {/* Navigation sidebar - keep on right side for RTL */}
-        <div className="order-last md:order-last">
-          <ExamNavigation
-            questions={questions}
-            questionAttempts={attempt.questionAttempts}
-            currentQuestionIndex={safeIndex}
-            examId={params.examId}
-            attemptId={params.attemptId}
-          />
-        </div>
-
-        {/* Question form */}
-        <div className="md:col-span-3">
-          {currentQuestion && (
-            <QuestionForm
-              question={currentQuestion}
-              selectedOptionId={existingAttempt?.selectedOptionId || null}
-              attemptId={params.attemptId}
-              userId={userId}
-              examId={params.examId}
-              currentQuestionIndex={safeIndex}
-              totalQuestions={totalQuestions}
-            />
+    <PageProtection requiredPermission="canAccessExams">
+      <div className="min-h-screen bg-background" dir="rtl">
+        <div className="mx-auto max-w-6xl space-y-6 p-6">
+          
+          {/* Header */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-lg bg-primary/10 p-2">
+                    <FileQuestion className="h-5 w-5 text-primary" />
+                  </div>
+        <div>
+                    <CardTitle className="text-xl font-arabic">
+                      {attempt.exam.title}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground font-arabic">
+                      {attempt.exam.description}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Timer */}
+          {attempt.exam.timeLimit && (
+                  <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+              <ExamTimer
+                timeLimit={attempt.exam.timeLimit}
+                      startedAt={attempt.startedAt.toISOString()}
+                attemptId={params.attemptId}
+                examId={params.examId}
+              />
+            </div>
           )}
         </div>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+        <ProgressIndicator
+          totalQuestions={totalQuestions}
+          answeredQuestions={answeredQuestions}
+          hasUnsavedChanges={false}
+                autoSaveStatus="idle"
+                isOnline={true}
+                questionStatuses={questions.map((question) => {
+                  const hasAttempt = attempt.questionAttempts.find(qa => qa.questionId === question.id);
+                  return {
+                    questionId: question.id,
+                    isAnswered: !!hasAttempt,
+                    hasUnsavedChanges: false,
+                    autoSaveStatus: 'idle' as const
+                  };
+                })}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Main Content */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+            
+            {/* Question Content */}
+            <div className="lg:col-span-3">
+              {currentQuestion ? (
+              <QuestionForm
+                question={{
+                  id: currentQuestion.id,
+                  text: currentQuestion.text,
+                  type: currentQuestion.type,
+                  passage: currentQuestion.passage ? {
+                    id: currentQuestion.passage.id,
+                    title: currentQuestion.passage.title,
+                    content: currentQuestion.passage.content
+                  } : undefined,
+                  options: currentQuestion.options.map(opt => ({
+                    id: opt.id,
+                    text: opt.text
+                  }))
+                }}
+                selectedOptionId={existingAttempt?.selectedOptionId || null}
+                attemptId={params.attemptId}
+                userId={user.id}
+                examId={params.examId}
+                currentQuestionIndex={safeIndex}
+                totalQuestions={totalQuestions}
+              />
+              ) : (
+                <Card>
+                  <CardContent className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <AlertTriangle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-semibold mb-2 font-arabic">لا توجد أسئلة</h3>
+                      <p className="text-muted-foreground font-arabic">
+                        لم يتم العثور على أسئلة في هذا الامتحان
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Navigation Sidebar */}
+            <div className="lg:col-span-1">
+              <ExamNavigation
+                questions={questions}
+                questionAttempts={attempt.questionAttempts}
+                currentQuestionIndex={safeIndex}
+                examId={params.examId}
+                attemptId={params.attemptId}
+              />
+            </div>
+          </div>
+
+          {/* Warning for unanswered questions */}
+          <ClientOnlyWrapper>
+            {unansweredQuestions > 0 && (
+              <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/10">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription className="font-arabic">
+                  <strong>تحذير:</strong> لديك {unansweredQuestions} سؤال بدون إجابة. 
+                  تأكد من الإجابة على جميع الأسئلة قبل تسليم الامتحان.
+                </AlertDescription>
+              </Alert>
+            )}
+          </ClientOnlyWrapper>
+        </div>
       </div>
-
-      {/* Warning for unanswered questions */}
-      {unansweredQuestions > 0 && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-400">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" />
-            <div className="font-semibold">تحذير: أسئلة بدون إجابة</div>
-          </div>
-          <p className="mt-2 text-right text-sm">
-            لديك {unansweredQuestions} سؤال بدون إجابة{unansweredQuestions > 1 ? '' : ''}. تأكد من الإجابة على جميع
-            الأسئلة قبل تسليم الامتحان.
-          </p>
-        </div>
-      )}
-
-      {/* Time warning */}
-      {timeLimit > 0 && timeRemaining < 5 * 60 * 1000 && (
-        <div className="rounded-md border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-400">
-          <div className="flex items-center gap-2">
-            <TimerIcon className="h-5 w-5" />
-            <div className="font-semibold">تحذير: وقت قليل</div>
-          </div>
-          <p className="mt-2 text-right text-sm">فاضل أقل من 5 دقايق! لو سمحت احفظ إجاباتك بسرعة.</p>
-        </div>
-      )}
-    </div>
+    </PageProtection>
   );
 }

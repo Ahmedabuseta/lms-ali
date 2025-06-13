@@ -9,7 +9,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Chapter, Course } from '@prisma/client';
-import { ChaptersList } from './chapters-list';
+import { ChaptersListWrapper } from './chapters-list-wrapper';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -161,7 +161,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
             </div>
           ) : (
             <div className="space-y-2">
-              <ChaptersList onEdit={onEdit} onReorder={onReorder} items={initialData.chapters || []} />
+              <ChaptersListWrapper onEdit={onEdit} onReorder={onReorder} items={initialData.chapters || []} />
             </div>
           )}
         </div>

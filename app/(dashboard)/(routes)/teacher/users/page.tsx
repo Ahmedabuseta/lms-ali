@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
 import { redirect } from 'next/navigation';
 import { Users, Shield, Clock, CheckCircle } from 'lucide-react';
 import { UserManagement } from './_components/user-management';
@@ -9,207 +9,56 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StudentAccessType, UserRole } from '@/lib/types';
 
 const UsersPage = async () => {
-  const { userId } = auth();
+  requireAuth();
 
-  if (!userId) {
-    return redirect('/');
+  // Check if user is a teacher
+  const teacherCheck = await isTeacher();
+  if (!teacherCheck) {
+    return redirect('/dashboard');
   }
 
-  // const teacherCheck = await isTeacher()
-  // if (!teacherCheck) {
-  //   return redirect('/dashboard')
-  // }
+  // Fetch real users from database
+  let users: any[] = [];
+  
+  try {
+    const dbUsers = await db.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        accessType: true,
+        createdAt: true,
+        updatedAt: true,
+        trialStartDate: true,
+        trialEndDate: true,
+        isTrialUsed: true,
+        paymentReceived: true,
+        paymentAmount: true,
+        paymentNotes: true,
+        accessGrantedAt: true,
+        accessGrantedBy: true,
+        banned: true,
+        banReason: true,
+        banExpires: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+    });
 
-  // Mock users data for testing - replace with actual database query later
-  const users = [
-    {
-      id: '1',
-      userId: 'user_1',
-      name: 'أحمد محمد',
-      email: 'ahmed@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.FULL_ACCESS,
-      createdAt: new Date('2024-01-15'),
-      updatedAt: new Date('2024-01-15'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: true,
-      paymentAmount: 250,
-      paymentNotes: 'تم الدفع عبر تحويل بنكي',
-      accessGrantedAt: new Date('2024-01-15'),
-      accessGrantedBy: 'teacher_1',
-    },
-    {
-      id: '2',
-      userId: 'user_2',
-      name: 'فاطمة علي',
-      email: 'fatima@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.FREE_TRIAL,
-      createdAt: new Date('2024-01-20'),
-      updatedAt: new Date('2024-01-20'),
-      trialStartDate: new Date('2024-01-20'),
-      trialEndDate: new Date('2024-02-20'),
-      isTrialUsed: true,
-      paymentReceived: false,
-      paymentAmount: null,
-      paymentNotes: null,
-      accessGrantedAt: null,
-      accessGrantedBy: null,
-    },
-    {
-      id: '3',
-      userId: 'user_3',
-      name: 'محمد سعد',
-      email: 'mohamed@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.LIMITED_ACCESS,
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date('2024-01-10'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: true,
-      paymentAmount: 150,
-      paymentNotes: 'دفع جزئي - وصول محدود',
-      accessGrantedAt: new Date('2024-01-10'),
-      accessGrantedBy: 'teacher_1',
-    },
-    {
-      id: '4',
-      userId: 'user_4',
-      name: 'نورا أحمد',
-      email: 'nora@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.NO_ACCESS,
-      createdAt: new Date('2024-01-25'),
-      updatedAt: new Date('2024-01-25'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: false,
-      paymentAmount: null,
-      paymentNotes: null,
-      accessGrantedAt: null,
-      accessGrantedBy: null,
-    },
-    {
-      id: '5',
-      userId: 'user_5',
-      name: 'علي حسن - معلم',
-      email: 'ali@example.com',
-      role: UserRole.TEACHER,
-      accessType: StudentAccessType.FULL_ACCESS,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: true,
-      paymentAmount: null,
-      paymentNotes: 'حساب معلم - أنت',
-      accessGrantedAt: new Date('2024-01-01'),
-      accessGrantedBy: null,
-    },
-    {
-      id: '6',
-      userId: 'user_6',
-      name: 'سارة محمود',
-      email: 'sara@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.FREE_TRIAL,
-      createdAt: new Date('2024-01-28'),
-      updatedAt: new Date('2024-01-28'),
-      trialStartDate: new Date('2024-01-28'),
-      trialEndDate: new Date('2024-01-25'), // Expired trial
-      isTrialUsed: true,
-      paymentReceived: false,
-      paymentAmount: null,
-      paymentNotes: null,
-      accessGrantedAt: null,
-      accessGrantedBy: null,
-    },
-    {
-      id: '7',
-      userId: 'user_7',
-      name: 'خالد عبدالله',
-      email: 'khalid@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.FULL_ACCESS,
-      createdAt: new Date('2024-01-12'),
-      updatedAt: new Date('2024-01-12'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: true,
-      paymentAmount: 300,
-      paymentNotes: 'تم الدفع كاملاً - واتساب',
-      accessGrantedAt: new Date('2024-01-12'),
-      accessGrantedBy: 'teacher_1',
-    },
-    {
-      id: '8',
-      userId: 'user_8',
-      name: 'مريم يوسف',
-      email: 'mariam@example.com',
-      role: UserRole.STUDENT,
-      accessType: StudentAccessType.NO_ACCESS,
-      createdAt: new Date('2024-01-30'),
-      updatedAt: new Date('2024-01-30'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: false,
-      paymentAmount: null,
-      paymentNotes: null,
-      accessGrantedAt: null,
-      accessGrantedBy: null,
-    },
-    {
-      id: '9',
-      userId: 'user_9',
-      name: 'د. أمين العلي - معلم مساعد',
-      email: 'amin@example.com',
-      role: UserRole.TEACHER,
-      accessType: StudentAccessType.FULL_ACCESS,
-      createdAt: new Date('2024-01-05'),
-      updatedAt: new Date('2024-01-05'),
-      trialStartDate: null,
-      trialEndDate: null,
-      isTrialUsed: false,
-      paymentReceived: true,
-      paymentAmount: null,
-      paymentNotes: 'حساب معلم مساعد',
-      accessGrantedAt: new Date('2024-01-05'),
-      accessGrantedBy: null,
-    },
-  ];
+    // Transform database users to match the User interface
+    users = dbUsers.map(user => ({
+      ...user,
+      userId: user.id, // Add userId field that the interface expects
+      paymentAmount: user.paymentAmount || null,
+    }));
 
-  // Uncomment below for actual database query
-  // const users = await db.user.findMany({
-  //   select: {
-  //     id: true,
-  //     userId: true,
-  //     name: true,
-  //     email: true,
-  //     role: true,
-  //     accessType: true,
-  //     createdAt: true,
-  //     updatedAt: true,
-  //     trialStartDate: true,
-  //     trialEndDate: true,
-  //     isTrialUsed: true,
-  //     paymentReceived: true,
-  //     paymentAmount: true,
-  //     paymentNotes: true,
-  //     accessGrantedAt: true,
-  //   },
-  //   orderBy: {
-  //     createdAt: 'desc'
-  //   },
-  //   take: 100,
-  // })
+    console.log(`Loaded ${users.length} users from database`);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    // users remains empty array if database query fails
+  }
 
   // Calculate stats efficiently
   const studentUsers = users.filter((user) => user.role === UserRole.STUDENT);

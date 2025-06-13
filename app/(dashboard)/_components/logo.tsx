@@ -10,7 +10,7 @@ const Logo = ({ collapsed = false }: LogoProps) => {
   return (
     <Link href="/" className="group">
       <div className="flex items-center space-x-2 space-x-reverse">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-transform duration-300 group-hover:scale-110 shrink-0">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-transform duration-300 group- e-110 shrink-0">
           <GraduationCap className="h-6 w-6 text-white" />
         </div>
         <span className={cn(

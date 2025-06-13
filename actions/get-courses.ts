@@ -26,7 +26,6 @@ export async function getCourses({
       include: {
         category: true,
         chapters: { where: { isPublished: true }, select: { id: true } },
-        purchases: { where: { userId } },
       },
       orderBy: {
         createdAt: 'desc',
@@ -35,7 +34,7 @@ export async function getCourses({
 
     const coursesWithProgress: CourseWithProgressAndCategory[] = await Promise.all(
       courses.map(async (course) => {
-        if (course.purchases.length === 0) {
+        if (course.length === 0) {
           return {
             ...course,
             progress: null,

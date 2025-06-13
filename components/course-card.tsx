@@ -33,7 +33,7 @@ export default function CourseCard({
           {imageUrl ? (
             <Image
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-500 group- e-110"
               alt={title}
               src={imageUrl}
             />
@@ -123,14 +123,14 @@ export default function CourseCard({
 
           {/* Action Button */}
           <div className="pt-2">
-            <div className="w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:from-purple-600 group-hover:to-blue-600 group-hover:shadow-xl">
+            <div className="w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg transition-all duration-300 group-    group-hover:from-purple-600 group-hover:to-blue-600 group-hover:shadow-xl">
               {progress !== null ? 'متابعة التعلم' : 'عرض التفاصيل'}
             </div>
           </div>
         </div>
 
         {/* Floating decoration */}
-        <div className="absolute left-4 top-4 h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group-hover:scale-150" />
+        <div className="absolute left-4 top-4 h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-red-400 opacity-20 transition-transform duration-500 group- e-150" />
       </div>
     </Link>
   );

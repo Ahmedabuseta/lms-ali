@@ -51,7 +51,7 @@ export const BasicExamForm = ({ initialData, examId, courseId, chapters }: Basic
     defaultValues: {
       title: initialData.title,
       description: initialData.description || '',
-      chapterId: initialData.chapterId || '',
+      chapterId: initialData.chapterId || 'no-chapter',
       timeLimit: initialData.timeLimit || undefined,
     },
   });
@@ -60,7 +60,13 @@ export const BasicExamForm = ({ initialData, examId, courseId, chapters }: Basic
     try {
       setIsSubmitting(true);
 
-      await axios.patch(`/api/exam/${examId}`, values);
+      // Convert 'no-chapter' back to null for database storage
+      const submitData = {
+        ...values,
+        chapterId: values.chapterId === 'no-chapter' ? null : values.chapterId,
+      };
+
+      await axios.patch(`/api/exam/${examId}`, submitData);
 
       toast.success('Exam updated');
       router.push(`/teacher/exam/${examId}`);
@@ -123,16 +129,16 @@ export const BasicExamForm = ({ initialData, examId, courseId, chapters }: Basic
                   <Select
                     disabled={isSubmitting}
                     onValueChange={field.onChange}
-                    value={field.value || ''}
-                    defaultValue={field.value || ''}
+                    value={field.value || 'no-chapter'}
+                    defaultValue={field.value || 'no-chapter'}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="No specific chapter" defaultValue="" />
+                        <SelectValue placeholder="No specific chapter" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">No specific chapter</SelectItem>
+                      <SelectItem value="no-chapter">No specific chapter</SelectItem>
                       {chapters.map((chapter) => (
                         <SelectItem key={chapter.id} value={chapter.id}>
                           {chapter.title}

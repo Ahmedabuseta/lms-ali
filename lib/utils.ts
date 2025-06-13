@@ -9,6 +9,11 @@ export function cn(...inputs: ClassValue[]) {
  * Formats time in milliseconds to HH:MM:SS or MM:SS format
  */
 export function formatTime(milliseconds: number): string {
+  // Handle edge cases
+  if (isNaN(milliseconds) || milliseconds < 0) {
+    return '00:00';
+  }
+
   const totalSeconds = Math.floor(milliseconds / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);

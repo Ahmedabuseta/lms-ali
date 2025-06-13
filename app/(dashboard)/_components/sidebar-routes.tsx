@@ -18,31 +18,17 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { SidebarItem } from './sidebar-item';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface UserPermissions {
-  canAccessVideos: boolean;
-  canAccessCourses: boolean;
-  canAccessExams: boolean;
-  canAccessFlashcards: boolean;
-  canAccessPractice: boolean;
-  canAccessAI: boolean;
-  isTeacher: boolean;
-  accessType: string;
-  canStartTrial: boolean;
-  trialDaysLeft: number;
-  isTrialExpired: boolean;
-}
+import { usePermissions } from '@/hooks/use-permissions';
 
 interface SidebarRoutesProps {
   collapsed?: boolean;
 }
 
-const getAllRoutes = (permissions: UserPermissions) => {
+const getAllRoutes = (permissions: any) => {
   const studentRoutes = [
     {
       icon: Layout,
@@ -54,31 +40,31 @@ const getAllRoutes = (permissions: UserPermissions) => {
       icon: Compass,
       label: 'استكشاف الدورات',
       href: '/search',
-      requiresPermission: 'canAccessCourses' as keyof UserPermissions,
+      requiresPermission: 'canAccessCourses',
     },
     {
       icon: FileQuestion,
       label: 'الاختبارات',
       href: '/exam',
-      requiresPermission: 'canAccessExams' as keyof UserPermissions,
+      requiresPermission: 'canAccessExams',
     },
     {
       icon: MemoryStick,
       label: 'البطاقات التعليمية',
       href: '/flashcards',
-      requiresPermission: 'canAccessFlashcards' as keyof UserPermissions,
+      requiresPermission: 'canAccessFlashcards',
     },
     {
       icon: Dumbbell,
       label: 'التمارين',
       href: '/practice',
-      requiresPermission: 'canAccessPractice' as keyof UserPermissions,
+      requiresPermission: 'canAccessPractice',
     },
     {
       icon: Bot,
       label: 'المدرس الذكي',
       href: '/ai-tutor',
-      requiresPermission: 'canAccessAI' as keyof UserPermissions,
+      requiresPermission: 'canAccessAI',
     },
   ];
 
@@ -124,7 +110,7 @@ const getAllRoutes = (permissions: UserPermissions) => {
   // Filter routes based on permissions
   const filteredStudentRoutes = studentRoutes.filter((route) => {
     if (!route.requiresPermission) return true;
-    return permissions[route.requiresPermission] === true;
+    return permissions && permissions[route.requiresPermission] === true;
   });
 
   return { studentRoutes: filteredStudentRoutes, teacherRoutes };
@@ -132,26 +118,16 @@ const getAllRoutes = (permissions: UserPermissions) => {
 
 export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
   const pathname = usePathname();
-  const [permissions, setPermissions] = useState<UserPermissions | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      try {
-        const response = await fetch('/api/user/permissions');
-        if (response.ok) {
-          const data = await response.json();
-          setPermissions(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user permissions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPermissions();
-  }, []);
+  const { 
+    permissions, 
+    loading, 
+    error, 
+    refresh, 
+    canStartTrial, 
+    getTrialDaysLeft,
+    isTrialExpired,
+    getAccessType 
+  } = usePermissions();
 
   const startTrial = async () => {
     try {
@@ -161,12 +137,8 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
 
       if (response.ok) {
         toast.success('تم تفعيل التجربة المجانية!');
-        // Refresh permissions
-        const permissionsResponse = await fetch('/api/user/permissions');
-        if (permissionsResponse.ok) {
-          const data = await permissionsResponse.json();
-          setPermissions(data);
-        }
+        // Refresh permissions to get updated data
+        await refresh();
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || 'فشل في تفعيل التجربة المجانية');
@@ -176,7 +148,7 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
     }
   };
 
-  if (loading || !permissions) {
+  if (loading) {
     return (
       <div className="flex w-full flex-col space-y-1">
         <div className="h-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
@@ -186,138 +158,120 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => {
     );
   }
 
+  if (error || !permissions) {
+    return (
+      <div className="p-4">
+        <Card className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+          <CardContent className="p-4">
+            <p className="text-sm text-red-600 dark:text-red-400 font-arabic mb-2">
+              خطأ في تحميل الصلاحيات
+            </p>
+            <Button 
+              onClick={() => refresh()} 
+              size="sm" 
+              variant="outline"
+              className="font-arabic"
+            >
+              إعادة المحاولة
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const isTeacherPage = pathname?.startsWith('/teacher');
   const { studentRoutes, teacherRoutes } = getAllRoutes(permissions);
 
-  const routes = isTeacherPage ? teacherRoutes : studentRoutes;
+  const routes = permissions.isTeacher && isTeacherPage ? teacherRoutes : studentRoutes;
 
-  // Show different states based on access type
-  if (!permissions.isTeacher) {
-    // No access - show trial option
-    if (permissions.accessType === 'NO_ACCESS') {
-      return (
-        <div className="flex w-full flex-col space-y-4 p-4">
-          {!collapsed && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-center font-arabic">مرحباً بك!</CardTitle>
+  return (
+    <div className="flex h-full w-full flex-col">
+      <div className="flex w-full flex-col space-y-1">
+        {routes.map((route) => (
+          <SidebarItem
+            key={route.href}
+            icon={route.icon}
+            label={route.label}
+            href={route.href}
+            collapsed={collapsed}
+          />
+        ))}
+      </div>
+
+      {/* Trial and Access Cards */}
+      {!permissions.isTeacher && (
+        <div className="mt-auto space-y-3 p-3">
+          {/* Free Trial Card */}
+          {canStartTrial() && (
+            <Card className="border-2 border-dashed border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <CardTitle className="text-sm font-arabic text-blue-800 dark:text-blue-200">
+                    جرب مجاناً
+                  </CardTitle>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-center text-sm text-muted-foreground font-arabic">
-                  ابدأ تجربتك المجانية للوصول إلى المحتوى
+              <CardContent className="pt-0">
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-3 font-arabic">
+                  احصل على 3 أيام تجربة مجانية
                 </p>
-                <Button
-                  onClick={startTrial}
-                  className="w-full font-arabic"
-                  disabled={!permissions.canStartTrial}
+                <Button 
+                  onClick={startTrial} 
+                  size="sm" 
+                  className="w-full bg-blue-600 hover:bg-blue-700 font-arabic"
                 >
-                  بدء التجربة المجانية
+                  بدء التجربة
                 </Button>
               </CardContent>
             </Card>
           )}
-          <div className="flex w-full flex-col space-y-1">
-            {routes.map((route) => (
-              <SidebarItem
-                key={route.href}
-                icon={route.icon}
-                label={route.label}
-                href={route.href}
-                collapsed={collapsed}
-              />
-            ))}
-          </div>
-        </div>
-      );
-    }
 
-    // Trial active
-    if (permissions.accessType === 'FREE_TRIAL' && !permissions.isTrialExpired) {
-      return (
-        <div className="flex w-full flex-col space-y-1">
-          <div className="mb-2 p-3">
-            <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+          {/* Active Trial Status */}
+          {getAccessType() === 'FREE_TRIAL' && !isTrialExpired() && (
+            <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
               <CardContent className="p-3">
-                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-sm font-medium">
-                    التجربة المجانية - {permissions.trialDaysLeft} أيام متبقية
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-800 dark:text-blue-200 font-arabic">
+                    التجربة المجانية
                   </span>
                 </div>
+                <p className="text-xs text-blue-700 dark:text-blue-300 font-arabic">
+                  متبقي: {getTrialDaysLeft()} أيام
+                </p>
               </CardContent>
             </Card>
-          </div>
-          {routes.map((route) => (
-            <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
-          ))}
-        </div>
-      );
-    }
+          )}
 
-    // Trial expired
-    if (permissions.accessType === 'FREE_TRIAL' && permissions.isTrialExpired) {
-      return (
-        <div className="flex w-full flex-col space-y-4 p-4">
-          <Card className="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20">
-            <CardHeader>
-              <CardTitle className="text-center text-yellow-800 dark:text-yellow-200">انتهت التجربة المجانية</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center text-sm text-yellow-700 dark:text-yellow-300">
-                لقد انتهت فترة التجربة المجانية. للمتابعة، يرجى الاشتراك في إحدى الخطط
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-center">
-                  <MessageCircle className="mx-auto mb-2 h-8 w-8 text-green-500" />
-                  <h3 className="font-medium">للاشتراك</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    تواصل معنا عبر واتساب لاختيار الخطة المناسبة
-                  </p>
+          {/* Upgrade Card */}
+          {(getAccessType() === 'NO_ACCESS' || isTrialExpired()) && (
+            <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-amber-600" />
+                  <CardTitle className="text-sm font-arabic text-amber-800 dark:text-amber-200">
+                    ترقية الحساب
+                  </CardTitle>
                 </div>
-                <Button className="w-full" asChild>
-                  <a href="https://wa.me/YOUR_WHATSAPP_NUMBER" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    تواصل للاشتراك
-                  </a>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p className="text-xs text-amber-700 dark:text-amber-300 mb-3 font-arabic">
+                  احصل على وصول كامل لجميع الميزات
+                </p>
+                <Button 
+                  asChild
+                  size="sm" 
+                  className="w-full bg-amber-600 hover:bg-amber-700 font-arabic"
+                >
+                  <a href="/pricing">عرض الخطط</a>
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-  }
-
-  // Normal navigation for teachers or paid students
-  return (
-    <div className="flex w-full flex-col space-y-1">
-      {/* Show access type badge for paid students */}
-      {!permissions.isTeacher &&
-        (permissions.accessType === 'FULL_ACCESS' || permissions.accessType === 'LIMITED_ACCESS') && (
-          <div className="mb-2 p-3">
-            <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
-              <CardContent className="p-3">
-                <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-                  <UserCheck className="h-4 w-4" />
-                  <span className="text-sm font-medium">
-                    {permissions.accessType === 'FULL_ACCESS' ? 'اشتراك كامل' : 'اشتراك محدود'}
-                  </span>
-                </div>
               </CardContent>
             </Card>
-          </div>
-        )}
-
-      {routes.map((route) => (
-        <SidebarItem
-          key={route.href}
-          icon={route.icon}
-          label={route.label}
-          href={route.href}
-          collapsed={collapsed}
-        />
-      ))}
+          )}
+        </div>
+      )}
     </div>
   );
 };

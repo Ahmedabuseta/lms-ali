@@ -140,12 +140,12 @@ export const getUserPermissions = async () => {
     case StudentAccessType.FREE_TRIAL:
       const hasAccess = !trialExpired;
       return {
-        canAccessVideos: hasAccess,
-        canAccessCourses: hasAccess,
-        canAccessExams: hasAccess,
-        canAccessFlashcards: hasAccess,
-        canAccessPractice: hasAccess,
-        canAccessAI: hasAccess,
+        canAccessVideos: false, // No video access during trial
+        canAccessCourses: false, // No full course access during trial
+        canAccessExams: hasAccess, // Only for free chapters
+        canAccessFlashcards: hasAccess, // Only for free chapters
+        canAccessPractice: hasAccess, // Only for free chapters
+        canAccessAI: false, // No AI access during trial
         isTeacher: false,
         accessType: 'FREE_TRIAL',
         canStartTrial: false,
@@ -197,5 +197,67 @@ export const getUserPermissions = async () => {
         trialDaysLeft: 0,
         isTrialExpired: false,
       };
+  }
+};
+
+// Check if a chapter is free (position 1 or marked as free)
+export const isChapterFree = async (chapterId: string) => {
+  const chapter = await db.chapter.findUnique({
+    where: { id: chapterId },
+    select: { position: true, isFree: true }
+  });
+  
+  return chapter?.position === 1 || chapter?.isFree || false;
+};
+
+// Check if user can access specific chapter content
+export const canAccessChapterContent = async (user: any, chapterId: string) => {
+  if (!user) return false;
+
+  // Teachers have access to everything
+  if (user.role === UserRole.TEACHER) return true;
+
+  // Check access type
+  switch (user.accessType) {
+    case StudentAccessType.FULL_ACCESS:
+    case StudentAccessType.LIMITED_ACCESS:
+      return true; // Paid users can access all chapters
+
+    case StudentAccessType.FREE_TRIAL:
+      // Trial users can only access free chapters
+      const trialExpired = isTrialExpired(user);
+      if (trialExpired) return false;
+      return await isChapterFree(chapterId);
+
+    case StudentAccessType.NO_ACCESS:
+    default:
+      // No access users can only see free chapters
+      return await isChapterFree(chapterId);
+  }
+};
+
+// Check if user can access chapter services (exams, flashcards, practice)
+export const canAccessChapterServices = async (user: any, chapterId: string) => {
+  if (!user) return false;
+
+  // Teachers have access to everything
+  if (user.role === UserRole.TEACHER) return true;
+
+  // Check access type
+  switch (user.accessType) {
+    case StudentAccessType.FULL_ACCESS:
+    case StudentAccessType.LIMITED_ACCESS:
+      return true; // Paid users can access all services
+
+    case StudentAccessType.FREE_TRIAL:
+      // Trial users can access services only for free chapters
+      const trialExpired = isTrialExpired(user);
+      if (trialExpired) return false;
+      return await isChapterFree(chapterId);
+
+    case StudentAccessType.NO_ACCESS:
+    default:
+      // No access users cannot use services
+      return false;
   }
 };

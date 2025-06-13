@@ -48,7 +48,7 @@ export const QuestionsEmptyState = () => {
 
         {/* Action button */}
         <Button
-          className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
+          className="bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md transition-all duration-200 font-arabic"
           size="lg"
           asChild
         >

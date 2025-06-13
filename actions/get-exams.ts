@@ -27,12 +27,17 @@ export async function getExams({ userId, courseId, chapterId, examId }: GetExams
               title: true,
             },
           },
-          questions: {
+          examQuestions: {
             include: {
-              options: true,
+              question: {
+                include: {
+                  options: true,
+                  passage: true,
+                },
+              },
             },
             orderBy: {
-              createdAt: 'asc',
+              position: 'asc',
             },
           },
         },
@@ -153,7 +158,7 @@ export async function getExams({ userId, courseId, chapterId, examId }: GetExams
         },
         _count: {
           select: {
-            questions: true,
+            examQuestions: true,
           },
         },
       },

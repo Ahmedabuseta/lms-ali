@@ -1,25 +1,26 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import { File, Clock, BookOpen, Award, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { VideoPlayer } from './_components/video-player';
 import { CourseProgressButton } from './_components/course-progress-button';
 import { CoursePlaylist } from './_components/course-playlist';
+import { ChapterQuiz } from './_components/chapter-quiz';
 import { Banner } from '@/components/banner';
 import { Preview } from '@/components/preview';
 import { getChapter } from '@/actions/get-chapter';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
-
 export default async function ChapterDetails({ params }: { params: { courseId: string; chapterId: string } }) {
-  const { userId } = auth();
-  if (!userId) {
+  const {session} = await requireAuth();
+  if (!session.userId) {
     return redirect('/');
   }
 
-  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase } = await getChapter({
-    userId,
+  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase, hasChapterAccess, chapterQuiz } = await getChapter({
+    userId: session.userId,
     ...params,
   });
 
@@ -35,7 +36,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
         where: { isPublished: true },
         include: {
           userProgress: {
-            where: { userId },
+            where: { userId: session.userId },
           },
         },
         orderBy: { position: 'asc' },
@@ -47,13 +48,22 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
     return redirect('/');
   }
 
-  const progressCount = await getProgress(userId, params.courseId);
-  const isLocked = !chapter.isFree && !purchase;
-  const completedOnEnd = !!purchase && !userProgress?.isCompleted;
+  const progressCount = await getProgress(session.userId, params.courseId);
+  // Use the new access control instead of just checking isFree and purchase
+  const isLocked = !hasChapterAccess;
+  const completedOnEnd = !!hasChapterAccess && !userProgress?.isCompleted;
 
   // Get current chapter index for navigation
   const currentChapterIndex = fullCourse.chapters.findIndex(ch => ch.id === chapter.id);
   const previousChapter = currentChapterIndex > 0 ? fullCourse.chapters[currentChapterIndex - 1] : null;
+
+  // Check if quiz is required for completion and if user has passed it
+  const hasQuizRequirement = chapterQuiz && chapterQuiz.quizQuestions.length > 0;
+  const hasPassedQuiz = hasQuizRequirement ? 
+    chapterQuiz.attempts.some(attempt => attempt.isPassed) : true;
+  
+  // Chapter is considered completed if user progress shows completion AND they passed the quiz (if required)
+  const isChapterFullyCompleted = userProgress?.isCompleted && hasPassedQuiz;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
@@ -73,11 +83,19 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
       <div className="relative z-10">
         {/* Status Banners */}
         <div className="space-y-2">
-          {userProgress?.isCompleted && (
+          {isChapterFullyCompleted && (
             <div className="p-2 md:p-4">
               <Banner
                 label="🎉 تهانينا! لقد أكملت هذا الفصل بنجاح"
                 variant="success"
+              />
+            </div>
+          )}
+          {userProgress?.isCompleted && hasQuizRequirement && !hasPassedQuiz && (
+            <div className="p-2 md:p-4">
+              <Banner
+                label="📝 يجب عليك اجتياز اختبار هذا الفصل لإكمال الدورة"
+                variant="warning"
               />
             </div>
           )}
@@ -219,6 +237,44 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Chapter Quiz */}
+            {chapterQuiz && hasChapterAccess && (
+              <ChapterQuiz
+                quiz={{
+                  id: chapterQuiz.id,
+                  title: chapterQuiz.title,
+                  description: chapterQuiz.description ?? undefined,
+                  timeLimit: chapterQuiz.timeLimit ?? undefined,
+                  requiredScore: chapterQuiz.requiredScore,
+                  freeAttempts: chapterQuiz.freeAttempts,
+                  quizQuestions: chapterQuiz.quizQuestions.map(q => ({
+                    id: q.id,
+                    position: q.position,
+                    question: {
+                      id: q.question.id,
+                      text: q.question.text,
+                      type: q.question.type as "MULTIPLE_CHOICE" | "TRUE_FALSE",
+                      points: q.question.points,
+                                             explanation: q.question.explanation ?? undefined,
+                      options: q.question.options.map(o => ({
+                        id: o.id,
+                        text: o.text,
+                        isCorrect: o.isCorrect
+                      }))
+                    }
+                  })),
+                                     attempts: chapterQuiz.attempts.map(a => ({
+                     id: a.id,
+                     score: a.score ?? undefined,
+                     isPassed: a.isPassed,
+                     completedAt: a.completedAt ?? undefined
+                   }))
+                }}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+              />
             )}
 
             {/* Navigation */}

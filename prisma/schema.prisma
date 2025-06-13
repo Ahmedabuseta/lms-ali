@@ -1,4 +1,3 @@
-
 generator client {
   provider   = "prisma-client-js"
   engineType = "binary"
@@ -11,7 +10,7 @@ datasource db {
 
 model Course {
   id          String  @id @default(cuid())
-  // createdById String
+  createdById String?
   title       String
   description String?
   imageUrl    String?
@@ -22,13 +21,15 @@ model Course {
   category         Category?         @relation(fields: [categoryId], references: [id])
   categoryId       String?
   chapters         Chapter[]
-  purchases        Purchase[]
-  // flashcards Flashcard[]
   exams            Exam[]
-  questionBanks    QuestionBank[]    // New relation
+  questionBanks    QuestionBank[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([categoryId])
+  @@index([isPublished])
 }
 
 model Category {
@@ -67,10 +68,15 @@ model Chapter {
   userProgress      UserProgress[]
   flashcards        Flashcard[]
   exams             Exam[]
-  questionBanks     QuestionBank[]     // New relation
+  quizzes           Quiz[]
+  questionBanks     QuestionBank[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([position])
+  @@index([isPublished])
 }
 
 model MuxData {
@@ -94,29 +100,7 @@ model UserProgress {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, chapterId])
-}
-
-model Purchase {
-  id     String @id @default(cuid())
-  userId String
-
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, courseId])
-}
-
-model StripeCustomer {
-  id String @id @default(cuid())
-
-  userid           String @unique
-  stripeCustomerId String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId])
 }
 
 model Flashcard {
@@ -127,7 +111,7 @@ model Flashcard {
   chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  // courses Course[]
+
   @@index([chapterId])
 }
 
@@ -136,19 +120,50 @@ model Exam {
   title         String
   description   String?
   timeLimit     Int? // Time limit in minutes, null means no time limit
-  maxAttempts   Int            @default(1) // Default 1 attempt for exams
+  maxAttempts   Int            @default(1) // Maximum attempts allowed
+  passingScore  Int            @default(70) // Minimum score to pass (percentage)
   isPublished   Boolean        @default(false)
+  isRandomized  Boolean        @default(false) // Randomize question order
+  showResults   Boolean        @default(true) // Show results after completion
+  allowReview   Boolean        @default(true) // Allow reviewing answers
+  
   course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId      String
   chapter       Chapter?       @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   chapterId     String?
+  
   examQuestions ExamQuestion[] // Many-to-many with questions
   attempts      ExamAttempt[]
+  
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
   @@index([courseId])
   @@index([chapterId])
+  @@index([isPublished])
+}
+
+model Quiz {
+  id            String         @id @default(cuid())
+  title         String
+  description   String?
+  timeLimit     Int? // Time limit in minutes, optional for quizzes
+  isPublished   Boolean        @default(false)
+  requiredScore Int            @default(100) // Must get 100% to pass
+  freeAttempts  Int            @default(-1) // -1 means unlimited free attempts
+  isRandomized  Boolean        @default(false) // Randomize question order
+  
+  chapter       Chapter        @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId     String
+  
+  quizQuestions QuizQuestion[] // Many-to-many with questions
+  attempts      QuizAttempt[]
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([chapterId])
+  @@index([isPublished])
 }
 
 // Junction table for Exam and Question many-to-many relationship
@@ -159,6 +174,8 @@ model ExamQuestion {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   position   Int // Order of question in exam
+  points     Int      @default(1) // Points for this question in this exam
+  
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -168,10 +185,30 @@ model ExamQuestion {
   @@index([questionId])
 }
 
+// Junction table for Quiz and Question many-to-many relationship
+model QuizQuestion {
+  id         String   @id @default(cuid())
+  quiz       Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId     String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  position   Int // Order of question in quiz
+  points     Int      @default(1) // Points for this question in this quiz
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([quizId, questionId]) // Prevent duplicate questions in same quiz
+  @@unique([quizId, position]) // Ensure unique position per quiz
+  @@index([quizId])
+  @@index([questionId])
+}
+
 enum QuestionType {
   MULTIPLE_CHOICE
   TRUE_FALSE
   PASSAGE // New type for passage-based questions
+  ESSAY   // For future use
 }
 
 enum QuestionDifficulty {
@@ -184,48 +221,72 @@ model QuestionBank {
   id          String     @id @default(cuid())
   title       String
   description String?
+  isActive    Boolean    @default(true) // Allow deactivating question banks
+  
   course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId    String
   chapter     Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   chapterId   String?
+  
   questions   Question[]
+  
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   @@index([courseId])
   @@index([chapterId])
+  @@index([isActive])
 }
 
 model Passage {
   id        String     @id @default(cuid())
   title     String
   content   String     @db.Text // The passage text
+  isActive  Boolean    @default(true) // Allow deactivating passages
+  
   questions Question[]
+  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
+  @@index([isActive])
 }
 
 model Question {
   id               String             @id @default(cuid())
-  text             String
+  text             String             @db.Text
   type             QuestionType
   difficulty       QuestionDifficulty @default(MEDIUM)
   points           Int                @default(1)
   explanation      String?            @db.Text // Explanation for the answer
+  isActive         Boolean            @default(true) // Allow deactivating questions
+  
   // Question Bank relation
   questionBank     QuestionBank       @relation(fields: [questionBankId], references: [id], onDelete: Cascade)
   questionBankId   String
+  
   // Passage relation (optional, only for PASSAGE type questions)
   passage          Passage?           @relation(fields: [passageId], references: [id], onDelete: SetNull)
   passageId        String?
+  
   // Options for the question
   options          Option[]
+  
   // Exam relations (many-to-many through ExamQuestion)
   examQuestions    ExamQuestion[]
+  
+  // Quiz relations (many-to-many through QuizQuestion)
+  quizQuestions    QuizQuestion[]
+  
   // Practice attempts (unlimited)
   practiceAttempts PracticeAttempt[]
+  
   // Exam attempts (limited through ExamAttempt)
   questionAttempts QuestionAttempt[]
+  
+  // Quiz attempts
+  quizQuestionAttempts QuizQuestionAttempt[]
+  
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -233,18 +294,24 @@ model Question {
   @@index([passageId])
   @@index([type])
   @@index([difficulty])
+  @@index([isActive])
 }
 
 model Option {
-  id               String            @id @default(cuid())
-  text             String
-  isCorrect        Boolean           @default(false)
-  question         Question          @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId       String
-  attempts         QuestionAttempt[]
-  practiceAttempts PracticeAttempt[] // New relation
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                   String                  @id @default(cuid())
+  text                 String                  @db.Text
+  isCorrect            Boolean                 @default(false)
+  explanation          String?                 @db.Text // Explanation for this option
+  
+  question             Question                @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId           String
+  
+  attempts             QuestionAttempt[]
+  practiceAttempts     PracticeAttempt[]
+  quizQuestionAttempts QuizQuestionAttempt[]
+  
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
 
   @@index([questionId])
 }
@@ -252,46 +319,132 @@ model Option {
 model ExamAttempt {
   id               String            @id @default(cuid())
   userId           String
+  
   exam             Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
   examId           String
+  
   startedAt        DateTime          @default(now())
   completedAt      DateTime?
-  score            Int?
+  submittedAt      DateTime? // When user clicked submit (different from auto-completion)
+  
+  score            Int? // Final score (0-100)
+  totalPoints      Int? // Total points earned
+  maxPoints        Int? // Maximum possible points
+  isPassed         Boolean           @default(false) // Based on passingScore
+  
+  timeSpent        Int? // Time spent in minutes
+  isTimedOut       Boolean           @default(false) // If attempt was auto-submitted due to timeout
+  
   questionAttempts QuestionAttempt[]
+  
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
   @@index([userId])
   @@index([examId])
+  @@index([completedAt])
+  @@unique([userId, examId, startedAt]) // Prevent duplicate simultaneous attempts
+}
+
+model QuizAttempt {
+  id               String            @id @default(cuid())
+  userId           String
+  
+  quiz             Quiz              @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId           String
+  
+  startedAt        DateTime          @default(now())
+  completedAt      DateTime?
+  submittedAt      DateTime?
+  
+  score            Int? // Score percentage (0-100)
+  totalPoints      Int? // Total points earned
+  maxPoints        Int? // Maximum possible points
+  isPassed         Boolean           @default(false) // True if score >= requiredScore
+  isFreeAttempt    Boolean           @default(true) // Track if this was a free attempt
+  
+  timeSpent        Int? // Time spent in minutes
+  isTimedOut       Boolean           @default(false)
+  
+  questionAttempts QuizQuestionAttempt[]
+  
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([quizId])
+  @@index([completedAt])
 }
 
 model QuestionAttempt {
   id               String      @id @default(cuid())
+  
   examAttempt      ExamAttempt @relation(fields: [examAttemptId], references: [id], onDelete: Cascade)
   examAttemptId    String
+  
   question         Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId       String
+  
   selectedOption   Option?     @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
   selectedOptionId String?
+  
   isCorrect        Boolean?
+  pointsEarned     Int         @default(0) // Points earned for this question
+  timeSpent        Int? // Time spent on this question in seconds
+  
+  answeredAt       DateTime? // When the question was answered
+  
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
   @@index([examAttemptId])
   @@index([questionId])
   @@index([selectedOptionId])
+  @@unique([examAttemptId, questionId]) // One attempt per question per exam attempt
+}
+
+model QuizQuestionAttempt {
+  id               String      @id @default(cuid())
+  
+  quizAttempt      QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  quizAttemptId    String
+  
+  question         Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId       String
+  
+  selectedOption   Option?     @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+  selectedOptionId String?
+  
+  isCorrect        Boolean?
+  pointsEarned     Int         @default(0) // Points earned for this question
+  timeSpent        Int? // Time spent on this question in seconds
+  
+  answeredAt       DateTime? // When the question was answered
+  
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([quizAttemptId])
+  @@index([questionId])
+  @@index([selectedOptionId])
+  @@unique([quizAttemptId, questionId]) // One attempt per question per quiz attempt
 }
 
 // Practice attempts (unlimited attempts for practice)
 model PracticeAttempt {
   id               String  @id @default(cuid())
   userId           String
+  
   question         Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId       String
+  
   selectedOption   Option?  @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
   selectedOptionId String?
+  
   isCorrect        Boolean?
-  score            Int?     // Score for this attempt
+  pointsEarned     Int      @default(0) // Points for this attempt
+  timeSpent        Int? // Time spent in seconds
+  
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -299,10 +452,6 @@ model PracticeAttempt {
   @@index([questionId])
   @@index([selectedOptionId])
 }
-
-// Note: PracticeQuestion and PracticeOption models removed
-// All questions now use the unified Question model with QuestionBank
-// Practice vs Exam distinction is handled through different attempt models:
 
 enum UserRole {
   STUDENT
@@ -322,19 +471,23 @@ model User {
   name            String?
   image           String?
   role            UserRole          @default(STUDENT)
+  
   // Student access control
   accessType      StudentAccessType @default(NO_ACCESS)
   trialStartDate  DateTime? // When trial started
   trialEndDate    DateTime? // When trial ends (3 days from start)
   isTrialUsed     Boolean           @default(false) // Has user used their trial
+  
   // Manual access control by teacher
   accessGrantedBy String? // Teacher who granted access
   accessGrantedAt DateTime? // When access was granted
   paymentReceived Boolean           @default(false) // Teacher confirms payment received
   paymentAmount   Float? // Amount paid (optional tracking)
   paymentNotes    String? // Notes about payment/WhatsApp conversation
+  
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  
   accounts        Account[]
   sessions        Session[]
   emailVerified   Boolean
@@ -344,6 +497,7 @@ model User {
 
   @@index([role])
   @@index([accessType])
+  @@index([email])
   @@map("user")
 }
 
@@ -360,6 +514,7 @@ model Session {
   impersonatedBy String?
 
   @@index([userId])
+  @@index([token])
   @@map("session")
 }
 
@@ -392,5 +547,6 @@ model Verification {
   createdAt  DateTime?
   updatedAt  DateTime?
 
+  @@index([identifier])
   @@map("verification")
 }

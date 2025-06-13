@@ -9,7 +9,8 @@ import { useRouter } from 'next/navigation';
 import { Course } from '@prisma/client';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { FileUploadSpaces } from '@/components/file-upload-spaces';
+import { FileUploadArabic } from '@/components/file-upload-arabic';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ImageFormProps {
   initialData: Course;
@@ -18,7 +19,7 @@ interface ImageFormProps {
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
-    message: 'Image is required',
+    message: 'صورة الدورة مطلوبة',
   }),
 });
 
@@ -32,60 +33,70 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success('Course updated');
+      toast.success('تم تحديث الدورة بنجاح');
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error('Something went wrong');
+      toast.error('حدث خطأ ما');
     }
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
-      <div className="font-medium flex items-center justify-between">
-        Course image
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="font-arabic">صورة الدورة</CardTitle>
+        <Button onClick={toggleEdit} variant="ghost" size="sm" className="font-arabic">
+          {isEditing && (
+            <>
+              <Pencil className="h-4 w-4 mr-2" />
+              إلغاء
+            </>
+          )}
           {!isEditing && !initialData.imageUrl && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add an image
+              إضافة صورة
             </>
           )}
           {!isEditing && initialData.imageUrl && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit image
+              تعديل الصورة
             </>
           )}
         </Button>
-      </div>
-      {!isEditing &&
-        (!initialData.imageUrl ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <ImageIcon className="h-10 w-10 text-slate-500" />
+      </CardHeader>
+      <CardContent>
+        {!isEditing &&
+          (!initialData.imageUrl ? (
+            <div className="flex items-center justify-center h-60 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="text-center">
+                <ImageIcon className="h-10 w-10 text-slate-500 mx-auto mb-2" />
+                <p className="text-sm text-slate-500 font-arabic">لا توجد صورة للدورة</p>
+              </div>
+            </div>
+          ) : (
+            <div className="relative aspect-video mt-2 rounded-md overflow-hidden border">
+              <Image alt="صورة الدورة" fill className="object-cover" src={initialData.imageUrl} />
+            </div>
+          ))}
+        {isEditing && (
+          <div>
+            <FileUploadArabic
+              value={initialData.imageUrl || undefined}
+              onChange={(url) => {
+                if (url) {
+                  onSubmit({ imageUrl: url });
+                }
+              }}
+              folder="course-images"
+              acceptedFileTypes="image/*"
+              maxFileSize={4 * 1024 * 1024} // 4MB
+              description="يُنصح بنسبة عرض إلى ارتفاع 16:9 للحصول على أفضل عرض"
+            />
           </div>
-        ) : (
-          <div className="relative aspect-video mt-2">
-            <Image alt="Upload" fill className="object-cover rounded-md" src={initialData.imageUrl} />
-          </div>
-        ))}
-      {isEditing && (
-        <div>
-          <FileUploadSpaces
-            value={initialData.imageUrl || undefined}
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ imageUrl: url });
-              }
-            }}
-            folder="course-images"
-            acceptedFileTypes="image/*"
-            maxFileSize={4 * 1024 * 1024} // 4MB
-          />
-          <div className="text-xs text-muted-foreground mt-4">16:9 aspect ratio recommended</div>
-        </div>
-      )}
-    </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };

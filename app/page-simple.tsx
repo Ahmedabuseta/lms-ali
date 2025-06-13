@@ -87,7 +87,7 @@ export default function SimpleLandingPage() {
               <Button
                 size="lg"
                 onClick={openModal}
-                className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
+                className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300     hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
               >
                 ابدأ التعلم الآن
               </Button>

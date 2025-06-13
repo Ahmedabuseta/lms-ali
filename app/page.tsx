@@ -150,7 +150,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               onClick={openModal}
-              className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
+              className="transform bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300     hover:from-blue-700 hover:to-purple-700 hover:shadow-xl font-arabic"
             >
               <span className="flex items-center gap-2">
                 ابدأ رحلتك دلوقتي
@@ -161,7 +161,7 @@ export default function LandingPage() {
               size="lg"
               variant="outline"
               onClick={scrollToVideo}
-              className="transform border-2 border-purple-600 text-purple-600 transition-all duration-300 hover:scale-105 hover:bg-purple-600 hover:text-white font-arabic"
+              className="transform border-2 border-purple-600 text-purple-600 transition-all duration-300     hover:bg-purple-600 hover:text-white font-arabic"
             >
               <Play className="ml-2 h-5 w-5" />
               شوف إزاي بنشتغل
@@ -415,7 +415,7 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 onClick={openModal}
-                className="w-full transform bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700 font-arabic"
+                className="w-full transform bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300     hover:from-blue-700 hover:to-purple-700 font-arabic"
               >
                 <span className="flex items-center gap-2">
                   <Play className="h-5 w-5" />
@@ -470,7 +470,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               onClick={openModal}
-              className="transform bg-white text-gray-900 transition-all duration-300 hover:scale-105 hover:bg-gray-100 font-arabic"
+              className="transform bg-white text-gray-900 transition-all duration-300     hover:bg-gray-100 font-arabic"
             >
               <span className="flex items-center gap-2">
                 إنشاء حساب مجاني
@@ -485,7 +485,7 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="transform border-white text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-gray-900 font-arabic"
+                className="transform border-white text-white transition-all duration-300     hover:bg-white hover:text-gray-900 font-arabic"
               >
                 <span className="flex items-center gap-2">
                   <MessageCircle className="h-5 w-5" />
@@ -524,7 +524,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-700">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 transition-all duration-300 group- e-110 group-hover:bg-blue-700">
                     <Facebook className="h-5 w-5 text-white" />
                   </div>
                 </a>
@@ -534,7 +534,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-700">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600 transition-all duration-300 group- e-110 group-hover:bg-green-700">
                     <MessageCircle className="h-5 w-5 text-white" />
                   </div>
                 </a>
@@ -544,7 +544,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 transition-all duration-300 group- e-110 group-hover:bg-blue-600">
                     <Send className="h-5 w-5 text-white" />
                   </div>
                 </a>
@@ -554,7 +554,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-800">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black transition-all duration-300 group- e-110 group-hover:bg-gray-800">
                     <Music className="h-5 w-5 text-white" />
                   </div>
                 </a>
@@ -564,7 +564,7 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-red-700">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-600 transition-all duration-300 group- e-110 group-hover:bg-red-700">
                     <Youtube className="h-5 w-5 text-white" />
                   </div>
                 </a>
@@ -597,7 +597,7 @@ export default function LandingPage() {
         className="fixed bottom-6 right-6 z-40 group"
         aria-label="تواصل معانا على واتساب"
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-green-600 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group-hover:from-green-600 group-hover:to-green-700">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-green-600 shadow-lg transition-all duration-300  e-110 hover:shadow-xl group-hover:from-green-600 group-hover:to-green-700">
           <MessageCircle className="h-7 w-7 text-white" />
         </div>
         {/* Tooltip */}

@@ -1,16 +1,11 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { isTeacher } from '@/lib/teacher';
+import { requireTeacher } from '@/lib/api-auth';
 
 export async function DELETE(request: NextRequest, { params }: { params: { courseId: string; attachmentId: string } }) {
   try {
     const { courseId, attachmentId } = params;
-    const { userId } = auth();
-
-    if (!userId || !isTeacher(userId)) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    requireTeacher()
 
     const attachment = await db.attachment.delete({ where: { courseId, id: attachmentId } });
 

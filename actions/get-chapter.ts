@@ -1,5 +1,6 @@
 import { Attachment, Chapter } from '@prisma/client';
 import { db } from '@/lib/db';
+import { canAccessChapterContent, getCurrentUser } from '@/lib/user';
 
 type GetChapterArgs = {
   userId: string;
@@ -17,15 +18,51 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       throw new Error('Chapter or course not found!');
     }
 
+    // Get user for access checking
+    const user = await getCurrentUser();
+    const hasChapterAccess = user ? await canAccessChapterContent(user, chapterId) : false;
+
     let muxData = null;
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
+    let chapterQuiz = null;
 
+    // Only provide attachments if user has purchased the course
     if (purchase) {
       attachments = await db.attachment.findMany({ where: { courseId } });
     }
 
-    if (chapter.isFree || purchase) {
+    // Get chapter quiz if user has access
+    if (hasChapterAccess) {
+      chapterQuiz = await db.quiz.findFirst({
+        where: { 
+          chapterId,
+          isPublished: true,
+        },
+        include: {
+          quizQuestions: {
+            include: {
+              question: {
+                include: {
+                  options: true,
+                },
+              },
+            },
+            orderBy: {
+              position: 'asc',
+            },
+          },
+          attempts: {
+            where: { userId },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      });
+    }
+
+    // Provide video access only if user has chapter access
+    if (hasChapterAccess) {
       muxData = await db.muxData.findUnique({ where: { chapterId } });
 
       nextChapter = await db.chapter.findFirst({
@@ -44,6 +81,8 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       nextChapter,
       userProgress,
       purchase,
+      hasChapterAccess,
+      chapterQuiz,
     };
   } catch {
     return {
@@ -54,6 +93,8 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       nextChapter: null,
       userProgress: null,
       purchase: null,
+      hasChapterAccess: false,
+      chapterQuiz: null,
     };
   }
 }

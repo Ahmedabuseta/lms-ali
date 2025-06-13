@@ -1,10 +1,10 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { startExamAttempt } from '@/actions/exam-actions';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+    const { id:userId } = await requireAuth();
     const { examId } = await req.json();
 
     if (!userId || !examId) {

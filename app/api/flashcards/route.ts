@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/api-auth';
 import { db } from '@/lib/db';
 import { Flashcard } from '@prisma/client';
+import { canAccessChapterServices } from '@/lib/user';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,10 +18,19 @@ export async function GET(req: Request) {
     const courseId = searchParams.get('courseId');
     const chapterId = searchParams.get('chapterId');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const limit = parseInt(searchParams.get('limit') || '25');
+    const randomSeed = searchParams.get('seed') || Date.now().toString(); // For consistent randomization in same session
 
     if (!courseId) {
       return new NextResponse('Course ID required', { status: 400 });
+    }
+
+    // If specific chapter requested, check chapter-specific access
+    if (chapterId) {
+      const hasAccess = await canAccessChapterServices(user, chapterId);
+      if (!hasAccess) {
+        return new NextResponse('Access denied for this chapter content', { status: 403 });
+      }
     }
 
     // Calculate offset for pagination

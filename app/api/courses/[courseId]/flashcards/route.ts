@@ -1,15 +1,12 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
 import { db } from '@/lib/db';
+import { requireAuth, requireTeacher } from '@/lib/api-auth';
 
 export async function POST(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
+      requireTeacher()
     const { question, answer, chapterId } = await req.json();
 
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     // Verify course ownership
     const course = await db.course.findUnique({
@@ -53,11 +50,7 @@ export async function POST(req: Request, { params }: { params: { courseId: strin
 
 export async function GET(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+requireAuth()
 
     // Verify course ownership
     const course = await db.course.findUnique({

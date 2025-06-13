@@ -1,14 +1,13 @@
-import { auth } from '@clerk/nextjs';
+import { getAuthenticatedUser } from '@/lib/api-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadToSpaces } from '@/lib/digitalocean-spaces';
-import { isTeacher } from '@/lib/teacher';
+
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth();
-    const isAuthorized = isTeacher(userId);
+    const user = await getAuthenticatedUser();
 
-    if (!userId || !isAuthorized) {
+    if (!user || user.role !== 'TEACHER') {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 

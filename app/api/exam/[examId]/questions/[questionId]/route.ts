@@ -101,11 +101,7 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
 
 export async function DELETE(req: Request, { params }: { params: { examId: string; questionId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+requireAuth()
 
     // Verify ownership through the course
     const examWithCourse = await db.exam.findUnique({

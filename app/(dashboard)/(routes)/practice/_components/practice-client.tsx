@@ -17,7 +17,7 @@ interface Chapter {
   id: string;
   title: string;
   _count: {
-    PracticeQuestion: number;
+    questionBanks: number;
   };
 }
 
@@ -26,7 +26,7 @@ interface Course {
   title: string;
   chapters: Chapter[];
   _count: {
-    PracticeQuestion: number;
+    questionBanks: number;
   };
 }
 
@@ -311,7 +311,7 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                         <div className="flex items-center gap-2">
                           <span>{course.title}</span>
                           <Badge variant="outline" className="mr-auto">
-                            {course._count.PracticeQuestion} سؤال
+                            {course._count.questionBanks > 0 ? 'توجد أسئلة' : 'لا توجد أسئلة'}
                           </Badge>
                         </div>
                       </SelectItem>
@@ -337,7 +337,7 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                         >
                           <span>{chapter.title}</span>
                           <Badge variant="outline" className="mr-2">
-                            {chapter._count.PracticeQuestion}
+                            {chapter._count.questionBanks > 0 ? 'توجد أسئلة' : 'لا توجد أسئلة'}
                           </Badge>
                         </label>
                       </div>
@@ -374,7 +374,7 @@ export const PracticeClient = ({ courses }: PracticeClientProps) => {
                 <div>
                   <h3 className="mb-2 font-medium">ملخص الدورة</h3>
                   <p className="text-sm text-slate-600">
-                    تحتوي هذه الدورة على {selectedCourse._count.PracticeQuestion} سؤال تدريبي موزعة على{' '}
+                    تحتوي هذه الدورة على {selectedCourse._count.questionBanks > 0 ? 'توجد أسئلة' : 'لا توجد أسئلة'} سؤال تدريبي موزعة على{' '}
                     {selectedCourse.chapters.length} فصل.
                   </p>
                 </div>

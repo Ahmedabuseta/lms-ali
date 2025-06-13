@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Eye, LayoutDashboard, Video } from 'lucide-react';
@@ -8,16 +9,13 @@ import { ChapterDescriptionForm } from './_components/chapter-description-form';
 import { ChapterAccessForm } from './_components/chapter-access-form';
 import { ChapterVideoForm } from './_components/chapter-video-form';
 import { ChapterActions } from './_components/chapter-actions';
+import { ChapterQuizForm } from './_components/chapter-quiz-form';
 import { Banner } from '@/components/banner';
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 
 const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+   requireAuth()
 
   const chapter = await db.chapter.findUnique({
     where: {
@@ -26,12 +24,19 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
     },
     include: {
       muxData: true,
+      quizzes: {
+        include: {
+          quizQuestions: true,
+        },
+      },
     },
   });
 
   if (!chapter) {
     return redirect('/');
   }
+
+  const chapterQuiz = chapter.quizzes[0] || null;
 
   const requiredFields = [chapter.title, chapter.description, chapter.videoUrl];
 
@@ -73,7 +78,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
           <div className="space-y-6">
             <Link
               href={`/teacher/courses/${params.courseId}`}
-              className="group inline-flex items-center rounded-lg bg-white/70 px-4 py-2 text-emerald-700 backdrop-blur-xl transition-all duration-300 hover:bg-white/90 hover:text-emerald-900 hover:scale-105 hover:shadow-md dark:bg-white/10 dark:text-emerald-300 dark:hover:bg-white/20 dark:hover:text-emerald-100 font-arabic"
+              className="group inline-flex items-center rounded-lg bg-white/70 px-4 py-2 text-emerald-700 backdrop-blur-xl transition-all duration-300 hover:bg-white/90 hover:text-emerald-900     hover:shadow-md dark:bg-white/10 dark:text-emerald-300 dark:hover:bg-white/20 dark:hover:text-emerald-100 font-arabic"
             >
               <ArrowLeft className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               العودة إلى إعداد الدورة
@@ -160,6 +165,13 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
                 </div>
                 <ChapterVideoForm initialData={chapter} chapterId={params.chapterId} courseId={params.courseId} />
               </div>
+
+              {/* Chapter Quiz */}
+              <ChapterQuizForm 
+                initialData={chapterQuiz}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+              />
             </div>
           </div>
         </div>

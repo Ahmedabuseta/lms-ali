@@ -117,7 +117,7 @@ export function LearningInsights({
             </div>
 
             <div className="group flex transform items-start gap-3 rounded-2xl border border-purple-200/50 bg-gradient-to-br from-purple-50 to-pink-100 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-purple-700/50 dark:from-purple-900/20 dark:to-pink-900/20 sm:gap-4 sm:p-6">
-              <div className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-2 transition-transform duration-300 group-hover:scale-110 sm:p-3">
+              <div className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-2 transition-transform duration-300 group- e-110 sm:p-3">
                 <Clock className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -127,7 +127,7 @@ export function LearningInsights({
             </div>
 
             <div className="group flex transform items-start gap-3 rounded-2xl border border-green-200/50 bg-gradient-to-br from-green-50 to-emerald-100 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-green-700/50 dark:from-green-900/20 dark:to-emerald-900/20 sm:gap-4 sm:p-6">
-              <div className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 p-2 transition-transform duration-300 group-hover:scale-110 sm:p-3">
+              <div className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 p-2 transition-transform duration-300 group- e-110 sm:p-3">
                 <Calendar className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -137,7 +137,7 @@ export function LearningInsights({
             </div>
 
             <div className="group flex transform items-start gap-3 rounded-2xl border border-orange-200/50 bg-gradient-to-br from-orange-50 to-red-100 p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-orange-700/50 dark:from-orange-900/20 dark:to-red-900/20 sm:gap-4 sm:p-6">
-              <div className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 p-2 transition-transform duration-300 group-hover:scale-110 sm:p-3">
+              <div className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 p-2 transition-transform duration-300 group- e-110 sm:p-3">
                 <Award className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -151,7 +151,7 @@ export function LearningInsights({
             <Button
               variant="outline"
               size="lg"
-              className="mr-auto transform border-2 border-blue-600 text-xs text-blue-600 transition-all duration-300 hover:scale-105 hover:bg-blue-600 hover:text-white sm:text-sm"
+              className="mr-auto transform border-2 border-blue-600 text-xs text-blue-600 transition-all duration-300     hover:bg-blue-600 hover:text-white sm:text-sm"
               onClick={handleNotification}
             >
               <LineChart className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -171,7 +171,7 @@ export function LearningInsights({
                 className="group flex transform items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-blue-600 sm:gap-4 sm:p-4"
               >
                 <div
-                  className={`rounded-xl p-2 transition-transform duration-300 group-hover:scale-110 sm:p-3 ${
+                  className={`rounded-xl p-2 transition-transform duration-300 group- e-110 sm:p-3 ${
                     activity.type === 'course'
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500'
                       : activity.type === 'exam'
@@ -200,7 +200,7 @@ export function LearningInsights({
             <Button
               variant="outline"
               size="lg"
-              className="mr-auto transform border-2 border-purple-600 text-purple-600 transition-all duration-300 hover:scale-105 hover:bg-purple-600 hover:text-white"
+              className="mr-auto transform border-2 border-purple-600 text-purple-600 transition-all duration-300     hover:bg-purple-600 hover:text-white"
             >
               عرض جميع الأنشطة
               <ChevronRight className="mr-2 h-5 w-5 rotate-180 transform" />
@@ -271,7 +271,7 @@ export function LearningInsights({
             <Button
               variant="outline"
               size="lg"
-              className="mr-auto transform border-2 border-indigo-600 text-indigo-600 transition-all duration-300 hover:scale-105 hover:bg-indigo-600 hover:text-white"
+              className="mr-auto transform border-2 border-indigo-600 text-indigo-600 transition-all duration-300     hover:bg-indigo-600 hover:text-white"
             >
               <BarChart className="ml-2 h-5 w-5" />
               تحليل تفصيلي للأداء

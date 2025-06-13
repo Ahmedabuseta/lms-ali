@@ -126,6 +126,7 @@ const nextConfig = async () => {
       domains: [
         'images.unsplash.com',
         'fra1.digitaloceanspaces.com', // Add DigitalOcean Spaces domain
+        'lh3.googleusercontent.com', // Google user profile images
         // Add your DigitalOcean Spaces domain here
         // Example: 'your-space-name.your-region.digitaloceanspaces.com'
       ],
@@ -141,6 +142,12 @@ const nextConfig = async () => {
           hostname: 'fra1.digitaloceanspaces.com',
           port: '',
           pathname: '/lms-ali-p2s/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'lh3.googleusercontent.com',
+          port: '',
+          pathname: '/**',
         },
       ],
     },

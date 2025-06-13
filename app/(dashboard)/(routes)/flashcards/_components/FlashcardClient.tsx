@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Rotate3D, ChevronUp, ChevronDown } from 'lucide-react';
+import { Rotate3D, ChevronUp, ChevronDown, Plus, Shuffle, RefreshCw } from 'lucide-react';
 import { useSpring, animated, to } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 import { Button } from '@/components/ui/button';
 import { MathRenderer } from '@/components/math-renderer';
+import toast from 'react-hot-toast';
 
 interface FlashcardProps {
   id: string;
@@ -26,21 +27,36 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
   const [loading, setLoading] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [noMoreCards, setNoMoreCards] = useState(false);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const [totalLoaded, setTotalLoaded] = useState(0);
+  const [randomize, setRandomize] = useState(true);
 
   const loadingRef = useRef(false);
-  const currentBatchOffset = useRef(20);
+  const currentBatchOffset = useRef(25);
   const initialized = useRef(false);
 
   // Initialize cards from props after component mounts to avoid hydration issues
   useEffect(() => {
     if (!initialized.current && initialCards.length > 0) {
       setCards(initialCards);
+      setTotalLoaded(initialCards.length);
+      // Show Load More button if we have exactly 25 cards (full batch)
+      setShowLoadMore(initialCards.length >= 25);
       initialized.current = true;
     }
   }, [initialCards]);
 
-  // Load more cards when reaching near the end of current batch
-  const loadMoreCards = async (offset: number): Promise<FlashcardProps[]> => {
+  // Check if we should show Load More button based on current progress
+  useEffect(() => {
+    if (cards.length > 0) {
+      // Show Load More when user has seen most of current batch (after 20 out of 25 cards)
+      const shouldShow = currentIndex >= Math.min(cards.length - 5, 20) && !noMoreCards;
+      setShowLoadMore(shouldShow);
+    }
+  }, [currentIndex, cards.length, noMoreCards]);
+
+  // Load more cards with enhanced pagination and randomization
+  const loadMoreCards = async (page: number = 1): Promise<{ flashcards: FlashcardProps[], hasNextPage: boolean, totalCount: number }> => {
     try {
       // Build the URL with proper query parameters
       let url = '/api/flashcards?';
@@ -48,7 +64,8 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
 
       if (courseId) params.append('courseId', courseId);
       if (chapterId) params.append('chapterId', chapterId);
-      params.append('offset', offset.toString());
+      params.append('page', page.toString());
+      params.append('limit', '25'); // Always load 25 cards per batch
 
       url += params.toString();
 
@@ -59,37 +76,69 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
       }
 
       const data = await res.json();
-      return data;
+      return {
+        flashcards: data.flashcards || [],
+        hasNextPage: data.pagination?.hasNextPage || false,
+        totalCount: data.pagination?.totalCount || 0
+      };
     } catch (error) {
       console.error('Error loading more cards:', error);
-      return [];
+      toast.error('فشل في تحميل المزيد من البطاقات');
+      return { flashcards: [], hasNextPage: false, totalCount: 0 };
     }
   };
 
-  // Load more cards when reaching near the end of current batch
-  const loadNextBatch = async () => {
+  // Manual Load More function triggered by button
+  const handleLoadMore = async () => {
     if (loadingRef.current || noMoreCards) return;
 
-    if (currentIndex >= cards.length - 5) {
-      try {
-        loadingRef.current = true;
-        setLoading(true);
+    try {
+      loadingRef.current = true;
+      setLoading(true);
 
-        const newCards = await loadMoreCards(currentBatchOffset.current);
+      const currentPage = Math.ceil(totalLoaded / 25) + 1;
+      const result = await loadMoreCards(currentPage);
 
-        if (newCards.length === 0) {
-          setNoMoreCards(true);
-        } else {
-          setCards((prevCards) => [...prevCards, ...newCards]);
-          currentBatchOffset.current += newCards.length;
-        }
-      } catch (error) {
-        console.error('Failed to load more cards:', error);
-      } finally {
-        loadingRef.current = false;
-        setLoading(false);
+      if (result.flashcards.length === 0 || !result.hasNextPage) {
+        setNoMoreCards(true);
+        toast.success('تم تحميل جميع البطاقات المتاحة!');
+      } else {
+        setCards((prevCards) => [...prevCards, ...result.flashcards]);
+        setTotalLoaded(prev => prev + result.flashcards.length);
+        toast.success(`تم تحميل ${result.flashcards.length} بطاقة جديدة!`);
       }
+      
+      setShowLoadMore(false); // Hide button temporarily
+    } catch (error) {
+      console.error('Failed to load more cards:', error);
+      toast.error('حدث خطأ أثناء تحميل البطاقات');
+    } finally {
+      loadingRef.current = false;
+      setLoading(false);
     }
+  };
+
+  // Randomize current cards
+  const handleRandomize = () => {
+    if (cards.length <= 1) return;
+    
+    const shuffled = [...cards];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    setCards(shuffled);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+    toast.success('تم خلط البطاقات عشوائياً!');
+  };
+
+  // Reset to first card
+  const handleReset = () => {
+    setCurrentIndex(0);
+    setIsFlipped(false);
+    toast.success('تم العودة للبطاقة الأولى!');
   };
 
   // Spring animation configuration
@@ -138,10 +187,7 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
               }
             });
 
-            // Load more cards if needed and approaching the end
-            if (isSwipeUp && currentIndex >= cards.length - 5) {
-              loadNextBatch();
-            }
+            // Note: Load More is now manual via button, not automatic
 
             // Reset card position
             api.start({
@@ -188,12 +234,47 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
   }
 
   return (
-    <div className="relative mx-auto h-96 w-full max-w-lg" dir="rtl">
-      {/* Card counter */}
-      <div className="absolute right-0 top-0 z-10 rounded-bl-md rounded-tr-md bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-        {currentIndex + 1} / {cards.length}
-        {noMoreCards ? '' : '+'}
+    <div className="space-y-6" dir="rtl">
+      {/* Controls Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:from-blue-950/20 dark:to-purple-950/20">
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-white/80 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800/80 dark:text-slate-300">
+            البطاقة {currentIndex + 1} من {cards.length}
+            {!noMoreCards && totalLoaded > cards.length && <span className="text-blue-600"> ({totalLoaded} محمّلة)</span>}
+          </div>
+          {!noMoreCards && (
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              {showLoadMore ? '⭐ جاهز لتحميل المزيد' : '📚 استمر في المراجعة'}
+            </div>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            disabled={currentIndex === 0}
+            className="text-xs"
+          >
+            <RefreshCw className="h-3 w-3 ml-1" />
+            البداية
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRandomize}
+            disabled={cards.length <= 1}
+            className="text-xs"
+          >
+            <Shuffle className="h-3 w-3 ml-1" />
+            خلط
+          </Button>
+        </div>
       </div>
+
+      {/* Main Card Container */}
+      <div className="relative mx-auto h-96 w-full max-w-lg">
 
       {/* Swipe indicators */}
       <div className="absolute left-1/2 top-2 z-10 -translate-x-1/2 transform animate-bounce text-slate-400 dark:text-slate-600">
@@ -206,7 +287,10 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
       {/* Loading indicator */}
       {loading && (
         <div className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 transform text-sm text-slate-500 dark:text-slate-400">
-          جاري تحميل المزيد من البطاقات...
+          <div className="flex items-center gap-2 rounded-lg bg-white/90 px-3 py-2 shadow-lg dark:bg-slate-800/90">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+            جاري تحميل المزيد من البطاقات...
+          </div>
         </div>
       )}
 
@@ -263,6 +347,67 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
           {currentIndex + 2 < cards.length && (
             <div className="absolute left-0 right-0 top-0 h-80 w-full translate-y-4 scale-[0.96] transform rounded-xl border border-slate-200 bg-white opacity-40 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/20" />
           )}
+        </div>
+      )}
+      </div>
+
+      {/* Load More Section */}
+      {showLoadMore && !loading && !noMoreCards && (
+        <div className="text-center">
+          <div className="mb-4 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 p-4 dark:from-orange-950/20 dark:to-red-950/20">
+            <h3 className="mb-2 text-lg font-bold text-orange-800 dark:text-orange-200">
+              🎉 أحسنت! لقد راجعت {Math.min(currentIndex + 1, 20)} بطاقة
+            </h3>
+            <p className="text-sm text-orange-600 dark:text-orange-300">
+              هل تريد تحميل 25 بطاقة إضافية لمواصلة المراجعة؟
+            </p>
+          </div>
+          
+          <Button
+            onClick={handleLoadMore}
+            disabled={loading}
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 text-white hover:from-blue-700 hover:to-purple-700"
+          >
+            <Plus className="h-5 w-5 ml-2" />
+            تحميل 25 بطاقة إضافية
+          </Button>
+          
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+            💡 سيتم خلط البطاقات الجديدة عشوائياً لتجربة تعلم أفضل
+          </p>
+        </div>
+      )}
+
+      {/* No More Cards Message */}
+      {noMoreCards && (
+        <div className="text-center">
+          <div className="rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 p-6 dark:from-green-950/20 dark:to-emerald-950/20">
+            <div className="mb-4 text-4xl">🎊</div>
+            <h3 className="mb-2 text-xl font-bold text-green-800 dark:text-green-200">
+              تهانينا! أكملت جميع البطاقات
+            </h3>
+            <p className="text-sm text-green-600 dark:text-green-300">
+              لقد راجعت جميع البطاقات المتاحة في هذا {chapterId ? 'الفصل' : 'الدورة'}
+            </p>
+            <div className="mt-4 flex justify-center gap-3">
+              <Button
+                onClick={handleReset}
+                variant="outline"
+                className="border-green-200 text-green-700 hover:bg-green-50"
+              >
+                <RefreshCw className="h-4 w-4 ml-1" />
+                إعادة المراجعة
+              </Button>
+              <Button
+                onClick={handleRandomize}
+                className="bg-green-600 text-white hover:bg-green-700"
+              >
+                <Shuffle className="h-4 w-4 ml-1" />
+                خلط وإعادة البدء
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

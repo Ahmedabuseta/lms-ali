@@ -1,14 +1,11 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function PATCH(req: Request, { params }: { params: { examId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    await requireAuth()
 
     // Find the exam with its course to check ownership
     const examWithCourse = await db.exam.findUnique({
@@ -24,11 +21,6 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
       return new NextResponse('Exam not found', { status: 404 });
     }
 
-    // Verify ownership through course
-    // TODO: Add course ownership check when createdById field is available
-    // if (examWithCourse.course.createdById !== userId) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
 
     // Check if the exam has any active attempts (incomplete attempts)
     const activeAttempts = await db.examAttempt.count({

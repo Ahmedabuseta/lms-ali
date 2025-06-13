@@ -1,7 +1,7 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import Mux from '@mux/mux-node';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type Params = { chapterId: string; courseId: string };
 
@@ -9,11 +9,11 @@ const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRE
 
 export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   try {
-    const { userId } = await auth();
+    const session = await requireAuth();
     // eslint-disable-next-line
     const { isPublished, ...values } = await req.json();
 
-    if (!userId) {
+    if (!session?.id) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -55,9 +55,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
 
 export async function DELETE(req: NextRequest, { params }: { params: Params }) {
   try {
-    const { userId } = await auth();
+        const session = await requireAuth();
 
-    if (!userId) {
+    if (!session?.id) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 

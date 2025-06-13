@@ -30,7 +30,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="relative h-10 w-10 transform rounded-xl border border-blue-200/50 bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:from-blue-100 hover:to-purple-100 hover:shadow-xl dark:border-gray-600/50 dark:from-gray-800 dark:to-gray-700 dark:hover:from-gray-700 dark:hover:to-gray-600"
+      className="relative h-10 w-10 transform rounded-xl border border-blue-200/50 bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg backdrop-blur-sm transition-all duration-300  e-110 hover:from-blue-100 hover:to-purple-100 hover:shadow-xl dark:border-gray-600/50 dark:from-gray-800 dark:to-gray-700 dark:hover:from-gray-700 dark:hover:to-gray-600"
       data-tour="theme-toggle"
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
     >

@@ -1,9 +1,17 @@
+export interface QuestionTypeCount {
+  multipleChoice: number;
+  trueFalse: number;
+  passage: number;
+  passageQuestions: number;
+}
+
 export interface ChapterWithQuestionsCount {
   id: string;
   title: string;
   _count: {
-    PracticeQuestion: number;
+    questions: number;
   };
+  questionTypes: QuestionTypeCount;
 }
 
 export interface CourseWithQuestionsCount {
@@ -11,4 +19,5 @@ export interface CourseWithQuestionsCount {
   title: string;
   chapters: ChapterWithQuestionsCount[];
   questionCount: number;
+  questionTypes: QuestionTypeCount;
 }

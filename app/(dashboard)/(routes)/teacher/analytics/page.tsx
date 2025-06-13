@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import { BarChart3, Users, BookOpen, TrendingUp, DollarSign, FileQuestion, Eye, Clock } from 'lucide-react';
 import DataCard from './_components/data-card';
@@ -7,15 +8,10 @@ import { getAnalytics } from '@/actions/get-analytics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
-
 export default async function Analytics() {
-  const { userId } = auth();
+  const { user } = await requireAuth();
 
-  if (!userId) {
-    return redirect('/');
-  }
-
-  const { data, totalRevenue, totalSales } = await getAnalytics(userId);
+  const { data, totalRevenue, totalSales } = await getAnalytics(user.id);
 
   // Get additional analytics data
   const [totalCourses, publishedCourses, totalStudents, recentEnrollments] = await Promise.all([

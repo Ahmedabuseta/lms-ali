@@ -1,19 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/api-auth';
+import { getCurrentUserWithPermissions } from '@/lib/auth-helpers';
 import { getUserPermissions } from '@/lib/user';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await getAuthenticatedUser();
+    // Try to get cached permissions first
+    const userWithPermissions = await getCurrentUserWithPermissions();
 
-    if (!user) {
+    if (!userWithPermissions) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    console.log('[USER_PERMISSIONS] Getting permissions for user:', user.id);
+    console.log('[USER_PERMISSIONS] Getting permissions for user:', userWithPermissions.id);
 
+    // If we have cached permissions, use them
+    if ('permissions' in userWithPermissions && userWithPermissions.permissions) {
+      console.log('[USER_PERMISSIONS] Using cached permissions');
+      return NextResponse.json(userWithPermissions.permissions);
+    }
+
+    // Otherwise, calculate fresh permissions
+    console.log('[USER_PERMISSIONS] Calculating fresh permissions');
     const permissions = await getUserPermissions();
 
     return NextResponse.json(permissions);

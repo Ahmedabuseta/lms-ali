@@ -41,7 +41,7 @@ export default function DataCard({
   trend,
 }: DataCardProps) {
   return (
-    <Card className={cn('bg-card transition-all duration-300 hover:scale-[1.02] hover:shadow-lg', variants[variant])}>
+    <Card className={cn('bg-card transition-all duration-300  e-[1.02] hover:shadow-lg', variants[variant])}>
       <div className={cn('absolute inset-0', gradients[variant])} />
 
       <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">

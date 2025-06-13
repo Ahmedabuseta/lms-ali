@@ -1,14 +1,11 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function PATCH(req: Request, { params }: { params: { examId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+const {id} = await requireAuth()
 
     // Find the exam with its course and questions
     const examWithQuestions = await db.exam.findUnique({
@@ -17,9 +14,13 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
       },
       include: {
         course: true,
-        questions: {
+        examQuestions: {
           include: {
-            options: true,
+            question: {
+              include: {
+                options: true,
+              },
+            },
           },
         },
       },
@@ -36,16 +37,16 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
     // }
 
     // Check if the exam has questions
-    if (examWithQuestions.questions.length === 0) {
+    if (examWithQuestions.examQuestions.length === 0) {
       return new NextResponse('Cannot publish an exam with no questions', { status: 400 });
     }
 
     // Verify that each question has at least one correct option
-    for (const question of examWithQuestions.questions) {
-      const hasCorrectOption = question.options.some((option) => option.isCorrect);
+    for (const examQuestion of examWithQuestions.examQuestions) {
+      const hasCorrectOption = examQuestion.question.options.some((option) => option.isCorrect);
 
       if (!hasCorrectOption) {
-        return new NextResponse(`Question "${question.text}" has no correct option`, { status: 400 });
+        return new NextResponse(`Question "${examQuestion.question.text}" has no correct option`, { status: 400 });
       }
     }
 

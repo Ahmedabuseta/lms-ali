@@ -28,6 +28,9 @@ export interface User {
   paymentReceived: boolean;
   paymentAmount: number | null;
   paymentNotes: string | null;
+  banned?: boolean;
+  banReason?: string | null;
+  banExpires?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,14 +1,11 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import { FlashcardsClient } from './_components/flashcards-client';
 import { db } from '@/lib/db';
 
 const TeacherFlashcardsPage = async () => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+   requireAuth()
 
   // Fetch courses created by the teacher
   const courses = await db.course.findMany({

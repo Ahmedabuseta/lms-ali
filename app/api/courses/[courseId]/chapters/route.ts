@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { isTeacher } from '@/lib/teacher';
+import { requireAuth, requireTeacher } from '@/lib/api-auth';
 
 export async function POST(req: NextRequest, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
+    await requireTeacher();
     const { title } = await req.json();
 
-    if (!userId || !isTeacher(userId)) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     const lastChapter = await db.chapter.findFirst({
       where: { courseId: params.courseId },
@@ -31,13 +27,9 @@ export async function POST(req: NextRequest, { params }: { params: { courseId: s
 
 export async function GET(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
+    await requireAuth();
     const { searchParams } = new URL(req.url);
     const isPublished = searchParams.get('isPublished');
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     // Build the query based on parameters
     const whereClause: any = {

@@ -1,16 +1,12 @@
-import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { isTeacher } from '@/lib/teacher';
+import { requireTeacher } from '@/lib/api-auth';
 
 export async function POST(request: NextRequest, { params }: { params: { courseId: string } }) {
   try {
-    const { userId } = auth();
+requireTeacher()
     const { url } = await request.json();
-
-    if (!userId || !isTeacher(userId)) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     const attachment = await db.attachment.create({
       data: {

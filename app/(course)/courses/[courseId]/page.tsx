@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import {
   BookOpen,
   Clock,
@@ -20,13 +21,19 @@ import { CourseProgress } from '@/components/course-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { getCurrentUser, canAccessChapterContent } from '@/lib/user';
+import { getChapterAccessInfo } from '@/actions/can-access-next-chapter';
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const { userId } = auth();
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
 
-  if (!userId) {
-    return redirect('/');
+  if (!session) {
+    return redirect('/sign-in');
   }
+
+  const userId = session.user.id;
 
   const course = await db.course.findUnique({
     where: {
@@ -58,14 +65,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 
   const progressCount = await getProgress(userId, course.id);
 
-  const purchase = await db.purchase.findUnique({
-    where: {
-      userId_courseId: {
-        userId,
-        courseId: course.id,
-      },
-    },
-  });
+
 
   const completedChapters = course.chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
@@ -73,6 +73,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 
   const totalChapters = course.chapters.length;
   const firstChapter = course.chapters[0];
+
+  // Get current user for access checking
+  const currentUser = await getCurrentUser();
+
+  // Pre-calculate chapter access for all chapters
+  const chapterAccess = currentUser ? await Promise.all(
+    course.chapters.map(chapter => canAccessChapterContent(currentUser, chapter.id))
+  ) : course.chapters.map(() => false);
+
+  // Get chapter progression access (based on quiz completion)
+  const chapterProgressionAccess = await getChapterAccessInfo(userId, course.id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
@@ -164,6 +175,12 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                     </Button>
                   </Link>
                 )}
+                <Link href={`/courses/${course.id}/practice`}>
+                  <Button variant="outline" size="lg" className="w-full font-arabic">
+                    <Target className="h-5 w-5 ml-2" />
+                    تدرب على الأسئلة
+                  </Button>
+                </Link>
                 <Button variant="outline" size="lg" className="w-full font-arabic">
                   <Calendar className="h-5 w-5 ml-2" />
                   إضافة إلى التقويم
@@ -183,7 +200,10 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
           <div className="space-y-3">
             {course.chapters.map((chapter, index) => {
               const isCompleted = !!chapter.userProgress?.[0]?.isCompleted;
-              const isLocked = !chapter.isFree && !purchase;
+              // Use pre-calculated access
+              const hasAccess = chapterAccess[index];
+              const canProgressToChapter = chapterProgressionAccess[chapter.id] !== false;
+              const isLocked = !hasAccess || !canProgressToChapter;
 
               return (
                 <Card key={chapter.id} className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
@@ -218,6 +238,11 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                           <span className="font-arabic">
                             {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
                           </span>
+                          {isLocked && hasAccess && !canProgressToChapter && (
+                            <Badge variant="destructive" className="text-xs font-arabic">
+                              يتطلب إكمال الفصل السابق
+                            </Badge>
+                          )}
                           {chapter.videoUrl && (
                             <div className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />

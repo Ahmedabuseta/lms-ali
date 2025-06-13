@@ -4,7 +4,7 @@ import { requireTeacher } from '@/lib/api-auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireTeacher();
+   requireTeacher();
     const { title } = await request.json();
 
     const course = await db.course.create({

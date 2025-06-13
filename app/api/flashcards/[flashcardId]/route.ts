@@ -1,15 +1,12 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function PATCH(req: Request, { params }: { params: { flashcardId: string } }) {
   try {
-    const { userId } = auth();
+    requireAuth()
     const { question, answer, chapterId } = await req.json();
 
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     // Get the flashcard
     const flashcard = await db.flashcard.findUnique({
@@ -75,11 +72,7 @@ export async function PATCH(req: Request, { params }: { params: { flashcardId: s
 
 export async function DELETE(req: Request, { params }: { params: { flashcardId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+requireAuth()
 
     // Get the flashcard
     const flashcard = await db.flashcard.findUnique({

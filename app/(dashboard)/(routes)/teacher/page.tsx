@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -25,14 +26,10 @@ import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 const TeacherDashboard = async () => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+  const { session } = await requireAuth();
 
   // Get analytics data
-  const { data, totalRevenue, totalSales } = await getAnalytics(userId);
+  const { data, totalRevenue, totalSales } = await getAnalytics(session?.userId ?? '');
 
   // Get dashboard stats
   const [courses, users, recentActivity] = await Promise.all([
@@ -113,7 +110,7 @@ const TeacherDashboard = async () => {
       {/* Stats Overview */}
       <div className="relative z-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Revenue Card */}
-        <Card className="relative overflow-hidden border-l-4 border-l-green-500 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-l-green-400">
+        <Card className="relative overflow-hidden border-l-4 border-l-green-500 bg-card/60 backdrop-blur-sm transition-all duration-300  e-[1.02] hover:shadow-lg dark:border-l-green-400">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-emerald-500/5 dark:from-green-400/10 dark:to-emerald-400/5" />
           <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">إجمالي الإيرادات</CardTitle>
@@ -126,7 +123,7 @@ const TeacherDashboard = async () => {
         </Card>
 
         {/* Courses Card */}
-        <Card className="relative overflow-hidden border-l-4 border-l-blue-500 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-l-blue-400">
+        <Card className="relative overflow-hidden border-l-4 border-l-blue-500 bg-card/60 backdrop-blur-sm transition-all duration-300  e-[1.02] hover:shadow-lg dark:border-l-blue-400">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/5 dark:from-blue-400/10 dark:to-indigo-400/5" />
           <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">الدورات</CardTitle>
@@ -139,7 +136,7 @@ const TeacherDashboard = async () => {
         </Card>
 
         {/* Students Card */}
-        <Card className="relative overflow-hidden border-l-4 border-l-purple-500 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-l-purple-400">
+        <Card className="relative overflow-hidden border-l-4 border-l-purple-500 bg-card/60 backdrop-blur-sm transition-all duration-300  e-[1.02] hover:shadow-lg dark:border-l-purple-400">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-violet-500/5 dark:from-purple-400/10 dark:to-violet-400/5" />
           <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">الطلاب</CardTitle>
@@ -152,7 +149,7 @@ const TeacherDashboard = async () => {
         </Card>
 
         {/* Active Learning Card */}
-        <Card className="relative overflow-hidden border-l-4 border-l-orange-500 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-l-orange-400">
+        <Card className="relative overflow-hidden border-l-4 border-l-orange-500 bg-card/60 backdrop-blur-sm transition-all duration-300  e-[1.02] hover:shadow-lg dark:border-l-orange-400">
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-500/5 dark:from-orange-400/10 dark:to-amber-400/5" />
           <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-foreground">النشاط الأسبوعي</CardTitle>
@@ -173,7 +170,7 @@ const TeacherDashboard = async () => {
 
       {/* Quick Actions */}
       <div className="relative z-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300     hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/5" />
           <CardContent className="relative p-6">
             <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
@@ -199,7 +196,7 @@ const TeacherDashboard = async () => {
           </CardContent>
         </Card>
 
-        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300     hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-500/5" />
           <CardContent className="relative p-6">
             <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
@@ -225,7 +222,7 @@ const TeacherDashboard = async () => {
           </CardContent>
         </Card>
 
-        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300     hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-emerald-500/5" />
           <CardContent className="relative p-6">
             <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">
@@ -251,7 +248,7 @@ const TeacherDashboard = async () => {
           </CardContent>
         </Card>
 
-        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <Card className="group relative overflow-hidden border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300     hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-violet-500/5" />
           <CardContent className="relative p-6">
             <div className="mb-4 flex items-center space-x-4 rtl:space-x-reverse">

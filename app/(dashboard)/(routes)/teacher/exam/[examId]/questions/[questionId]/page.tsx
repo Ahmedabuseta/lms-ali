@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireTeacher } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -13,30 +14,44 @@ interface PageProps {
 }
 
 export default async function EditQuestionPage({ params }: PageProps) {
-  const { userId } = auth();
+  const user = await requireTeacher();
 
-  if (!userId) {
-    return redirect('/');
+  const exam = await db.exam.findUnique({
+    where: {
+      id: params.examId,
+    },
+    include: {
+      course: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  });
+
+  if (!exam) {
+    return redirect('/teacher/exam');
+  }
+
+  // Don't allow editing questions in published exams
+  if (exam.isPublished) {
+    return redirect(`/teacher/exam/${params.examId}/questions`);
   }
 
   const question = await db.question.findUnique({
     where: {
       id: params.questionId,
-      examId: params.examId,
-    },
-    include: {
-      exam: {
-        include: {
-          course: {
-            select: {
-              /* createdById: true, */
-            },
-          },
+      examQuestions: {
+        some: {
+          examId: params.examId,
         },
       },
+    },
+    include: {
       options: {
         orderBy: {
-          createdAt: 'asc',
+          id: 'asc',
         },
       },
     },
@@ -46,37 +61,41 @@ export default async function EditQuestionPage({ params }: PageProps) {
     return redirect(`/teacher/exam/${params.examId}/questions`);
   }
 
-  // Verify ownership
-  /* if (question.exam.course.createdById !== userId) {
-    return redirect('/teacher/exam')
-  } */
-
-  // Don't allow editing questions of published exams
-  if (question.exam.isPublished) {
-    return redirect(`/teacher/exam/${params.examId}/questions`);
-  }
-
   return (
-    <div className="p-6">
+    <div className="p-6" dir="rtl">
       <div className="flex items-center justify-between">
         <div className="w-full">
           <Link
             href={`/teacher/exam/${params.examId}/questions`}
-            className="mb-6 flex items-center text-sm transition hover:opacity-75"
+            className="mb-6 flex items-center text-sm transition hover:opacity-75 font-arabic"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to questions
+            <ArrowLeft className="ml-2 h-4 w-4" />
+            العودة إلى الأسئلة
           </Link>
           <div className="flex w-full items-center justify-between">
             <div className="flex flex-col gap-y-2">
-              <h1 className="text-2xl font-bold">Edit Question</h1>
-              <span className="text-sm text-slate-600">Modify this question and its options</span>
+              <h1 className="text-2xl font-bold font-arabic">تحرير السؤال</h1>
+              <span className="text-sm text-slate-600 dark:text-slate-400 font-arabic">
+                تحرير سؤال في الاختبار "{exam.title}"
+              </span>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-8 max-w-2xl">
-        <QuestionForm initialData={question} examId={params.examId} />
+      <div className="mt-8 max-w-4xl">
+        <QuestionForm
+          initialData={{
+            id: question.id,
+            text: question.text,
+            type: question.type as 'MULTIPLE_CHOICE' | 'TRUE_FALSE',
+            options: question.options.map(option => ({
+              id: option.id,
+              text: option.text,
+              isCorrect: option.isCorrect,
+            })),
+          }}
+          examId={params.examId}
+        />
       </div>
     </div>
   );

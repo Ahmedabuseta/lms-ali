@@ -229,7 +229,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
                 <Card
                   key={course.id}
                   className={cn(
-                    'cursor-pointer border-2 transition-all duration-200 hover:scale-105 hover:shadow-lg',
+                    'cursor-pointer border-2 transition-all duration-200     hover:shadow-lg',
                     selectedCourse === course.id
                       ? 'border-primary bg-primary/10 shadow-lg'
                       : 'border-border/50 bg-card/40 hover:border-primary/50',
@@ -411,7 +411,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
                         return (
                           <Card
                             key={flashcard.id}
-                            className="border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:scale-[1.01] hover:shadow-lg"
+                            className="border border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-200  e-[1.01] hover:shadow-lg"
                           >
                             <CardContent className="p-6">
                               <div className="space-y-4">

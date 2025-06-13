@@ -1,20 +1,22 @@
-import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { PracticeClient } from './_components/practice-client';
 import { db } from '@/lib/db';
+import { PageProtection } from '@/components/page-protection';
+import { getCurrentUser } from '@/lib/auth-helpers';
 
 const PracticePage = async () => {
-  const { userId } = auth();
+  const user = await getCurrentUser();
+  if (!user) redirect('/sign-in');
 
-  if (!userId) {
-    return redirect('/');
-  }
-
-  // Get all courses that the user has access to (purchased or created)
+  // Get all courses that have questions in question banks
   const courses = await db.course.findMany({
     where: {
-      PracticeQuestion: {
-        some: {},
+      questionBanks: {
+        some: {
+          questions: {
+            some: {},
+          },
+        },
       },
     },
     select: {
@@ -23,9 +25,13 @@ const PracticePage = async () => {
       chapters: {
         where: {
           isPublished: true,
-          // Only include chapters that have practice questions
-          PracticeQuestion: {
-            some: {},
+          // Only include chapters that have questions in question banks
+          questionBanks: {
+            some: {
+              questions: {
+                some: {},
+              },
+            },
           },
         },
         select: {
@@ -33,7 +39,13 @@ const PracticePage = async () => {
           title: true,
           _count: {
             select: {
-              PracticeQuestion: true,
+              questionBanks: {
+                where: {
+                  questions: {
+                    some: {},
+                  },
+                },
+              },
             },
           },
         },
@@ -43,7 +55,13 @@ const PracticePage = async () => {
       },
       _count: {
         select: {
-          PracticeQuestion: true,
+          questionBanks: {
+            where: {
+              questions: {
+                some: {},
+              },
+            },
+          },
         },
       },
     },
@@ -51,27 +69,42 @@ const PracticePage = async () => {
       title: 'asc',
     },
   });
+
   console.log(courses);
+  
   if (courses.length === 0) {
     return (
-      <div className="p-4 sm:p-6" dir="rtl">
-        <div className="flex h-48 flex-col items-center justify-center text-center sm:h-60">
-          <h2 className="mb-2 text-xl font-bold sm:text-2xl">لا توجد أسئلة تدريبية متاحة</h2>
-          <p className="mb-4 text-sm text-slate-600 sm:mb-6 sm:text-base">لا توجد أسئلة تدريبية متاحة لدوراتك حتى الآن</p>
+      <PageProtection requiredPermission="canAccessPractice">
+        <div className="p-4 sm:p-6" dir="rtl">
+          <div className="flex h-48 flex-col items-center justify-center text-center sm:h-60">
+            <h2 className="mb-2 text-xl font-bold sm:text-2xl font-arabic">لا توجد أسئلة تدريبية متاحة</h2>
+            <p className="mb-4 text-sm text-slate-600 dark:text-slate-400 sm:mb-6 sm:text-base font-arabic">
+              لا توجد أسئلة تدريبية متاحة في بنك الأسئلة حتى الآن
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-500 font-arabic">
+              يمكن للمدرسين إضافة أسئلة من خلال بنك الأسئلة
+            </p>
+          </div>
         </div>
-      </div>
+      </PageProtection>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6" dir="rtl">
-      <div className="mb-4 sm:mb-6">
-        <h1 className="text-xl font-bold sm:text-2xl">الأسئلة التدريبية</h1>
-        <p className="text-sm text-slate-600 sm:text-base">اختبر معرفتك من خلال الأسئلة التدريبية من دوراتك</p>
-      </div>
+    <PageProtection requiredPermission="canAccessPractice">
+      <div className="p-4 sm:p-6" dir="rtl">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl font-bold sm:text-2xl font-arabic text-gray-900 dark:text-white">
+            الأسئلة التدريبية
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400 sm:text-base font-arabic">
+            اختبر معرفتك من خلال الأسئلة التدريبية من بنك الأسئلة
+          </p>
+        </div>
 
-      <PracticeClient courses={courses} />
-    </div>
+        <PracticeClient courses={courses} />
+      </div>
+    </PageProtection>
   );
 };
 

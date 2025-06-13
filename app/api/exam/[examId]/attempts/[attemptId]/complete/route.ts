@@ -1,17 +1,13 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { completeExam } from '@/actions/exam-actions';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function POST(req: Request, { params }: { params: { examId: string; attemptId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+const {id} = await requireAuth()
 
     const examAttempt = await completeExam({
-      userId,
+      userId:id,
       attemptId: params.attemptId,
     });
 

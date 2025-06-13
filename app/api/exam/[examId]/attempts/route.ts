@@ -1,19 +1,15 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function GET(req: Request, { params }: { params: { examId: string } }) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+const {id} = await requireAuth()
 
     // Get all attempts for this user and exam
     const attempts = await db.examAttempt.findMany({
       where: {
-        userId,
+        userId: id,
         examId: params.examId,
       },
       orderBy: {

@@ -1,4 +1,5 @@
-import { auth } from '@clerk/nextjs';
+import { requireAuth } from '@/lib/auth-helpers';
+
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -13,11 +14,7 @@ interface PageProps {
 }
 
 const CreateQuestionPage = async ({ searchParams }: PageProps) => {
-  const { userId } = auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
+   requireAuth()
 
   // Fetch all courses owned by the teacher
   const courses = await db.course.findMany({

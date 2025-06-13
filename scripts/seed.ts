@@ -31,7 +31,7 @@ async function main() {
     console.log('Creating flashcards...');
     await createFlashcards(chapters, courses);
 
-    // Create practice questions
+    // Create question banks and practice questions
     console.log('Creating practice questions...');
     await createPracticeQuestions(chapters, courses);
 
@@ -49,19 +49,24 @@ async function main() {
 
 async function cleanDatabase() {
   // Delete in correct order to maintain referential integrity
+  await database.practiceAttempt.deleteMany({});
+  await database.quizQuestionAttempt.deleteMany({});
+  await database.quizAttempt.deleteMany({});
   await database.questionAttempt.deleteMany({});
   await database.examAttempt.deleteMany({});
   await database.option.deleteMany({});
+  await database.examQuestion.deleteMany({});
+  await database.quizQuestion.deleteMany({});
   await database.question.deleteMany({});
+  await database.passage.deleteMany({});
+  await database.questionBank.deleteMany({});
   await database.exam.deleteMany({});
-  await database.practiceOption.deleteMany({});
-  await database.practiceQuestion.deleteMany({});
+  await database.quiz.deleteMany({});
   await database.flashcard.deleteMany({});
   await database.userProgress.deleteMany({});
   await database.muxData.deleteMany({});
   await database.chapter.deleteMany({});
   await database.attachment.deleteMany({});
-  await database.purchase.deleteMany({});
   await database.course.deleteMany({});
   await database.category.deleteMany({});
 }
@@ -87,7 +92,6 @@ async function createCourses(categories: any[]) {
         price: 49.99,
         isPublished: true,
         categoryId: categories.find((c) => c.name === 'English').id,
-        // createdById: TEACHER_ID,
       },
     }),
   );
@@ -103,7 +107,6 @@ async function createCourses(categories: any[]) {
         price: 59.99,
         isPublished: true,
         categoryId: categories.find((c) => c.name === 'Math').id,
-        // createdById: TEACHER_ID,
       },
     }),
   );
@@ -119,7 +122,6 @@ async function createCourses(categories: any[]) {
         price: 44.99,
         isPublished: true,
         categoryId: categories.find((c) => c.name === 'Geography').id,
-        // createdById: TEACHER_ID,
       },
     }),
   );
@@ -134,7 +136,6 @@ async function createCourses(categories: any[]) {
         price: 54.99,
         isPublished: true,
         categoryId: categories.find((c) => c.name === 'French').id,
-        // createdById: TEACHER_ID,
       },
     }),
   );
@@ -493,34 +494,15 @@ async function createFlashcards(chapters: any[], courses: any[]) {
   const allFlashcards = [...englishFlashcards, ...mathFlashcards, ...geographyFlashcards, ...frenchFlashcards];
   console.log(`Creating ${allFlashcards.length} flashcards...`);
 
-  // Use raw SQL for creating flashcards to bypass schema validation
   for (const flashcard of allFlashcards) {
     try {
-      const chapter = chapters.find((c) => c.id === flashcard.chapterId);
-      if (!chapter) {
-        console.error(`Chapter not found for ID: ${flashcard.chapterId}`);
-        continue;
-      }
-
-      // Get the course for this chapter
-      const courseId = chapter.courseId;
-      console.log(`Creating flashcard with courseId: ${courseId}`);
-
-      // Execute raw SQL query to bypass Prisma validation
-      // This adds the courseId directly to satisfy the database constraint
-      const createdFlashcard = await database.$queryRaw`
-        INSERT INTO "Flashcard" ("id", "question", "answer", "chapterId", "courseId", "createdAt", "updatedAt")
-        VALUES (${cryptoLib.randomUUID()}, ${flashcard.question}, ${flashcard.answer}, ${
-          flashcard.chapterId
-        }, ${courseId}, NOW(), NOW())
-        RETURNING "id"
-      `;
-
-      // Now create the many-to-many relationship
-      await database.$queryRaw`
-        INSERT INTO "_CourseToFlashcard" ("A", "B")
-        VALUES (${courseId}, ${createdFlashcard[0].id})
-      `;
+      await database.flashcard.create({
+        data: {
+          question: flashcard.question,
+          answer: flashcard.answer,
+          chapterId: flashcard.chapterId,
+        },
+      });
     } catch (error) {
       console.error('Error creating flashcard:', error);
     }
@@ -528,6 +510,20 @@ async function createFlashcards(chapters: any[], courses: any[]) {
 }
 
 async function createPracticeQuestions(chapters: any[], courses: any[]) {
+  // Create question banks for each course
+  const questionBanks = {};
+  
+  for (const course of courses) {
+    const questionBank = await database.questionBank.create({
+      data: {
+        title: `${course.title} - Practice Questions`,
+        description: `Practice questions for ${course.title}`,
+        courseId: course.id,
+      },
+    });
+    questionBanks[course.id] = questionBank;
+  }
+
   // English practice questions
   const englishCourse = courses.find((c) => c.title.includes('English'));
   const englishChapters = chapters.filter((c) => c.courseId === englishCourse.id);
@@ -536,9 +532,8 @@ async function createPracticeQuestions(chapters: any[], courses: any[]) {
     'Which of the following is NOT a part of speech?',
     ['Conjunction', 'Preposition', 'Narrative', 'Adverb'],
     2, // Correct option index (0-based)
-    'Medium',
-    englishCourse.id,
-    englishChapters[0].id,
+    'MEDIUM',
+    questionBanks[englishCourse.id].id,
   );
 
   await createMultipleChoiceQuestion(
@@ -550,9 +545,8 @@ async function createPracticeQuestions(chapters: any[], courses: any[]) {
       'Each of the students have completed the test.',
     ],
     2, // Correct option index (0-based)
-    'Hard',
-    englishCourse.id,
-    englishChapters[0].id,
+    'HARD',
+    questionBanks[englishCourse.id].id,
   );
 
   // Math practice questions
@@ -560,21 +554,19 @@ async function createPracticeQuestions(chapters: any[], courses: any[]) {
   const mathChapters = chapters.filter((c) => c.courseId === mathCourse.id);
 
   await createMultipleChoiceQuestion(
-    'Solve for x: $3x + 7 = 22$',
-    ['$x = 5$', '$x = 6$', '$x = 7$', '$x = 8$'],
+    'Solve for x: 3x + 7 = 22',
+    ['x = 5', 'x = 6', 'x = 7', 'x = 8'],
     0, // Correct option index (0-based)
-    'Easy',
-    mathCourse.id,
-    mathChapters[0].id,
+    'EASY',
+    questionBanks[mathCourse.id].id,
   );
 
   await createMultipleChoiceQuestion(
-    'What is the derivative of $f(x) = x^3 + 2x^2 - 4x + 7$?',
-    ["$f'(x) = 3x^2 + 4x - 4$", "$f'(x) = 3x^2 + 2x - 4$", "$f'(x) = 3x^2 + 4x - 1$", "$f'(x) = 2x^2 + 4x - 4$"],
+    'What is the derivative of f(x) = x^3 + 2x^2 - 4x + 7?',
+    ["f'(x) = 3x^2 + 4x - 4", "f'(x) = 3x^2 + 2x - 4", "f'(x) = 3x^2 + 4x - 1", "f'(x) = 2x^2 + 4x - 4"],
     0, // Correct option index (0-based)
-    'Medium',
-    mathCourse.id,
-    mathChapters[2].id,
+    'MEDIUM',
+    questionBanks[mathCourse.id].id,
   );
 
   // Geography practice questions
@@ -585,18 +577,16 @@ async function createPracticeQuestions(chapters: any[], courses: any[]) {
     'Which of these countries is landlocked?',
     ['Paraguay', 'Chile', 'Ecuador', 'Uruguay'],
     0, // Correct option index (0-based)
-    'Medium',
-    geographyCourse.id,
-    geographyChapters[0].id,
+    'MEDIUM',
+    questionBanks[geographyCourse.id].id,
   );
 
   await createMultipleChoiceQuestion(
     'What type of climate is characterized by hot, wet summers and mild, dry winters?',
     ['Tropical', 'Mediterranean', 'Tundra', 'Desert'],
     1, // Correct option index (0-based)
-    'Medium',
-    geographyCourse.id,
-    geographyChapters[1].id,
+    'MEDIUM',
+    questionBanks[geographyCourse.id].id,
   );
 
   // French practice questions
@@ -612,47 +602,56 @@ async function createPracticeQuestions(chapters: any[], courses: any[]) {
       'Je prends le petit déjeuner dans la matin.',
     ],
     2, // Correct option index (0-based)
-    'Medium',
-    frenchCourse.id,
-    frenchChapters[0].id,
+    'MEDIUM',
+    questionBanks[frenchCourse.id].id,
   );
 
   await createMultipleChoiceQuestion(
     "Which is the correct conjugation of 'parler' (to speak) for 'nous'?",
     ['parlons', 'parles', 'parlez', 'parlent'],
     0, // Correct option index (0-based)
-    'Easy',
-    frenchCourse.id,
-    frenchChapters[1].id,
+    'EASY',
+    questionBanks[frenchCourse.id].id,
   );
+
+  // Create some passages and passage-based questions
+  await createPassageQuestions(questionBanks, courses);
 }
 
-async function createMultipleChoiceQuestion(text: string, options: string[], correctIndex: number, difficulty: string, courseId: string, chapterId: string) {
-  const practiceQuestion = await database.practiceQuestion.create({
+async function createMultipleChoiceQuestion(text: string, options: string[], correctIndex: number, difficulty: string, questionBankId: string) {
+  const question = await database.question.create({
     data: {
       text,
       type: 'MULTIPLE_CHOICE',
       difficulty,
-      courseId,
-      chapterId,
+      questionBankId,
+      points: 1,
     },
   });
 
   // Create options
   for (let i = 0; i < options.length; i++) {
-    await database.practiceOption.create({
+    await database.option.create({
       data: {
         text: options[i],
         isCorrect: i === correctIndex,
-        questionId: practiceQuestion.id,
+        questionId: question.id,
       },
     });
   }
 
-  return practiceQuestion;
+  return question;
 }
 
 async function createExams(chapters: any[], courses: any[]) {
+  // Get question banks for exam questions
+  const questionBanks = {};
+  for (const course of courses) {
+    const questionBank = await database.questionBank.findFirst({
+      where: { courseId: course.id }
+    });
+    questionBanks[course.id] = questionBank;
+  }
   // English exam
   const englishCourse = courses.find((c) => c.title.includes('English'));
   const englishChapters = chapters.filter((c) => c.courseId === englishCourse.id);
@@ -674,12 +673,12 @@ async function createExams(chapters: any[], courses: any[]) {
     { text: 'I went to the store, and I bought some milk.', isCorrect: true },
     { text: 'Running quickly, she caught the bus.', isCorrect: false },
     { text: 'The man who lives next door is a doctor.', isCorrect: false },
-  ]);
+  ], questionBanks[englishCourse.id].id, 1);
 
   await createExamQuestion(englishExam.id, 'The passive voice should be avoided in most writing.', 'TRUE_FALSE', [
     { text: 'True', isCorrect: true },
     { text: 'False', isCorrect: false },
-  ]);
+  ], questionBanks[englishCourse.id].id, 2);
 
   // Math exam
   const mathCourse = courses.find((c) => c.title.includes('Mathematics'));
@@ -697,17 +696,17 @@ async function createExams(chapters: any[], courses: any[]) {
   });
 
   // Create Math exam questions
-  await createExamQuestion(mathExam.id, 'Find the derivative of $f(x) = 2x^3 - 3x^2 + 4x - 7$.', 'MULTIPLE_CHOICE', [
-    { text: "$f'(x) = 6x^2 - 6x + 4$", isCorrect: true },
-    { text: "$f'(x) = 6x^2 - 9x + 4$", isCorrect: false },
-    { text: "$f'(x) = 6x^2 - 6x - 4$", isCorrect: false },
-    { text: "$f'(x) = 8x^3 - 6x + 4$", isCorrect: false },
-  ]);
+  await createExamQuestion(mathExam.id, 'Find the derivative of f(x) = 2x^3 - 3x^2 + 4x - 7.', 'MULTIPLE_CHOICE', [
+    { text: "f'(x) = 6x^2 - 6x + 4", isCorrect: true },
+    { text: "f'(x) = 6x^2 - 9x + 4", isCorrect: false },
+    { text: "f'(x) = 6x^2 - 6x - 4", isCorrect: false },
+    { text: "f'(x) = 8x^3 - 6x + 4", isCorrect: false },
+  ], questionBanks[mathCourse.id].id, 1);
 
   await createExamQuestion(mathExam.id, 'The derivative of a constant is always zero.', 'TRUE_FALSE', [
     { text: 'True', isCorrect: true },
     { text: 'False', isCorrect: false },
-  ]);
+  ], questionBanks[mathCourse.id].id, 2);
 
   // Geography exam
   const geographyCourse = courses.find((c) => c.title.includes('Geography'));
@@ -730,12 +729,12 @@ async function createExams(chapters: any[], courses: any[]) {
     { text: 'Panama', isCorrect: true },
     { text: 'Bolivia', isCorrect: false },
     { text: 'Paraguay', isCorrect: false },
-  ]);
+  ], questionBanks[geographyCourse.id].id, 1);
 
   await createExamQuestion(geographyExam.id, 'The Amazon River is the longest river in the world.', 'TRUE_FALSE', [
     { text: 'True', isCorrect: false },
     { text: 'False', isCorrect: true },
-  ]);
+  ], questionBanks[geographyCourse.id].id, 2);
 
   // French exam
   const frenchCourse = courses.find((c) => c.title.includes('French'));
@@ -763,6 +762,8 @@ async function createExams(chapters: any[], courses: any[]) {
       { text: "Je peux avoir un café, s'il vous plaît.", isCorrect: false },
       { text: "Je prends un café, s'il vous plaît.", isCorrect: false },
     ],
+    questionBanks[frenchCourse.id].id,
+    1,
   );
 
   await createExamQuestion(
@@ -773,15 +774,17 @@ async function createExams(chapters: any[], courses: any[]) {
       { text: 'True', isCorrect: false },
       { text: 'False', isCorrect: true },
     ],
+    questionBanks[frenchCourse.id].id,
+    2,
   );
 }
 
-async function createExamQuestion(examId: string, text: string, type: string, options: any[]) {
+async function createExamQuestion(examId: string, text: string, type: string, options: any[], questionBankId: string, position: number) {
   const question = await database.question.create({
     data: {
       text,
       type,
-      examId,
+      questionBankId,
       points: 1, // Default point value
     },
   });
@@ -792,6 +795,106 @@ async function createExamQuestion(examId: string, text: string, type: string, op
       data: {
         text: option.text,
         isCorrect: option.isCorrect,
+        questionId: question.id,
+      },
+    });
+  }
+
+  // Link question to exam
+  await database.examQuestion.create({
+    data: {
+      examId,
+      questionId: question.id,
+      position,
+    },
+  });
+
+  return question;
+}
+
+async function createPassageQuestions(questionBanks: any, courses: any[]) {
+  // English Reading Passage
+  const englishCourse = courses.find((c) => c.title.includes('English'));
+  const englishPassage = await database.passage.create({
+    data: {
+      title: 'The Importance of Reading',
+      content: `Reading is one of the most important skills that students can develop. Not only does it improve vocabulary and comprehension, but it also enhances critical thinking abilities. When students read regularly, they encounter diverse perspectives and ideas that broaden their understanding of the world.
+
+Research has shown that students who read for pleasure perform better academically across all subjects. This is because reading strengthens neural pathways in the brain and improves concentration and focus. Furthermore, reading fiction can increase empathy by allowing readers to experience life through different characters' perspectives.
+
+In today's digital age, it's more important than ever to maintain strong reading habits. While technology offers many benefits, it should supplement, not replace, traditional reading practices.`,
+    },
+  });
+
+  // Create questions based on the passage
+  await createPassageQuestion(
+    'According to the passage, reading for pleasure:',
+    ['Only improves vocabulary', 'Helps students perform better academically', 'Is less important than technology', 'Should be avoided in digital age'],
+    1,
+    'MEDIUM',
+    questionBanks[englishCourse.id].id,
+    englishPassage.id,
+  );
+
+  await createPassageQuestion(
+    'The passage suggests that reading fiction can:',
+    ['Replace technology completely', 'Increase empathy in readers', 'Only improve vocabulary', 'Decrease concentration'],
+    1,
+    'MEDIUM',
+    questionBanks[englishCourse.id].id,
+    englishPassage.id,
+  );
+
+  // Geography Reading Passage
+  const geographyCourse = courses.find((c) => c.title.includes('Geography'));
+  const geographyPassage = await database.passage.create({
+    data: {
+      title: 'Climate Change and Global Geography',
+      content: `Climate change is reshaping the geography of our planet in unprecedented ways. Rising sea levels are threatening coastal cities and island nations, while changing precipitation patterns are altering agricultural zones worldwide.
+
+The Arctic region is experiencing the most dramatic changes, with ice sheets melting at an accelerating rate. This not only affects local ecosystems but also influences global ocean currents and weather patterns. Scientists predict that the Northwest Passage, historically blocked by ice, may become a major shipping route within decades.
+
+Desert regions are expanding in some areas while others become more temperate due to shifting climate zones. These changes force human populations to adapt or migrate, creating new patterns of urbanization and resource distribution across the globe.`,
+    },
+  });
+
+  await createPassageQuestion(
+    'According to the passage, climate change is affecting:',
+    ['Only polar regions', 'Coastal areas and agricultural zones', 'Only desert regions', 'Only ocean currents'],
+    1,
+    'MEDIUM',
+    questionBanks[geographyCourse.id].id,
+    geographyPassage.id,
+  );
+
+  await createPassageQuestion(
+    'The Northwest Passage is mentioned as:',
+    ['A desert region', 'A potential future shipping route', 'An agricultural zone', 'A coastal city'],
+    1,
+    'HARD',
+    questionBanks[geographyCourse.id].id,
+    geographyPassage.id,
+  );
+}
+
+async function createPassageQuestion(text: string, options: string[], correctIndex: number, difficulty: string, questionBankId: string, passageId: string) {
+  const question = await database.question.create({
+    data: {
+      text,
+      type: 'PASSAGE',
+      difficulty,
+      questionBankId,
+      passageId,
+      points: 1,
+    },
+  });
+
+  // Create options
+  for (let i = 0; i < options.length; i++) {
+    await database.option.create({
+      data: {
+        text: options[i],
+        isCorrect: i === correctIndex,
         questionId: question.id,
       },
     });
