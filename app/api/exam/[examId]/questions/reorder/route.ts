@@ -1,14 +1,11 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function PUT(req: Request, { params }: { params: { examId: string } }) {
   try {
-    const { userId } = auth();
+    await requireAuth();
     const { list } = await req.json();
-
-    if (!userId) { return new NextResponse('Unauthorized', { status: 401 });
-    }
 
     // Verify ownership through the course
     const examWithCourse = await db.exam.findUnique({ where: {

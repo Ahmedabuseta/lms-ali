@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { getExamStatistics } from '@/actions/exam-actions';
 import { requireAuth } from '@/lib/api-auth';

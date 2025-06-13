@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAuth } from '@/lib/api-auth';
@@ -20,7 +19,7 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
     const activeAttempts = await db.examAttempt.count({ where: {
         examId: params.examId,
         completedAt: null, // Incomplete attempts },
-    });
+    }});
 
     if (activeAttempts > 0) { return new NextResponse('Cannot unpublish an exam with active attempts', { status: 400 });
     }
