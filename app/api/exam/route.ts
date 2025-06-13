@@ -4,7 +4,8 @@ import { db } from '@/lib/db';
 import * as z from 'zod';
 
 // Validation schema for exam creation
-const createExamSchema = z.object({ title: z
+const createExamSchema = z.object({
+  title: z
     .string()
     .min(1, 'العنوان مطلوب')
     .max(100, 'العنوان يجب أن يكون أقل من 100 حرف'),
@@ -20,9 +21,11 @@ const createExamSchema = z.object({ title: z
     .min(1, 'الحد الأدنى دقيقة واحدة')
     .max(300, 'الحد الأقصى 300 دقيقة')
     .optional(),
-  isPublished: z.boolean().default(false), });
+  isPublished: z.boolean().default(false),
+});
 
-export async function POST(req: Request) { try {
+export async function POST(req: Request) {
+  try {
     const user = await requireTeacher();
 
     const body = await req.json();
@@ -33,7 +36,8 @@ export async function POST(req: Request) { try {
       return NextResponse.json(
         {
           message: 'بيانات غير صحيحة',
-          errors: validationResult.error.errors },
+          errors: validationResult.error.errors,
+        },
         { status: 400 }
       );
     }
@@ -41,26 +45,32 @@ export async function POST(req: Request) { try {
     const { title, description, courseId, chapterId, timeLimit, isPublished } = validationResult.data;
 
     // Verify that the course exists and belongs to the teacher
-    const course = await db.course.findFirst({ where: {
+    const course = await db.course.findFirst({
+      where: {
         id: courseId,
-        // Add ownership verification here if needed },
+        // Add ownership verification here if needed
+      },
     });
 
-    if (!course) { return NextResponse.json(
+    if (!course) {
+      return NextResponse.json(
         { message: 'الدورة غير موجودة أو لا يمكن الوصول إليها' },
         { status: 404 }
       );
     }
 
     // If chapterId is provided, verify it belongs to the course
-    if (chapterId) { const chapter = await db.chapter.findFirst({
+    if (chapterId) {
+      const chapter = await db.chapter.findFirst({
         where: {
           id: chapterId,
           courseId: courseId,
-          isPublished: true, },
+          isPublished: true,
+        },
       });
 
-      if (!chapter) { return NextResponse.json(
+      if (!chapter) {
+        return NextResponse.json(
           { message: 'الفصل غير موجود أو غير منشور' },
           { status: 404 }
         );
@@ -68,33 +78,41 @@ export async function POST(req: Request) { try {
     }
 
     // Create the exam
-    const exam = await db.exam.create({ data: {
+    const exam = await db.exam.create({
+      data: {
         title,
         description: description || null,
         courseId,
         chapterId: chapterId || null,
         timeLimit: timeLimit || null,
-        isPublished: isPublished || false, },
-      include: { course: {
+        isPublished: isPublished || false,
+      },
+      include: {
+        course: {
           select: {
             id: true,
-            title: true, },
+            title: true,
+          },
         },
-        chapter: { select: {
+        chapter: {
+          select: {
             id: true,
-            title: true, },
+            title: true,
+          },
         },
       },
     });
 
     return NextResponse.json(exam, { status: 201 });
-  } catch (error) { console.error('[EXAM_POST]', error);
+  } catch (error) {
+    console.error('[EXAM_POST]', error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
           message: 'بيانات غير صحيحة',
-          errors: error.errors },
+          errors: error.errors,
+        },
         { status: 400 }
       );
     }

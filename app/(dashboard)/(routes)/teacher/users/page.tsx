@@ -20,7 +20,8 @@ const UsersPage = async () => {
   // Fetch real users from database
   let users: any[] = [];
 
-  try { const dbUsers = await db.user.findMany({
+  try {
+    const dbUsers = await db.user.findMany({
       select: {
         id: true,
         email: true,
@@ -39,7 +40,8 @@ const UsersPage = async () => {
         accessGrantedBy: true,
         banned: true,
         banReason: true,
-        banExpires: true, },
+        banExpires: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -51,8 +53,10 @@ const UsersPage = async () => {
     }));
 
     console.log(`Loaded ${users.length} users from database`);
-  } catch (error) { console.error('Error fetching users:', error);
-    // users remains empty array if database query fails }
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    // users remains empty array if database query fails
+  }
 
   // Calculate stats efficiently
   const studentUsers = users.filter((user) => user.role === UserRole.STUDENT);
@@ -73,12 +77,12 @@ const UsersPage = async () => {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/10 to-indigo-500/5 blur-3xl dark:from-blue-400/10 dark:to-indigo-400/5" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/5 blur-3xl dark:from-purple-400/10 dark:to-pink-400/5"
-          style={ { animationDelay: '2s' }}
-         />
+          style={{ animationDelay: '2s' }}
+        />
         <div
           className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/5 blur-3xl dark:from-green-400/10 dark:to-emerald-400/5"
-          style={ { animationDelay: '4s' }}
-         />
+          style={{ animationDelay: '4s' }}
+        />
       </div>
 
       <div className="relative z-10 space-y-8 p-6">
@@ -116,7 +120,7 @@ const UsersPage = async () => {
             <CardContent className="relative">
               <div className="text-2xl font-bold text-foreground">{activeStudents}</div>
               <p className="mt-1 text-xs text-muted-foreground">
-                { totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 0 }% من المجموع
+                {totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 0}% من المجموع
               </p>
             </CardContent>
           </Card>
