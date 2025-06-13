@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth-helpers';
 import { headers } from 'next/headers';
 import { BookOpen,
   Clock,
@@ -19,36 +19,59 @@ import { CourseProgress } from '@/components/course-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getCurrentUser, canAccessChapterContent } from '@/lib/user';
+import { canAccessChapterContent } from '@/lib/user';
 import { getChapterAccessInfo } from '@/actions/can-access-next-chapter';
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { const session = await auth.api.getSession({
-    headers: headers(), });
-
-  if (!session) {
+const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
+  // Use the updated auth system
+  const currentUser = await getCurrentUser();
+  
+  if (!currentUser) {
     return redirect('/sign-in');
   }
 
-  const userId = session.user.id;
+  const userId = currentUser.id;
 
-  const course = await db.course.findUnique({ where: {
-      id: params.courseId, },
-    include: { chapters: {
+  console.log('Fetching course with ID:', params.courseId);
+
+  const course = await db.course.findUnique({
+    where: {
+      id: params.courseId,
+    },
+    include: {
+      chapters: {
         where: {
-          isPublished: true, },
-        include: { userProgress: {
+          isPublished: true,
+        },
+        include: {
+          userProgress: {
             where: {
-              userId, },
+              userId,
+            },
           },
         },
-        orderBy: { position: 'asc', },
+        orderBy: {
+          position: 'asc',
+        },
       },
       category: true,
     },
   });
 
   if (!course) {
-    return redirect('/');
+    console.log('Course not found for ID:', params.courseId);
+    console.log('Available courses:', await db.course.findMany({ select: { id: true, title: true, isPublished: true } }));
+    
+    // Instead of redirecting to home, redirect to courses list with error
+    return redirect('/dashboard?error=course-not-found');
+  }
+
+  console.log('Course found:', course.title, 'Published:', course.isPublished);
+
+  // Check if course is published
+  if (!course.isPublished) {
+    console.log('Course is not published:', course.title);
+    return redirect('/dashboard?error=course-not-published');
   }
 
   const progressCount = await getProgress(userId, course.id);
@@ -59,9 +82,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
 
   const totalChapters = course.chapters.length;
   const firstChapter = course.chapters[0];
-
-  // Get current user for access checking
-  const currentUser = await getCurrentUser();
 
   // Pre-calculate chapter access for all chapters
   const chapterAccess = currentUser ? await Promise.all(
@@ -94,9 +114,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
                 <h1 className="text-4xl font-bold text-foreground font-arabic leading-relaxed mb-4">
                   {course.title}
                 </h1>
-                { course.description && (
+                {course.description && (
                   <div className="prose dark:prose-invert max-w-none font-arabic">
-                    <Preview value={course.description } />
+                    <Preview value={course.description} />
                   </div>
                 )}
               </div>
@@ -157,7 +177,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
                   <Link href={`/courses/${course.id}/chapters/${firstChapter.id}`}>
                     <Button size="lg" className="w-full font-arabic">
                       <PlayCircle className="h-5 w-5 ml-2" />
-                      { progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة' }
+                      {progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة'}
                     </Button>
                   </Link>
                 )}
@@ -167,10 +187,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
                     تدرب على الأسئلة
                   </Button>
                 </Link>
-                <Button variant="outline" size="lg" className="w-full font-arabic">
-                  <Calendar className="h-5 w-5 ml-2" />
-                  إضافة إلى التقويم
-                </Button>
               </div>
             </div>
           </div>
@@ -184,7 +200,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
           </div>
 
           <div className="space-y-3">
-            { course.chapters.map((chapter, index) => {
+            {course.chapters.map((chapter, index) => {
               const isCompleted = !!chapter.userProgress?.[0]?.isCompleted;
               // Use pre-calculated access
               const hasAccess = chapterAccess[index];
@@ -192,36 +208,37 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
               const isLocked = !hasAccess || !canProgressToChapter;
 
               return (
-                <Card key={chapter.id } className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
+                <Card key={chapter.id} className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
                       {/* Chapter Number */}
-                      <div className={ `flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
                         isCompleted
                           ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
                           : isLocked
                           ? 'bg-gray-200 text-gray-500'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200' }`}>
+                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200'
+                      }`}>
                         {index + 1}
                       </div>
 
                       {/* Chapter Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          { isCompleted ? (
+                          {isCompleted ? (
                             <CheckCircle className="h-5 w-5 text-green-600" />
                           ) : isLocked ? (
                             <Lock className="h-5 w-5 text-gray-400" />
                           ) : (
                             <PlayCircle className="h-5 w-5 text-blue-600" />
-                          ) }
+                          )}
                           <h3 className="font-semibold text-foreground font-arabic truncate">
                             {chapter.title}
                           </h3>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="font-arabic">
-                            { isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح' }
+                            {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
                           </span>
                           {isLocked && hasAccess && !canProgressToChapter && (
                             <Badge variant="destructive" className="text-xs font-arabic">
@@ -242,7 +259,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { c
                         {!isLocked ? (
                           <Link href={`/courses/${course.id}/chapters/${chapter.id}`}>
                             <Button variant="ghost" size="sm" className="font-arabic">
-                              { isCompleted ? 'مراجعة' : 'بدء' }
+                              {isCompleted ? 'مراجعة' : 'بدء'}
                             </Button>
                           </Link>
                         ) : (
