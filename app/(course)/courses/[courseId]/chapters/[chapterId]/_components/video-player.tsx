@@ -32,20 +32,14 @@ const isExternalVideoUrl = (url: string): boolean => {
     return (
       hostname.includes('youtube.com') ||
       hostname.includes('youtu.be') ||
-      hostname.includes('vimeo.com') ||
-      hostname.includes('dailymotion.com')
+      hostname.includes('iframe.mediadelivery.net')
     );
   } catch {
     return false;
   }
 };
 
-const getVideoType = (url: string): string => {
-  if (url.includes('youtube.com') || url.includes('youtu.be')) return 'YouTube';
-  if (url.includes('vimeo.com')) return 'Vimeo';
-  if (url.includes('dailymotion.com')) return 'Dailymotion';
-  return 'خارجي';
-};
+
 
 export const VideoPlayer = ({
   playbackId,
@@ -132,7 +126,7 @@ export const VideoPlayer = ({
         </div>
       )}
 
-      <div style={{ position: 'relative', paddingTop: '56.25%' }}>
+      <div style={{  paddingTop: '56.25%' }}>
                 <iframe 
                   src={`${videoUrl}?autoplay=true&loop=false&muted=false&preload=true&responsive=true`}
                   loading="lazy"
