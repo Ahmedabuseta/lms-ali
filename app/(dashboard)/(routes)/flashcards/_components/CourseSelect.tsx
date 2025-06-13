@@ -26,7 +26,7 @@ export default function CourseSelect({ courses }: CourseSelectProps) { const rou
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Select value={currentCourseId || ''} onValueChange={handleCourseChange}>
+        <Select value={currentCourseId || undefined} onValueChange={handleCourseChange}>
           <SelectTrigger className="w-full border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <SelectValue placeholder="Select a course" />
           </SelectTrigger>

@@ -214,8 +214,16 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({ initialData,
 
   const handleSubmit = async (data: QuestionFormData) => {
     try {
-      await onSubmit(data);
-    } catch (error) { console.error('Form submission error:', error); }
+      // Transform placeholder values back to proper values before submission
+      const transformedData = {
+        ...data,
+        passageId: data.passageId === 'NO_PASSAGE' ? undefined : data.passageId,
+      };
+      
+      await onSubmit(transformedData);
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
   };
 
   return (
@@ -366,7 +374,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({ initialData,
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">بدون قطعة</SelectItem>
+                            <SelectItem value="NO_PASSAGE">بدون قطعة</SelectItem>
                             {passages.map((passage) => (
                               <SelectItem key={passage.id} value={passage.id}>
                                 {passage.title}

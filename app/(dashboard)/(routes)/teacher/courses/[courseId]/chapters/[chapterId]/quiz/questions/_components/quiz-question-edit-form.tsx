@@ -180,7 +180,11 @@ export const QuizQuestionEditForm = ({ courseId,
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-arabic">نوع السؤال</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="اختر نوع السؤال" />
@@ -207,7 +211,11 @@ export const QuizQuestionEditForm = ({ courseId,
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-arabic">مستوى الصعوبة</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="اختر المستوى" />

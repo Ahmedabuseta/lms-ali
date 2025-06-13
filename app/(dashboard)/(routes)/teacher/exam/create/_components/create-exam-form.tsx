@@ -105,14 +105,22 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
         return;
       }
 
-      const response = await axios.post('/api/exam', values);
+      // Transform placeholder values back to proper values before submission
+      const transformedValues = {
+        ...values,
+        chapterId: values.chapterId === 'ALL_CHAPTERS' ? undefined : values.chapterId,
+      };
+
+      const response = await axios.post('/api/exam', transformedValues);
 
       toast.success('تم إنشاء الاختبار بنجاح! 🎉');
       router.push(`/teacher/exam/${response.data.id}`);
-    } catch (error: any) { console.error('Error creating exam:', error);
+    } catch (error: any) {
+      console.error('Error creating exam:', error);
 
       if (error.response?.data?.message) {
-        toast.error(error.response.data.message); } else if (error.response?.status === 403) {
+        toast.error(error.response.data.message);
+      } else if (error.response?.status === 403) {
         toast.error('ليس لديك صلاحية لإنشاء اختبارات');
       } else if (error.response?.status === 400) {
         toast.error('بيانات غير صحيحة، يرجى التحقق من المدخلات');
@@ -269,7 +277,7 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                   <FormItem>
                     <FormLabel className="text-base font-medium font-arabic">الفصل (اختياري)</FormLabel>
                     <Select
-                      value={field.value || ''}
+                      value={field.value || 'ALL_CHAPTERS'}
                       onValueChange={field.onChange}
                       disabled={isSubmitting}
                     >
@@ -279,7 +287,7 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="" className="font-arabic">جميع الفصول</SelectItem>
+                        <SelectItem value="ALL_CHAPTERS" className="font-arabic">جميع الفصول</SelectItem>
                         {availableChapters.map((chapter) => (
                           <SelectItem key={chapter.id} value={chapter.id} className="font-arabic">
                             {chapter.title}
