@@ -44,9 +44,11 @@ const UsersPage = async () => {
     });
 
     // Transform database users to match the User interface
-    users = dbUsers.map(user => ({ ...user,
+    users = dbUsers.map(user => ({
+      ...user,
       userId: user.id, // Add userId field that the interface expects
-      paymentAmount: user.paymentAmount || null, }));
+      paymentAmount: user.paymentAmount || null,
+    }));
 
     console.log(`Loaded ${users.length} users from database`);
   } catch (error) { console.error('Error fetching users:', error);

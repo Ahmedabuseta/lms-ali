@@ -120,15 +120,18 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => { const 
 
       if (editingFlashcardId) {
         // Update existing flashcard
-        await axios.patch(`/api/flashcards/${editingFlashcardId}`, { ...values,
-          courseId: selectedCourse, // Ensure courseId is included in the update });
+        await axios.patch(`/api/flashcards/${editingFlashcardId}`, {
+          ...values,
+          courseId: selectedCourse, // Ensure courseId is included in the update
+        });
         toast.success('تم تحديث البطاقة التعليمية بنجاح');
         setEditingFlashcardId(null);
       } else {
         // Create new flashcard
 
-        await axios.post(`/api/courses/${selectedCourse}/flashcards`, { // courseId: selectedCourse,
-          ...values, });
+        await axios.post(`/api/courses/${selectedCourse}/flashcards`, {
+          ...values,
+        });
         toast.success('تم إنشاء البطاقة التعليمية بنجاح');
       }
 
@@ -136,11 +139,15 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => { const 
       fetchFlashcards(selectedCourse);
 
       // Reset form
-      form.reset({ question: '',
+      form.reset({
+        question: '',
         answer: '',
-        chapterId: '', });
-    } catch (error: any) { console.error('Flashcard submission error:', error.response);
-      toast.error(error?.response?.data?.message || 'فشل في حفظ البطاقة التعليمية'); } finally {
+        chapterId: '',
+      });
+    } catch (error: any) {
+      console.error('Flashcard submission error:', error.response);
+      toast.error(error?.response?.data?.message || 'فشل في حفظ البطاقة التعليمية');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -163,11 +170,13 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => { const 
     }
   };
 
-  const cancelEditing = () => { setEditingFlashcardId(null);
+  const cancelEditing = () => {
+    setEditingFlashcardId(null);
     form.reset({
       question: '',
       answer: '',
-      chapterId: '', });
+      chapterId: '',
+    });
   };
 
   return (

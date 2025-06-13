@@ -15,21 +15,12 @@ const CourseQuestionsPage = async ({ params }: CourseQuestionsPageProps) => { aw
 
   const course = await db.course.findUnique({
     where: {
-      id: params.courseId, },
-    include: { questionBanks: {
-        where: {
-          chapterId: null, // Only course-level questions, not chapter-specific },
-        include: { questions: {
-            include: {
-              options: true,
-              passage: {
-                select: {
-                  id: true,
-                  title: true, },
-              },
-            },
-            orderBy: { createdAt: 'desc', },
-          },
+      id: params.courseId,
+    },
+    include: {
+      chapters: {
+        orderBy: {
+          position: 'asc',
         },
       },
     },

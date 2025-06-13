@@ -14,7 +14,8 @@ const updateExamSchema = z.object({ title: z.string().min(1, 'العنوان م�
   showResults: z.boolean().optional(),
   allowReview: z.boolean().optional(), });
 
-export async function GET(req: Request, { params }: { params: { examId: string } }) { try {
+export async function GET(req: Request, { params }: { params: { examId: string } }) {
+  try {
     const { id: userId } = await requireAuth();
 
     const exam = await db.exam.findUnique({ where: {
@@ -73,15 +74,19 @@ export async function GET(req: Request, { params }: { params: { examId: string }
     // Get active attempt
     const activeAttempt = userAttempts.find(attempt => !attempt.completedAt);
 
-    return NextResponse.json({ exam,
+    return NextResponse.json({
+      exam,
       userAttempts,
-      activeAttempt, });
-  } catch (error) { console.error('[EXAM_GET]', error);
+      activeAttempt,
+    });
+  } catch (error) {
+    console.error('[EXAM_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { examId: string } }) { try {
+export async function PATCH(req: Request, { params }: { params: { examId: string } }) {
+  try {
     await requireTeacher();
 
     const body = await req.json();
@@ -174,7 +179,8 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
     });
 
     return NextResponse.json(updatedExam);
-  } catch (error) { console.error('[EXAM_PATCH]', error);
+  } catch (error) {
+    console.error('[EXAM_PATCH]', error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -192,7 +198,8 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { examId: string } }) { try {
+export async function DELETE(req: Request, { params }: { params: { examId: string } }) {
+  try {
     await requireTeacher();
 
     // Verify exam exists and get related data
@@ -230,7 +237,8 @@ export async function DELETE(req: Request, { params }: { params: { examId: strin
 
     return NextResponse.json({ message: 'تم حذف الامتحان بنجاح',
       examId: params.examId });
-  } catch (error) { console.error('[EXAM_DELETE]', error);
+  } catch (error) {
+    console.error('[EXAM_DELETE]', error);
     return NextResponse.json(
       { message: 'حدث خطأ أثناء حذف الامتحان' },
       { status: 500 }

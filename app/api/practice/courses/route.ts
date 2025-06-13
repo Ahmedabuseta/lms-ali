@@ -28,8 +28,10 @@ export async function GET(req: NextRequest) { try {
       orderBy: { createdAt: 'desc', },
     });
 
-    const coursesWithProgress = courses.map((course) => ({ ...course,
-      progress: null, // Add progress calculation if needed }));
+    const coursesWithProgress = courses.map((course) => ({
+      ...course,
+      progress: null, // Add progress calculation if needed
+    }));
 
     console.log(`Found ${coursesWithProgress.length} courses for practice`);
 
