@@ -22,9 +22,9 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
   const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase, hasChapterAccess, chapterQuiz } = await getChapter({ userId: session.userId,
     ...params, });
 
-  if (!chapter || !course) {
-    return redirect('/');
-  }
+  // if (!chapter || !course) {
+  //   return redirect('/');
+  // }
 
   // Get full course data with chapters for the playlist
   const fullCourse = await db.course.findUnique({ where: { id: params.courseId },
@@ -39,9 +39,9 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
     },
   });
 
-  if (!fullCourse) {
-    return redirect('/');
-  }
+  // if (!fullCourse) {
+  //   return redirect('/');
+  // }
 
   const progressCount = await getProgress(session.userId, params.courseId);
   // Use the new access control instead of just checking isFree and purchase
@@ -49,8 +49,8 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
   const completedOnEnd = !!hasChapterAccess && !userProgress?.isCompleted;
 
   // Get current chapter index for navigation
-  const currentChapterIndex = fullCourse.chapters.findIndex(ch => ch.id === chapter.id);
-  const previousChapter = currentChapterIndex > 0 ? fullCourse.chapters[currentChapterIndex - 1] : null;
+  const currentChapterIndex = fullCourse?.chapters.findIndex(ch => ch.id === chapter?.id);
+  const previousChapter = currentChapterIndex && currentChapterIndex > 0 ? fullCourse?.chapters[currentChapterIndex - 1] : null;
 
   // Check if quiz is required for completion and if user has passed it
   const hasQuizRequirement = chapterQuiz && chapterQuiz.quizQuestions.length > 0;

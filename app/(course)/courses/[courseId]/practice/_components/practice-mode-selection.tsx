@@ -28,6 +28,8 @@ interface CourseStats { totalChapters: number;
   totalAttempts: number;
   averageScore: number; }
 
+type PracticeMode = 'selection' | 'exam' | 'free';
+
 interface PracticeModeSelectionProps { courseId: string;
   chapters: Chapter[];
   courseStats: CourseStats; }

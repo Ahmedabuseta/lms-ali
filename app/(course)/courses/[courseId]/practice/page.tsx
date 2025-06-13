@@ -1,5 +1,4 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
+import { getCurrentUser } from '@/lib/auth-helpers';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { PracticeModeSelection } from './_components/practice-mode-selection';
@@ -8,10 +7,9 @@ interface PracticePageProps { params: {
     courseId: string; };
 }
 
-const PracticePage = async ({ params }: PracticePageProps) => { const session = await auth.api.getSession({
-    headers: headers(), });
+const PracticePage = async ({ params }: PracticePageProps) => { const user = await getCurrentUser();
 
-  if (!session) {
+  if (!user) {
     return redirect('/sign-in');
   }
 
@@ -23,6 +21,12 @@ const PracticePage = async ({ params }: PracticePageProps) => { const session = 
           isPublished: true, },
         include: { questionBanks: {
             include: {
+              questions: {
+                select: {
+                  id: true,
+                  points: true,
+                },
+              },
               _count: {
                 select: {
                   questions: true, },
@@ -42,7 +46,7 @@ const PracticePage = async ({ params }: PracticePageProps) => { const session = 
   // Get user's practice stats
   const practiceStats = await db.practiceAttempt.groupBy({ by: ['questionId'],
     where: {
-      userId: session.user.id,
+      userId: user.id,
       question: {
         questionBank: {
           courseId: params.courseId, },
