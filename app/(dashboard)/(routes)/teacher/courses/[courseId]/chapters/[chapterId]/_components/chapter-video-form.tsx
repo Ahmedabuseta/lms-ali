@@ -136,10 +136,10 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
       </CardHeader>
       <CardContent>
         {!isEditing && !initialData.videoUrl && (
-          <div className="flex items-center justify-center h-60 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
-            <div className="text-center">
-              <Video className="h-10 w-10 text-slate-500 mx-auto mb-2" />
-              <p className="text-sm text-slate-500 font-arabic">لا يوجد فيديو للفصل</p>
+            <div className="flex items-center justify-center h-60 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="text-center">
+                <Video className="h-10 w-10 text-slate-500 mx-auto mb-2" />
+                <p className="text-sm text-slate-500 font-arabic">لا يوجد فيديو للفصل</p>
               <p className="text-xs text-slate-400 font-arabic mt-1">
                 يمكنك رفع ملف فيديو أو إضافة رابط من YouTube أو Vimeo
               </p>
@@ -199,11 +199,11 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
                   </p>
                 </div>
                 
-                <FileUploadArabic
+            <FileUploadArabic
                   onChange={handleFileUpload}
-                  folder="chapter-videos"
-                  acceptedFileTypes="video/*"
-                  maxFileSize={500 * 1024 * 1024} // 500MB
+              folder="chapter-videos"
+              acceptedFileTypes="video/*"
+              maxFileSize={500 * 1024 * 1024} // 500MB
                   description="ارفع فيديو للفصل (MP4, WebM, MOV, AVI). الحد الأقصى: 500 ميجابايت"
                 />
               </TabsContent>

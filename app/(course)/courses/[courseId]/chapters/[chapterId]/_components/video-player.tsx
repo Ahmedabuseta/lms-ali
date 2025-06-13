@@ -258,18 +258,18 @@ export const VideoPlayer = ({
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-secondary mx-auto mb-2" />
             <p className="text-sm text-secondary font-arabic">جاري تحميل الفيديو...</p>
-          </div>
+        </div>
         </div>
       )}
 
-      <MuxPlayer
-        title={title}
-        className={cn(!isReady && 'hidden')}
-        onCanPlay={() => setIsReady(true)}
-        onEnded={onEnd}
-        autoPlay
-        playbackId={playbackId}
-      />
+        <MuxPlayer
+          title={title}
+          className={cn(!isReady && 'hidden')}
+          onCanPlay={() => setIsReady(true)}
+          onEnded={onEnd}
+          autoPlay
+          playbackId={playbackId}
+        />
     </div>
   );
 };
