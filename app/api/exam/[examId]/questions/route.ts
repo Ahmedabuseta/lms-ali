@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { requireTeacher } from '@/lib/api-auth';
+import { requireTeacher } from '@/lib/auth-helpers';
 import * as z from 'zod';
 
 // Validation schemas

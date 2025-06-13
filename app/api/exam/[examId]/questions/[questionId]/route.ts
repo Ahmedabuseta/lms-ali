@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { requireAuth } from '@/lib/api-auth';
+import { requireTeacher } from '@/lib/auth-helpers';
 
 export async function PATCH(req: Request, { params }: { params: { examId: string; questionId: string } }) {
   try {
-    await requireAuth();
+    await requireTeacher();
     const { text, type, options } = await req.json();
 
     // Verify ownership through the course
@@ -37,7 +37,7 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
     const existingQuestion = await db.question.findFirst({
       where: {
         id: params.questionId,
-          examQuestions: {
+        examQuestions: {
           some: {
             examId: params.examId,
           },
@@ -101,7 +101,7 @@ export async function PATCH(req: Request, { params }: { params: { examId: string
 
 export async function DELETE(req: Request, { params }: { params: { examId: string; questionId: string } }) {
   try {
-    await requireAuth();
+    await requireTeacher();
 
     // Verify ownership through the course
     const examWithCourse = await db.exam.findUnique({
@@ -129,40 +129,18 @@ export async function DELETE(req: Request, { params }: { params: { examId: strin
       });
     }
 
-    // Verify the question belongs to the exam before deleting
-    const questionToDelete = await db.question.findFirst({
+    // First, remove the ExamQuestion relationship
+    await db.examQuestion.deleteMany({
       where: {
-        id: params.questionId,
-        examQuestions: {
-          some: {
-            examId: params.examId,
-          },
-        },
+        examId: params.examId,
+        questionId: params.questionId,
       },
     });
 
-    if (!questionToDelete) {
-      return new NextResponse('Question not found', { status: 404 });
-    }
-
-    // Delete the question (will cascade delete options)
+    // Then delete the question and its options (cascade delete will handle options)
     await db.question.delete({
       where: {
         id: params.questionId,
-      },
-    });
-
-    // Reorder the remaining questions
-    const remainingQuestions = await db.question.findMany({
-      where: {
-        examQuestions: {
-          some: {
-            examId: params.examId,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'asc',
       },
     });
 

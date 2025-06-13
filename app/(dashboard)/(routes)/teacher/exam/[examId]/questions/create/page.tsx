@@ -32,9 +32,11 @@ export default async function CreateQuestionPage({ params }: PageProps) { const 
     return redirect(`/teacher/exam/${params.examId}/questions`);
   }
 
-  // Get the current highest position
-  const questionsCount = await db.question.count({ where: {
-      examId: params.examId, },
+  // Get the current highest position using ExamQuestion junction table
+  const questionsCount = await db.examQuestion.count({
+    where: {
+      examId: params.examId,
+    },
   });
 
   return (

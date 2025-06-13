@@ -101,7 +101,16 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => { co
         await axios.patch(`/api/exam/${examId}/questions/${initialData.id}`, values);
         toast.success('تم تحديث السؤال');
       } else {
-        await axios.post(`/api/exam/${examId}/questions`, values);
+        // Send data in the format expected by the API route for creating new questions
+        const requestData = {
+          action: 'create_new',
+          text: values.text,
+          type: values.type,
+          difficulty: 'MEDIUM',
+          options: values.options,
+        };
+        
+        await axios.post(`/api/exam/${examId}/questions`, requestData);
         toast.success('تم إنشاء السؤال');
       }
 
