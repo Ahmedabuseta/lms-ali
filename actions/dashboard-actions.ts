@@ -63,10 +63,11 @@ export async function getDashboardStats() {
         examAttempts,
         averageScore: Math.round(averageScore._avg.score || 0),
         recentActivity: recentProgress.map(progress => ({
+          id: progress.id,
           type: 'progress',
           title: `${progress.chapter.course.title } - ${progress.chapter.title}`,
-          date: progress.updatedAt,
-          completed: progress.isCompleted,
+          timestamp: progress.updatedAt,
+          status: progress.isCompleted ? 'completed' : 'in-progress',
         })),
       },
     };

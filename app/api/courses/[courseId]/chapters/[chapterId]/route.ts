@@ -15,9 +15,7 @@ const isExternalVideoUrl = (url: string): boolean => {
     
     return (
       hostname.includes('youtube.com') ||
-      hostname.includes('youtu.be') ||
-      hostname.includes('vimeo.com') ||
-      hostname.includes('dailymotion.com')
+      hostname.includes('iframe.mediadelivery.net')
     );
   } catch {
     return false;

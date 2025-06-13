@@ -37,9 +37,7 @@ const isValidVideoUrl = (url: string): boolean => {
     // Support YouTube, Vimeo, and direct video URLs
     return (
       hostname.includes('youtube.com') ||
-      hostname.includes('youtu.be') ||
-      hostname.includes('vimeo.com') ||
-      hostname.includes('dailymotion.com') ||
+      hostname.includes('iframe.mediadelivery.net') ||
       url.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) !== null
     );
   } catch {
@@ -90,7 +88,7 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
     }
   };
 
-  const handleFileUpload = (url: string) => {
+  const handleFileUpload = (url?: string) => {
     if (url) {
       onSubmit({ videoUrl: url });
     }
@@ -141,7 +139,7 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
                 <Video className="h-10 w-10 text-slate-500 mx-auto mb-2" />
                 <p className="text-sm text-slate-500 font-arabic">لا يوجد فيديو للفصل</p>
               <p className="text-xs text-slate-400 font-arabic mt-1">
-                يمكنك رفع ملف فيديو أو إضافة رابط من YouTube أو Vimeo
+                يمكنك رفع ملف فيديو أو إضافة رابط من YouTube أو iframe
               </p>
             </div>
           </div>
@@ -150,7 +148,22 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
         {!isEditing && initialData.videoUrl && (
           <div className="space-y-3">
             <div className="relative aspect-video mt-2 rounded-md overflow-hidden border">
-              <MuxPlayer playbackId={initialData?.muxData?.playbackId || ''} />
+              {/* <MuxPlayer playbackId={initialData?.muxData?.playbackId || ''} /> */}
+              <div style={{ position: 'relative', paddingTop: '56.25%' }}>
+                <iframe 
+                  src={`${initialData.videoUrl}?autoplay=true&loop=false&muted=false&preload=true&responsive=true`}
+                  loading="lazy"
+                  style={{ 
+                    border: 0,
+                    position: 'absolute',
+                    top: 0,
+                    height: '100%',
+                    width: '100%'
+                  }}
+                  allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+                  allowFullScreen={true}
+                />
+              </div>
             </div>
             
             {/* Video info */}

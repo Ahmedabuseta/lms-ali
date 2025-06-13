@@ -130,7 +130,12 @@ export default async function Dashboard() {
           <div className="lg:col-span-1">
             {stats?.recentActivity && (
               <RecentActivity
-                activities={stats.recentActivity}
+                activities={stats.recentActivity.map(activity => ({
+                  type: activity.type,
+                  title: activity.title,
+                  date: activity.timestamp,
+                  completed: activity.status === 'completed'
+                }))}
                 userRole="STUDENT"
               />
             )}
