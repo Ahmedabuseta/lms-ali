@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 interface ExamSubmitActionProps { examId: string;
   attemptId: string;
   // userId is no longer needed since we'll get it from auth in the API }
-
+}
 export const ExamSubmitAction = ({ examId, attemptId }: ExamSubmitActionProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);

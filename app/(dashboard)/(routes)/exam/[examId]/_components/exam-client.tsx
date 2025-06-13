@@ -64,6 +64,7 @@ export const ExamClient = ({ examId,
   const [stats, setStats] = useState<ExamStats | null>(null);
   const [examInfo, setExamInfo] = useState<ExamInfo | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load exam attempts and stats
   useEffect(() => {
@@ -95,7 +96,7 @@ export const ExamClient = ({ examId,
       const response = await axios.post(
         `/api/exam/${examId}/attempt`,
         {},
-        { timeout: 15000, // 15s timeout },
+        { timeout: 15000},
       );
 
       const data = response.data;
@@ -240,7 +241,7 @@ export const ExamClient = ({ examId,
                 <div className="text-sm text-muted-foreground">محاولات مكتملة</div>
               </div>
 
-              {stats.bestScore !== null && (
+              {stats.bestScore !== null && stats.bestScore !== undefined && (
                 <div className="text-center">
                   <div className={`text-2xl font-bold ${getScoreColor(stats.bestScore)}`}>
                     {stats.bestScore}%
@@ -395,3 +396,4 @@ export const ExamClient = ({ examId,
     </div>
   );
 };
+  }
