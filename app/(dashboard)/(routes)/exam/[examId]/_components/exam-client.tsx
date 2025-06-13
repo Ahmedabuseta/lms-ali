@@ -78,8 +78,10 @@ export const ExamClient = ({ examId,
       setAttempts(data.attempts || []);
       setStats(data.stats || null);
       setExamInfo(data.exam || null);
-    } catch (error) { console.error('Failed to load exam data:', error);
-      // Don't show error for this, as it's not critical }
+    } catch (error) { 
+      console.error('Failed to load exam data:', error);
+      // Don't show error for this, as it's not critical 
+    }
   };
 
   const handleExamStart = async () => { try {
@@ -170,6 +172,15 @@ export const ExamClient = ({ examId,
     if (score >= passingScore) return 'default';
     return 'destructive';
   };
+
+  // Debug logging
+  console.log('ExamClient Debug:', {
+    activeAttemptId,
+    stats,
+    totalQuestions,
+    maxAttempts,
+    isLoading
+  });
 
   return (
     <div className="space-y-6">
@@ -426,4 +437,3 @@ export const ExamClient = ({ examId,
     </div>
   );
 };
-  }

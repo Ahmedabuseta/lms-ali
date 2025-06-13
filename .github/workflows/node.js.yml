@@ -1,49 +1,107 @@
-name: Node.js CI
+name: Node.js CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
-  build:
-    runs-on: self-hosted
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22.16.0]
-    env:
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
-          DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
-          DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
-          MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
-    steps:
-      - uses: actions/checkout@v4
+        node-version: [18.x, 20.x]
 
-      - name: Use Node.js ${{ matrix.node-version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Inject environment variables
-        run: |
-          echo "Injecting env vars..."
-        
       - name: Install dependencies
         run: npm ci
-        
-      - name: Build
-        run: npm run build --if-present
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: self-hosted
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    env:
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
+      DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
+      DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
+      DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
+      DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
+      MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application (background)
+        run: |
+          npm start &
+          echo $! > app.pid
+
+      - name: Health check
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3000/api/health 2>/dev/null; do sleep 2; done' || true
+
+      - name: Stop application
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
         
