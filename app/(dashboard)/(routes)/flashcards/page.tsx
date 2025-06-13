@@ -287,7 +287,7 @@ export default async function FlashcardsPage({ searchParams }: PageProps) { cons
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <FlashcardClient
-                  initialFlashcards={initialFlashcards}
+                  initialCards={initialFlashcards}
                   courseId={searchParams.courseId}
                   chapterId={searchParams.chapterId}
                 />

@@ -271,7 +271,7 @@ export async function banUser(
         userId,
         banReason: banReason || "No reason provided",
         banExpiresIn: banDuration ? banDuration * 60 * 60 : undefined, // Convert hours to seconds },
-      headers: headers(),
+      }
     });
 
     // Also revoke all active sessions
@@ -601,7 +601,7 @@ export async function getUserStatistics() { await requireTeacher();
       db.user.count({ where: { banned: true } }),
       db.user.count({ where: {
           createdAt: {
-            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days }
+            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)  }
         }
       }),
     ]);

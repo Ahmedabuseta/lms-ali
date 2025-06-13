@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { requireAuth, requireTeacher } from '@/lib/api-auth';
+import { requireAuthAPI, requireTeacherAPI } from '@/lib/auth-helpers';
 
 export async function POST(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    await requireTeacher();
+    await requireTeacherAPI();
     const { question, answer, chapterId } = await req.json();
 
     // Verify course ownership
@@ -48,7 +48,7 @@ export async function POST(req: Request, { params }: { params: { courseId: strin
 
 export async function GET(req: Request, { params }: { params: { courseId: string } }) {
   try {
-    await requireAuth();
+    await requireAuthAPI();
 
     // Verify course ownership
     const course = await db.course.findUnique({
