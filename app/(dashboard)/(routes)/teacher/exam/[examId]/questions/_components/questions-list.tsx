@@ -12,8 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MathRenderer } from '@/components/math-renderer';
 
-interface QuestionsListProps {
-  examId: string;
+interface QuestionsListProps { examId: string;
   initialItems: {
     id: string;
     position: number;
@@ -24,14 +23,12 @@ interface QuestionsListProps {
       options: {
         id: string;
         text: string;
-        isCorrect: boolean;
-      }[];
+        isCorrect: boolean; }[];
     };
   }[];
 }
 
-export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => {
-  const router = useRouter();
+export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => { const router = useRouter();
   const [items, setItems] = useState(initialItems);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -46,11 +43,9 @@ export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => {
 
     try {
       setIsSaving(true);
-      await axios.put(`/api/exam/${examId}/questions/reorder`, {
-        list: updatedItems.map((item, index) => ({
+      await axios.put(`/api/exam/${examId }/questions/reorder`, { list: updatedItems.map((item, index) => ({
           id: item.id,
-          position: index + 1,
-        })),
+          position: index + 1, })),
       });
       toast.success('Questions reordered');
       router.refresh();
@@ -63,21 +58,21 @@ export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => {
 
   return (
     <div className="mt-6" dir="rtl">
-      {initialItems.length === 0 && (
+      { initialItems.length === 0 && (
         <div className="rounded-md bg-slate-100 dark:bg-slate-800 p-6 text-center">
           <p className="text-sm text-slate-500 font-arabic">لا توجد أسئلة بعد. أضف سؤالاً للبدء.</p>
         </div>
-      )}
+      ) }
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="questions">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {items.map((examQuestion, index) => (
-                <Draggable key={examQuestion.id} draggableId={examQuestion.id} index={index}>
-                  {(provided) => (
+              { items.map((examQuestion, index) => (
+                <Draggable key={examQuestion.id } draggableId={examQuestion.id} index={index}>
+                  { (provided) => (
                     <div
                       className="mb-4 flex items-center gap-x-2 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 p-4"
-                      ref={provided.innerRef}
+                      ref={provided.innerRef }
                       {...provided.draggableProps}
                     >
                       <div
@@ -88,8 +83,8 @@ export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => {
                       </div>
                       <div className="mr-4 flex-1">
                         <div className="mb-1 flex items-center gap-x-2">
-                          <Badge variant={examQuestion.question.type === 'MULTIPLE_CHOICE' ? 'default' : 'secondary'}>
-                            {examQuestion.question.type === 'MULTIPLE_CHOICE' ? 'اختيار متعدد' : 'صح / خطأ'}
+                          <Badge variant={ examQuestion.question.type === 'MULTIPLE_CHOICE' ? 'default' : 'secondary' }>
+                            { examQuestion.question.type === 'MULTIPLE_CHOICE' ? 'اختيار متعدد' : 'صح / خطأ' }
                           </Badge>
                           <p className="text-sm text-slate-700 dark:text-slate-300 font-arabic">السؤال {index + 1}</p>
                         </div>
@@ -102,12 +97,12 @@ export const QuestionsList = ({ examId, initialItems }: QuestionsListProps) => {
                             {examQuestion.question.options.map((option) => (
                               <div
                                 key={option.id}
-                                className={cn(
+                                className={ cn(
                                   'rounded-md border p-2 text-sm',
-                                  option.isCorrect 
-                                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20' 
+                                  option.isCorrect
+                                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
                                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800',
-                                )}
+                                ) }
                               >
                                 <MathRenderer content={option.text} /> {option.isCorrect && '(✓)'}
                               </div>

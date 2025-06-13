@@ -11,18 +11,13 @@ import { ClientOnlyWrapper } from './_components/client-only-wrapper';
 import { FileQuestion, Clock, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface PageProps {
-  params: {
+interface PageProps { params: {
     examId: string;
-    attemptId: string;
-  };
-  searchParams: {
-    questionIndex?: string;
-  };
+    attemptId: string; };
+  searchParams: { questionIndex?: string; };
 }
 
-export default async function ExamAttemptPage({ params, searchParams }: PageProps) {
-  const user = await getCurrentUser();
+export default async function ExamAttemptPage({ params, searchParams }: PageProps) { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   // Get current question index from search params or default to 0
@@ -33,23 +28,18 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
   const attempt = await db.examAttempt.findUnique({
     where: {
       id: params.attemptId,
-      userId: user.id,
-    },
-    include: {
-      exam: {
+      userId: user.id, },
+    include: { exam: {
         include: {
           examQuestions: {
             include: {
               question: {
                 include: {
                   options: true,
-                  passage: true,
-                },
+                  passage: true, },
               },
             },
-            orderBy: {
-              position: 'asc',
-            },
+            orderBy: { position: 'asc', },
           },
         },
       },
@@ -81,7 +71,7 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
     <PageProtection requiredPermission="canAccessExams">
       <div className="min-h-screen bg-background" dir="rtl">
         <div className="mx-auto max-w-6xl space-y-6 p-6">
-          
+
           {/* Header */}
           <Card>
             <CardHeader className="pb-4">
@@ -99,7 +89,7 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Timer */}
           {attempt.exam.timeLimit && (
                   <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2">
@@ -122,14 +112,13 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
           hasUnsavedChanges={false}
                 autoSaveStatus="idle"
                 isOnline={true}
-                questionStatuses={questions.map((question) => {
+                questionStatuses={ questions.map((question) => {
                   const hasAttempt = attempt.questionAttempts.find(qa => qa.questionId === question.id);
                   return {
                     questionId: question.id,
                     isAnswered: !!hasAttempt,
                     hasUnsavedChanges: false,
-                    autoSaveStatus: 'idle' as const
-                  };
+                    autoSaveStatus: 'idle' as const };
                 })}
               />
             </CardContent>
@@ -137,10 +126,10 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
 
           {/* Main Content */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-            
+
             {/* Question Content */}
             <div className="lg:col-span-3">
-              {currentQuestion ? (
+              { currentQuestion ? (
               <QuestionForm
                 question={{
                   id: currentQuestion.id,
@@ -149,12 +138,9 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
                   passage: currentQuestion.passage ? {
                     id: currentQuestion.passage.id,
                     title: currentQuestion.passage.title,
-                    content: currentQuestion.passage.content
-                  } : undefined,
-                  options: currentQuestion.options.map(opt => ({
-                    id: opt.id,
-                    text: opt.text
-                  }))
+                    content: currentQuestion.passage.content } : undefined,
+                  options: currentQuestion.options.map(opt => ({ id: opt.id,
+                    text: opt.text }))
                 }}
                 selectedOptionId={existingAttempt?.selectedOptionId || null}
                 attemptId={params.attemptId}
@@ -192,11 +178,11 @@ export default async function ExamAttemptPage({ params, searchParams }: PageProp
 
           {/* Warning for unanswered questions */}
           <ClientOnlyWrapper>
-            {unansweredQuestions > 0 && (
+            { unansweredQuestions > 0 && (
               <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/10">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription className="font-arabic">
-                  <strong>تحذير:</strong> لديك {unansweredQuestions} سؤال بدون إجابة. 
+                  <strong>تحذير:</strong> لديك {unansweredQuestions } سؤال بدون إجابة.
                   تأكد من الإجابة على جميع الأسئلة قبل تسليم الامتحان.
                 </AlertDescription>
               </Alert>

@@ -4,22 +4,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface Course {
-  id: string;
-  title: string;
-}
+interface Course { id: string;
+  title: string; }
 
-interface CourseSelectProps {
-  courses: Course[];
-}
+interface CourseSelectProps { courses: Course[]; }
 
-export default function CourseSelect({ courses }: CourseSelectProps) {
-  const router = useRouter();
+export default function CourseSelect({ courses }: CourseSelectProps) { const router = useRouter();
   const searchParams = useSearchParams();
   const currentCourseId = searchParams?.get('courseId');
 
   const handleCourseChange = (courseId: string) => {
-    router.push(`/flashcards?courseId=${courseId}`);
+    router.push(`/flashcards?courseId=${courseId }`);
   };
 
   return (

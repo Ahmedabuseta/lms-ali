@@ -19,23 +19,18 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
     return redirect('/');
   }
 
-  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase, hasChapterAccess, chapterQuiz } = await getChapter({
-    userId: session.userId,
-    ...params,
-  });
+  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase, hasChapterAccess, chapterQuiz } = await getChapter({ userId: session.userId,
+    ...params, });
 
   if (!chapter || !course) {
     return redirect('/');
   }
 
   // Get full course data with chapters for the playlist
-  const fullCourse = await db.course.findUnique({
-    where: { id: params.courseId },
-    include: {
-      chapters: {
+  const fullCourse = await db.course.findUnique({ where: { id: params.courseId },
+    include: { chapters: {
         where: { isPublished: true },
-        include: {
-          userProgress: {
+        include: { userProgress: {
             where: { userId: session.userId },
           },
         },
@@ -59,9 +54,9 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
 
   // Check if quiz is required for completion and if user has passed it
   const hasQuizRequirement = chapterQuiz && chapterQuiz.quizQuestions.length > 0;
-  const hasPassedQuiz = hasQuizRequirement ? 
+  const hasPassedQuiz = hasQuizRequirement ?
     chapterQuiz.attempts.some(attempt => attempt.isPassed) : true;
-  
+
   // Chapter is considered completed if user progress shows completion AND they passed the quiz (if required)
   const isChapterFullyCompleted = userProgress?.isCompleted && hasPassedQuiz;
 
@@ -72,41 +67,41 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-500/8 to-emerald-500/4 dark:from-green-400/8 dark:to-emerald-400/4 blur-3xl"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
       </div>
 
       <div className="relative z-10">
         {/* Status Banners */}
         <div className="space-y-2">
-          {isChapterFullyCompleted && (
+          { isChapterFullyCompleted && (
             <div className="p-2 md:p-4">
               <Banner
                 label="🎉 تهانينا! لقد أكملت هذا الفصل بنجاح"
                 variant="success"
               />
             </div>
-          )}
-          {userProgress?.isCompleted && hasQuizRequirement && !hasPassedQuiz && (
+          ) }
+          { userProgress?.isCompleted && hasQuizRequirement && !hasPassedQuiz && (
             <div className="p-2 md:p-4">
               <Banner
                 label="📝 يجب عليك اجتياز اختبار هذا الفصل لإكمال الدورة"
                 variant="warning"
               />
             </div>
-          )}
-          {isLocked && (
+          ) }
+          { isLocked && (
             <div className="p-2 md:p-4">
               <Banner
                 label="🔒 هذا الفصل مقفل. تحتاج إلى صلاحيات للوصول إليه"
                 variant="warning"
               />
             </div>
-          )}
+          ) }
         </div>
 
         {/* Main Content */}
@@ -171,7 +166,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
 
           {/* Video and Playlist Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6 px-2 md:px-4">
-            {/* Video Player - Full width on mobile, 2/3 on desktop */}
+            { /* Video Player - Full width on mobile, 2/3 on desktop */ }
             <div className="lg:col-span-2">
               <div className="overflow-hidden rounded-xl border border-border/50 bg-card/60 shadow-lg backdrop-blur-sm">
                 <VideoPlayer
@@ -186,7 +181,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
               </div>
             </div>
 
-            {/* YouTube-style Playlist - Full width on mobile, 1/3 on desktop */}
+            { /* YouTube-style Playlist - Full width on mobile, 1/3 on desktop */ }
             <div className="lg:col-span-1">
               <CoursePlaylist
                 courseId={params.courseId}
@@ -202,20 +197,20 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
           {/* Content Sections */}
           <div className="space-y-4 md:space-y-6 px-2 md:px-4 mt-4 md:mt-6">
             {/* Chapter Description */}
-            {chapter.description && (
+            { chapter.description && (
               <div className="rounded-xl border border-border/50 bg-card/60 p-4 md:p-6 shadow-lg backdrop-blur-sm">
                 <div className="mb-4 flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-blue-600" />
                   <h3 className="text-lg font-semibold text-foreground font-arabic">محتوى الفصل</h3>
                 </div>
                 <div className="prose dark:prose-invert max-w-none font-arabic">
-                  <Preview value={chapter.description} />
+                  <Preview value={chapter.description } />
                 </div>
               </div>
             )}
 
             {/* Attachments */}
-            {attachments.length > 0 && (
+            { attachments.length > 0 && (
               <div className="rounded-xl border border-border/50 bg-card/60 p-4 md:p-6 shadow-lg backdrop-blur-sm">
                 <div className="mb-4 flex items-center gap-2">
                   <File className="h-5 w-5 text-purple-600" />
@@ -224,7 +219,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                 <div className="grid gap-3 sm:grid-cols-2">
                   {attachments.map((attachment) => (
                     <a
-                      key={attachment.id}
+                      key={attachment.id }
                       href={attachment.url}
                       target="_blank"
                       rel="noreferrer"
@@ -240,7 +235,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
             )}
 
             {/* Chapter Quiz */}
-            {chapterQuiz && hasChapterAccess && (
+            { chapterQuiz && hasChapterAccess && (
               <ChapterQuiz
                 quiz={{
                   id: chapterQuiz.id,
@@ -261,16 +256,13 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                       options: q.question.options.map(o => ({
                         id: o.id,
                         text: o.text,
-                        isCorrect: o.isCorrect
-                      }))
+                        isCorrect: o.isCorrect }))
                     }
                   })),
-                                     attempts: chapterQuiz.attempts.map(a => ({
-                     id: a.id,
+                                     attempts: chapterQuiz.attempts.map(a => ({ id: a.id,
                      score: a.score ?? undefined,
                      isPassed: a.isPassed,
-                     completedAt: a.completedAt ?? undefined
-                   }))
+                     completedAt: a.completedAt ?? undefined }))
                 }}
                 courseId={params.courseId}
                 chapterId={params.chapterId}

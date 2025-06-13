@@ -6,26 +6,21 @@ import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-interface FileUploadSpacesProps {
-  onChange: (url?: string) => void;
+interface FileUploadSpacesProps { onChange: (url?: string) => void;
   value?: string;
   folder?: string;
   acceptedFileTypes?: string;
   maxFileSize?: number;
   className?: string;
-  disabled?: boolean;
-}
+  disabled?: boolean; }
 
-export const FileUploadSpaces = ({
-  onChange,
+export const FileUploadSpaces = ({ onChange,
   value,
   folder = 'uploads',
   acceptedFileTypes = '*/*',
   maxFileSize = 10 * 1024 * 1024, // 10MB default
   className,
-  disabled = false,
-}: FileUploadSpacesProps) => {
-  const [isUploading, setIsUploading] = useState(false);
+  disabled = false, }: FileUploadSpacesProps) => { const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,16 +28,13 @@ export const FileUploadSpaces = ({
     if (fileType.startsWith('image/')) return Image;
     if (fileType.startsWith('video/')) return Video;
     if (fileType.includes('pdf') || fileType.includes('document')) return FileText;
-    return File;
-  };
+    return File; };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+  const formatFileSize = (bytes: number) => { if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; };
 
   const validateFile = (file: File) => {
     if (file.size > maxFileSize) {
@@ -50,12 +42,10 @@ export const FileUploadSpaces = ({
       return false;
     }
 
-    if (acceptedFileTypes !== '*/*') {
-      const types = acceptedFileTypes.split(',').map(type => type.trim());
+    if (acceptedFileTypes !== '*/*') { const types = acceptedFileTypes.split(',').map(type => type.trim());
       const isValidType = types.some(type => {
         if (type.startsWith('.')) {
-          return file.name.toLowerCase().endsWith(type.toLowerCase());
-        }
+          return file.name.toLowerCase().endsWith(type.toLowerCase()); }
         return file.type.includes(type.replace('*', ''));
       });
 
@@ -68,8 +58,7 @@ export const FileUploadSpaces = ({
     return true;
   };
 
-  const uploadFile = async (file: File) => {
-    if (!validateFile(file)) return;
+  const uploadFile = async (file: File) => { if (!validateFile(file)) return;
 
     setIsUploading(true);
     try {
@@ -79,8 +68,7 @@ export const FileUploadSpaces = ({
 
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData,
-      });
+        body: formData, });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -90,10 +78,8 @@ export const FileUploadSpaces = ({
       const data = await response.json();
       onChange(data.url);
       toast.success('File uploaded successfully');
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error(error instanceof Error ? error.message : 'Something went wrong');
-    } finally {
+    } catch (error) { console.error('Upload error:', error);
+      toast.error(error instanceof Error ? error.message : 'Something went wrong'); } finally {
       setIsUploading(false);
     }
   };
@@ -145,12 +131,11 @@ export const FileUploadSpaces = ({
     }
   };
 
-  if (value) {
-    const isImage = value.includes('image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(value);
+  if (value) { const isImage = value.includes('image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(value);
     const fileName = value.split('/').pop() || 'Uploaded File';
 
     return (
-      <div className={cn('relative', className)}>
+      <div className={cn('relative', className) }>
         {isImage ? (
           <div className="relative group">
             <img
@@ -194,7 +179,7 @@ export const FileUploadSpaces = ({
   }
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={ cn('w-full', className) }>
       <input
         ref={fileInputRef}
         type="file"
@@ -209,16 +194,16 @@ export const FileUploadSpaces = ({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={cn(
+        className={ cn(
           'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200',
           dragActive && 'border-blue-500 bg-blue-50 dark:bg-blue-950/20',
           !dragActive && 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500',
           (disabled || isUploading) && 'cursor-not-allowed opacity-50',
           isUploading && 'bg-gray-50 dark:bg-gray-800'
-        )}
+        ) }
       >
         <div className="space-y-4">
-          {isUploading ? (
+          { isUploading ? (
             <>
               <Loader2 className="h-12 w-12 mx-auto text-blue-500 animate-spin" />
               <div>
@@ -240,7 +225,7 @@ export const FileUploadSpaces = ({
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   {acceptedFileTypes === '*/*'
                     ? 'All file types supported'
-                    : `Supported formats: ${acceptedFileTypes}`}
+                    : `Supported formats: ${acceptedFileTypes }`}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   Maximum file size: {formatFileSize(maxFileSize)}

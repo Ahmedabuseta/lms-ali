@@ -7,40 +7,33 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Calculator, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+  PopoverTrigger, } from '@/components/ui/popover';
 
-interface MathInputProps {
-  value: string;
+interface MathInputProps { value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
   showPreview?: boolean;
   rows?: number;
-  disabled?: boolean;
-}
+  disabled?: boolean; }
 
 const mathExamples = [
   { label: 'أسس', code: 'x^2' },
-  { label: 'كسور', code: '\\frac{a}{b}' },
-  { label: 'جذور', code: '\\sqrt{x}' },
-  { label: 'مجموع', code: '\\sum_{i=1}^{n} i' },
+  { label: 'كسور', code: '\\frac{a }{b}' },
+  { label: 'جذور', code: '\\sqrt{x }' },
+  { label: 'مجموع', code: '\\sum_{i=1 }^{n} i' },
   { label: 'تكامل', code: '\\int_0^1 x^2 dx' },
 ];
 
-export const MathInput: React.FC<MathInputProps> = ({
-  value,
+export const MathInput: React.FC<MathInputProps> = ({ value,
   onChange,
   placeholder = 'أدخل النص هنا... استخدم $x^2$ للرياضيات',
   className,
   showPreview = true,
   rows = 3,
-  disabled = false,
-}) => {
-  const [previewOpen, setPreviewOpen] = useState(showPreview);
+  disabled = false, }) => { const [previewOpen, setPreviewOpen] = useState(showPreview);
   const [helpOpen, setHelpOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,7 +42,7 @@ export const MathInput: React.FC<MathInputProps> = ({
       const textarea = textareaRef.current;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const newValue = value.substring(0, start) + `$${mathCode}$` + value.substring(end);
+      const newValue = value.substring(0, start) + `$${mathCode }$` + value.substring(end);
       onChange(newValue);
     }
   };
@@ -57,7 +50,7 @@ export const MathInput: React.FC<MathInputProps> = ({
   const hasMath = value.includes('$') || value.includes('\\');
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={ cn('space-y-2', className) }>
       <div className="relative">
         <Textarea
           ref={textareaRef}
@@ -68,7 +61,7 @@ export const MathInput: React.FC<MathInputProps> = ({
           disabled={disabled}
           className="font-arabic pr-16"
         />
-        
+
         <div className="absolute top-2 left-2 flex gap-1">
           <Popover open={helpOpen} onOpenChange={setHelpOpen}>
             <PopoverTrigger asChild>
@@ -86,9 +79,9 @@ export const MathInput: React.FC<MathInputProps> = ({
                 <h4 className="font-medium text-gray-900 dark:text-gray-100 font-arabic">أمثلة الصيغ الرياضية</h4>
               </div>
               <div className="max-h-60 overflow-y-auto">
-                {mathExamples.map((example, index) => (
+                { mathExamples.map((example, index) => (
                   <button
-                    key={index}
+                    key={index }
                     type="button"
                     onClick={() => {
                       insertMath(example.code);
@@ -116,17 +109,17 @@ export const MathInput: React.FC<MathInputProps> = ({
               onClick={() => setPreviewOpen(!previewOpen)}
               className="h-8 w-8 p-0 hover:bg-green-50 dark:hover:bg-green-900/20"
             >
-              {previewOpen ? (
+              { previewOpen ? (
                 <EyeOff className="h-4 w-4 text-green-600 dark:text-green-400" />
               ) : (
                 <Eye className="h-4 w-4 text-green-600 dark:text-green-400" />
-              )}
+              ) }
             </Button>
           )}
         </div>
       </div>
 
-      {previewOpen && hasMath && value.trim() && (
+      { previewOpen && hasMath && value.trim() && (
         <Card className="p-3 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 mb-2">
             <Eye className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -135,10 +128,10 @@ export const MathInput: React.FC<MathInputProps> = ({
             </span>
           </div>
           <div className="prose dark:prose-invert max-w-none">
-            <MathRenderer content={value} />
+            <MathRenderer content={value } />
           </div>
         </Card>
       )}
     </div>
   );
-}; 
+};

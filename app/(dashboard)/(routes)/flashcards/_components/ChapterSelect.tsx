@@ -4,24 +4,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface Chapter {
-  id: string;
-  title: string;
-}
+interface Chapter { id: string;
+  title: string; }
 
-interface ChapterSelectProps {
-  chapters: Chapter[];
-  courseId: string;
-}
+interface ChapterSelectProps { chapters: Chapter[];
+  courseId: string; }
 
-export default function ChapterSelect({ chapters, courseId }: ChapterSelectProps) {
-  const router = useRouter();
+export default function ChapterSelect({ chapters, courseId }: ChapterSelectProps) { const router = useRouter();
   const searchParams = useSearchParams();
   const currentChapterId = searchParams?.get('chapterId');
 
   const handleChapterChange = (chapterId: string) => {
     if (chapterId === 'all') {
-      router.push(`/flashcards?courseId=${courseId}`);
+      router.push(`/flashcards?courseId=${courseId }`);
     } else {
       router.push(`/flashcards?courseId=${courseId}&chapterId=${chapterId}`);
     }

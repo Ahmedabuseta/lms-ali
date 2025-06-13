@@ -10,20 +10,17 @@ import Tesseract from 'tesseract.js';
 export async function performOptimizedOCR(
   imageData: string | File | Blob,
   onProgress?: (progress: number) => void
-): Promise<string> {
-  try {
+): Promise<string> { try {
     const {
       data: { text },
     } = await Tesseract.recognize(
       imageData,
       'eng', // Language model (English)
-      {
-        logger: (m) => {
+      { logger: (m) => {
           console.log(m);
           // Extract progress from logger message if available
           if (onProgress && m.status === 'recognizing text' && m.progress) {
-            onProgress(m.progress);
-          }
+            onProgress(m.progress); }
         },
         // Optional configurations for better performance:
         // tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD
@@ -31,8 +28,6 @@ export async function performOptimizedOCR(
       },
     );
     return text;
-  } catch (error) {
-    console.error('Error performing OCR:', error);
-    throw error;
-  }
+  } catch (error) { console.error('Error performing OCR:', error);
+    throw error; }
 }

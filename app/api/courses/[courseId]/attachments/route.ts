@@ -8,16 +8,13 @@ export async function POST(request: NextRequest, { params }: { params: { courseI
 requireTeacher()
     const { url } = await request.json();
 
-    const attachment = await db.attachment.create({
-      data: {
+    const attachment = await db.attachment.create({ data: {
         url,
         name: url.split('/').pop(),
-        courseId: params.courseId,
-      },
+        courseId: params.courseId, },
     });
 
     return NextResponse.json(attachment);
-  } catch (error) {
-    return new NextResponse('Internal server error', { status: 500 });
+  } catch (error) { return new NextResponse('Internal server error', { status: 500 });
   }
 }

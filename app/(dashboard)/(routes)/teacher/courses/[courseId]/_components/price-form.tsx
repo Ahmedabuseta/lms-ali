@@ -15,19 +15,14 @@ import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/lib/format';
 
-interface PriceFormProps {
-  initialData: Course;
-  courseId: string;
-}
+interface PriceFormProps { initialData: Course;
+  courseId: string; }
 
-const formSchema = z.object({
-  price: z.coerce.number({
-    message: 'السعر مطلوب',
-  }),
+const formSchema = z.object({ price: z.coerce.number({
+    message: 'السعر مطلوب', }),
 });
 
-export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const PriceForm = ({ initialData, courseId }: PriceFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -36,8 +31,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      price: initialData?.price || undefined,
-    },
+      price: initialData?.price || undefined, },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -63,22 +57,22 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
           <h4 className="text-lg font-semibold text-purple-900 dark:text-purple-100 font-arabic">سعر الدورة</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           {initialData.price ? (
             <div className="rounded-lg border border-purple-200/50 bg-purple-100/50 p-4 backdrop-blur-sm dark:border-purple-400/30 dark:bg-purple-800/20">
-              <p className="text-purple-900 dark:text-purple-100 font-medium font-arabic text-2xl">{formatPrice(initialData.price)}</p>
+              <p className="text-purple-900 dark:text-purple-100 font-medium font-arabic text-2xl">{formatPrice(initialData.price) }</p>
             </div>
           ) : (
             <div className="rounded-lg border border-purple-200/50 bg-purple-50/40 p-4 text-center backdrop-blur-sm dark:border-purple-400/30 dark:bg-purple-900/20">

@@ -3,18 +3,14 @@ import { getUserPermissions } from '@/lib/user';
 import { requireAuth } from '@/lib/api-auth';
 
 // Define the format for messages
-interface Message {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
+interface Message { role: 'user' | 'assistant' | 'system';
+  content: string; }
 
 // Image data interface
-interface ImageData {
-  base64: string;
+interface ImageData { base64: string;
   dimensions: {
     width: number;
-    height: number;
-  };
+    height: number; };
 }
 
 // Set timeout configuration
@@ -28,9 +24,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
   const timeoutId = setTimeout(() => {
     try {
       controller.abort();
-    } catch (e) {
-      console.error('Error aborting controller:', e);
-    }
+    } catch (e) { console.error('Error aborting controller:', e); }
   }, timeoutMs);
 
   // Safely merge the provided signal with our timeout signal
@@ -47,9 +41,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
       clearTimeout(timeoutId);
       try {
         controller.abort();
-      } catch (e) {
-        console.error('Error aborting controller after initial check:', e);
-      }
+      } catch (e) { console.error('Error aborting controller after initial check:', e); }
       throw new DOMException('The operation was aborted.', 'AbortError');
     }
 
@@ -60,9 +52,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
         if (!controller.signal.aborted) {
           controller.abort();
         }
-      } catch (e) {
-        console.error('Error in abort handler:', e);
-      }
+      } catch (e) { console.error('Error in abort handler:', e); }
     };
 
     originalSignal.addEventListener('abort', abortHandler, { once: true });
@@ -71,14 +61,11 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
   let lastError: Error | null = null;
 
   // Retry logic
-  for (let attempt = 0; attempt <= retryAttempts; attempt++) {
-    try {
+  for (let attempt = 0; attempt <= retryAttempts; attempt++) { try {
       // Add attempt number to request headers for debugging
-      const headers = (newOptions.headers as Record<string, string>) || {};
-      newOptions.headers = {
-        ...headers,
-        'X-Retry-Attempt': attempt.toString(),
-      };
+      const headers = (newOptions.headers as Record<string, string>) || { };
+      newOptions.headers = { ...headers,
+        'X-Retry-Attempt': attempt.toString(), };
 
       const response = await fetch(url, newOptions);
       clearTimeout(timeoutId);
@@ -108,8 +95,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: nu
   throw lastError || new Error('Failed to fetch after retries');
 }
 
-export async function POST(req: Request) {
-  try {
+export async function POST(req: Request) { try {
  requireAuth()
 
     // Check user permissions - block trial users from AI access
@@ -120,32 +106,24 @@ export async function POST(req: Request) {
 
     // Get conversation messages from request
     const body = await req.json();
-    const {
-      messages,
+    const { messages,
       streaming = false,
-      image,
-    } = body as {
-      messages: Message[];
+      image, } = body as { messages: Message[];
       streaming?: boolean;
-      image?: ImageData;
-    };
+      image?: ImageData; };
 
-    if (!messages) {
-      return new NextResponse('Messages are required', { status: 400 });
+    if (!messages) { return new NextResponse('Messages are required', { status: 400 });
     }
 
     // Build the request payload based on whether an image is included
-    const payload: any = {
-      model: 'deepseek-ai/DeepSeek-V3',
+    const payload: any = { model: 'deepseek-ai/DeepSeek-V3',
       messages,
       stream: streaming,
       max_tokens: 1024,
-      temperature: 0.7,
-    };
+      temperature: 0.7, };
 
     // If image data is present, modify the message to include image description
-    if (image) {
-      // Check if we need to use a vision-capable model
+    if (image) { // Check if we need to use a vision-capable model
       payload.model = 'anthropic/claude-3-opus-20240229';
 
       // Add system message for better image handling if it's not already the first message
@@ -154,8 +132,7 @@ export async function POST(req: Request) {
           {
             role: 'system',
             content:
-              'You are an AI tutor that specializes in explaining concepts from images. When a user uploads an image, analyze it carefully and provide detailed explanations based on the image content and the user\'s question. For educational materials, explain the concepts thoroughly.',
-          },
+              'You are an AI tutor that specializes in explaining concepts from images. When a user uploads an image, analyze it carefully and provide detailed explanations based on the image content and the user\'s question. For educational materials, explain the concepts thoroughly.', },
           ...messages,
         ];
       }
@@ -164,22 +141,18 @@ export async function POST(req: Request) {
       const lastUserMessageIndex = [...payload.messages].reverse().findIndex((m) => m.role === 'user');
       const actualIndex = payload.messages.length - 1 - lastUserMessageIndex;
 
-      if (actualIndex >= 0) {
-        // Format the message with image content for multimodal models
+      if (actualIndex >= 0) { // Format the message with image content for multimodal models
         payload.messages[actualIndex] = {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: payload.messages[actualIndex].content,
-            },
-            {
-              type: 'image',
+              text: payload.messages[actualIndex].content, },
+            { type: 'image',
               image: {
                 data: image.base64,
                 width: image.dimensions.width,
-                height: image.dimensions.height,
-              },
+                height: image.dimensions.height, },
             },
           ],
         };
@@ -187,8 +160,7 @@ export async function POST(req: Request) {
     }
 
     // Call the API with timeout and retry logic
-    try {
-      // Select API endpoint based on whether an image is included
+    try { // Select API endpoint based on whether an image is included
       const apiEndpoint = image
         ? 'https://llm.chutes.ai/v1/chat/completions-vision' // Use vision endpoint if image present
         : 'https://llm.chutes.ai/v1/chat/completions'; // Use standard endpoint otherwise
@@ -198,7 +170,7 @@ export async function POST(req: Request) {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${process.env.CHUTES_API_TOKEN}`,
+            Authorization: `Bearer ${process.env.CHUTES_API_TOKEN }`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
@@ -210,8 +182,7 @@ export async function POST(req: Request) {
       );
 
       // Handle streaming responses
-      if (streaming) {
-        // Return the response stream directly
+      if (streaming) { // Return the response stream directly
         const encoder = new TextEncoder();
         const decoder = new TextDecoder();
 
@@ -226,8 +197,7 @@ export async function POST(req: Request) {
                     {
                       delta: {
                         content:
-                          'I\'m sorry, but I couldn\'t connect to the AI service right now. Please try again in a moment.',
-                      },
+                          'I\'m sorry, but I couldn\'t connect to the AI service right now. Please try again in a moment.', },
                     },
                   ],
                 });
@@ -238,12 +208,10 @@ export async function POST(req: Request) {
 
               const reader = response.body.getReader();
 
-              try {
-                while (true) {
+              try { while (true) {
                   // Check if the request was aborted before reading
                   if (req.signal?.aborted) {
-                    throw new DOMException('The operation was aborted.', 'AbortError');
-                  }
+                    throw new DOMException('The operation was aborted.', 'AbortError'); }
 
                   const { done, value } = await reader.read();
                   if (done) break;
@@ -252,21 +220,17 @@ export async function POST(req: Request) {
                   const chunk = decoder.decode(value);
                   controller.enqueue(encoder.encode(chunk));
                 }
-              } catch (error) {
-                console.error('Stream reading error:', error);
+              } catch (error) { console.error('Stream reading error:', error);
 
                 // Don't send error message if it was a client abort
                 if (error instanceof Error && error.name === 'AbortError' && req.signal?.aborted) {
-                  // Just close the stream quietly
-                } else {
-                  // Send error message on other stream failures
+                  // Just close the stream quietly } else { // Send error message on other stream failures
                   const errorMessage = JSON.stringify({
                     choices: [
                       {
                         delta: {
                           content:
-                            '\n\nI apologize, but there was an issue with the connection. Please try asking your question again.',
-                        },
+                            '\n\nI apologize, but there was an issue with the connection. Please try asking your question again.', },
                       },
                     ],
                   });
@@ -276,18 +240,14 @@ export async function POST(req: Request) {
                 try {
                   reader.releaseLock();
                   controller.close();
-                } catch (e) {
-                  console.error('Error in stream cleanup:', e);
-                }
+                } catch (e) { console.error('Error in stream cleanup:', e); }
               }
             },
           }),
-          {
-            headers: {
+          { headers: {
               'Content-Type': 'text/event-stream',
               'Cache-Control': 'no-cache, no-transform',
-              Connection: 'keep-alive',
-            },
+              Connection: 'keep-alive', },
           },
         );
       } else {
@@ -295,8 +255,7 @@ export async function POST(req: Request) {
         const data = await response.json();
         return NextResponse.json(data);
       }
-    } catch (error: any) {
-      console.error('[AI_TUTOR_API_ERROR]', error);
+    } catch (error: any) { console.error('[AI_TUTOR_API_ERROR]', error);
 
       // If the error is due to client disconnection, just return a basic response
       if (error.name === 'AbortError' && req.signal?.aborted) {
@@ -314,42 +273,35 @@ export async function POST(req: Request) {
         errorMessage = 'Failed to connect to the AI service. The service might be temporarily unavailable.';
       }
 
-      if (streaming) {
-        // For streaming requests, return the error in the stream format
+      if (streaming) { // For streaming requests, return the error in the stream format
         const encoder = new TextEncoder();
         const errorStreamData = JSON.stringify({
           choices: [{ delta: { content: errorMessage } }],
         });
 
         return new Response(
-          new ReadableStream({
-            start(controller) {
-              controller.enqueue(encoder.encode(`data: ${errorStreamData}\n\n`));
+          new ReadableStream({ start(controller) {
+              controller.enqueue(encoder.encode(`data: ${errorStreamData }\n\n`));
               controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
               controller.close();
             },
           }),
-          {
-            headers: {
+          { headers: {
               'Content-Type': 'text/event-stream',
               'Cache-Control': 'no-cache',
-              Connection: 'keep-alive',
-            },
+              Connection: 'keep-alive', },
           },
         );
-      } else {
-        // For regular requests, return a JSON error response
+      } else { // For regular requests, return a JSON error response
         return NextResponse.json(
           {
             error: true,
-            message: errorMessage,
-          },
+            message: errorMessage, },
           { status: 503 },
         );
       }
     }
-  } catch (error) {
-    console.error('[AI_TUTOR_ERROR]', error);
+  } catch (error) { console.error('[AI_TUTOR_ERROR]', error);
 
     // Check if this was a client disconnect
     if (error instanceof Error && error.name === 'AbortError') {

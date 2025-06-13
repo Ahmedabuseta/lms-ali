@@ -8,17 +8,13 @@ type SortField = 'name' | 'email' | 'role' | 'accessType' | 'createdAt' | 'payme
 type SortDirection = 'asc' | 'desc';
 
 // API helper functions
-const callUserAPI = async (action: string, userId: string, data?: any) => {
-  const response = await fetch('/api/users', {
+const callUserAPI = async (action: string, userId: string, data?: any) => { const response = await fetch('/api/users', {
     method: 'PATCH',
     headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId,
+      'Content-Type': 'application/json', },
+    body: JSON.stringify({ userId,
       action,
-      data,
-    }),
+      data, }),
   });
 
   if (!response.ok) {
@@ -29,8 +25,7 @@ const callUserAPI = async (action: string, userId: string, data?: any) => {
   return await response.json();
 };
 
-export const useUserManagement = (initialUsers: User[]) => {
-  const [localUsers, setLocalUsers] = useState(initialUsers);
+export const useUserManagement = (initialUsers: User[]) => { const [localUsers, setLocalUsers] = useState(initialUsers);
   const [isPending, startTransition] = useTransition();
 
   // Filtering and Search States
@@ -98,15 +93,13 @@ export const useUserManagement = (initialUsers: User[]) => {
     });
 
     // Sorting
-    filtered.sort((a, b) => {
-      let aValue: any = a[sortField];
+    filtered.sort((a, b) => { let aValue: any = a[sortField];
       let bValue: any = b[sortField];
 
       // Handle special cases
       if (sortField === 'name') {
         aValue = a.name || '';
-        bValue = b.name || '';
-      } else if (sortField === 'paymentAmount') {
+        bValue = b.name || ''; } else if (sortField === 'paymentAmount') {
         aValue = a.paymentAmount || 0;
         bValue = b.paymentAmount || 0;
       } else if (sortField === 'createdAt') {
@@ -119,11 +112,7 @@ export const useUserManagement = (initialUsers: User[]) => {
         bValue = bValue.toLowerCase();
       }
 
-      if (sortDirection === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
+      if (sortDirection === 'asc') { return aValue < bValue ? -1 : aValue > bValue ? 1 : 0; } else { return aValue > bValue ? -1 : aValue < bValue ? 1 : 0; }
     });
 
     return filtered;
@@ -140,135 +129,103 @@ export const useUserManagement = (initialUsers: User[]) => {
   const resetPagination = () => setCurrentPage(1);
 
   // Sorting handlers
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
+  const handleSort = (field: SortField) => { if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc'); } else {
       setSortField(field);
       setSortDirection('asc');
     }
   };
 
   // User management handlers
-  const handleUpdateUserRole = async (userId: string, role: UserRole) => {
-    startTransition(async () => {
+  const handleUpdateUserRole = async (userId: string, role: UserRole) => { startTransition(async () => {
       try {
         const result = await callUserAPI('updateRole', userId, { role });
-        
+
         updateUserInState(userId, { role });
         toast.success('تم تحديث الدور بنجاح');
-      } catch (error) {
-        console.error('Error updating user role:', error);
-        toast.error('حدث خطأ أثناء التحديث');
-      }
+      } catch (error) { console.error('Error updating user role:', error);
+        toast.error('حدث خطأ أثناء التحديث'); }
     });
   };
 
-  const handleRevokeAccess = async (userId: string) => {
-    startTransition(async () => {
+  const handleRevokeAccess = async (userId: string) => { startTransition(async () => {
       try {
         await callUserAPI('revokeAccess', userId);
-        
+
         updateUserInState(userId, {
           accessType: StudentAccessType.NO_ACCESS,
-          paymentReceived: false,
-        });
+          paymentReceived: false, });
         toast.success('تم إلغاء الوصول');
-      } catch (error) {
-        console.error('Error revoking access:', error);
-        toast.error('حدث خطأ أثناء إلغاء الوصول');
-      }
+      } catch (error) { console.error('Error revoking access:', error);
+        toast.error('حدث خطأ أثناء إلغاء الوصول'); }
     });
   };
 
-  const handleUnbanUser = async (userId: string) => {
-    startTransition(async () => {
+  const handleUnbanUser = async (userId: string) => { startTransition(async () => {
       try {
         await callUserAPI('unbanUser', userId);
-        
+
         updateUserInState(userId, {
           banned: false,
           banReason: null,
-          banExpires: null,
-        });
+          banExpires: null, });
         toast.success('تم إلغاء حظر المستخدم');
-      } catch (error) {
-        console.error('Error unbanning user:', error);
-        toast.error('حدث خطأ أثناء إلغاء الحظر');
-      }
+      } catch (error) { console.error('Error unbanning user:', error);
+        toast.error('حدث خطأ أثناء إلغاء الحظر'); }
     });
   };
 
-  const handleGrantTrial = async (userId: string) => {
-    startTransition(async () => {
+  const handleGrantTrial = async (userId: string) => { startTransition(async () => {
       try {
         await callUserAPI('grantTrial', userId);
-        
+
         updateUserInState(userId, {
           accessType: StudentAccessType.FREE_TRIAL,
           isTrialUsed: true,
           trialStartDate: new Date(),
-          trialEndDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        });
+          trialEndDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), });
         toast.success('تم منح تجربة مجانية');
-      } catch (error) {
-        console.error('Error granting trial:', error);
-        toast.error('حدث خطأ أثناء منح التجربة المجانية');
-      }
+      } catch (error) { console.error('Error granting trial:', error);
+        toast.error('حدث خطأ أثناء منح التجربة المجانية'); }
     });
   };
 
-  const grantPaidAccess = async (userId: string, accessType: StudentAccessType, paymentAmount?: number, paymentNotes?: string) => {
-    startTransition(async () => {
+  const grantPaidAccess = async (userId: string, accessType: StudentAccessType, paymentAmount?: number, paymentNotes?: string) => { startTransition(async () => {
       try {
         await callUserAPI('grantAccess', userId, {
           accessType,
           paymentReceived: true,
           paymentAmount,
-          paymentNotes,
-        });
-        
-        updateUserInState(userId, {
-          accessType,
+          paymentNotes, });
+
+        updateUserInState(userId, { accessType,
           paymentReceived: true,
           paymentAmount: paymentAmount || 0,
           paymentNotes: paymentNotes || '',
-          accessGrantedAt: new Date(),
-        });
+          accessGrantedAt: new Date(), });
         toast.success('تم منح الوصول بنجاح');
-      } catch (error) {
-        console.error('Error granting access:', error);
-        toast.error('حدث خطأ أثناء منح الوصول');
-      }
+      } catch (error) { console.error('Error granting access:', error);
+        toast.error('حدث خطأ أثناء منح الوصول'); }
     });
   };
 
-  const handleBanUser = async (userId: string, reason: string, duration?: number) => {
-    startTransition(async () => {
+  const handleBanUser = async (userId: string, reason: string, duration?: number) => { startTransition(async () => {
       try {
         await callUserAPI('banUser', userId, { reason, duration });
-        
-        updateUserInState(userId, {
-          banned: true,
+
+        updateUserInState(userId, { banned: true,
           banReason: reason,
-          banExpires: duration ? new Date(Date.now() + duration * 24 * 60 * 60 * 1000) : null,
-        } as any);
+          banExpires: duration ? new Date(Date.now() + duration * 24 * 60 * 60 * 1000) : null, } as any);
         toast.success('تم حظر المستخدم بنجاح');
-      } catch (error) {
-        console.error('Error banning user:', error);
-        toast.error('حدث خطأ أثناء حظر المستخدم');
-      }
+      } catch (error) { console.error('Error banning user:', error);
+        toast.error('حدث خطأ أثناء حظر المستخدم'); }
     });
   };
 
-  const loadUserSessions = async (userId: string) => {
-    try {
+  const loadUserSessions = async (userId: string) => { try {
       // For now, set empty sessions - implement API call when sessions endpoint is ready
-      setUserSessions([]);
-    } catch (error) {
-      console.error('Error loading user sessions:', error);
-      setUserSessions([]);
-    }
+      setUserSessions([]); } catch (error) { console.error('Error loading user sessions:', error);
+      setUserSessions([]); }
   };
 
   const handleRevokeSession = async (sessionToken: string) => {
@@ -280,10 +237,8 @@ export const useUserManagement = (initialUsers: User[]) => {
         if (selectedUser) {
           loadUserSessions(selectedUser.id);
         }
-      } catch (error) {
-        console.error('Error revoking session:', error);
-        toast.error('حدث خطأ أثناء إلغاء الجلسة');
-      }
+      } catch (error) { console.error('Error revoking session:', error);
+        toast.error('حدث خطأ أثناء إلغاء الجلسة'); }
     });
   };
 
@@ -293,10 +248,8 @@ export const useUserManagement = (initialUsers: User[]) => {
         // Mock implementation - replace with actual API call when sessions endpoint is ready
         toast.success('تم إلغاء جميع الجلسات بنجاح');
         setUserSessions([]);
-      } catch (error) {
-        console.error('Error revoking all sessions:', error);
-        toast.error('حدث خطأ أثناء إلغاء الجلسات');
-      }
+      } catch (error) { console.error('Error revoking all sessions:', error);
+        toast.error('حدث خطأ أثناء إلغاء الجلسات'); }
     });
   };
 
@@ -323,8 +276,7 @@ export const useUserManagement = (initialUsers: User[]) => {
     setSelectedUser(null);
   };
 
-  return {
-    // State
+  return { // State
     localUsers,
     isPending,
     selectedUser,
@@ -332,7 +284,7 @@ export const useUserManagement = (initialUsers: User[]) => {
     isBanModalOpen,
     isSessionsModalOpen,
     userSessions,
-    
+
     // Filters
     searchTerm,
     setSearchTerm,
@@ -344,12 +296,12 @@ export const useUserManagement = (initialUsers: User[]) => {
     setPaymentStatusFilter,
     banStatusFilter,
     setBanStatusFilter,
-    
+
     // Sorting
     sortField,
     sortDirection,
     handleSort,
-    
+
     // Pagination
     currentPage,
     setCurrentPage,
@@ -357,11 +309,11 @@ export const useUserManagement = (initialUsers: User[]) => {
     setItemsPerPage,
     totalPages,
     resetPagination,
-    
+
     // Data
     filteredAndSortedUsers,
     paginatedUsers,
-    
+
     // Actions
     updateUserInState,
     handleUpdateUserRole,
@@ -373,11 +325,10 @@ export const useUserManagement = (initialUsers: User[]) => {
     loadUserSessions,
     handleRevokeSession,
     handleRevokeAllSessions,
-    
+
     // Modals
     openGrantAccessModal,
     openBanModal,
     openSessionsModal,
-    closeModals,
-  };
-}; 
+    closeModals, };
+};

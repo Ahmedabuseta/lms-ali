@@ -2,14 +2,11 @@ import { Attachment, Chapter } from '@prisma/client';
 import { db } from '@/lib/db';
 import { canAccessChapterContent, getCurrentUser } from '@/lib/user';
 
-type GetChapterArgs = {
-  userId: string;
+type GetChapterArgs = { userId: string;
   courseId: string;
-  chapterId: string;
-};
+  chapterId: string; };
 
-export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs) {
-  try {
+export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs) { try {
     const purchase = await db.purchase.findUnique({ where: { userId_courseId: { userId, courseId } } });
     const course = await db.course.findUnique({ where: { id: courseId, isPublished: true }, select: { price: true } });
     const chapter = await db.chapter.findUnique({ where: { id: chapterId, isPublished: true } });
@@ -28,32 +25,24 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
     let chapterQuiz = null;
 
     // Only provide attachments if user has purchased the course
-    if (purchase) {
-      attachments = await db.attachment.findMany({ where: { courseId } });
+    if (purchase) { attachments = await db.attachment.findMany({ where: { courseId } });
     }
 
     // Get chapter quiz if user has access
-    if (hasChapterAccess) {
-      chapterQuiz = await db.quiz.findFirst({
-        where: { 
+    if (hasChapterAccess) { chapterQuiz = await db.quiz.findFirst({
+        where: {
           chapterId,
-          isPublished: true,
-        },
-        include: {
-          quizQuestions: {
+          isPublished: true, },
+        include: { quizQuestions: {
             include: {
               question: {
                 include: {
-                  options: true,
-                },
+                  options: true, },
               },
             },
-            orderBy: {
-              position: 'asc',
-            },
+            orderBy: { position: 'asc', },
           },
-          attempts: {
-            where: { userId },
+          attempts: { where: { userId },
             orderBy: { createdAt: 'desc' },
             take: 1,
           },
@@ -62,19 +51,16 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
     }
 
     // Provide video access only if user has chapter access
-    if (hasChapterAccess) {
-      muxData = await db.muxData.findUnique({ where: { chapterId } });
+    if (hasChapterAccess) { muxData = await db.muxData.findUnique({ where: { chapterId } });
 
-      nextChapter = await db.chapter.findFirst({
-        where: { courseId, isPublished: true, position: { gt: chapter.position } },
+      nextChapter = await db.chapter.findFirst({ where: { courseId, isPublished: true, position: { gt: chapter.position } },
         orderBy: { position: 'asc' },
       });
     }
 
     const userProgress = await db.userProgress.findUnique({ where: { userId_chapterId: { userId, chapterId } } });
 
-    return {
-      chapter,
+    return { chapter,
       course,
       muxData,
       attachments,
@@ -82,10 +68,8 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       userProgress,
       purchase,
       hasChapterAccess,
-      chapterQuiz,
-    };
-  } catch {
-    return {
+      chapterQuiz, };
+  } catch { return {
       chapter: null,
       course: null,
       muxData: null,
@@ -94,7 +78,6 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       userProgress: null,
       purchase: null,
       hasChapterAccess: false,
-      chapterQuiz: null,
-    };
+      chapterQuiz: null, };
   }
 }

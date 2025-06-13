@@ -3,18 +3,14 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { CreatePassageForm } from './_components/create-passage-form';
 
-const CreatePassagePage = async () => {
-  await requireAuth();
+const CreatePassagePage = async () => { await requireAuth();
 
   // Get all courses for the dropdown
   const courses = await db.course.findMany({
     select: {
       id: true,
-      title: true,
-    },
-    orderBy: {
-      title: 'asc',
-    },
+      title: true, },
+    orderBy: { title: 'asc', },
   });
 
   if (courses.length === 0) {
@@ -37,4 +33,4 @@ const CreatePassagePage = async () => {
   );
 };
 
-export default CreatePassagePage; 
+export default CreatePassagePage;

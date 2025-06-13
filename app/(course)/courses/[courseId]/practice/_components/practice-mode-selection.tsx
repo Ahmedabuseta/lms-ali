@@ -4,57 +4,46 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Clock, 
-  BookOpen, 
-  Target, 
+import { Clock,
+  BookOpen,
+  Target,
   Brain,
   Timer,
   CheckCircle2,
-  Eye
-} from 'lucide-react';
+  Eye } from 'lucide-react';
 import { PracticeChapterSelection } from './practice-chapter-selection';
 
-interface Chapter {
-  id: string;
+interface Chapter { id: string;
   title: string;
   description: string | null;
   position: number;
   totalQuestions: number;
   practiceCount: number;
   averageScore: number;
-  hasPractice: boolean;
-}
+  hasPractice: boolean; }
 
-interface CourseStats {
-  totalChapters: number;
+interface CourseStats { totalChapters: number;
   totalQuestions: number;
   practicedChapters: number;
   totalAttempts: number;
-  averageScore: number;
-}
+  averageScore: number; }
 
-interface PracticeModeSelectionProps {
-  courseId: string;
+interface PracticeModeSelectionProps { courseId: string;
   chapters: Chapter[];
-  courseStats: CourseStats;
-}
+  courseStats: CourseStats; }
 
 type PracticeMode = 'selection' | 'exam' | 'free';
 
-export const PracticeModeSelection = ({
-  courseId,
+export const PracticeModeSelection = ({ courseId,
   chapters,
-  courseStats
-}: PracticeModeSelectionProps) => {
-  const [selectedMode, setSelectedMode] = useState<PracticeMode>('selection');
+  courseStats }: PracticeModeSelectionProps) => { const [selectedMode, setSelectedMode] = useState<PracticeMode>('selection');
 
   if (selectedMode === 'exam') {
     return (
       <div className="space-y-4">
-        <Button 
-          variant="outline" 
-          onClick={() => setSelectedMode('selection')}
+        <Button
+          variant="outline"
+          onClick={() => setSelectedMode('selection') }
           className="mb-4"
         >
           ← العودة لاختيار النوع
@@ -71,8 +60,8 @@ export const PracticeModeSelection = ({
   if (selectedMode === 'free') {
     return (
       <div className="space-y-4">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => setSelectedMode('selection')}
           className="mb-4"
         >
@@ -127,7 +116,7 @@ export const PracticeModeSelection = ({
             </div>
 
             <div className="pt-4">
-              <Button 
+              <Button
                 onClick={() => setSelectedMode('exam')}
                 className="w-full"
                 size="lg"
@@ -170,7 +159,7 @@ export const PracticeModeSelection = ({
             </div>
 
             <div className="pt-4">
-              <Button 
+              <Button
                 onClick={() => setSelectedMode('free')}
                 className="w-full bg-green-600 hover:bg-green-700"
                 size="lg"
@@ -221,4 +210,4 @@ export const PracticeModeSelection = ({
       </div>
     </div>
   );
-}; 
+};

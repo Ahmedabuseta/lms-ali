@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  BookOpen,
+import { BookOpen,
   CheckCircle,
   Clock,
   Calendar,
@@ -11,16 +10,14 @@ import {
   LineChart,
   BrainCircuit,
   BarChart,
-  PieChart,
-} from 'lucide-react';
+  PieChart, } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { showNotification } from '@/components/ui/notifications';
 
-interface LearningInsightsProps {
-  totalCourses: number;
+interface LearningInsightsProps { totalCourses: number;
   completedCourses: number;
   totalHours: number;
   studyStreak: number;
@@ -28,30 +25,24 @@ interface LearningInsightsProps {
     type: string;
     title: string;
     date: string;
-    progress?: number;
-  }[];
-  recommendedCourses?: {
-    id: string;
+    progress?: number; }[];
+  recommendedCourses?: { id: string;
     title: string;
-    category: string;
-  }[];
+    category: string; }[];
 }
 
-export function LearningInsights({
-  totalCourses,
+export function LearningInsights({ totalCourses,
   completedCourses,
   totalHours,
   studyStreak,
-  recentActivity,
-}: LearningInsightsProps) {
-  const [activeTab, setActiveTab] = useState('overview');
+  recentActivity, }: LearningInsightsProps) { const [activeTab, setActiveTab] = useState('overview');
 
   const overallProgress = Math.round((completedCourses / totalCourses) * 100) || 0;
 
   const handleNotification = () => {
     showNotification.achievement(
       'تم الوصول إلى إنجاز دراسي!',
-      `لقد درست لمدة ${totalHours} ساعة. استمر في العمل الرائع!`,
+      `لقد درست لمدة ${totalHours } ساعة. استمر في العمل الرائع!`,
       { duration: 8000 },
     );
   };
@@ -165,27 +156,26 @@ export function LearningInsights({
             <div className="mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-base font-bold text-transparent sm:mb-4 sm:text-lg">
               أنشطتك الأخيرة
             </div>
-            {recentActivity.map((activity, i) => (
+            { recentActivity.map((activity, i) => (
               <div
-                key={i}
+                key={i }
                 className="group flex transform items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-blue-600 sm:gap-4 sm:p-4"
               >
                 <div
-                  className={`rounded-xl p-2 transition-transform duration-300 group- e-110 sm:p-3 ${
+                  className={ `rounded-xl p-2 transition-transform duration-300 group- e-110 sm:p-3 ${
                     activity.type === 'course'
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500'
                       : activity.type === 'exam'
                         ? 'bg-gradient-to-r from-orange-500 to-red-500'
-                        : 'bg-gradient-to-r from-green-500 to-emerald-500'
-                  }`}
+                        : 'bg-gradient-to-r from-green-500 to-emerald-500' }`}
                 >
-                  {activity.type === 'course' ? (
+                  { activity.type === 'course' ? (
                     <BookOpen className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                   ) : activity.type === 'exam' ? (
                     <Clock className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                   ) : (
                     <CheckCircle className="h-4 w-4 text-white sm:h-5 sm:w-5" />
-                  )}
+                  ) }
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-semibold text-gray-800 dark:text-white sm:text-base">{activity.title}</div>
@@ -223,7 +213,7 @@ export function LearningInsights({
                   <h3 className="text-lg font-bold text-gray-800 dark:text-white">توزيع الوقت حسب الموضوع</h3>
                 </div>
                 <div className="space-y-4">
-                  {[
+                  { [
                     { name: 'تطوير الويب', hours: 8, color: 'from-blue-500 to-cyan-500' },
                     { name: 'علوم البيانات', hours: 6, color: 'from-purple-500 to-pink-500' },
                     { name: 'الذكاء الاصطناعي', hours: 4, color: 'from-green-500 to-emerald-500' },
@@ -238,7 +228,7 @@ export function LearningInsights({
                         <Progress value={(subject.hours / 8) * 100} className="h-3" />
                         <div
                           className={`absolute inset-0 bg-gradient-to-r ${subject.color} rounded-full transition-all duration-300 group-hover:shadow-lg`}
-                          style={{ width: `${(subject.hours / 8) * 100}%` }}
+                          style={ { width: `${(subject.hours / 8) * 100 }%` }}
                          />
                       </div>
                     </div>

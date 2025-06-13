@@ -12,29 +12,22 @@ import { BookOpen, Target, Trophy, Settings } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
-interface Chapter {
-  id: string;
+interface Chapter { id: string;
   title: string;
   description: string | null;
   position: number;
   totalQuestions: number;
   practiceCount: number;
   averageScore: number;
-  hasPractice: boolean;
-}
+  hasPractice: boolean; }
 
-interface PracticeChapterSelectionProps {
-  courseId: string;
+interface PracticeChapterSelectionProps { courseId: string;
   chapters: Chapter[];
-  mode: 'exam' | 'free';
-}
+  mode: 'exam' | 'free'; }
 
-export const PracticeChapterSelection = ({
-  courseId,
+export const PracticeChapterSelection = ({ courseId,
   chapters,
-  mode
-}: PracticeChapterSelectionProps) => {
-  const router = useRouter();
+  mode }: PracticeChapterSelectionProps) => { const router = useRouter();
   const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
   const [questionCount, setQuestionCount] = useState([mode === 'exam' ? 20 : 10]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,16 +39,13 @@ export const PracticeChapterSelection = ({
         ? prev.filter(id => id !== chapterId)
         : [...prev, chapterId]
     );
-    setError(null); // Clear any previous errors
-  };
+    setError(null); // Clear any previous errors };
 
-  const handleSelectAll = () => {
-    const availableChapters = chapters.filter(c => c.hasPractice).map(c => c.id);
-    setSelectedChapters(prev => 
+  const handleSelectAll = () => { const availableChapters = chapters.filter(c => c.hasPractice).map(c => c.id);
+    setSelectedChapters(prev =>
       prev.length === availableChapters.length ? [] : availableChapters
     );
-    setError(null);
-  };
+    setError(null); };
 
   const totalAvailableQuestions = chapters
     .filter(c => selectedChapters.includes(c.id))
@@ -91,34 +81,30 @@ export const PracticeChapterSelection = ({
     try {
       setIsLoading(true);
       setError(null);
-      
-      const response = await axios.post(`/api/courses/${courseId}/practice/session`, {
-        chapterIds: selectedChapters,
+
+      const response = await axios.post(`/api/courses/${courseId}/practice/session`, { chapterIds: selectedChapters,
         questionCount: questionCount[0],
-        mode: mode,
-      });
+        mode: mode, });
 
       const session = response.data;
-      
+
       // Store session data in localStorage with expiration
       const sessionData = {
         ...session,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
       };
       localStorage.setItem(`practice_session_${session.sessionId}`, JSON.stringify(sessionData));
-      
+
       // Navigate to practice session
       if (mode === 'exam') {
         router.push(`/courses/${courseId}/practice/exam?id=${session.sessionId}`);
       } else {
         router.push(`/courses/${courseId}/practice/free?id=${session.sessionId}`);
       }
-      
-    } catch (error: any) {
-      console.error('Error starting practice:', error);
+
+    } catch (error: any) { console.error('Error starting practice:', error);
       setError(error.response?.data?.message || 'حدث خطأ في بدء التدريب');
-      toast.error(error.response?.data?.message || 'حدث خطأ في بدء التدريب');
-    } finally {
+      toast.error(error.response?.data?.message || 'حدث خطأ في بدء التدريب'); } finally {
       setIsLoading(false);
     }
   };
@@ -126,9 +112,9 @@ export const PracticeChapterSelection = ({
   return (
     <div className="space-y-6">
       {/* Error Message */}
-      {error && (
+      { error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline">{error }</span>
         </div>
       )}
 
@@ -137,7 +123,7 @@ export const PracticeChapterSelection = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            إعدادات التدريب {mode === 'exam' ? 'الامتحاني' : 'الحر'}
+            إعدادات التدريب { mode === 'exam' ? 'الامتحاني' : 'الحر' }
           </CardTitle>
           {mode === 'exam' && (
             <p className="text-sm text-gray-600">
@@ -146,9 +132,9 @@ export const PracticeChapterSelection = ({
           )}
         </CardHeader>
         <CardContent className="space-y-4">
-          {mode === 'free' && (
+          { mode === 'free' && (
             <div className="space-y-2">
-              <Label>عدد الأسئلة: {questionCount[0]}</Label>
+              <Label>عدد الأسئلة: {questionCount[0] }</Label>
               <Slider
                 value={questionCount}
                 onValueChange={setQuestionCount}
@@ -162,30 +148,29 @@ export const PracticeChapterSelection = ({
               </p>
             </div>
           )}
-          
-          {mode === 'exam' && (
+
+          { mode === 'exam' && (
             <div className="p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
                 <strong>تدريب امتحاني:</strong> 20 سؤال - 45 دقيقة - تقييم شامل
               </p>
             </div>
-          )}
-          
+          ) }
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-blue-500" />
               <span className="text-sm font-medium">الفصول المختارة: {selectedChapters.length}</span>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleSelectAll}
               disabled={chapters.filter(c => c.hasPractice).length === 0}
             >
-              {selectedChapters.length === chapters.filter(c => c.hasPractice).length 
-                ? 'إلغاء تحديد الكل' 
-                : 'تحديد الكل'
-              }
+              { selectedChapters.length === chapters.filter(c => c.hasPractice).length
+                ? 'إلغاء تحديد الكل'
+                : 'تحديد الكل' }
             </Button>
           </div>
         </CardContent>
@@ -197,16 +182,15 @@ export const PracticeChapterSelection = ({
           <BookOpen className="h-5 w-5" />
           اختر الفصول للتدريب
         </h2>
-        
+
         <div className="grid gap-3">
           {chapters.map((chapter) => (
-            <Card 
-              key={chapter.id} 
-              className={`cursor-pointer transition-all ${
-                selectedChapters.includes(chapter.id) 
-                  ? 'ring-2 ring-blue-500 bg-blue-50' 
-                  : 'hover:bg-gray-50'
-              } ${!chapter.hasPractice ? 'opacity-50' : ''}`}
+            <Card
+              key={chapter.id}
+              className={ `cursor-pointer transition-all ${
+                selectedChapters.includes(chapter.id)
+                  ? 'ring-2 ring-blue-500 bg-blue-50'
+                  : 'hover:bg-gray-50' } ${ !chapter.hasPractice ? 'opacity-50' : '' }`}
               onClick={() => chapter.hasPractice && handleChapterToggle(chapter.id)}
             >
               <CardContent className="p-4">
@@ -228,7 +212,7 @@ export const PracticeChapterSelection = ({
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary">
                       {chapter.totalQuestions} سؤال
@@ -265,14 +249,14 @@ export const PracticeChapterSelection = ({
           size="lg"
           className="px-8"
         >
-          {isLoading 
-            ? 'جاري البدء...' 
-            : mode === 'exam' 
-            ? `بدء الامتحان التدريبي (${selectedChapters.length} فصل)`
+          { isLoading
+            ? 'جاري البدء...'
+            : mode === 'exam'
+            ? `بدء الامتحان التدريبي (${selectedChapters.length } فصل)`
             : `بدء التدريب الحر (${selectedChapters.length} فصل)`
           }
         </Button>
       </div>
     </div>
   );
-}; 
+};

@@ -1,14 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Handle CORS preflight requests
+export default async function handler(req: NextApiRequest, res: NextApiResponse) { // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', '*');
     res.setHeader('Access-Control-Max-Age', '86400');
-    return res.status(200).end();
-  }
+    return res.status(200).end(); }
 
   // Set CORS headers for all requests
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,27 +15,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { url } = req.query;
 
-  if (!url || typeof url !== 'string') {
-    return res.status(400).json({ error: 'URL parameter is required' });
+  if (!url || typeof url !== 'string') { return res.status(400).json({ error: 'URL parameter is required' });
   }
 
-  try {
-    // Fetch the video from the original source
+  try { // Fetch the video from the original source
     const response = await fetch(url, {
       method: req.method || 'GET',
       headers: {
         'User-Agent': 'LMS-Ali-Video-Proxy/1.0',
         Accept: '*/*',
-        'Accept-Encoding': 'identity', // Disable compression for streaming
-      },
+        'Accept-Encoding': 'identity', // Disable compression for streaming },
     });
 
-    if (!response.ok) {
-      return res.status(response.status).json({
+    if (!response.ok) { return res.status(response.status).json({
         error: 'Failed to fetch video',
         status: response.status,
-        statusText: response.statusText
-      });
+        statusText: response.statusText });
     }
 
     // Copy relevant headers from the original response
@@ -46,18 +39,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const acceptRanges = response.headers.get('accept-ranges');
     const contentRange = response.headers.get('content-range');
 
-    if (contentType) {
-      res.setHeader('Content-Type', contentType);
-    }
-    if (contentLength) {
-      res.setHeader('Content-Length', contentLength);
-    }
-    if (acceptRanges) {
-      res.setHeader('Accept-Ranges', acceptRanges);
-    }
-    if (contentRange) {
-      res.setHeader('Content-Range', contentRange);
-    }
+    if (contentType) { res.setHeader('Content-Type', contentType); }
+    if (contentLength) { res.setHeader('Content-Length', contentLength); }
+    if (acceptRanges) { res.setHeader('Accept-Ranges', acceptRanges); }
+    if (contentRange) { res.setHeader('Content-Range', contentRange); }
 
     // Set caching headers
     res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
@@ -73,10 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Stream the video data
     const data = await response.arrayBuffer();
     res.send(Buffer.from(data));
-  } catch (error) {
-    res.status(500).json({
+  } catch (error) { res.status(500).json({
       error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
+      message: error instanceof Error ? error.message : 'Unknown error' });
   }
 }

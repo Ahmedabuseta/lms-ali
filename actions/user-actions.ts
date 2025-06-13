@@ -9,8 +9,7 @@ import { UserRole, StudentAccessType, Prisma } from '@prisma/client';
 import { requireTeacher } from '@/lib/api-auth';
 
 // Types for user management
-export interface UserFilters {
-  role?: UserRole;
+export interface UserFilters { role?: UserRole;
   accessType?: StudentAccessType;
   paymentReceived?: boolean;
   banned?: boolean;
@@ -18,21 +17,15 @@ export interface UserFilters {
   isTrialUsed?: boolean;
   search?: string;
   dateFrom?: Date;
-  dateTo?: Date;
-}
+  dateTo?: Date; }
 
-export interface UserSortOptions {
-  field: 'name' | 'email' | 'createdAt' | 'updatedAt' | 'role' | 'accessType' | 'paymentAmount';
-  direction: 'asc' | 'desc';
-}
+export interface UserSortOptions { field: 'name' | 'email' | 'createdAt' | 'updatedAt' | 'role' | 'accessType' | 'paymentAmount';
+  direction: 'asc' | 'desc'; }
 
-export interface PaginationOptions {
-  page: number;
-  limit: number;
-}
+export interface PaginationOptions { page: number;
+  limit: number; }
 
-export interface UserWithRelations {
-  id: string;
+export interface UserWithRelations { id: string;
   email: string;
   name: string | null;
   image: string | null;
@@ -54,41 +47,35 @@ export interface UserWithRelations {
   banExpires: Date | null;
   _count: {
     sessions: number;
-    accounts: number;
-  };
+    accounts: number; };
 }
 
-export interface UsersResponse {
-  users: UserWithRelations[];
+export interface UsersResponse { users: UserWithRelations[];
   totalCount: number;
   totalPages: number;
   currentPage: number;
   hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
+  hasPreviousPage: boolean; }
 
-export interface UserSession {
-  id: string;
+export interface UserSession { id: string;
   userId: string;
   token: string;
   expiresAt: Date;
   ipAddress?: string;
   userAgent?: string;
   createdAt: Date;
-  updatedAt: Date;
-}
+  updatedAt: Date; }
 
 // Get all users with advanced filtering, sorting, and pagination
 export async function getAllUsers(
   filters: UserFilters = {},
   sort: UserSortOptions = { field: 'createdAt', direction: 'desc' },
   pagination: PaginationOptions = { page: 1, limit: 10 }
-): Promise<UsersResponse> {
-  await requireTeacher();
+): Promise<UsersResponse> { await requireTeacher();
 
   try {
     // Build where clause based on filters
-    const where: Prisma.UserWhereInput = {};
+    const where: Prisma.UserWhereInput = { };
 
     if (filters.role) {
       where.role = filters.role;
@@ -114,8 +101,7 @@ export async function getAllUsers(
       where.isTrialUsed = filters.isTrialUsed;
     }
 
-    if (filters.search) {
-      where.OR = [
+    if (filters.search) { where.OR = [
         { name: { contains: filters.search, mode: 'insensitive' } },
         { email: { contains: filters.search, mode: 'insensitive' } },
       ];
@@ -132,9 +118,7 @@ export async function getAllUsers(
     }
 
     // Build orderBy clause
-    const orderBy: Prisma.UserOrderByWithRelationInput = {
-      [sort.field]: sort.direction,
-    };
+    const orderBy: Prisma.UserOrderByWithRelationInput = { [sort.field]: sort.direction, };
 
     // Calculate pagination
     const skip = (pagination.page - 1) * pagination.limit;
@@ -142,8 +126,7 @@ export async function getAllUsers(
     // Get total count and users in parallel
     const [totalCount, users] = await Promise.all([
       db.user.count({ where }),
-      db.user.findMany({
-        where,
+      db.user.findMany({ where,
         orderBy,
         skip,
         take: pagination.limit,
@@ -151,8 +134,7 @@ export async function getAllUsers(
           _count: {
             select: {
               sessions: true,
-              accounts: true,
-            },
+              accounts: true, },
           },
         },
       }),
@@ -163,74 +145,60 @@ export async function getAllUsers(
     const hasNextPage = pagination.page < totalPages;
     const hasPreviousPage = pagination.page > 1;
 
-    return {
-      users: users as UserWithRelations[],
+    return { users: users as UserWithRelations[],
       totalCount,
       totalPages,
       currentPage: pagination.page,
       hasNextPage,
-      hasPreviousPage,
-    };
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    throw new Error('Failed to fetch users');
-  }
+      hasPreviousPage, };
+  } catch (error) { console.error('Error fetching users:', error);
+    throw new Error('Failed to fetch users'); }
 }
 
 // Get user by ID with full details
-export async function getUserById(userId: string): Promise<UserWithRelations | null> {
-  await requireTeacher();
+export async function getUserById(userId: string): Promise<UserWithRelations | null> { await requireTeacher();
 
   try {
     const user = await db.user.findUnique({
       where: { id: userId },
-      include: {
-        _count: {
+      include: { _count: {
           select: {
             sessions: true,
-            accounts: true,
-          },
+            accounts: true, },
         },
       },
     });
 
     return user as UserWithRelations | null;
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    throw new Error('Failed to fetch user');
-  }
+  } catch (error) { console.error('Error fetching user:', error);
+    throw new Error('Failed to fetch user'); }
 }
 
 // Update user role
-export async function updateUserRole(userId: string, role: UserRole) {
-  await requireTeacher();
+export async function updateUserRole(userId: string, role: UserRole) { await requireTeacher();
 
   try {
     const updatedUser = await db.user.update({
       where: { id: userId },
-      data: { 
-        role,
-        updatedAt: new Date(),
-      },
+      data: { role,
+        updatedAt: new Date(), },
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error('Error updating user role:', error);
+  } catch (error) { console.error('Error updating user role:', error);
     return { success: false, error: 'Failed to update user role' };
   }
 }
 
 // Update user access type
 export async function updateUserAccess(
-  userId: string, 
+  userId: string,
   accessType: StudentAccessType,
   paymentAmount?: number,
   paymentNotes?: string
-) {
-  const admin = await requireTeacher();
+) { const admin = await requireTeacher();
 
   try {
     const updateData: Prisma.UserUpdateInput = {
@@ -238,8 +206,7 @@ export async function updateUserAccess(
       accessGrantedBy: admin.id,
       accessGrantedAt: new Date(),
       paymentReceived: accessType !== 'NO_ACCESS',
-      updatedAt: new Date(),
-    };
+      updatedAt: new Date(), };
 
     if (paymentAmount !== undefined) {
       updateData.paymentAmount = paymentAmount;
@@ -258,27 +225,24 @@ export async function updateUserAccess(
       updateData.isTrialUsed = true;
     }
 
-    const updatedUser = await db.user.update({
-      where: { id: userId },
+    const updatedUser = await db.user.update({ where: { id: userId },
       data: updateData,
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error('Error updating user access:', error);
+  } catch (error) { console.error('Error updating user access:', error);
     return { success: false, error: 'Failed to update user access' };
   }
 }
 
 // Enhanced ban/unban user with comprehensive error handling
 export async function banUser(
-  userId: string, 
+  userId: string,
   banReason: string,
   banDuration?: number // hours
-) {
-  await requireTeacher();
+) { await requireTeacher();
 
   try {
     // Check if user exists and is not already banned
@@ -287,17 +251,14 @@ export async function banUser(
       select: { id: true, banned: true, role: true, email: true }
     });
 
-    if (!existingUser) {
-      return { success: false, error: 'User not found' };
+    if (!existingUser) { return { success: false, error: 'User not found' };
     }
 
-    if (existingUser.banned) {
-      return { success: false, error: 'User is already banned' };
+    if (existingUser.banned) { return { success: false, error: 'User is already banned' };
     }
 
     // Prevent banning other teachers
-    if (existingUser.role === 'TEACHER') {
-      return { success: false, error: 'Cannot ban other teachers' };
+    if (existingUser.role === 'TEACHER') { return { success: false, error: 'Cannot ban other teachers' };
     }
 
     let banExpiresAt: Date | undefined;
@@ -306,12 +267,10 @@ export async function banUser(
     }
 
     // Ban the user using Better Auth admin method
-    const result = await auth.api.banUser({
-      body: {
+    const result = await auth.api.banUser({ body: {
         userId,
         banReason: banReason || "No reason provided",
-        banExpiresIn: banDuration ? banDuration * 60 * 60 : undefined, // Convert hours to seconds
-      },
+        banExpiresIn: banDuration ? banDuration * 60 * 60 : undefined, // Convert hours to seconds },
       headers: headers(),
     });
 
@@ -321,15 +280,13 @@ export async function banUser(
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: result };
-  } catch (error) {
-    console.error('Error banning user:', error);
+  } catch (error) { console.error('Error banning user:', error);
     return { success: false, error: 'Failed to ban user' };
   }
 }
 
 // Enhanced unban user
-export async function unbanUser(userId: string) {
-  await requireTeacher();
+export async function unbanUser(userId: string) { await requireTeacher();
 
   try {
     // Check if user exists and is banned
@@ -338,34 +295,28 @@ export async function unbanUser(userId: string) {
       select: { id: true, banned: true, email: true }
     });
 
-    if (!existingUser) {
-      return { success: false, error: 'User not found' };
+    if (!existingUser) { return { success: false, error: 'User not found' };
     }
 
-    if (!existingUser.banned) {
-      return { success: false, error: 'User is not banned' };
+    if (!existingUser.banned) { return { success: false, error: 'User is not banned' };
     }
 
     // Unban the user using Better Auth admin method
-    const result = await auth.api.unbanUser({
-      body: {
-        userId,
-      },
+    const result = await auth.api.unbanUser({ body: {
+        userId, },
       headers: headers(),
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: result };
-  } catch (error) {
-    console.error('Error unbanning user:', error);
+  } catch (error) { console.error('Error unbanning user:', error);
     return { success: false, error: 'Failed to unban user' };
   }
 }
 
 // Grant trial access to user
-export async function grantTrialAccess(userId: string) {
-  const admin = await requireTeacher();
+export async function grantTrialAccess(userId: string) { const admin = await requireTeacher();
 
   try {
     // Check if user already used trial
@@ -374,113 +325,94 @@ export async function grantTrialAccess(userId: string) {
       select: { id: true, isTrialUsed: true, accessType: true, banned: true }
     });
 
-    if (!user) {
-      return { success: false, error: 'User not found' };
+    if (!user) { return { success: false, error: 'User not found' };
     }
 
-    if (user.banned) {
-      return { success: false, error: 'Cannot grant access to banned user' };
+    if (user.banned) { return { success: false, error: 'Cannot grant access to banned user' };
     }
 
-    if (user.isTrialUsed) {
-      return { success: false, error: 'User has already used their trial' };
+    if (user.isTrialUsed) { return { success: false, error: 'User has already used their trial' };
     }
 
     const now = new Date();
     const trialEnd = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
-    const updatedUser = await db.user.update({
-      where: { id: userId },
-      data: {
-        accessType: 'FREE_TRIAL',
+    const updatedUser = await db.user.update({ where: { id: userId },
+      data: { accessType: 'FREE_TRIAL',
         trialStartDate: now,
         trialEndDate: trialEnd,
         isTrialUsed: true,
         accessGrantedBy: admin.id,
         accessGrantedAt: now,
-        updatedAt: now,
-      },
+        updatedAt: now, },
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error('Error granting trial access:', error);
+  } catch (error) { console.error('Error granting trial access:', error);
     return { success: false, error: 'Failed to grant trial access' };
   }
 }
 
 // List all sessions for a user with enhanced details
-export async function listUserSessions(userId: string) {
-  await requireTeacher();
+export async function listUserSessions(userId: string) { await requireTeacher();
 
   try {
     const sessions = await auth.api.listUserSessions({
       body: {
-        userId,
-      },
+        userId, },
       headers: headers(),
     });
 
     return { success: true, sessions };
-  } catch (error) {
-    console.error('Error listing user sessions:', error);
+  } catch (error) { console.error('Error listing user sessions:', error);
     return { success: false, error: 'Failed to list user sessions' };
   }
 }
 
 // Revoke a specific session for a user
-export async function revokeUserSession(sessionToken: string) {
-  await requireTeacher();
+export async function revokeUserSession(sessionToken: string) { await requireTeacher();
 
   try {
     const result = await auth.api.revokeUserSession({
       body: {
-        sessionToken,
-      },
+        sessionToken, },
       headers: headers(),
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, session: result };
-  } catch (error) {
-    console.error('Error revoking user session:', error);
+  } catch (error) { console.error('Error revoking user session:', error);
     return { success: false, error: 'Failed to revoke user session' };
   }
 }
 
 // Revoke all sessions for a user
-export async function revokeUserSessions(userId: string) {
-  await requireTeacher();
+export async function revokeUserSessions(userId: string) { await requireTeacher();
 
   try {
     const result = await auth.api.revokeUserSessions({
       body: {
-        userId,
-      },
+        userId, },
       headers: headers(),
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, sessions: result };
-  } catch (error) {
-    console.error('Error revoking user sessions:', error);
+  } catch (error) { console.error('Error revoking user sessions:', error);
     return { success: false, error: 'Failed to revoke user sessions' };
   }
 }
 
 // Create a new user
-export async function createUser(userData: {
-  name: string;
+export async function createUser(userData: { name: string;
   email: string;
   password: string;
   role?: 'admin' | 'user';
-  data?: Record<string, any>;
-}) {
-  await requireTeacher();
+  data?: Record<string, any>; }) { await requireTeacher();
 
   try {
     const newUser = await auth.api.createUser({
@@ -489,7 +421,7 @@ export async function createUser(userData: {
         email: userData.email,
         password: userData.password,
         role: userData.role || "user",
-        data: userData.data || {},
+        data: userData.data || { },
       },
       headers: headers(),
     });
@@ -497,15 +429,13 @@ export async function createUser(userData: {
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: newUser };
-  } catch (error) {
-    console.error('Error creating user:', error);
+  } catch (error) { console.error('Error creating user:', error);
     return { success: false, error: 'Failed to create user' };
   }
 }
 
 // List users using Better Auth admin API
-export async function listUsers(options: {
-  searchField?: 'email' | 'name';
+export async function listUsers(options: { searchField?: 'email' | 'name';
   searchOperator?: 'contains' | 'starts_with' | 'ends_with';
   searchValue?: string;
   limit?: number;
@@ -514,9 +444,7 @@ export async function listUsers(options: {
   sortDirection?: 'asc' | 'desc';
   filterField?: string;
   filterOperator?: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte';
-  filterValue?: string;
-} = {}) {
-  await requireTeacher();
+  filterValue?: string; } = {}) { await requireTeacher();
 
   try {
     const users = await auth.api.listUsers({
@@ -530,43 +458,37 @@ export async function listUsers(options: {
         sortDirection: options.sortDirection || 'asc',
         filterField: options.filterField,
         filterOperator: options.filterOperator,
-        filterValue: options.filterValue,
-      },
+        filterValue: options.filterValue, },
       headers: headers(),
     });
 
     return { success: true, ...users };
-  } catch (error) {
-    console.error('Error listing users:', error);
+  } catch (error) { console.error('Error listing users:', error);
     return { success: false, error: 'Failed to list users' };
   }
 }
 
 // Set user role
-export async function setUserRole(userId: string, role: 'admin' | 'user') {
-  await requireTeacher();
+export async function setUserRole(userId: string, role: 'admin' | 'user') { await requireTeacher();
 
   try {
     const updatedUser = await auth.api.setRole({
       body: {
         userId,
-        role,
-      },
+        role, },
       headers: headers(),
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error('Error setting user role:', error);
+  } catch (error) { console.error('Error setting user role:', error);
     return { success: false, error: 'Failed to set user role' };
   }
 }
 
 // Hard delete user from database
-export async function removeUser(userId: string) {
-  await requireTeacher();
+export async function removeUser(userId: string) { await requireTeacher();
 
   try {
     // Check if user exists and is not a teacher
@@ -575,61 +497,50 @@ export async function removeUser(userId: string) {
       select: { role: true, email: true }
     });
 
-    if (!user) {
-      return { success: false, error: 'User not found' };
+    if (!user) { return { success: false, error: 'User not found' };
     }
 
-    if (user.role === 'TEACHER') {
-      return { success: false, error: 'Cannot delete teacher accounts' };
+    if (user.role === 'TEACHER') { return { success: false, error: 'Cannot delete teacher accounts' };
     }
 
-    const result = await auth.api.removeUser({
-      body: {
-        userId,
-      },
+    const result = await auth.api.removeUser({ body: {
+        userId, },
       headers: headers(),
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, user: result };
-  } catch (error) {
-    console.error('Error removing user:', error);
+  } catch (error) { console.error('Error removing user:', error);
     return { success: false, error: 'Failed to remove user from database' };
   }
 }
 
 // Impersonate a user
-export async function impersonateUser(userId: string) {
-  await requireTeacher();
+export async function impersonateUser(userId: string) { await requireTeacher();
 
   try {
     const session = await auth.api.impersonateUser({
       body: {
-        userId,
-      },
+        userId, },
       headers: headers(),
     });
 
     return { success: true, session };
-  } catch (error) {
-    console.error('Error impersonating user:', error);
+  } catch (error) { console.error('Error impersonating user:', error);
     return { success: false, error: 'Failed to impersonate user' };
   }
 }
 
 // Stop impersonating a user
-export async function stopImpersonating() {
-  await requireTeacher();
+export async function stopImpersonating() { await requireTeacher();
 
   try {
     await auth.api.stopImpersonating({
-      headers: headers(),
-    });
+      headers: headers(), });
 
     return { success: true };
-  } catch (error) {
-    console.error('Error stopping impersonation:', error);
+  } catch (error) { console.error('Error stopping impersonation:', error);
     return { success: false, error: 'Failed to stop impersonating' };
   }
 }
@@ -637,19 +548,15 @@ export async function stopImpersonating() {
 // Bulk operations
 export async function bulkUpdateUsers(
   userIds: string[],
-  updates: {
-    role?: UserRole;
+  updates: { role?: UserRole;
     accessType?: StudentAccessType;
     banned?: boolean;
-    banReason?: string;
-  }
-) {
-  const admin = await requireTeacher();
+    banReason?: string; }
+) { const admin = await requireTeacher();
 
   try {
     const updateData: Prisma.UserUpdateManyArgs['data'] = {
-      updatedAt: new Date(),
-    };
+      updatedAt: new Date(), };
 
     if (updates.role) updateData.role = updates.role;
     if (updates.accessType) {
@@ -658,28 +565,23 @@ export async function bulkUpdateUsers(
       updateData.accessGrantedAt = new Date();
       updateData.paymentReceived = updates.accessType !== 'NO_ACCESS';
     }
-    if (updates.banned !== undefined) {
-      updateData.banned = updates.banned;
-      updateData.banReason = updates.banned ? updates.banReason : null;
-    }
+    if (updates.banned !== undefined) { updateData.banned = updates.banned;
+      updateData.banReason = updates.banned ? updates.banReason : null; }
 
-    const result = await db.user.updateMany({
-      where: { id: { in: userIds } },
+    const result = await db.user.updateMany({ where: { id: { in: userIds } },
       data: updateData,
     });
 
     revalidatePath('/admin/users');
     revalidatePath('/teacher/users');
     return { success: true, updatedCount: result.count };
-  } catch (error) {
-    console.error('Error bulk updating users:', error);
+  } catch (error) { console.error('Error bulk updating users:', error);
     return { success: false, error: 'Failed to bulk update users' };
   }
 }
 
 // Get user statistics for dashboard
-export async function getUserStatistics() {
-  await requireTeacher();
+export async function getUserStatistics() { await requireTeacher();
 
   try {
     const [
@@ -697,23 +599,18 @@ export async function getUserStatistics() {
       db.user.count({ where: { accessType: 'FREE_TRIAL' } }),
       db.user.count({ where: { paymentReceived: true } }),
       db.user.count({ where: { banned: true } }),
-      db.user.count({ 
-        where: { 
-          createdAt: { 
-            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
-          } 
-        } 
+      db.user.count({ where: {
+          createdAt: {
+            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days }
+        }
       }),
     ]);
 
     // Get access type distribution
-    const accessTypeStats = await db.user.groupBy({
-      by: ['accessType'],
-      _count: true,
-    });
+    const accessTypeStats = await db.user.groupBy({ by: ['accessType'],
+      _count: true, });
 
-    return {
-      totalUsers,
+    return { totalUsers,
       totalStudents,
       totalTeachers,
       activeTrials,
@@ -722,25 +619,19 @@ export async function getUserStatistics() {
       recentUsers,
       accessTypeStats: accessTypeStats.reduce((acc, stat) => {
         acc[stat.accessType] = stat._count;
-        return acc;
-      }, {} as Record<string, number>),
+        return acc; }, {} as Record<string, number>),
     };
-  } catch (error) {
-    console.error('Error fetching user statistics:', error);
-    throw new Error('Failed to fetch user statistics');
-  }
+  } catch (error) { console.error('Error fetching user statistics:', error);
+    throw new Error('Failed to fetch user statistics'); }
 }
 
 // Search users with advanced options
 export async function searchUsers(
   query: string,
-  filters: {
-    role?: UserRole;
+  filters: { role?: UserRole;
     accessType?: StudentAccessType;
-    includeDeleted?: boolean;
-  } = {}
-) {
-  await requireTeacher();
+    includeDeleted?: boolean; } = {}
+) { await requireTeacher();
 
   try {
     const where: Prisma.UserWhereInput = {
@@ -758,57 +649,48 @@ export async function searchUsers(
       where.accessType = filters.accessType;
     }
 
-    if (!filters.includeDeleted) {
-      where.banned = { not: true };
+    if (!filters.includeDeleted) { where.banned = { not: true };
     }
 
-    const users = await db.user.findMany({
-      where,
+    const users = await db.user.findMany({ where,
       take: 20, // Limit search results
       orderBy: { name: 'asc' },
-      select: {
-        id: true,
+      select: { id: true,
         name: true,
         email: true,
         image: true,
         role: true,
         accessType: true,
         banned: true,
-        createdAt: true,
-      },
+        createdAt: true, },
     });
 
     return { success: true, users };
-  } catch (error) {
-    console.error('Error searching users:', error);
+  } catch (error) { console.error('Error searching users:', error);
     return { success: false, error: 'Failed to search users' };
   }
 }
 
 // Export user data (for admin reports)
-export async function exportUserData(filters: UserFilters = {}) {
-  await requireTeacher();
+export async function exportUserData(filters: UserFilters = {}) { await requireTeacher();
 
   try {
-    const where: Prisma.UserWhereInput = {};
+    const where: Prisma.UserWhereInput = { };
 
     // Apply same filters as getAllUsers
     if (filters.role) where.role = filters.role;
     if (filters.accessType) where.accessType = filters.accessType;
     if (filters.paymentReceived !== undefined) where.paymentReceived = filters.paymentReceived;
     if (filters.banned !== undefined) where.banned = filters.banned;
-    if (filters.search) {
-      where.OR = [
+    if (filters.search) { where.OR = [
         { name: { contains: filters.search, mode: 'insensitive' } },
         { email: { contains: filters.search, mode: 'insensitive' } },
       ];
     }
 
-    const users = await db.user.findMany({
-      where,
+    const users = await db.user.findMany({ where,
       orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
+      select: { id: true,
         email: true,
         name: true,
         role: true,
@@ -821,13 +703,11 @@ export async function exportUserData(filters: UserFilters = {}) {
         banned: true,
         banReason: true,
         createdAt: true,
-        updatedAt: true,
-      },
+        updatedAt: true, },
     });
 
     return { success: true, users };
-  } catch (error) {
-    console.error('Error exporting user data:', error);
+  } catch (error) { console.error('Error exporting user data:', error);
     return { success: false, error: 'Failed to export user data' };
   }
 }

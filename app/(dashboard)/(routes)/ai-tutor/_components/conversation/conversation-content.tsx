@@ -3,25 +3,18 @@ import { ChatMessage } from '../chat-message';
 import { EmptyConversation } from './empty-conversation';
 import { CardContent } from '@/components/ui/card';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+interface Message { role: 'user' | 'assistant';
+  content: string; }
 
-interface ConversationContentProps {
-  messages: Message[];
+interface ConversationContentProps { messages: Message[];
   thinking: boolean;
   streamingContent: string;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
-}
+  messagesEndRef: React.RefObject<HTMLDivElement>; }
 
-export const ConversationContent = ({
-  messages,
+export const ConversationContent = ({ messages,
   thinking,
   streamingContent,
-  messagesEndRef,
-}: ConversationContentProps) => {
-  return (
+  messagesEndRef, }: ConversationContentProps) => { return (
     <CardContent className="h-full p-0">
       <div className="h-full overflow-y-auto">
         <div className="space-y-1 min-h-full">
@@ -30,7 +23,7 @@ export const ConversationContent = ({
           ) : (
             <>
               {messages.map((message, index) => (
-                <ChatMessage key={index} role={message.role} content={message.content} />
+                <ChatMessage key={index } role={message.role} content={message.content} />
               ))}
 
               {/* Show thinking indicator */}

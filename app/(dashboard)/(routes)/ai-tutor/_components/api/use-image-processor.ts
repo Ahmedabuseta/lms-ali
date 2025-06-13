@@ -2,8 +2,7 @@ import { useState, useCallback } from 'react';
 import { performOptimizedOCR } from '../ocr';
 import { showNotification } from '@/components/ui/notifications';
 
-export const useImageProcessor = () => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export const useImageProcessor = () => { const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [extractedText, setExtractedText] = useState('');
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -22,8 +21,7 @@ export const useImageProcessor = () => {
         const reader = new FileReader();
         reader.onload = (e) => {
           if (e.target?.result) {
-            setImagePreview(e.target.result as string);
-          }
+            setImagePreview(e.target.result as string); }
         };
         reader.readAsDataURL(file);
         setProgress(20);
@@ -42,15 +40,13 @@ export const useImageProcessor = () => {
             setIsProcessingImage(false);
             return { success: false };
           }
-        } else {
-          // Server-side OCR
+        } else { // Server-side OCR
           const formData = new FormData();
           formData.append('image', file);
 
           const response = await fetch('/api/image-processing/ocr', {
             method: 'POST',
-            body: formData,
-          });
+            body: formData, });
 
           if (!response.ok) {
             throw new Error('Failed to process image on server');
@@ -65,8 +61,7 @@ export const useImageProcessor = () => {
         setProgress(100);
         showNotification.success('Image processed successfully', 'Text has been extracted from your image');
         return { success: true };
-      } catch (error) {
-        console.error('Image processing error:', error);
+      } catch (error) { console.error('Image processing error:', error);
         setImageError('Failed to process image. Please try again or use a clearer image.');
         showNotification.error(
           'Image processing failed',
@@ -88,8 +83,7 @@ export const useImageProcessor = () => {
     setImageError(null);
   }, []);
 
-  return {
-    imagePreview,
+  return { imagePreview,
     extractedText,
     isProcessingImage,
     progress,
@@ -98,6 +92,5 @@ export const useImageProcessor = () => {
     setUseClientSideOCR,
     processImage,
     resetImageProcessing,
-    setExtractedText,
-  };
+    setExtractedText, };
 };

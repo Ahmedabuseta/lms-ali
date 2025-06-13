@@ -4,12 +4,9 @@ import { canAccessChapterServices, getCurrentUser } from '@/lib/user';
 import { db } from '@/lib/db';
 import * as z from 'zod';
 
-const startAttemptSchema = z.object({
-  examId: z.string().optional(), // Optional since it's in the URL
-});
+const startAttemptSchema = z.object({ examId: z.string().optional(), // Optional since it's in the URL });
 
-export async function POST(req: Request, { params }: { params: { examId: string } }) {
-  try {
+export async function POST(req: Request, { params }: { params: { examId: string } }) { try {
     // Get current user
     const user = await getCurrentUser();
     if (!user) {
@@ -22,96 +19,79 @@ export async function POST(req: Request, { params }: { params: { examId: string 
     // Validate request body
     const body = await req.json().catch(() => ({}));
     const validationResult = startAttemptSchema.safeParse(body);
-    
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { 
+
+    if (!validationResult.success) { return NextResponse.json(
+        {
           message: 'بيانات غير صحيحة',
-          errors: validationResult.error.errors 
-        },
+          errors: validationResult.error.errors },
         { status: 400 }
       );
     }
 
     // Get exam details with access requirements
-    const exam = await db.exam.findUnique({
-      where: { 
+    const exam = await db.exam.findUnique({ where: {
         id: params.examId,
-        isPublished: true,
-      },
-      include: {
-        course: {
+        isPublished: true, },
+      include: { course: {
           select: {
             id: true,
             title: true,
-            isPublished: true,
-          },
+            isPublished: true, },
         },
-        chapter: {
-          select: {
+        chapter: { select: {
             id: true,
             title: true,
             isPublished: true,
-            isFree: true,
-          },
+            isFree: true, },
         },
-        _count: {
-          select: {
-            examQuestions: true,
-          },
+        _count: { select: {
+            examQuestions: true, },
         },
       },
     });
 
-    if (!exam) {
-      return NextResponse.json(
+    if (!exam) { return NextResponse.json(
         { message: 'الامتحان غير موجود أو غير منشور' },
         { status: 404 }
       );
     }
 
-    if (!exam.course.isPublished) {
-      return NextResponse.json(
+    if (!exam.course.isPublished) { return NextResponse.json(
         { message: 'الدورة غير منشورة' },
         { status: 403 }
       );
     }
 
-    if (exam._count.examQuestions === 0) {
-      return NextResponse.json(
+    if (exam._count.examQuestions === 0) { return NextResponse.json(
         { message: 'الامتحان لا يحتوي على أسئلة' },
         { status: 400 }
       );
     }
 
     // Check chapter-specific access if exam belongs to a chapter
-    if (exam.chapterId) {
-      const hasAccess = await canAccessChapterServices(user, exam.chapterId);
+    if (exam.chapterId) { const hasAccess = await canAccessChapterServices(user, exam.chapterId);
       if (!hasAccess) {
         return NextResponse.json(
-          { 
+          {
             message: 'ليس لديك صلاحية للوصول إلى هذا الامتحان. يتطلب هذا الامتحان الوصول إلى المحتوى المدفوع.',
             requiresAccess: true,
-            chapterTitle: exam.chapter?.title,
-          },
+            chapterTitle: exam.chapter?.title, },
           { status: 403 }
         );
       }
     }
 
     // Check if user has reached maximum attempts
-    const completedAttempts = await db.examAttempt.count({
-      where: {
+    const completedAttempts = await db.examAttempt.count({ where: {
         userId: user.id,
         examId: params.examId,
         completedAt: { not: null },
       },
     });
 
-    if (completedAttempts >= exam.maxAttempts) {
-      return NextResponse.json(
-        { 
-          message: `لقد وصلت إلى الحد الأقصى من المحاولات (${exam.maxAttempts})`,
+    if (completedAttempts >= exam.maxAttempts) { return NextResponse.json(
+        {
+          message: `لقد وصلت إلى الحد الأقصى من المحاولات (${exam.maxAttempts })`,
           maxAttemptsReached: true,
           completedAttempts,
           maxAttempts: exam.maxAttempts,
@@ -121,30 +101,25 @@ export async function POST(req: Request, { params }: { params: { examId: string 
     }
 
     // Check for existing active attempt
-    const existingAttempt = await db.examAttempt.findFirst({
-      where: {
+    const existingAttempt = await db.examAttempt.findFirst({ where: {
         userId: user.id,
         examId: params.examId,
-        completedAt: null,
-      },
+        completedAt: null, },
     });
 
-    if (existingAttempt) {
-      // Validate if the attempt is still valid (not timed out)
+    if (existingAttempt) { // Validate if the attempt is still valid (not timed out)
       const validation = await validateExamAttempt(user.id, existingAttempt.id);
-      
+
       if (!validation.valid) {
         if (validation.reason === 'Time limit exceeded') {
           return NextResponse.json(
-            { 
+            {
               message: 'انتهت مدة المحاولة السابقة. يمكنك بدء محاولة جديدة.',
               timeExpired: true,
-              attemptId: existingAttempt.id,
-            },
+              attemptId: existingAttempt.id, },
             { status: 410 } // Gone
           );
-        } else {
-          return NextResponse.json(
+        } else { return NextResponse.json(
             { message: validation.reason },
             { status: 400 }
           );
@@ -152,21 +127,16 @@ export async function POST(req: Request, { params }: { params: { examId: string 
     }
 
       // Return existing valid attempt
-      return NextResponse.json({
-        attempt: existingAttempt,
+      return NextResponse.json({ attempt: existingAttempt,
         isExisting: true,
-        message: 'لديك محاولة نشطة بالفعل',
-      });
+        message: 'لديك محاولة نشطة بالفعل', });
     }
 
     // Start new exam attempt
-    const examAttempt = await startExamAttempt({
-      userId: user.id,
-      examId: params.examId,
-    });
+    const examAttempt = await startExamAttempt({ userId: user.id,
+      examId: params.examId, });
 
-    return NextResponse.json({
-      attempt: examAttempt,
+    return NextResponse.json({ attempt: examAttempt,
       isExisting: false,
       message: 'تم بدء الامتحان بنجاح',
       exam: {
@@ -174,33 +144,29 @@ export async function POST(req: Request, { params }: { params: { examId: string 
         timeLimit: exam.timeLimit,
         totalQuestions: exam._count.examQuestions,
         maxAttempts: exam.maxAttempts,
-        passingScore: exam.passingScore,
-      },
+        passingScore: exam.passingScore, },
     });
 
-  } catch (error) {
-    console.error('[START_EXAM_ATTEMPT_ERROR]', error);
-    
+  } catch (error) { console.error('[START_EXAM_ATTEMPT_ERROR]', error);
+
     // Handle specific error messages
     if (error instanceof Error) {
       if (error.message.includes('Maximum attempts')) {
         return NextResponse.json(
-          { 
+          {
             message: error.message,
-            maxAttemptsReached: true,
-          },
+            maxAttemptsReached: true, },
           { status: 403 }
         );
       }
-      
-      if (error.message.includes('not found') || error.message.includes('not published')) {
-        return NextResponse.json(
+
+      if (error.message.includes('not found') || error.message.includes('not published')) { return NextResponse.json(
           { message: error.message },
           { status: 404 }
         );
       }
     }
-    
+
     return NextResponse.json(
       { message: 'حدث خطأ أثناء بدء الامتحان' },
       { status: 500 }
@@ -208,8 +174,7 @@ export async function POST(req: Request, { params }: { params: { examId: string 
   }
 }
 
-export async function GET(req: Request, { params }: { params: { examId: string } }) {
-  try {
+export async function GET(req: Request, { params }: { params: { examId: string } }) { try {
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json(
@@ -219,55 +184,44 @@ export async function GET(req: Request, { params }: { params: { examId: string }
     }
 
     // Get user's attempts for this exam
-    const attempts = await db.examAttempt.findMany({
-      where: {
+    const attempts = await db.examAttempt.findMany({ where: {
         userId: user.id,
-        examId: params.examId,
-      },
-      include: {
-        exam: {
+        examId: params.examId, },
+      include: { exam: {
           select: {
             title: true,
             timeLimit: true,
             maxAttempts: true,
-            passingScore: true,
-          },
+            passingScore: true, },
         },
       },
-      orderBy: {
-        startedAt: 'desc',
-      },
+      orderBy: { startedAt: 'desc', },
     });
 
     // Find active attempt
     const activeAttempt = attempts.find(attempt => !attempt.completedAt);
-    
+
     // Get completed attempts
     const completedAttempts = attempts.filter(attempt => attempt.completedAt);
 
     // Calculate statistics
-    const stats = {
-      totalAttempts: attempts.length,
+    const stats = { totalAttempts: attempts.length,
       completedAttempts: completedAttempts.length,
       remainingAttempts: Math.max(0, (attempts[0]?.exam.maxAttempts || 1) - completedAttempts.length),
-      bestScore: completedAttempts.length > 0 
+      bestScore: completedAttempts.length > 0
         ? Math.max(...completedAttempts.map(a => a.score || 0))
         : null,
       averageScore: completedAttempts.length > 0
         ? Math.round(completedAttempts.reduce((sum, a) => sum + (a.score || 0), 0) / completedAttempts.length)
         : null,
-      hasPassedAttempt: completedAttempts.some(a => a.isPassed),
-    };
+      hasPassedAttempt: completedAttempts.some(a => a.isPassed), };
 
-    return NextResponse.json({
-      attempts: completedAttempts.slice(0, 10), // Last 10 completed attempts
+    return NextResponse.json({ attempts: completedAttempts.slice(0, 10), // Last 10 completed attempts
       activeAttempt,
       stats,
-      exam: attempts[0]?.exam || null,
-    });
+      exam: attempts[0]?.exam || null, });
 
-  } catch (error) {
-    console.error('[GET_EXAM_ATTEMPTS_ERROR]', error);
+  } catch (error) { console.error('[GET_EXAM_ATTEMPTS_ERROR]', error);
     return NextResponse.json(
       { message: 'حدث خطأ أثناء جلب المحاولات' },
       { status: 500 }

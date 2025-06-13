@@ -6,29 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBadge } from '@/components/icon-badge';
 
-interface ExamNavigationProps {
-  questions: any[];
+interface ExamNavigationProps { questions: any[];
   questionAttempts: any[];
   currentQuestionIndex: number;
   examId: string;
-  attemptId: string;
-}
+  attemptId: string; }
 
-export const ExamNavigation = ({
-  questions,
+export const ExamNavigation = ({ questions,
   questionAttempts,
   currentQuestionIndex,
   examId,
-  attemptId,
-}: ExamNavigationProps) => {
-  const router = useRouter();
+  attemptId, }: ExamNavigationProps) => { const router = useRouter();
 
   const totalQuestions = questions.length;
   const answeredCount = questionAttempts.length;
   const progress = Math.round((answeredCount / totalQuestions) * 100);
 
   const goToQuestion = (index: number) => {
-    router.push(`/exam/${examId}/attempt/${attemptId}?questionIndex=${index}`);
+    router.push(`/exam/${examId }/attempt/${attemptId}?questionIndex=${index}`);
   };
 
   const goToSubmit = () => {
@@ -51,7 +46,7 @@ export const ExamNavigation = ({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="relative p-6">
         {/* Progress Overview */}
         <div className="mb-6 rounded-lg bg-gradient-to-br from-blue-500/10 to-indigo-500/5 p-4 border border-blue-500/20 backdrop-blur-sm">
@@ -60,9 +55,9 @@ export const ExamNavigation = ({
             <span className="text-sm font-bold text-blue-600 dark:text-blue-400 font-arabic">{progress}%</span>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-muted/40 backdrop-blur-sm">
-            <div 
-              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500" 
-              style={{ width: `${progress}%` }} 
+            <div
+              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+              style={ { width: `${progress }%` }}
             />
           </div>
           <div className="flex justify-between text-xs text-muted-foreground font-arabic mt-2">
@@ -73,22 +68,21 @@ export const ExamNavigation = ({
 
         {/* Question Grid */}
         <div className="grid grid-cols-5 gap-2 mb-6">
-          {questions.map((question, index) => {
+          { questions.map((question, index) => {
             const isAnswered = isQuestionAnswered(question.id);
             const isCurrent = index === currentQuestionIndex;
 
             return (
               <button
-                key={question.id}
+                key={question.id }
                 onClick={() => goToQuestion(index)}
-                className={`
+                className={ `
                   relative flex h-10 w-10 items-center justify-center rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105
                   ${isCurrent
                     ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg border border-primary/30'
                     : isAnswered
                     ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/10 text-green-700 dark:text-green-300 border border-green-500/30 hover:from-green-500/30 hover:to-emerald-500/20'
-                    : 'bg-gradient-to-br from-muted/50 to-muted/30 text-muted-foreground border border-border/50 hover:from-muted/70 hover:to-muted/50'
-                  }
+                    : 'bg-gradient-to-br from-muted/50 to-muted/30 text-muted-foreground border border-border/50 hover:from-muted/70 hover:to-muted/50' }
                 `}
               >
                 <span className="relative z-10 font-arabic">{index + 1}</span>
@@ -122,10 +116,10 @@ export const ExamNavigation = ({
           </div>
         </div>
       </CardContent>
-      
+
       <CardFooter className="relative border-t border-border/50 bg-muted/20 pt-4">
-        <Button 
-          onClick={goToSubmit} 
+        <Button
+          onClick={goToSubmit}
           className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg border border-green-500/30 font-arabic group"
           size="lg"
         >

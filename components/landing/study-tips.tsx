@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import {
-  Calendar,
+import { Calendar,
   MessageSquare,
   Brain,
   Target,
@@ -13,16 +12,12 @@ import {
   Clock,
   BarChart3,
   Bookmark,
-  PlayCircle
-} from 'lucide-react';
+  PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface StudyTipsProps {
-  onStartClick?: () => void;
-}
+interface StudyTipsProps { onStartClick?: () => void; }
 
-export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
-  return (
+export const StudyTips = ({ onStartClick }: StudyTipsProps) => { return (
     <section className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 px-4 py-20 dark:from-slate-900 dark:via-gray-900 dark:to-zinc-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
@@ -35,7 +30,7 @@ export const StudyTips = ({ onStartClick }: StudyTipsProps) => {
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Left Column - Platform Features Usage */}
+          {/* Left Column - Platform Features Usage */ }
           <div className="space-y-6">
             <h3 className="mb-8 text-2xl font-bold text-gray-800 dark:text-white font-arabic">استخدام مميزات المنصة بشطارة</h3>
 

@@ -43,14 +43,11 @@ export const startFreeTrial = async () => {
   const trialStartDate = new Date();
   const trialEndDate = new Date(trialStartDate.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
-  return await db.user.update({
-    where: { id: user.id },
-    data: {
-      accessType: StudentAccessType.FREE_TRIAL,
+  return await db.user.update({ where: { id: user.id },
+    data: { accessType: StudentAccessType.FREE_TRIAL,
       trialStartDate,
       trialEndDate,
-      isTrialUsed: true,
-    },
+      isTrialUsed: true, },
   });
 };
 
@@ -79,8 +76,7 @@ export const getTrialDaysLeft = (user: any) => {
   return Math.max(0, diffDays);
 };
 
-export const getUserPermissions = async () => {
-  const user = await getCurrentUser();
+export const getUserPermissions = async () => { const user = await getCurrentUser();
 
   if (!user) {
     return {
@@ -94,15 +90,13 @@ export const getUserPermissions = async () => {
       accessType: 'NO_ACCESS',
       canStartTrial: false,
       trialDaysLeft: 0,
-      isTrialExpired: false,
-    };
+      isTrialExpired: false, };
   }
 
   const isTeacherRole = user.role === UserRole.TEACHER;
 
   // Teachers have access to everything
-  if (isTeacherRole) {
-    return {
+  if (isTeacherRole) { return {
       canAccessVideos: true,
       canAccessCourses: true,
       canAccessExams: true,
@@ -113,16 +107,14 @@ export const getUserPermissions = async () => {
       accessType: 'TEACHER',
       canStartTrial: false,
       trialDaysLeft: 0,
-      isTrialExpired: false,
-    };
+      isTrialExpired: false, };
   }
 
   // Students - check access type
   const trialExpired = isTrialExpired(user);
   const trialDaysLeft = getTrialDaysLeft(user);
 
-  switch (user.accessType) {
-    case StudentAccessType.NO_ACCESS:
+  switch (user.accessType) { case StudentAccessType.NO_ACCESS:
       return {
         canAccessVideos: false,
         canAccessCourses: false,
@@ -134,13 +126,11 @@ export const getUserPermissions = async () => {
         accessType: 'NO_ACCESS',
         canStartTrial: !user.isTrialUsed,
         trialDaysLeft: 0,
-        isTrialExpired: false,
-      };
+        isTrialExpired: false, };
 
     case StudentAccessType.FREE_TRIAL:
       const hasAccess = !trialExpired;
-      return {
-        canAccessVideos: false, // No video access during trial
+      return { canAccessVideos: false, // No video access during trial
         canAccessCourses: false, // No full course access during trial
         canAccessExams: hasAccess, // Only for free chapters
         canAccessFlashcards: hasAccess, // Only for free chapters
@@ -150,12 +140,10 @@ export const getUserPermissions = async () => {
         accessType: 'FREE_TRIAL',
         canStartTrial: false,
         trialDaysLeft,
-        isTrialExpired: trialExpired,
-      };
+        isTrialExpired: trialExpired, };
 
     case StudentAccessType.FULL_ACCESS:
-      return {
-        canAccessVideos: true,
+      return { canAccessVideos: true,
         canAccessCourses: true,
         canAccessExams: true,
         canAccessFlashcards: true,
@@ -165,12 +153,10 @@ export const getUserPermissions = async () => {
         accessType: 'FULL_ACCESS',
         canStartTrial: false,
         trialDaysLeft: 0,
-        isTrialExpired: false,
-      };
+        isTrialExpired: false, };
 
     case StudentAccessType.LIMITED_ACCESS:
-      return {
-        canAccessVideos: false, // Limited access excludes videos
+      return { canAccessVideos: false, // Limited access excludes videos
         canAccessCourses: true,
         canAccessExams: true,
         canAccessFlashcards: true,
@@ -180,12 +166,10 @@ export const getUserPermissions = async () => {
         accessType: 'LIMITED_ACCESS',
         canStartTrial: false,
         trialDaysLeft: 0,
-        isTrialExpired: false,
-      };
+        isTrialExpired: false, };
 
     default:
-      return {
-        canAccessVideos: false,
+      return { canAccessVideos: false,
         canAccessCourses: false,
         canAccessExams: false,
         canAccessFlashcards: false,
@@ -195,24 +179,21 @@ export const getUserPermissions = async () => {
         accessType: 'NO_ACCESS',
         canStartTrial: false,
         trialDaysLeft: 0,
-        isTrialExpired: false,
-      };
+        isTrialExpired: false, };
   }
 };
 
 // Check if a chapter is free (position 1 or marked as free)
-export const isChapterFree = async (chapterId: string) => {
-  const chapter = await db.chapter.findUnique({
+export const isChapterFree = async (chapterId: string) => { const chapter = await db.chapter.findUnique({
     where: { id: chapterId },
     select: { position: true, isFree: true }
   });
-  
+
   return chapter?.position === 1 || chapter?.isFree || false;
 };
 
 // Check if user can access specific chapter content
-export const canAccessChapterContent = async (user: any, chapterId: string) => {
-  if (!user) return false;
+export const canAccessChapterContent = async (user: any, chapterId: string) => { if (!user) return false;
 
   // Teachers have access to everything
   if (user.role === UserRole.TEACHER) return true;
@@ -232,13 +213,11 @@ export const canAccessChapterContent = async (user: any, chapterId: string) => {
     case StudentAccessType.NO_ACCESS:
     default:
       // No access users can only see free chapters
-      return await isChapterFree(chapterId);
-  }
+      return await isChapterFree(chapterId); }
 };
 
 // Check if user can access chapter services (exams, flashcards, practice)
-export const canAccessChapterServices = async (user: any, chapterId: string) => {
-  if (!user) return false;
+export const canAccessChapterServices = async (user: any, chapterId: string) => { if (!user) return false;
 
   // Teachers have access to everything
   if (user.role === UserRole.TEACHER) return true;
@@ -258,6 +237,5 @@ export const canAccessChapterServices = async (user: any, chapterId: string) => 
     case StudentAccessType.NO_ACCESS:
     default:
       // No access users cannot use services
-      return false;
-  }
+      return false; }
 };

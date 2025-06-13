@@ -5,10 +5,8 @@ import { X, Calendar, Gift, Star, LogIn } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
-interface EidModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+interface EidModalProps { isOpen: boolean;
+  onClose: () => void; }
 
 export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
   const router = useRouter();
@@ -69,8 +67,8 @@ export const EidModal = ({ isOpen, onClose }: EidModalProps) => {
             </div>
 
             <div className="flex items-center justify-center gap-1">
-              {[1, 2, 3].map((star) => (
-                <Star key={star} className="h-4 w-4 fill-current text-yellow-400" />
+              { [1, 2, 3].map((star) => (
+                <Star key={star } className="h-4 w-4 fill-current text-yellow-400" />
               ))}
             </div>
           </div>

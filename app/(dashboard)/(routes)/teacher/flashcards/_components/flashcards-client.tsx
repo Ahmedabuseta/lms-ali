@@ -19,36 +19,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-interface Course {
-  id: string;
-  title: string;
-}
+interface Course { id: string;
+  title: string; }
 
-interface Chapter {
-  id: string;
-  title: string;
-}
+interface Chapter { id: string;
+  title: string; }
 
-interface Flashcard {
-  id: string;
+interface Flashcard { id: string;
   question: string;
   answer: string;
   chapterId: string;
-  createdAt: Date;
-}
+  createdAt: Date; }
 
-interface FlashcardsClientProps {
-  courses: Course[];
-}
+interface FlashcardsClientProps { courses: Course[]; }
 
-const formSchema = z.object({
-  question: z.string().min(1, { message: 'السؤال مطلوب' }),
+const formSchema = z.object({ question: z.string().min(1, { message: 'السؤال مطلوب' }),
   answer: z.string().min(1, { message: 'الإجابة مطلوبة' }),
   chapterId: z.string().min(1, { message: 'الفصل مطلوب' }),
 });
 
-export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => { const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null);
@@ -59,8 +49,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
     defaultValues: {
       question: '',
       answer: '',
-      chapterId: '',
-    },
+      chapterId: '', },
   });
 
   // Fetch chapters when selected course changes
@@ -72,22 +61,18 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
   }, [selectedCourse]);
 
   // Reset form when editing flashcard changes
-  useEffect(() => {
-    if (editingFlashcardId) {
+  useEffect(() => { if (editingFlashcardId) {
       const flashcard = flashcards.find((f) => f.id === editingFlashcardId);
       if (flashcard) {
         form.reset({
           question: flashcard.question,
           answer: flashcard.answer,
-          chapterId: flashcard.chapterId,
-        });
+          chapterId: flashcard.chapterId, });
       }
-    } else {
-      form.reset({
+    } else { form.reset({
         question: '',
         answer: '',
-        chapterId: '',
-      });
+        chapterId: '', });
     }
   }, [editingFlashcardId, form, flashcards]);
 
@@ -100,26 +85,21 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
 
       if (Array.isArray(response.data)) {
         setChapters(response.data);
-      } else {
-        // Log the unexpected response format
+      } else { // Log the unexpected response format
         console.error('Unexpected chapters response format:', response.data);
         setChapters([]);
-        toast.error('خطأ في تحميل الفصول (تنسيق غير متوقع)');
-      }
-    } catch (error) {
-      console.error('Error fetching chapters:', error);
+        toast.error('خطأ في تحميل الفصول (تنسيق غير متوقع)'); }
+    } catch (error) { console.error('Error fetching chapters:', error);
       toast.error('فشل في جلب الفصول');
-      setChapters([]);
-    } finally {
+      setChapters([]); } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchFlashcards = async (courseId: string) => {
-    try {
+  const fetchFlashcards = async (courseId: string) => { try {
       setIsLoading(true);
       // In a real implementation, you would fetch flashcards from the API
-      const response = await axios.get(`/api/courses/${courseId}/flashcards`);
+      const response = await axios.get(`/api/courses/${courseId }/flashcards`);
       setFlashcards(response.data);
     } catch (error) {
       toast.error('فشل في جلب البطاقات التعليمية');
@@ -140,19 +120,15 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
 
       if (editingFlashcardId) {
         // Update existing flashcard
-        await axios.patch(`/api/flashcards/${editingFlashcardId}`, {
-          ...values,
-          courseId: selectedCourse, // Ensure courseId is included in the update
-        });
+        await axios.patch(`/api/flashcards/${editingFlashcardId}`, { ...values,
+          courseId: selectedCourse, // Ensure courseId is included in the update });
         toast.success('تم تحديث البطاقة التعليمية بنجاح');
         setEditingFlashcardId(null);
       } else {
         // Create new flashcard
 
-        await axios.post(`/api/courses/${selectedCourse}/flashcards`, {
-          // courseId: selectedCourse,
-          ...values,
-        });
+        await axios.post(`/api/courses/${selectedCourse}/flashcards`, { // courseId: selectedCourse,
+          ...values, });
         toast.success('تم إنشاء البطاقة التعليمية بنجاح');
       }
 
@@ -160,15 +136,11 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
       fetchFlashcards(selectedCourse);
 
       // Reset form
-      form.reset({
-        question: '',
+      form.reset({ question: '',
         answer: '',
-        chapterId: '',
-      });
-    } catch (error: any) {
-      console.error('Flashcard submission error:', error.response);
-      toast.error(error?.response?.data?.message || 'فشل في حفظ البطاقة التعليمية');
-    } finally {
+        chapterId: '', });
+    } catch (error: any) { console.error('Flashcard submission error:', error.response);
+      toast.error(error?.response?.data?.message || 'فشل في حفظ البطاقة التعليمية'); } finally {
       setIsLoading(false);
     }
   };
@@ -191,13 +163,11 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
     }
   };
 
-  const cancelEditing = () => {
-    setEditingFlashcardId(null);
+  const cancelEditing = () => { setEditingFlashcardId(null);
     form.reset({
       question: '',
       answer: '',
-      chapterId: '',
-    });
+      chapterId: '', });
   };
 
   return (
@@ -228,32 +198,32 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
               {courses.map((course) => (
                 <Card
                   key={course.id}
-                  className={cn(
+                  className={ cn(
                     'cursor-pointer border-2 transition-all duration-200     hover:shadow-lg',
                     selectedCourse === course.id
                       ? 'border-primary bg-primary/10 shadow-lg'
                       : 'border-border/50 bg-card/40 hover:border-primary/50',
-                  )}
+                  ) }
                   onClick={() => setSelectedCourse(course.id)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <div
-                        className={cn(
+                        className={ cn(
                           'rounded-lg p-2',
                           selectedCourse === course.id
                             ? 'bg-primary/20 text-primary'
                             : 'bg-muted text-muted-foreground',
-                        )}
+                        ) }
                       >
                         <BookOpen className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3
-                          className={cn(
+                          className={ cn(
                             'truncate font-medium',
                             selectedCourse === course.id ? 'text-primary' : 'text-foreground',
-                          )}
+                          ) }
                         >
                           {course.title}
                         </h3>
@@ -282,13 +252,13 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
         </Card>
 
         {/* Main Content */}
-        {selectedCourse && (
+        { selectedCourse && (
           <Card className="border border-border/50 bg-card/60 backdrop-blur-sm">
             <CardContent className="p-6">
               <Tabs defaultValue="create" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50">
                   <TabsTrigger value="create" className="data-[state=active]:bg-background/80">
-                    {editingFlashcardId ? 'تحرير البطاقة' : 'إنشاء بطاقة'}
+                    {editingFlashcardId ? 'تحرير البطاقة' : 'إنشاء بطاقة' }
                   </TabsTrigger>
                   <TabsTrigger value="manage" className="data-[state=active]:bg-background/80">
                     إدارة البطاقات
@@ -366,7 +336,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
 
                         <div className="flex gap-3 pt-2">
                           <Button type="submit" disabled={isLoading} className="flex-1">
-                            {editingFlashcardId ? 'تحديث البطاقة' : 'إنشاء البطاقة'}
+                            { editingFlashcardId ? 'تحديث البطاقة' : 'إنشاء البطاقة' }
                           </Button>
                           {editingFlashcardId && (
                             <Button type="button" variant="outline" onClick={cancelEditing} className="flex-1">
@@ -380,7 +350,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
                 </TabsContent>
 
                 <TabsContent value="manage" className="space-y-4">
-                  {flashcards.length === 0 ? (
+                  { flashcards.length === 0 ? (
                     <Card className="border-dashed bg-muted/30 backdrop-blur-sm">
                       <CardContent className="flex flex-col items-center justify-center py-12 text-center">
                         <div className="mb-4 rounded-full bg-gradient-to-br from-orange-500/10 to-red-500/10 p-6">
@@ -394,8 +364,7 @@ export const FlashcardsClient = ({ courses }: FlashcardsClientProps) => {
                           variant="outline"
                           onClick={() => {
                             const element = document.querySelector('[data-value="create"]') as HTMLElement | null;
-                            element?.click();
-                          }}
+                            element?.click(); }}
                           className="hover:bg-primary/10"
                         >
                           <Plus className="mr-2 h-4 w-4" />

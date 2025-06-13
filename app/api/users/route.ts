@@ -16,17 +16,16 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {};
-    
+
     if (role) {
       where.role = role;
     }
-    
+
     if (accessType) {
       where.accessType = accessType;
     }
-    
-    if (search) {
-      where.OR = [
+
+    if (search) { where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { email: { contains: search, mode: 'insensitive' } },
       ];
@@ -38,8 +37,7 @@ export async function GET(request: NextRequest) {
     // Get total count and users
     const [totalCount, dbUsers] = await Promise.all([
       db.user.count({ where }),
-      db.user.findMany({
-        where,
+      db.user.findMany({ where,
         skip,
         take: limit,
         select: {
@@ -60,32 +58,24 @@ export async function GET(request: NextRequest) {
           accessGrantedBy: true,
           banned: true,
           banReason: true,
-          banExpires: true,
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
+          banExpires: true, },
+        orderBy: { createdAt: 'desc' },
       }),
     ]);
 
     // Transform to match User interface
-    const users = dbUsers.map(user => ({
-      ...user,
+    const users = dbUsers.map(user => ({ ...user,
       userId: user.id,
-      paymentAmount: user.paymentAmount || null,
-    }));
+      paymentAmount: user.paymentAmount || null, }));
 
-    return NextResponse.json({
-      users,
+    return NextResponse.json({ users,
       totalCount,
       totalPages: Math.ceil(totalCount / limit),
       currentPage: page,
       hasNextPage: page < Math.ceil(totalCount / limit),
-      hasPreviousPage: page > 1,
-    });
+      hasPreviousPage: page > 1, });
 
-  } catch (error) {
-    console.error('Error fetching users:', error);
+  } catch (error) { console.error('Error fetching users:', error);
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }
@@ -93,15 +83,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PATCH(request: NextRequest) {
-  try {
+export async function PATCH(request: NextRequest) { try {
     await requireTeacher();
 
     const body = await request.json();
     const { userId, action, data } = body;
 
-    if (!userId || !action) {
-      return NextResponse.json(
+    if (!userId || !action) { return NextResponse.json(
         { error: 'Missing userId or action' },
         { status: 400 }
       );
@@ -109,8 +97,7 @@ export async function PATCH(request: NextRequest) {
 
     let result;
 
-    switch (action) {
-      case 'updateRole':
+    switch (action) { case 'updateRole':
         result = await db.user.update({
           where: { id: userId },
           data: { role: data.role as UserRole },
@@ -118,30 +105,24 @@ export async function PATCH(request: NextRequest) {
         break;
 
       case 'grantAccess':
-        result = await db.user.update({
-          where: { id: userId },
-          data: {
-            accessType: data.accessType as StudentAccessType,
+        result = await db.user.update({ where: { id: userId },
+          data: { accessType: data.accessType as StudentAccessType,
             paymentReceived: data.paymentReceived || false,
             paymentAmount: data.paymentAmount || null,
             paymentNotes: data.paymentNotes || null,
             accessGrantedAt: new Date(),
-            accessGrantedBy: data.grantedBy || null,
-          },
+            accessGrantedBy: data.grantedBy || null, },
         });
         break;
 
       case 'revokeAccess':
-        result = await db.user.update({
-          where: { id: userId },
-          data: {
-            accessType: StudentAccessType.NO_ACCESS,
+        result = await db.user.update({ where: { id: userId },
+          data: { accessType: StudentAccessType.NO_ACCESS,
             paymentReceived: false,
             paymentAmount: null,
             paymentNotes: null,
             accessGrantedAt: null,
-            accessGrantedBy: null,
-          },
+            accessGrantedBy: null, },
         });
         break;
 
@@ -149,38 +130,29 @@ export async function PATCH(request: NextRequest) {
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 3); // 3 days trial
 
-        result = await db.user.update({
-          where: { id: userId },
-          data: {
-            accessType: StudentAccessType.FREE_TRIAL,
+        result = await db.user.update({ where: { id: userId },
+          data: { accessType: StudentAccessType.FREE_TRIAL,
             trialStartDate: new Date(),
             trialEndDate: trialEndDate,
-            isTrialUsed: true,
-          },
+            isTrialUsed: true, },
         });
         break;
 
       case 'banUser':
         const banExpires = data.duration ? new Date(Date.now() + data.duration * 24 * 60 * 60 * 1000) : null;
-        
-        result = await db.user.update({
-          where: { id: userId },
-          data: {
-            banned: true,
+
+        result = await db.user.update({ where: { id: userId },
+          data: { banned: true,
             banReason: data.reason || 'No reason provided',
-            banExpires: banExpires,
-          },
+            banExpires: banExpires, },
         });
         break;
 
       case 'unbanUser':
-        result = await db.user.update({
-          where: { id: userId },
-          data: {
-            banned: false,
+        result = await db.user.update({ where: { id: userId },
+          data: { banned: false,
             banReason: null,
-            banExpires: null,
-          },
+            banExpires: null, },
         });
         break;
 
@@ -192,19 +164,16 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Transform result to match User interface
-    const user = {
-      ...result,
+    const user = { ...result,
       userId: result.id,
-      paymentAmount: result.paymentAmount || null,
-    };
+      paymentAmount: result.paymentAmount || null, };
 
     return NextResponse.json({ user });
 
-  } catch (error) {
-    console.error('Error updating user:', error);
+  } catch (error) { console.error('Error updating user:', error);
     return NextResponse.json(
       { error: 'Failed to update user' },
       { status: 500 }
     );
   }
-} 
+}

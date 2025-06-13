@@ -4,8 +4,7 @@ import { auth } from './auth';
 import { db } from './db';
 
 // Session with cached permissions
-interface SessionWithPermissions {
-  user: {
+interface SessionWithPermissions { user: {
     id: string;
     email: string;
     name?: string;
@@ -23,20 +22,16 @@ interface SessionWithPermissions {
       accessType: string;
       canStartTrial: boolean;
       trialDaysLeft: number;
-      isTrialExpired: boolean;
-    };
+      isTrialExpired: boolean; };
     permissionsUpdatedAt?: string;
   };
 }
 
-export async function getSession() {
-  return auth.api.getSession({
-    headers: headers(),
-  });
+export async function getSession() { return auth.api.getSession({
+    headers: headers(), });
 }
 
-export async function getCurrentUser() {
-  const session = await getSession();
+export async function getCurrentUser() { const session = await getSession();
   if (!session) return null;
 
   let user = await db.user.findUnique({
@@ -44,27 +39,21 @@ export async function getCurrentUser() {
   });
 
   // Auto-promote admin to teacher if needed
-  if (user && process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL && user.role !== 'TEACHER') {
-    try {
+  if (user && process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL && user.role !== 'TEACHER') { try {
       user = await db.user.update({
         where: { id: user.id },
-        data: {
-          role: 'TEACHER',
+        data: { role: 'TEACHER',
           accessType: 'FULL_ACCESS',
           paymentReceived: true,
-          accessGrantedAt: new Date(),
-        },
+          accessGrantedAt: new Date(), },
       });
-    } catch (error) {
-      console.error('Error promoting admin user:', error);
-    }
+    } catch (error) { console.error('Error promoting admin user:', error); }
   }
 
   return user;
 }
 
-export async function getCurrentUserWithPermissions() {
-  const session = await getSession();
+export async function getCurrentUserWithPermissions() { const session = await getSession();
   if (!session) return null;
 
   // Check if session already has cached permissions
@@ -72,12 +61,11 @@ export async function getCurrentUserWithPermissions() {
     const updatedAt = new Date(session.user.permissionsUpdatedAt);
     const now = new Date();
     const cacheValidityMinutes = 30; // Cache for 30 minutes
-    
+
     if ((now.getTime() - updatedAt.getTime()) < (cacheValidityMinutes * 60 * 1000)) {
       return {
         ...session.user,
-        permissions: session.user.permissions
-      };
+        permissions: session.user.permissions };
     }
   }
 
@@ -162,16 +150,14 @@ export async function requireChapterAccess(chapterId: string) {
   if (user.role === 'TEACHER') return user;
 
   // Check if chapter is free
-  const chapter = await db.chapter.findUnique({
-    where: { id: chapterId },
+  const chapter = await db.chapter.findUnique({ where: { id: chapterId },
     select: { position: true, isFree: true }
   });
-  
+
   const isChapterFree = chapter?.position === 1 || chapter?.isFree || false;
 
   // Check access based on user type
-  switch (user.accessType) {
-    case 'FULL_ACCESS':
+  switch (user.accessType) { case 'FULL_ACCESS':
     case 'LIMITED_ACCESS':
       return user; // Paid users can access all chapters
 
@@ -179,8 +165,7 @@ export async function requireChapterAccess(chapterId: string) {
       // Trial users can only access free chapters if trial is not expired
       const trialExpired = user.trialEndDate ? new Date() > new Date(user.trialEndDate) : false;
       if (trialExpired || !isChapterFree) {
-        redirect('/dashboard?error=trial-expired-or-premium-content');
-      }
+        redirect('/dashboard?error=trial-expired-or-premium-content'); }
       return user;
 
     case 'NO_ACCESS':
@@ -194,17 +179,13 @@ export async function requireChapterAccess(chapterId: string) {
 }
 
 // Middleware helper for API routes
-export async function getAuthenticatedUser() {
-  try {
+export async function getAuthenticatedUser() { try {
     const session = await auth.api.getSession({
-      headers: headers(),
-    });
+      headers: headers(), });
 
     return session?.user ?? null;
-  } catch (error) {
-    console.error('Error getting authenticated user:', error);
-    return null;
-  }
+  } catch (error) { console.error('Error getting authenticated user:', error);
+    return null; }
 }
 
 export async function requireAuthAPI() {

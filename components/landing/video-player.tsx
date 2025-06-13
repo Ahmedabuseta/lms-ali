@@ -4,22 +4,17 @@ import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface VideoPlayerProps {
-  src: string;
+interface VideoPlayerProps { src: string;
   poster?: string;
   className?: string;
   title?: string;
-  description?: string;
-}
+  description?: string; }
 
-export const VideoPlayer = ({
-  src,
+export const VideoPlayer = ({ src,
   poster,
   className = '',
   title = 'عرض توضيحي للمنصة',
-  description = 'اكتشف جميع الميزات والوظائف'
-}: VideoPlayerProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  description = 'اكتشف جميع الميزات والوظائف' }: VideoPlayerProps) => { const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,8 +39,7 @@ export const VideoPlayer = ({
           video.src = src;
           setCurrentQuality('Auto (Safari)');
           setIsLoading(false);
-          return;
-        }
+          return; }
 
         // Use HLS.js for other browsers
         const Hls = (await import('hls.js')).default;
@@ -58,8 +52,7 @@ export const VideoPlayer = ({
           }
 
           // Create new HLS instance with CORS-friendly config
-          const hls = new Hls({
-            debug: false,
+          const hls = new Hls({ debug: false,
             enableWorker: true,
             lowLatencyMode: false,
             backBufferLength: 90,
@@ -80,13 +73,12 @@ export const VideoPlayer = ({
           hlsRef.current = hls;
 
           // Set up event listeners
-          hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-            // Prefer 480p if available (it has the complete video)
+          hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => { // Prefer 480p if available (it has the complete video)
             const level480p = data.levels.findIndex((level: any) => level.height === 480);
             if (level480p >= 0) {
               hls.currentLevel = level480p;
               const level = data.levels[level480p];
-              setCurrentQuality(`${level.height}p`);
+              setCurrentQuality(`${level.height }p`);
             } else if (data.levels.length > 0) {
               // Fallback to first available level
               const level = data.levels[0];
@@ -109,13 +101,11 @@ export const VideoPlayer = ({
               return;
             }
 
-            if (data.fatal) {
-              switch (data.type) {
+            if (data.fatal) { switch (data.type) {
                 case Hls.ErrorTypes.NETWORK_ERROR:
                   if (data.details === 'manifestLoadError') {
                     setHasError(true);
-                    setIsLoading(false);
-                  } else {
+                    setIsLoading(false); } else {
                     hls.startLoad();
                   }
                   break;
@@ -183,8 +173,7 @@ export const VideoPlayer = ({
     initializeVideo();
 
     // Cleanup function
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData);
+    return () => { video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('error', handleError);
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
@@ -194,8 +183,7 @@ export const VideoPlayer = ({
 
       if (hlsRef.current) {
         hlsRef.current.destroy();
-        hlsRef.current = null;
-      }
+        hlsRef.current = null; }
     };
   }, [src]);
 
@@ -233,16 +221,14 @@ export const VideoPlayer = ({
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${ remainingSeconds.toString().padStart(2, '0') }`;
   };
 
-  const force480p = () => {
-    if (hlsRef.current && hlsRef.current.levels) {
+  const force480p = () => { if (hlsRef.current && hlsRef.current.levels) {
       const level480p = hlsRef.current.levels.findIndex((level: any) => level.height === 480);
       if (level480p >= 0) {
         hlsRef.current.currentLevel = level480p;
-        setCurrentQuality('480p (Manual)');
-      }
+        setCurrentQuality('480p (Manual)'); }
     }
   };
 
@@ -306,7 +292,7 @@ export const VideoPlayer = ({
           />
 
           {/* Loading State */}
-          {isLoading && (
+          { isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50">
               <div className="text-center">
                 <Loader2 className="h-12 w-12 mx-auto mb-4 animate-spin text-blue-600" />
@@ -318,14 +304,13 @@ export const VideoPlayer = ({
                 </p>
               </div>
             </div>
-          )}
+          ) }
 
           {/* Video Controls Overlay */}
-          {!isLoading && (
+          { !isLoading && (
             <div
               className={`absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-300 ${
-                showControls ? 'opacity-100' : 'opacity-0'
-              }`}
+                showControls ? 'opacity-100' : 'opacity-0' }`}
             >
               {/* Center Play Button */}
               {!isPlaying && (
@@ -347,7 +332,7 @@ export const VideoPlayer = ({
                   <div className="h-1 bg-black/30 rounded-full">
                     <div
                       className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
+                      style={ { width: `${progress }%` }}
                     />
                   </div>
                 </div>
@@ -360,7 +345,7 @@ export const VideoPlayer = ({
                       onClick={togglePlay}
                       className="h-10 w-10 rounded-full bg-black/50 text-white hover:bg-black/70"
                     >
-                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
+                      { isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" /> }
                     </Button>
 
                     <Button
@@ -369,7 +354,7 @@ export const VideoPlayer = ({
                       onClick={toggleMute}
                       className="h-10 w-10 rounded-full bg-black/50 text-white hover:bg-black/70"
                     >
-                      {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                      { isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" /> }
                     </Button>
 
                     {/* Quality Indicator */}
@@ -407,10 +392,10 @@ export const VideoPlayer = ({
                 <div className="rounded-lg bg-black/50 p-3 backdrop-blur-sm">
                   <h3 className="text-lg font-bold text-white font-arabic">{title}</h3>
                   <p className="text-sm text-gray-200 font-arabic">{description}</p>
-                  {currentQuality && (
+                  { currentQuality && (
                     <div className="flex items-center gap-2 mt-1">
                       <div className="h-2 w-2 rounded-full bg-green-500" />
-                      <span className="text-xs text-gray-300 font-arabic">جودة: {currentQuality}</span>
+                      <span className="text-xs text-gray-300 font-arabic">جودة: {currentQuality }</span>
                     </div>
                   )}
                 </div>

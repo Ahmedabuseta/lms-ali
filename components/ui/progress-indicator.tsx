@@ -1,22 +1,19 @@
 'use client';
 
-import { 
-  CheckCircle2, 
-  Circle, 
-  CircleDashed, 
-  Clock, 
-  HelpCircle, 
-  Save, 
+import { CheckCircle2,
+  Circle,
+  CircleDashed,
+  Clock,
+  HelpCircle,
+  Save,
   Loader2,
   AlertCircle,
   Wifi,
-  WifiOff
-} from 'lucide-react';
+  WifiOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface ProgressIndicatorProps {
-  totalQuestions: number;
+interface ProgressIndicatorProps { totalQuestions: number;
   answeredQuestions: number;
   timeRemaining?: string;
   hasUnsavedChanges?: boolean;
@@ -27,21 +24,17 @@ interface ProgressIndicatorProps {
     questionId: string;
     isAnswered: boolean;
     hasUnsavedChanges: boolean;
-    autoSaveStatus?: 'idle' | 'saving' | 'saved' | 'error' | 'offline';
-  }>;
+    autoSaveStatus?: 'idle' | 'saving' | 'saved' | 'error' | 'offline'; }>;
 }
 
-export function ProgressIndicator({
-  totalQuestions,
+export function ProgressIndicator({ totalQuestions,
   answeredQuestions,
   timeRemaining,
   hasUnsavedChanges = false,
   autoSaveStatus = 'idle',
   isOnline = true,
   lastSaved,
-  questionStatuses = [],
-}: ProgressIndicatorProps) {
-  const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+  questionStatuses = [], }: ProgressIndicatorProps) { const progress = Math.round((answeredQuestions / totalQuestions) * 100);
   const unansweredQuestions = totalQuestions - answeredQuestions;
 
   // Determine color based on progress
@@ -49,12 +42,10 @@ export function ProgressIndicator({
     if (progress < 25) return 'text-red-500 dark:text-red-400';
     if (progress < 50) return 'text-amber-500 dark:text-amber-400';
     if (progress < 75) return 'text-yellow-500 dark:text-yellow-400';
-    return 'text-green-500 dark:text-green-400';
-  };
+    return 'text-green-500 dark:text-green-400'; };
 
   // Get auto-save status icon and color
-  const getAutoSaveIcon = () => {
-    switch (autoSaveStatus) {
+  const getAutoSaveIcon = () => { switch (autoSaveStatus) {
       case 'saving':
         return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />;
       case 'saved':
@@ -64,16 +55,14 @@ export function ProgressIndicator({
       case 'offline':
         return <WifiOff className="h-4 w-4 text-orange-500" />;
       default:
-        return isOnline ? <Wifi className="h-4 w-4 text-gray-400" /> : <WifiOff className="h-4 w-4 text-orange-500" />;
-    }
+        return isOnline ? <Wifi className="h-4 w-4 text-gray-400" /> : <WifiOff className="h-4 w-4 text-orange-500" />; }
   };
 
-  const getAutoSaveText = () => {
-    switch (autoSaveStatus) {
+  const getAutoSaveText = () => { switch (autoSaveStatus) {
       case 'saving':
         return 'جاري الحفظ...';
       case 'saved':
-        return `تم الحفظ ${lastSaved ? new Date(lastSaved).toLocaleTimeString('ar-SA') : ''}`;
+        return `تم الحفظ ${lastSaved ? new Date(lastSaved).toLocaleTimeString('ar-SA') : '' }`;
       case 'error':
         return 'خطأ في الحفظ';
       case 'offline':
@@ -98,22 +87,19 @@ export function ProgressIndicator({
     return 'unanswered';
   };
 
-  const getQuestionColor = (status: string) => {
-    switch (status) {
+  const getQuestionColor = (status: string) => { switch (status) {
       case 'answered':
         return 'bg-green-500 dark:bg-green-600';
       case 'unsaved':
         return 'bg-amber-500 dark:bg-amber-600';
       default:
-        return 'bg-slate-200 dark:bg-slate-700';
-    }
+        return 'bg-slate-200 dark:bg-slate-700'; }
   };
 
-  const getQuestionTooltip = (index: number, status: string) => {
-    const questionNum = index + 1;
+  const getQuestionTooltip = (index: number, status: string) => { const questionNum = index + 1;
     switch (status) {
       case 'answered':
-        return `السؤال ${questionNum}: تمت الإجابة وتم الحفظ`;
+        return `السؤال ${questionNum }: تمت الإجابة وتم الحفظ`;
       case 'unsaved':
         return `السؤال ${questionNum}: تمت الإجابة ولكن لم يتم الحفظ`;
       default:
@@ -132,21 +118,21 @@ export function ProgressIndicator({
             </div>
             <div className="text-xs text-muted-foreground font-arabic">التقدم</div>
           </div>
-          
+
           {/* Question Progress Bar */}
           <div className="flex flex-1 items-center gap-1">
-            {Array.from({ length: totalQuestions }).map((_, i) => {
+            { Array.from({ length: totalQuestions }).map((_, i) => {
               const status = getQuestionStatus(i);
               return (
                 <Tooltip key={i}>
                   <TooltipTrigger asChild>
                     <div
                       className={`h-2 flex-1 rounded-full transition-all duration-200 cursor-help ${getQuestionColor(status)}`}
-                      style={{ minWidth: '8px', maxWidth: '20px' }}
+                      style={ { minWidth: '8px', maxWidth: '20px' }}
                     />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="font-arabic">{getQuestionTooltip(i, status)}</p>
+                    <p className="font-arabic">{ getQuestionTooltip(i, status) }</p>
                   </TooltipContent>
                 </Tooltip>
               );
@@ -162,7 +148,7 @@ export function ProgressIndicator({
               <CheckCircle2 className="h-3 w-3 ml-1" />
               {answeredQuestions}/{totalQuestions}
             </Badge>
-            
+
             {unansweredQuestions > 0 && (
               <Badge variant="secondary" className="font-arabic">
                 <Circle className="h-3 w-3 ml-1" />
@@ -190,8 +176,8 @@ export function ProgressIndicator({
                 {autoSaveStatus === 'saving' && (
                   <p>جاري حفظ الإجابات...</p>
                 )}
-                {autoSaveStatus === 'saved' && lastSaved && (
-                  <p>آخر حفظ: {new Date(lastSaved).toLocaleString('ar-SA')}</p>
+                { autoSaveStatus === 'saved' && lastSaved && (
+                  <p>آخر حفظ: {new Date(lastSaved).toLocaleString('ar-SA') }</p>
                 )}
                 {autoSaveStatus === 'idle' && isOnline && (
                   <p>متصل ومستعد للحفظ</p>

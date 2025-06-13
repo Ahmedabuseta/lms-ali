@@ -12,18 +12,14 @@ import { Button } from '@/components/ui/button';
 import { FileUploadArabic } from '@/components/file-upload-arabic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface ChapterVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null };
+interface ChapterVideoFormProps { initialData: Chapter & { muxData?: MuxData | null };
   courseId: string;
   chapterId: string;
 }
 
-const formSchema = z.object({
-  videoUrl: z.string().min(1),
-});
+const formSchema = z.object({ videoUrl: z.string().min(1), });
 
-export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVideoFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVideoFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -31,7 +27,7 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
+      await axios.patch(`/api/courses/${courseId }/chapters/${chapterId}`, values);
       toast.success('تم تحديث الفصل بنجاح');
       toggleEdit();
       router.refresh();
@@ -69,7 +65,7 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
         </Button>
       </CardHeader>
       <CardContent>
-        {!isEditing &&
+        { !isEditing &&
           (!initialData.videoUrl ? (
             <div className="flex items-center justify-center h-60 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
               <div className="text-center">
@@ -79,10 +75,10 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
             </div>
           ) : (
             <div className="relative aspect-video mt-2 rounded-md overflow-hidden border">
-              <MuxPlayer playbackId={initialData?.muxData?.playbackId || ''} />
+              <MuxPlayer playbackId={initialData?.muxData?.playbackId || '' } />
             </div>
           ))}
-        {isEditing && (
+        { isEditing && (
           <div>
             <FileUploadArabic
               onChange={(url) => {
@@ -97,13 +93,13 @@ export const ChapterVideoForm = ({ initialData, courseId, chapterId }: ChapterVi
             />
           </div>
         )}
-        {initialData.videoUrl && !isEditing && (
+        { initialData.videoUrl && !isEditing && (
           <div className="text-xs text-muted-foreground mt-2 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
             <p className="font-arabic text-amber-700 dark:text-amber-300">
               قد تستغرق مقاطع الفيديو بضع دقائق للمعالجة. قم بتحديث الصفحة إذا لم يظهر الفيديو.
             </p>
           </div>
-        )}
+        ) }
       </CardContent>
     </Card>
   );

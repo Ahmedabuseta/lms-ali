@@ -5,8 +5,7 @@ import { NavbarRoutes } from '@/components/navbar-routes';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 
-type CourseNavbarProps = {
-  course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
+type CourseNavbarProps = { course: Prisma.CourseGetPayload<{ include: { chapters: { include: { userProgress: true } } } }>;
   progressCount: number;
 };
 

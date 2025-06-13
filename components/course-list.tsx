@@ -4,44 +4,37 @@ import { useEffect, useState } from 'react';
 import CourseCard from '@/components/course-card';
 import { CourseCardSkeleton } from '@/components/course-card-skeleton';
 
-type CourseWithProgressWithCategory = {
-  id: string;
+type CourseWithProgressWithCategory = { id: string;
   title: string;
   imageUrl: string | null;
   chaptersLength: number;
   price: number | null;
   progress: number | null;
   category: {
-    name: string;
-  } | null;
+    name: string; } | null;
 };
 
-interface CoursesListProps {
-  items: CourseWithProgressWithCategory[];
-}
+interface CoursesListProps { items: CourseWithProgressWithCategory[]; }
 
-const CoursesList = ({ items }: CoursesListProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+const CoursesList = ({ items }: CoursesListProps) => { const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 500); // Simulate loading for a short time for better UX
+      setIsLoading(false); }, 500); // Simulate loading for a short time for better UX
 
     return () => clearTimeout(timeout);
   }, []);
 
   // Show skeleton if not mounted or still loading
-  if (!mounted || isLoading) {
-    return (
+  if (!mounted || isLoading) { return (
       <div data-tour="course-cards">
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
           {Array(4)
             .fill(0)
             .map((_, i) => (
-              <CourseCardSkeleton key={i} />
+              <CourseCardSkeleton key={i } />
             ))}
         </div>
       </div>

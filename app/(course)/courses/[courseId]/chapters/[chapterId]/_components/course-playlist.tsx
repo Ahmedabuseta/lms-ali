@@ -2,24 +2,21 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  ChevronDown,
+import { ChevronDown,
   ChevronUp,
   PlayCircle,
   CheckCircle,
   Lock,
   List,
   Clock,
-  Award
-} from 'lucide-react';
+  Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
-type Chapter = {
-  id: string;
+type Chapter = { id: string;
   title: string;
   position: number;
   isFree: boolean;
@@ -27,24 +24,19 @@ type Chapter = {
   userProgress?: { isCompleted: boolean }[];
 };
 
-type CoursePlaylistProps = {
-  courseId: string;
+type CoursePlaylistProps = { courseId: string;
   courseTitle: string;
   chapters: Chapter[];
   currentChapterId: string;
   progressCount: number;
-  hasPurchase: boolean;
-};
+  hasPurchase: boolean; };
 
-export const CoursePlaylist = ({
-  courseId,
+export const CoursePlaylist = ({ courseId,
   courseTitle,
   chapters,
   currentChapterId,
   progressCount,
-  hasPurchase
-}: CoursePlaylistProps) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  hasPurchase }: CoursePlaylistProps) => { const [isExpanded, setIsExpanded] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -56,7 +48,7 @@ export const CoursePlaylist = ({
 
   const handleChapterClick = (chapterId: string, isLocked: boolean) => {
     if (!isLocked) {
-      router.push(`/courses/${courseId}/chapters/${chapterId}`);
+      router.push(`/courses/${courseId }/chapters/${chapterId}`);
     }
   };
 
@@ -101,11 +93,11 @@ export const CoursePlaylist = ({
               onClick={() => setIsExpanded(!isExpanded)}
               className="h-8 w-8 p-0"
             >
-              {isExpanded ? (
+              { isExpanded ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
                 <ChevronDown className="h-4 w-4" />
-              )}
+              ) }
             </Button>
           </div>
         </div>
@@ -121,7 +113,7 @@ export const CoursePlaylist = ({
       </div>
 
       {/* Chapters List */}
-      {isExpanded && (
+      { isExpanded && (
         <CardContent className="p-0">
           <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
             {chapters.map((chapter, index) => {
@@ -131,29 +123,27 @@ export const CoursePlaylist = ({
 
               return (
                 <button
-                  key={chapter.id}
-                  onClick={() => handleChapterClick(chapter.id, isLocked)}
+                  key={chapter.id }
+                  onClick={ () => handleChapterClick(chapter.id, isLocked) }
                   disabled={isLocked}
-                  className={cn(
+                  className={ cn(
                     'w-full p-4 text-right transition-all duration-200 border-b border-border/20 last:border-b-0',
                     'hover:bg-muted/30 focus:outline-none focus:bg-muted/30',
                     {
                       'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200/50 dark:border-blue-700/50': isActive && !isCompleted,
                       'bg-green-50/50 dark:bg-green-900/20 border-green-200/50 dark:border-green-700/50': isCompleted,
-                      'opacity-60 cursor-not-allowed': isLocked,
-                    }
+                      'opacity-60 cursor-not-allowed': isLocked, }
                   )}
                 >
                   <div className="flex items-center gap-3">
                     {/* Chapter Number */}
-                    <div className={cn(
+                    <div className={ cn(
                       'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold flex-shrink-0',
                       {
                         'bg-muted text-muted-foreground': !isActive && !isCompleted && !isLocked,
                         'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200': isActive && !isCompleted,
                         'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200': isCompleted,
-                        'bg-gray-200 text-gray-500': isLocked,
-                      }
+                        'bg-gray-200 text-gray-500': isLocked, }
                     )}>
                       {index + 1}
                     </div>
@@ -162,23 +152,22 @@ export const CoursePlaylist = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         {/* Status Icon */}
-                        {isCompleted ? (
+                        { isCompleted ? (
                           <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
                         ) : isLocked ? (
                           <Lock className="h-4 w-4 text-gray-400 flex-shrink-0" />
                         ) : (
                           <PlayCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                        )}
+                        ) }
 
                         {/* Chapter Title */}
-                        <span className={cn(
+                        <span className={ cn(
                           'font-medium font-arabic truncate text-sm',
                           {
                             'text-foreground': !isLocked,
                             'text-muted-foreground': isLocked,
                             'text-blue-700 dark:text-blue-300': isActive && !isCompleted,
-                            'text-green-700 dark:text-green-300': isCompleted,
-                          }
+                            'text-green-700 dark:text-green-300': isCompleted, }
                         )}>
                           {chapter.title}
                         </span>
@@ -187,7 +176,7 @@ export const CoursePlaylist = ({
                       {/* Chapter Meta */}
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="font-arabic">
-                          {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
+                          { isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح' }
                         </span>
                         {chapter.videoUrl && (
                           <div className="flex items-center gap-1">

@@ -12,19 +12,14 @@ import { Button } from '@/components/ui/button';
 import { FileUploadArabic } from '@/components/file-upload-arabic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface ImageFormProps {
-  initialData: Course;
-  courseId: string;
-}
+interface ImageFormProps { initialData: Course;
+  courseId: string; }
 
-const formSchema = z.object({
-  imageUrl: z.string().min(1, {
-    message: 'صورة الدورة مطلوبة',
-  }),
+const formSchema = z.object({ imageUrl: z.string().min(1, {
+    message: 'صورة الدورة مطلوبة', }),
 });
 
-export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ImageForm = ({ initialData, courseId }: ImageFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -32,7 +27,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await axios.patch(`/api/courses/${courseId }`, values);
       toast.success('تم تحديث الدورة بنجاح');
       toggleEdit();
       router.refresh();
@@ -67,7 +62,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
         </Button>
       </CardHeader>
       <CardContent>
-        {!isEditing &&
+        { !isEditing &&
           (!initialData.imageUrl ? (
             <div className="flex items-center justify-center h-60 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
               <div className="text-center">
@@ -77,14 +72,14 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
             </div>
           ) : (
             <div className="relative aspect-video mt-2 rounded-md overflow-hidden border">
-              <Image alt="صورة الدورة" fill className="object-cover" src={initialData.imageUrl} />
+              <Image alt="صورة الدورة" fill className="object-cover" src={initialData.imageUrl } />
             </div>
           ))}
         {isEditing && (
           <div>
             <FileUploadArabic
               value={initialData.imageUrl || undefined}
-              onChange={(url) => {
+              onChange={ (url) => {
                 if (url) {
                   onSubmit({ imageUrl: url });
                 }

@@ -11,8 +11,7 @@ const testimonials = [
   { name: 'مريم سالم', role: 'طالبة تجارة', initial: 'م', review: 'بجد مفيش اجدع منكم، ساعدتوني اوصل لحلمي في تجارة. المنصة كانت فيها كل اللي محتاجاه، تسلم ايديكم!' }
 ];
 
-export const Testimonials = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export const Testimonials = () => { const scrollRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -35,10 +34,8 @@ export const Testimonials = () => {
         scrollContainer.style.scrollBehavior = 'auto';
         scrollContainer.scrollLeft = 0;
         setTimeout(() => {
-          scrollContainer.style.scrollBehavior = 'smooth';
-        }, 50);
-      } else {
-        scrollContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
+          scrollContainer.style.scrollBehavior = 'smooth'; }, 50);
+      } else { scrollContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
       }
     }, 3000); // Move every 3 seconds
   };
@@ -127,15 +124,11 @@ export const Testimonials = () => {
       }
     };
 
-    if (isDragging) {
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-    }
+    if (isDragging) { document.addEventListener('mouseup', handleGlobalMouseUp);
+      document.addEventListener('mousemove', handleGlobalMouseMove); }
 
-    return () => {
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-    };
+    return () => { document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('mousemove', handleGlobalMouseMove); };
   }, [isDragging, startX, scrollLeft]);
 
   return (
@@ -152,8 +145,8 @@ export const Testimonials = () => {
           {/* Swipable Auto-scrolling Testimonials Container */}
           <div
             ref={scrollRef}
-            className={`flex overflow-x-hidden gap-6 pb-4 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-            style={{ scrollBehavior: isDragging ? 'auto' : 'smooth' }}
+            className={ `flex overflow-x-hidden gap-6 pb-4 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab' }`}
+            style={ { scrollBehavior: isDragging ? 'auto' : 'smooth' }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -162,15 +155,15 @@ export const Testimonials = () => {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {[...testimonials, ...testimonials, ...testimonials].map((testimonial, i) => (
+            { [...testimonials, ...testimonials, ...testimonials].map((testimonial, i) => (
               <Card
-                key={i}
+                key={i }
                 className="flex-shrink-0 w-[300px] md:w-[350px] border-0 bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:bg-gray-800 rounded-2xl     pointer-events-none"
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-4 w-4 fill-current text-yellow-400" />
+                    { [1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star } className="h-4 w-4 fill-current text-yellow-400" />
                     ))}
                   </div>
                   <p className="mb-6 leading-relaxed text-gray-600 dark:text-gray-300 font-arabic text-sm">

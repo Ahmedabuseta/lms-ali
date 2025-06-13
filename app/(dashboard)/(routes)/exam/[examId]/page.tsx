@@ -10,20 +10,16 @@ import { getCurrentUser } from '@/lib/auth-helpers';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/icon-badge';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamDetailPage({ params }: PageProps) {
-  const user = await getCurrentUser();
+export default async function ExamDetailPage({ params }: PageProps) { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   const result = await getExams({
     userId: user.id,
-    examId: params.examId,
-  });
+    examId: params.examId, });
 
   if (!result?.exam) {
     return redirect('/exam');
@@ -39,11 +35,11 @@ export default async function ExamDetailPage({ params }: PageProps) {
           <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/10 to-indigo-500/10 blur-3xl" />
           <div
             className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-3xl"
-            style={{ animationDelay: '2s' }}
+            style={ { animationDelay: '2s' }}
            />
           <div
             className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/10 blur-3xl"
-            style={{ animationDelay: '4s' }}
+            style={ { animationDelay: '4s' }}
            />
         </div>
 
@@ -95,7 +91,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
                   {exam?.timeLimit ? `${exam.timeLimit}` : 'غير محدود'}
                         </div>
                 <p className="mt-1 text-xs text-muted-foreground font-arabic">
-                  {exam?.timeLimit ? 'دقيقة' : 'بدون حد زمني'}
+                  { exam?.timeLimit ? 'دقيقة' : 'بدون حد زمني' }
                 </p>
               </CardContent>
             </Card>
@@ -123,15 +119,15 @@ export default async function ExamDetailPage({ params }: PageProps) {
               <div className="absolute inset-0 bg-gradient-to-br from-muted/5 via-transparent to-muted/10" />
               <CardHeader className="relative border-b border-border/50 bg-muted/20">
                 <div className="flex items-center gap-3">
-                  <IconBadge icon={activeAttempt ? CheckCircle : FileQuestion} variant={activeAttempt ? "warning" : "success"} size="sm" />
+                  <IconBadge icon={ activeAttempt ? CheckCircle : FileQuestion } variant={ activeAttempt ? "warning" : "success" } size="sm" />
                   <div>
                     <CardTitle className="text-xl font-semibold text-foreground font-arabic">
-                {activeAttempt ? 'استكمال الامتحان' : 'بدء محاولة جديدة'}
+                { activeAttempt ? 'استكمال الامتحان' : 'بدء محاولة جديدة' }
               </CardTitle>
                     <CardDescription className="text-sm text-muted-foreground font-arabic">
-                {activeAttempt
+                { activeAttempt
                   ? 'عندك محاولة نشطة. ممكن تستكمل من حيث توقفت.'
-                        : `الامتحان ده فيه ${exam?.examQuestions?.length || 0} سؤال للإجابة.`}
+                        : `الامتحان ده فيه ${exam?.examQuestions?.length || 0 } سؤال للإجابة.`}
               </CardDescription>
                   </div>
                 </div>
@@ -143,7 +139,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
                     <p className="text-right text-sm text-muted-foreground font-arabic">{exam?.description}</p>
                   </div>
                 )}
-                
+
                 <div className="rounded-lg bg-gradient-to-br from-blue-500/10 to-indigo-500/5 p-4 border border-blue-500/20 backdrop-blur-sm">
                   <h3 className="text-right font-medium text-foreground font-arabic mb-3 flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-blue-600" />
@@ -201,7 +197,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
                 </div>
               </CardHeader>
               <CardContent className="relative p-6">
-                {pastAttempts.length === 0 ? (
+                { pastAttempts.length === 0 ? (
                   <div className="flex h-32 w-full flex-col items-center justify-center rounded-lg border border-dashed border-border/50 bg-muted/20 text-center backdrop-blur-sm">
                     <BookOpen className="h-8 w-8 text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground font-arabic">لم تقم بأي محاولات بعد</p>
@@ -210,20 +206,19 @@ export default async function ExamDetailPage({ params }: PageProps) {
                   <div className="space-y-3">
                     {pastAttempts.slice(0, 3).map((attempt, index) => (
                       <div
-                        key={attempt.id}
+                        key={attempt.id }
                         className="flex items-center justify-between rounded-lg border border-border/30 bg-muted/20 p-3 backdrop-blur-sm"
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`rounded-full p-2 ${
-                            (attempt.score || 0) >= 70 
-                              ? 'bg-green-500/20 text-green-600' 
-                              : 'bg-red-500/20 text-red-600'
-                          }`}>
-                            {(attempt.score || 0) >= 70 ? (
+                          <div className={ `rounded-full p-2 ${
+                            (attempt.score || 0) >= 70
+                              ? 'bg-green-500/20 text-green-600'
+                              : 'bg-red-500/20 text-red-600' }`}>
+                            { (attempt.score || 0) >= 70 ? (
                               <CheckCircle className="h-4 w-4" />
                             ) : (
                               <AlertTriangle className="h-4 w-4" />
-                            )}
+                            ) }
                           </div>
                           <div>
                             <p className="text-sm font-medium text-foreground font-arabic">
@@ -234,9 +229,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
                             </p>
                           </div>
                         </div>
-                        <Badge variant={
-                          (attempt.score || 0) >= 70 ? 'default' : 'destructive'
-                        } className="font-arabic">
+                        <Badge variant={ (attempt.score || 0) >= 70 ? 'default' : 'destructive' } className="font-arabic">
                           {attempt.score || 0}%
                         </Badge>
                       </div>

@@ -3,52 +3,38 @@
 import { MathRenderer } from '@/components/math-renderer';
 import { Card } from '@/components/ui/card';
 
-export default function MathExamples() {
-  const examples = [
+export default function MathExamples() { const examples = [
     {
       title: 'Basic Algebra',
-      content: 'Solve for x: $x^2 - 5x + 6 = 0$',
-    },
-    {
-      title: 'Pythagoras Theorem',
+      content: 'Solve for x: $x^2 - 5x + 6 = 0$', },
+    { title: 'Pythagoras Theorem',
       content:
-        'In a right triangle, the square of the length of the hypotenuse equals the sum of squares of the other two sides: $a^2 + b^2 = c^2$',
+        'In a right triangle, the square of the length of the hypotenuse equals the sum of squares of the other two sides: $a^2 + b^2 = c^2$', },
+    { title: 'Quadratic Formula',
+      content: 'The roots of $ax^2 + bx + c = 0$ are given by:\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac }}{2a}$$',
     },
-    {
-      title: 'Quadratic Formula',
-      content: 'The roots of $ax^2 + bx + c = 0$ are given by:\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$',
+    { title: 'Calculus - Integration',
+      content: 'The integral of $f(x) = x^2$ is:\n\n$$\\int x^2 dx = \\frac{x^3 }{3} + C$$',
     },
-    {
-      title: 'Calculus - Integration',
-      content: 'The integral of $f(x) = x^2$ is:\n\n$$\\int x^2 dx = \\frac{x^3}{3} + C$$',
+    { title: 'Calculus - Derivative',
+      content: 'The derivative of $f(x) = \\sin(x)$ is:\n\n$$\\frac{d }{dx}\\sin(x) = \\cos(x)$$',
     },
-    {
-      title: 'Calculus - Derivative',
-      content: 'The derivative of $f(x) = \\sin(x)$ is:\n\n$$\\frac{d}{dx}\\sin(x) = \\cos(x)$$',
-    },
-    {
-      title: 'Sequence & Series',
+    { title: 'Sequence & Series',
       content:
-        'The sum of an infinite geometric series with first term $a$ and common ratio $r$ (where $|r| < 1$) is:\n\n$$S = \\frac{a}{1-r}$$',
+        'The sum of an infinite geometric series with first term $a$ and common ratio $r$ (where $|r| < 1$) is:\n\n$$S = \\frac{a }{1-r}$$',
     },
-    {
-      title: 'Matrix',
+    { title: 'Matrix',
       content:
-        'A matrix can be represented as:\n\n$$A = \\begin{pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix}$$',
+        'A matrix can be represented as:\n\n$$A = \\begin{pmatrix } a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix}$$',
     },
-    {
-      title: 'Probability',
-      content: 'If $A$ and $B$ are independent events, then $P(A \\cap B) = P(A) \\cdot P(B)$',
-    },
-    {
-      title: 'Statistics - Normal Distribution',
+    { title: 'Probability',
+      content: 'If $A$ and $B$ are independent events, then $P(A \\cap B) = P(A) \\cdot P(B)$', },
+    { title: 'Statistics - Normal Distribution',
       content:
-        'The probability density function of a normal distribution is:\n\n$$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$',
+        'The probability density function of a normal distribution is:\n\n$$f(x) = \\frac{1 }{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$',
     },
-    {
-      title: 'Physics - Einstein\'s Equation',
-      content: 'The mass-energy equivalence is given by:\n\n$$E = mc^2$$',
-    },
+    { title: 'Physics - Einstein\'s Equation',
+      content: 'The mass-energy equivalence is given by:\n\n$$E = mc^2$$', },
   ];
 
   return (
@@ -57,8 +43,8 @@ export default function MathExamples() {
       <p className="text-gray-500">These examples demonstrate how math formulas will appear in your exam questions</p>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {examples.map((example, index) => (
-          <Card key={index} className="p-4 shadow-md">
+        { examples.map((example, index) => (
+          <Card key={index } className="p-4 shadow-md">
             <h2 className="mb-2 text-xl font-semibold">{example.title}</h2>
             <div className="rounded-md bg-gray-50 p-3">
               <MathRenderer content={example.content} />

@@ -11,27 +11,21 @@ import CoursesList from '@/components/course-list';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getCurrentUser } from '@/lib/auth-helpers';
 
-interface SearchPageProps {
-  searchParams: {
+interface SearchPageProps { searchParams: {
     title: string;
-    categoryId: string;
-  };
+    categoryId: string; };
 }
 
-const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const user = await getCurrentUser();
+const SearchPage = async ({ searchParams }: SearchPageProps) => { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   const categories = await db.category.findMany({
     orderBy: {
-      name: 'asc',
-    },
+      name: 'asc', },
   });
 
-  const courses = await getCourses({
-    userId: user.id,
-    ...searchParams,
-  });
+  const courses = await getCourses({ userId: user.id,
+    ...searchParams, });
 
   return (
     <PageProtection requiredPermission="canAccessCourses">
@@ -79,7 +73,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
           </div>
 
           {/* Categories Section */}
-          {/* <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          { /* <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
                 <Filter className="w-6 h-6 text-blue-600" />
@@ -87,7 +81,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Categories items={categories} />
+              <Categories items={categories } />
             </CardContent>
           </Card> */}
 

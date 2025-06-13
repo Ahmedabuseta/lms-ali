@@ -3,10 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface CourseFilterProps {
-  courses: any[];
-  currentCourseId?: string;
-}
+interface CourseFilterProps { courses: any[];
+  currentCourseId?: string; }
 
 export function CourseFilter({ courses, currentCourseId }: CourseFilterProps) {
   const router = useRouter();

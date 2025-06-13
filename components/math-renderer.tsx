@@ -10,24 +10,19 @@ import 'katex/dist/katex.min.css';
 // Direct KaTeX rendering option for complex equations
 import katex from 'katex';
 
-interface MathRendererProps {
-  content: string;
+interface MathRendererProps { content: string;
   display?: boolean;
-  className?: string;
-}
+  className?: string; }
 
-export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = false, className = '' }) => {
-  const [renderedMath, setRenderedMath] = useState<string>('');
+export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = false, className = '' }) => { const [renderedMath, setRenderedMath] = useState<string>('');
   const [useDirectKatex, setUseDirectKatex] = useState<boolean>(false);
   const [isClient, setIsClient] = useState<boolean>(false);
 
   // Track if we're on client side
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true); }, []);
 
-  useEffect(() => {
-    if (!isClient) return;
+  useEffect(() => { if (!isClient) return;
 
     // Determine if the content is complex enough to warrant direct KaTeX rendering
     const isComplexMath =
@@ -50,23 +45,19 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
         const html = katex.renderToString(content, {
           displayMode: display,
           throwOnError: false,
-          trust: true,
-        });
+          trust: true, });
         setRenderedMath(html);
-      } catch (err) {
-        console.error('KaTeX rendering failed:', err);
+      } catch (err) { console.error('KaTeX rendering failed:', err);
         // Fallback to regular rendering if KaTeX fails
-        setUseDirectKatex(false);
-      }
+        setUseDirectKatex(false); }
     }
   }, [content, display, isClient]);
 
   // Show initial render (server-safe) while client is loading
-  if (!isClient) {
-    const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content}$$` : `$${content}$`;
+  if (!isClient) { const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content }$$` : `$${content}$`;
     return (
-      <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`}>
-        <ReactMarkdown rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath]}>
+      <div className={`math-content ${className} ${ display ? 'my-4 block' : 'inline-block' }`}>
+        <ReactMarkdown rehypePlugins={ [rehypeKatex, rehypeRaw] } remarkPlugins={[remarkMath]}>
           {mathContent}
         </ReactMarkdown>
       </div>
@@ -77,8 +68,8 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
   if (useDirectKatex) {
     return (
       <div
-        className={`math-content ${className} ${display ? 'my-4 text-center' : 'inline-block'}`}
-        dangerouslySetInnerHTML={{ __html: renderedMath }}
+        className={`math-content ${className} ${ display ? 'my-4 text-center' : 'inline-block' }`}
+        dangerouslySetInnerHTML={ { __html: renderedMath }}
         suppressHydrationWarning={true}
       />
     );
@@ -89,8 +80,8 @@ export const MathRenderer: React.FC<MathRendererProps> = ({ content, display = f
   const mathContent = content.trim().startsWith('$') ? content : display ? `$$${content}$$` : `$${content}$`;
 
   return (
-    <div className={`math-content ${className} ${display ? 'my-4 block' : 'inline-block'}`} suppressHydrationWarning={true}>
-      <ReactMarkdown rehypePlugins={[rehypeKatex, rehypeRaw]} remarkPlugins={[remarkMath]}>
+    <div className={`math-content ${className} ${ display ? 'my-4 block' : 'inline-block' }`} suppressHydrationWarning={true}>
+      <ReactMarkdown rehypePlugins={ [rehypeKatex, rehypeRaw] } remarkPlugins={[remarkMath]}>
         {mathContent}
       </ReactMarkdown>
     </div>

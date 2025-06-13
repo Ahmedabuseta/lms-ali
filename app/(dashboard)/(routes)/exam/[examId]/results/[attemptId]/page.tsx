@@ -11,15 +11,12 @@ import { PageProtection } from '@/components/page-protection';
 import { QuestionReview } from './_components/question-review';
 import { IconBadge } from '@/components/icon-badge';
 
-interface PageProps {
-  params: {
+interface PageProps { params: {
     examId: string;
-    attemptId: string;
-  };
+    attemptId: string; };
 }
 
-export default async function ExamResultsPage({ params }: PageProps) {
-  const user = await getCurrentUser();
+export default async function ExamResultsPage({ params }: PageProps) { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   // Get the completed attempt with all details
@@ -27,30 +24,23 @@ export default async function ExamResultsPage({ params }: PageProps) {
     where: {
       id: params.attemptId,
       userId: user.id,
-      examId: params.examId,
-    },
-    include: {
-      exam: {
+      examId: params.examId, },
+    include: { exam: {
         include: {
           examQuestions: {
             include: {
               question: {
             include: {
-              options: true,
-                },
+              options: true, },
               },
             },
-            orderBy: {
-              position: 'asc',
-            },
+            orderBy: { position: 'asc', },
           },
         },
       },
-      questionAttempts: {
-        include: {
+      questionAttempts: { include: {
           question: true,
-          selectedOption: true,
-        },
+          selectedOption: true, },
       },
     },
   });
@@ -89,27 +79,26 @@ export default async function ExamResultsPage({ params }: PageProps) {
           <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/10 blur-3xl" />
           <div
             className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-blue-500/10 to-indigo-500/10 blur-3xl"
-            style={{ animationDelay: '2s' }}
+            style={ { animationDelay: '2s' }}
            />
           <div
             className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10 blur-3xl"
-            style={{ animationDelay: '4s' }}
+            style={ { animationDelay: '4s' }}
            />
       </div>
 
         <div className="relative z-10 mx-auto max-w-6xl space-y-8 p-6">
           {/* Header */}
           <div className="flex items-center gap-3">
-            <div className={`rounded-xl p-3 backdrop-blur-sm border ${
-              isPass 
-                ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-500/20' 
-                : 'bg-gradient-to-br from-red-500/20 to-pink-500/20 border-red-500/20'
-            }`}>
-              {isPass ? (
+            <div className={ `rounded-xl p-3 backdrop-blur-sm border ${
+              isPass
+                ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-500/20'
+                : 'bg-gradient-to-br from-red-500/20 to-pink-500/20 border-red-500/20' }`}>
+              { isPass ? (
                 <Trophy className="h-6 w-6 text-green-600 dark:text-green-400" />
               ) : (
                 <Target className="h-6 w-6 text-red-600 dark:text-red-400" />
-              )}
+              ) }
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground font-arabic bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
@@ -124,39 +113,33 @@ export default async function ExamResultsPage({ params }: PageProps) {
           {/* Results Overview */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Score Card */}
-            <Card className={`group relative overflow-hidden backdrop-blur-xl transition-all duration-300 hover:shadow-2xl ${
-              isPass 
-                ? 'border border-green-500/20 bg-gradient-to-br from-green-500/10 via-card/80 to-emerald-500/5 hover:shadow-green-500/10' 
-                : 'border border-red-500/20 bg-gradient-to-br from-red-500/10 via-card/80 to-pink-500/5 hover:shadow-red-500/10'
-            }`}>
-              <div className={`absolute inset-0 ${
-                isPass 
-                  ? 'bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5' 
-                  : 'bg-gradient-to-br from-red-500/5 via-transparent to-pink-500/5'
-              }`} />
-              <div className={`absolute inset-x-0 top-0 h-px ${
-                isPass 
-                  ? 'bg-gradient-to-r from-transparent via-green-500/50 to-transparent' 
-                  : 'bg-gradient-to-r from-transparent via-red-500/50 to-transparent'
-              }`} />
+            <Card className={ `group relative overflow-hidden backdrop-blur-xl transition-all duration-300 hover:shadow-2xl ${
+              isPass
+                ? 'border border-green-500/20 bg-gradient-to-br from-green-500/10 via-card/80 to-emerald-500/5 hover:shadow-green-500/10'
+                : 'border border-red-500/20 bg-gradient-to-br from-red-500/10 via-card/80 to-pink-500/5 hover:shadow-red-500/10' }`}>
+              <div className={ `absolute inset-0 ${
+                isPass
+                  ? 'bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5'
+                  : 'bg-gradient-to-br from-red-500/5 via-transparent to-pink-500/5' }`} />
+              <div className={ `absolute inset-x-0 top-0 h-px ${
+                isPass
+                  ? 'bg-gradient-to-r from-transparent via-green-500/50 to-transparent'
+                  : 'bg-gradient-to-r from-transparent via-red-500/50 to-transparent' }`} />
               <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-foreground font-arabic">النتيجة النهائية</CardTitle>
-                <div className={`rounded-lg p-2 backdrop-blur-sm ${
-                  isPass ? 'bg-green-500/20' : 'bg-red-500/20'
-                }`}>
-                  <Award className={`h-4 w-4 ${
-                    isPass ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                  }`} />
+                <div className={ `rounded-lg p-2 backdrop-blur-sm ${
+                  isPass ? 'bg-green-500/20' : 'bg-red-500/20' }`}>
+                  <Award className={ `h-4 w-4 ${
+                    isPass ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }`} />
                 </div>
               </CardHeader>
               <CardContent className="relative">
-                <div className={`text-3xl font-bold font-arabic ${
-                  isPass ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
+                <div className={ `text-3xl font-bold font-arabic ${
+                  isPass ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }`}>
                   {score}%
             </div>
-                <Badge variant={isPass ? 'default' : 'destructive'} className="mt-2 font-arabic">
-                  {isPass ? 'ناجح' : 'راسب'}
+                <Badge variant={ isPass ? 'default' : 'destructive' } className="mt-2 font-arabic">
+                  { isPass ? 'ناجح' : 'راسب' }
                 </Badge>
           </CardContent>
         </Card>
@@ -218,11 +201,10 @@ export default async function ExamResultsPage({ params }: PageProps) {
                 <h3 className="text-lg font-semibold text-foreground font-arabic mb-2">تقدم الأداء</h3>
                 <Progress
                   value={score}
-                  className={`h-3 ${
-                    isPass 
-                      ? 'bg-green-100 dark:bg-green-900/30' 
-                      : 'bg-red-100 dark:bg-red-900/30'
-                  }`}
+                  className={ `h-3 ${
+                    isPass
+                      ? 'bg-green-100 dark:bg-green-900/30'
+                      : 'bg-red-100 dark:bg-red-900/30' }`}
                 />
                 <div className="mt-2 flex justify-between text-sm text-muted-foreground font-arabic">
                   <span>0%</span>
@@ -249,14 +231,14 @@ export default async function ExamResultsPage({ params }: PageProps) {
         </CardHeader>
             <CardContent className="relative p-6">
           <div className="space-y-8">
-                {attempt.exam.examQuestions.map((examQuestion, index) => {
+                { attempt.exam.examQuestions.map((examQuestion, index) => {
                   const question = examQuestion.question;
               const questionAttempt = attempt.questionAttempts.find((qa) => qa.questionId === question.id);
               const correctOption = question.options.find((o) => o.isCorrect);
 
               return (
                 <QuestionReview
-                  key={question.id}
+                  key={question.id }
                   question={question}
                   questionNumber={index + 1}
                   userAnswer={questionAttempt?.selectedOption}

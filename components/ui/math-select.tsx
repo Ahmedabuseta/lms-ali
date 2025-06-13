@@ -8,42 +8,35 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '
 import { cn } from '@/lib/utils';
 import { MathRenderer } from '@/components/math-renderer';
 
-export interface MathOption {
-  value: string;
-  label: string;
-}
+export interface MathOption { value: string;
+  label: string; }
 
-interface MathSelectProps {
-  options: MathOption[];
+interface MathSelectProps { options: MathOption[];
   value?: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
-  emptyMessage?: string;
-}
+  emptyMessage?: string; }
 
-export function MathSelect({
-  options,
+export function MathSelect({ options,
   value,
   onValueChange,
   placeholder = 'Select an option',
   disabled = false,
   className,
-  emptyMessage = 'No options found.',
-}: MathSelectProps) {
-  const [open, setOpen] = React.useState(false);
+  emptyMessage = 'No options found.', }: MathSelectProps) { const [open, setOpen] = React.useState(false);
 
   const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <Popover open={open && !disabled} onOpenChange={setOpen}>
+    <Popover open={open && !disabled } onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('w-full justify-between', className)}
+          className={ cn('w-full justify-between', className) }
           disabled={disabled}
         >
           {value && selectedOption ? (

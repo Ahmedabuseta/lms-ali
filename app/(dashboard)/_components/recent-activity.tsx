@@ -2,30 +2,25 @@
 
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
-import { 
-  BookOpen, 
-  CheckCircle, 
-  Clock, 
-  FileQuestion, 
+import { BookOpen,
+  CheckCircle,
+  Clock,
+  FileQuestion,
   Activity,
-  TrendingUp
-} from 'lucide-react';
+  TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-interface RecentActivityProps {
-  activities: Array<{
+interface RecentActivityProps { activities: Array<{
     type: string;
     title: string;
     date: Date;
-    completed?: boolean;
-  }>;
+    completed?: boolean; }>;
   userRole: string;
 }
 
-export function RecentActivity({ activities }: RecentActivityProps) {
-  const getActivityIcon = (type: string, completed?: boolean) => {
+export function RecentActivity({ activities }: RecentActivityProps) { const getActivityIcon = (type: string, completed?: boolean) => {
     switch (type) {
       case 'course':
         return <BookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />;
@@ -34,16 +29,14 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       case 'completion':
         return <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
       case 'progress':
-        return completed 
+        return completed
           ? <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           : <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400" />;
       default:
-        return <Activity className="h-4 w-4 text-slate-600 dark:text-slate-400" />;
-    }
+        return <Activity className="h-4 w-4 text-slate-600 dark:text-slate-400" />; }
   };
 
-  const getActivityColor = (type: string, completed?: boolean) => {
-    switch (type) {
+  const getActivityColor = (type: string, completed?: boolean) => { switch (type) {
       case 'course':
         return 'bg-blue-50/80 border-blue-200/50 dark:bg-blue-900/20 dark:border-blue-800/30';
       case 'exam':
@@ -51,16 +44,14 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       case 'completion':
         return 'bg-emerald-50/80 border-emerald-200/50 dark:bg-emerald-900/20 dark:border-emerald-800/30';
       case 'progress':
-        return completed 
+        return completed
           ? 'bg-emerald-50/80 border-emerald-200/50 dark:bg-emerald-900/20 dark:border-emerald-800/30'
           : 'bg-orange-50/80 border-orange-200/50 dark:bg-orange-900/20 dark:border-orange-800/30';
       default:
-        return 'bg-slate-50/80 border-slate-200/50 dark:bg-slate-900/20 dark:border-slate-800/30';
-    }
+        return 'bg-slate-50/80 border-slate-200/50 dark:bg-slate-900/20 dark:border-slate-800/30'; }
   };
 
-  const getActivityLabel = (type: string, completed?: boolean) => {
-    switch (type) {
+  const getActivityLabel = (type: string, completed?: boolean) => { switch (type) {
       case 'course':
         return 'دورة';
       case 'exam':
@@ -70,8 +61,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       case 'progress':
         return completed ? 'مكتمل' : 'قيد التقدم';
       default:
-        return 'نشاط';
-    }
+        return 'نشاط'; }
   };
 
   return (
@@ -85,7 +75,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       </CardHeader>
       <CardContent className="relative">
         <ScrollArea className="h-[400px] pr-4">
-          {activities.length === 0 ? (
+          { activities.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Activity className="h-12 w-12 text-slate-400 dark:text-slate-500 mb-4" />
               <p className="text-slate-600 dark:text-slate-400">لا توجد أنشطة حديثة</p>
@@ -97,11 +87,11 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             <div className="space-y-4">
               {activities.map((activity, index) => (
                 <div
-                  key={index}
-                  className={`flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:shadow-sm ${getActivityColor(activity.type, activity.completed)}`}
+                  key={index }
+                  className={ `flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:shadow-sm ${getActivityColor(activity.type, activity.completed) }`}
                 >
                   <div className="flex-shrink-0 rounded-full bg-white/80 dark:bg-slate-800/80 p-2 shadow-sm">
-                    {getActivityIcon(activity.type, activity.completed)}
+                    { getActivityIcon(activity.type, activity.completed) }
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
@@ -110,17 +100,16 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                           {activity.title}
                         </p>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                          {formatDistanceToNow(new Date(activity.date), {
+                          { formatDistanceToNow(new Date(activity.date), {
                             addSuffix: true,
-                            locale: ar,
-                          })}
+                            locale: ar, })}
                         </p>
                       </div>
-                      <Badge 
-                        variant="secondary" 
+                      <Badge
+                        variant="secondary"
                         className="flex-shrink-0 text-xs bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
                       >
-                        {getActivityLabel(activity.type, activity.completed)}
+                        { getActivityLabel(activity.type, activity.completed) }
                       </Badge>
                     </div>
                   </div>
@@ -132,4 +121,4 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       </CardContent>
     </Card>
   );
-} 
+}

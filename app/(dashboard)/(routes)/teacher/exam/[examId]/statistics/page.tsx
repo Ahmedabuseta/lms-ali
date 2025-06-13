@@ -10,27 +10,21 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { StudentPerformanceTable } from '@/components/StudentPerformanceTable';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamStatisticsPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function ExamStatisticsPage({ params }: PageProps) { const user = await requireTeacher();
 
   // Verify ownership of the exam through the course
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: true,
+      id: params.examId, },
+    include: { course: true,
       chapter: true,
       _count: {
         select: {
-          examQuestions: true,
-        },
+          examQuestions: true, },
       },
     },
   });
@@ -40,10 +34,8 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
   }
 
   // Get statistics for the exam
-  const statistics = await getExamStatistics({
-    userId: user.id,
-    examId: params.examId,
-  });
+  const statistics = await getExamStatistics({ userId: user.id,
+    examId: params.examId, });
 
   return (
     <div className="p-6" dir="rtl">
@@ -131,12 +123,12 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
           <CardDescription>See which questions students find most challenging</CardDescription>
         </CardHeader>
         <CardContent>
-          {statistics.totalAttempts === 0 ? (
+          { statistics.totalAttempts === 0 ? (
             <div className="py-6 text-center text-slate-500">No attempts have been made on this exam yet.</div>
           ) : (
             <div className="space-y-4">
               {statistics.questionStats.map((question, index) => (
-                <div key={question.questionId} className="space-y-2">
+                <div key={question.questionId } className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="font-medium">
@@ -165,11 +157,11 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
           <CardDescription>View and sort student exam results</CardDescription>
         </CardHeader>
         <CardContent>
-          {statistics.totalAttempts === 0 ? (
+          { statistics.totalAttempts === 0 ? (
             <div className="py-6 text-center text-slate-500">No attempts have been made on this exam yet.</div>
           ) : (
             <div>
-              <StudentPerformanceTable studentResults={statistics.studentResults} />
+              <StudentPerformanceTable studentResults={statistics.studentResults } />
             </div>
           )}
         </CardContent>

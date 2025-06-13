@@ -5,8 +5,7 @@ import { getAuthenticatedUser } from '@/lib/api-auth';
 export async function POST(
   req: NextRequest,
   { params }: { params: { courseId: string; chapterId: string } }
-) {
-  try {
+) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -15,45 +14,35 @@ export async function POST(
 
     const { attemptId, answers } = await req.json();
 
-    if (!attemptId || !answers || !Array.isArray(answers)) {
-      return new NextResponse('Invalid submission data', { status: 400 });
+    if (!attemptId || !answers || !Array.isArray(answers)) { return new NextResponse('Invalid submission data', { status: 400 });
     }
 
     // Get the quiz attempt
-    const attempt = await db.quizAttempt.findUnique({
-      where: {
-        id: attemptId,
-      },
-      include: {
-        quiz: {
+    const attempt = await db.quizAttempt.findUnique({ where: {
+        id: attemptId, },
+      include: { quiz: {
           include: {
             quizQuestions: {
               include: {
                 question: {
                   include: {
-                    options: true,
-                  },
+                    options: true, },
                 },
               },
-              orderBy: {
-                position: 'asc',
-              },
+              orderBy: { position: 'asc', },
             },
           },
         },
       },
     });
 
-    if (!attempt) {
-      return new NextResponse('Quiz attempt not found', { status: 404 });
+    if (!attempt) { return new NextResponse('Quiz attempt not found', { status: 404 });
     }
 
-    if (attempt.userId !== user.id) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    if (attempt.userId !== user.id) { return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    if (attempt.completedAt) {
-      return new NextResponse('Quiz already submitted', { status: 400 });
+    if (attempt.completedAt) { return new NextResponse('Quiz already submitted', { status: 400 });
     }
 
     // Process answers and calculate score
@@ -64,8 +53,7 @@ export async function POST(
 
     const questionAttempts = [];
 
-    for (const answer of answers) {
-      const { questionId, selectedOptionId } = answer;
+    for (const answer of answers) { const { questionId, selectedOptionId } = answer;
 
       const quizQuestion = attempt.quiz.quizQuestions.find(
         qq => qq.questionId === questionId
@@ -88,14 +76,12 @@ export async function POST(
       }
 
       // Create question attempt record
-      const questionAttempt = await db.quizQuestionAttempt.create({
-        data: {
+      const questionAttempt = await db.quizQuestionAttempt.create({ data: {
           quizAttemptId: attempt.id,
           questionId: question.id,
           selectedOptionId: selectedOption?.id || null,
           isCorrect,
-          points: isCorrect ? question.points : 0,
-        },
+          points: isCorrect ? question.points : 0, },
       });
 
       questionAttempts.push(questionAttempt);
@@ -106,23 +92,17 @@ export async function POST(
     const isPassed = score >= attempt.quiz.requiredScore;
 
     // Update the quiz attempt
-    const updatedAttempt = await db.quizAttempt.update({
-      where: {
-        id: attempt.id,
-      },
-      data: {
-        completedAt: new Date(),
+    const updatedAttempt = await db.quizAttempt.update({ where: {
+        id: attempt.id, },
+      data: { completedAt: new Date(),
         score,
-        isPassed,
-      },
-      include: {
-        quiz: true,
+        isPassed, },
+      include: { quiz: true,
         questionAttempts: {
           include: {
             question: {
               include: {
-                options: true,
-              },
+                options: true, },
             },
             selectedOption: true,
           },
@@ -131,36 +111,27 @@ export async function POST(
     });
 
     // If quiz is passed, update chapter progress
-    if (isPassed) {
-      await db.userProgress.upsert({
+    if (isPassed) { await db.userProgress.upsert({
         where: {
           userId_chapterId: {
             userId: user.id,
-            chapterId: params.chapterId,
-          },
+            chapterId: params.chapterId, },
         },
-        update: {
-          isCompleted: true,
-        },
-        create: {
-          userId: user.id,
+        update: { isCompleted: true, },
+        create: { userId: user.id,
           chapterId: params.chapterId,
-          isCompleted: true,
-        },
+          isCompleted: true, },
       });
     }
 
-    return NextResponse.json({
-      attempt: updatedAttempt,
+    return NextResponse.json({ attempt: updatedAttempt,
       score,
       isPassed,
       correctAnswers,
       totalQuestions,
       earnedPoints,
-      totalPoints,
-    });
-  } catch (error) {
-    console.error('[QUIZ_SUBMIT]', error);
+      totalPoints, });
+  } catch (error) { console.error('[QUIZ_SUBMIT]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
-} 
+}

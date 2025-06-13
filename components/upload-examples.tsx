@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { FileUploadArabic } from '@/components/file-upload-arabic';
 
 // Example 1: Course Image Upload
-export const CourseImageUploadExample = () => {
-  const [imageUrl, setImageUrl] = useState<string>('');
+export const CourseImageUploadExample = () => { const [imageUrl, setImageUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={imageUrl}
+      value={imageUrl }
       onChange={(url) => setImageUrl(url || '')}
       folder="course-images"
       acceptedFileTypes="image/*"
@@ -20,12 +19,11 @@ export const CourseImageUploadExample = () => {
 };
 
 // Example 2: Chapter Video Upload
-export const ChapterVideoUploadExample = () => {
-  const [videoUrl, setVideoUrl] = useState<string>('');
+export const ChapterVideoUploadExample = () => { const [videoUrl, setVideoUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={videoUrl}
+      value={videoUrl }
       onChange={(url) => setVideoUrl(url || '')}
       folder="chapter-videos"
       acceptedFileTypes="video/*"
@@ -36,12 +34,11 @@ export const ChapterVideoUploadExample = () => {
 };
 
 // Example 3: Course Attachment Upload
-export const CourseAttachmentUploadExample = () => {
-  const [attachmentUrl, setAttachmentUrl] = useState<string>('');
+export const CourseAttachmentUploadExample = () => { const [attachmentUrl, setAttachmentUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={attachmentUrl}
+      value={attachmentUrl }
       onChange={(url) => setAttachmentUrl(url || '')}
       folder="course-attachments"
       acceptedFileTypes=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
@@ -52,12 +49,11 @@ export const CourseAttachmentUploadExample = () => {
 };
 
 // Example 4: Profile Picture Upload
-export const ProfilePictureUploadExample = () => {
-  const [profileUrl, setProfileUrl] = useState<string>('');
+export const ProfilePictureUploadExample = () => { const [profileUrl, setProfileUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={profileUrl}
+      value={profileUrl }
       onChange={(url) => setProfileUrl(url || '')}
       folder="profile-pictures"
       acceptedFileTypes="image/*"
@@ -69,12 +65,11 @@ export const ProfilePictureUploadExample = () => {
 };
 
 // Example 5: Quiz Attachment Upload
-export const QuizAttachmentUploadExample = () => {
-  const [quizAttachmentUrl, setQuizAttachmentUrl] = useState<string>('');
+export const QuizAttachmentUploadExample = () => { const [quizAttachmentUrl, setQuizAttachmentUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={quizAttachmentUrl}
+      value={quizAttachmentUrl }
       onChange={(url) => setQuizAttachmentUrl(url || '')}
       folder="quiz-attachments"
       acceptedFileTypes="image/*,.pdf"
@@ -85,12 +80,11 @@ export const QuizAttachmentUploadExample = () => {
 };
 
 // Example 6: General File Upload with Progress
-export const GeneralFileUploadExample = () => {
-  const [fileUrl, setFileUrl] = useState<string>('');
+export const GeneralFileUploadExample = () => { const [fileUrl, setFileUrl] = useState<string>('');
 
   return (
     <FileUploadArabic
-      value={fileUrl}
+      value={fileUrl }
       onChange={(url) => setFileUrl(url || '')}
       folder="general-uploads"
       acceptedFileTypes="*/*"
@@ -102,21 +96,18 @@ export const GeneralFileUploadExample = () => {
 };
 
 // Example Usage in Forms
-export const FormUploadExample = () => {
-  const [formData, setFormData] = useState({
+export const FormUploadExample = () => { const [formData, setFormData] = useState({
     title: '',
     description: '',
     imageUrl: '',
     videoUrl: '',
-    attachmentUrl: '',
-  });
+    attachmentUrl: '', });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
+
     // Submit form data
     console.log('Form Data:', formData);
-    
+
     // Example: Send to API
     /*
     try {
@@ -125,16 +116,14 @@ export const FormUploadExample = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         toast.success('تم حفظ البيانات بنجاح');
       } else {
         toast.error('حدث خطأ في حفظ البيانات');
       }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('حدث خطأ غير متوقع');
-    }
+    } catch (error) { console.error('Error:', error);
+      toast.error('حدث خطأ غير متوقع'); }
     */
   };
 
@@ -147,7 +136,7 @@ export const FormUploadExample = () => {
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={ (e) => setFormData({ ...formData, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-arabic"
           placeholder="أدخل عنوان الدورة"
         />
@@ -159,7 +148,7 @@ export const FormUploadExample = () => {
         </label>
         <textarea
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={ (e) => setFormData({ ...formData, description: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-arabic"
           rows={3}
           placeholder="أدخل وصف الدورة"
@@ -172,7 +161,7 @@ export const FormUploadExample = () => {
         </label>
         <FileUploadArabic
           value={formData.imageUrl}
-          onChange={(url) => setFormData({ ...formData, imageUrl: url || '' })}
+          onChange={ (url) => setFormData({ ...formData, imageUrl: url || '' })}
           folder="course-images"
           acceptedFileTypes="image/*"
           maxFileSize={4 * 1024 * 1024}
@@ -186,7 +175,7 @@ export const FormUploadExample = () => {
         </label>
         <FileUploadArabic
           value={formData.videoUrl}
-          onChange={(url) => setFormData({ ...formData, videoUrl: url || '' })}
+          onChange={ (url) => setFormData({ ...formData, videoUrl: url || '' })}
           folder="course-videos"
           acceptedFileTypes="video/*"
           maxFileSize={100 * 1024 * 1024}
@@ -200,7 +189,7 @@ export const FormUploadExample = () => {
         </label>
         <FileUploadArabic
           value={formData.attachmentUrl}
-          onChange={(url) => setFormData({ ...formData, attachmentUrl: url || '' })}
+          onChange={ (url) => setFormData({ ...formData, attachmentUrl: url || '' })}
           folder="course-attachments"
           acceptedFileTypes=".pdf,.doc,.docx,.ppt,.pptx"
           maxFileSize={20 * 1024 * 1024}
@@ -216,4 +205,4 @@ export const FormUploadExample = () => {
       </button>
     </form>
   );
-}; 
+};

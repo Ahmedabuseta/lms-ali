@@ -7,32 +7,24 @@ import { BasicExamForm } from './_components/basic-exam-form';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamBasicPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function ExamBasicPage({ params }: PageProps) { const user = await requireTeacher();
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: {
+      id: params.examId, },
+    include: { course: {
         select: {
           id: true,
           title: true,
-          /* createdById: true, */
-        },
+          /* createdById: true, */ },
       },
-      chapter: {
-        select: {
+      chapter: { select: {
           id: true,
-          title: true,
-        },
+          title: true, },
       },
     },
   });
@@ -47,22 +39,16 @@ export default async function ExamBasicPage({ params }: PageProps) {
   } */
 
   // Get course chapters for the chapter selection dropdown
-  const chapters = await db.chapter.findMany({
-    where: {
+  const chapters = await db.chapter.findMany({ where: {
       courseId: exam.courseId,
-      isPublished: true,
-    },
-    orderBy: {
-      position: 'asc',
-    },
+      isPublished: true, },
+    orderBy: { position: 'asc', },
   });
 
-  const initialData = {
-    title: exam.title,
+  const initialData = { title: exam.title,
     description: exam.description || '',
     chapterId: exam.chapterId || '',
-    timeLimit: exam.timeLimit || undefined,
-  };
+    timeLimit: exam.timeLimit || undefined, };
 
   return (
     <div className="p-6" dir="rtl">

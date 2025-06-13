@@ -6,25 +6,19 @@ import { ArrowLeft } from 'lucide-react';
 import { QuestionForm } from './_components/question-form';
 import { db } from '@/lib/db';
 
-interface PageProps {
-  searchParams: {
+interface PageProps { searchParams: {
     courseId?: string;
-    chapterId?: string;
-  };
+    chapterId?: string; };
 }
 
-const CreateQuestionPage = async ({ searchParams }: PageProps) => {
-   requireAuth()
+const CreateQuestionPage = async ({ searchParams }: PageProps) => { requireAuth()
 
   // Fetch all courses owned by the teacher
   const courses = await db.course.findMany({
     select: {
       id: true,
-      title: true,
-    },
-    orderBy: {
-      title: 'asc',
-    },
+      title: true, },
+    orderBy: { title: 'asc', },
   });
 
   if (courses.length === 0) {
@@ -35,18 +29,12 @@ const CreateQuestionPage = async ({ searchParams }: PageProps) => {
   const selectedCourseId = searchParams.courseId || courses[0].id;
 
   // Fetch chapters for the selected course
-  const chapters = await db.chapter.findMany({
-    where: {
+  const chapters = await db.chapter.findMany({ where: {
       courseId: selectedCourseId,
-      isPublished: true,
-    },
-    select: {
-      id: true,
-      title: true,
-    },
-    orderBy: {
-      position: 'asc',
-    },
+      isPublished: true, },
+    select: { id: true,
+      title: true, },
+    orderBy: { position: 'asc', },
   });
   console.log(chapters);
 

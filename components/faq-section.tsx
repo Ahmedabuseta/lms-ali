@@ -6,28 +6,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBadge } from '@/components/icon-badge';
 
 // FAQ Dropdown Component
-const FAQDropdown = ({ question, answer }: { question: string; answer: React.ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FAQDropdown = ({ question, answer }: { question: string; answer: React.ReactNode }) => { const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="group border border-blue-200/50 rounded-xl overflow-hidden bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 dark:border-blue-800/30 dark:bg-gray-800/80 w-full">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen(!isOpen) }
         className="w-full p-4 md:p-6 text-right flex items-center justify-between hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300"
       >
         <span className="font-bold text-base md:text-lg text-gray-800 dark:text-white leading-relaxed flex-1 text-right pr-2 md:pr-0">{question}</span>
         <div className="flex-shrink-0 ml-2 md:ml-4">
-          {isOpen ? (
+          { isOpen ? (
             <ChevronUp className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
           ) : (
             <ChevronDown className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
-          )}
+          ) }
         </div>
       </button>
-      {isOpen && (
+      { isOpen && (
         <div className="border-t border-blue-100 dark:border-blue-800/50 bg-gradient-to-br from-blue-50/30 to-indigo-50/30 dark:from-blue-900/10 dark:to-indigo-900/10">
           <div className="p-4 md:p-6 pt-4 md:pt-5">
-            <div className="text-gray-700 dark:text-gray-200 leading-relaxed text-sm md:text-base">{answer}</div>
+            <div className="text-gray-700 dark:text-gray-200 leading-relaxed text-sm md:text-base">{answer }</div>
           </div>
         </div>
       )}
@@ -35,13 +34,12 @@ const FAQDropdown = ({ question, answer }: { question: string; answer: React.Rea
   );
 };
 
-export const FAQSection = () => {
-  return (
+export const FAQSection = () => { return (
     <div className="relative w-full">
       <Card className="border-0 bg-gradient-to-br from-white/90 via-blue-50/50 to-indigo-50/50 backdrop-blur-md shadow-2xl dark:from-gray-800/90 dark:via-blue-900/20 dark:to-indigo-900/20 w-full">
         <CardHeader className="text-center pb-8 px-4 md:px-8">
           <CardTitle className="flex flex-col md:flex-row items-center justify-center gap-3 text-2xl md:text-3xl font-bold mb-4">
-            <IconBadge icon={HelpCircle} variant="info" size="lg" />
+            <IconBadge icon={HelpCircle } variant="info" size="lg" />
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-center">
               الأسئلة الشائعة حول معادلة كلية التجارة
             </span>
@@ -53,8 +51,7 @@ export const FAQSection = () => {
         <CardContent className="space-y-4 md:space-y-6 px-4 md:px-8 pb-6 md:pb-8 w-full">
           <FAQDropdown
             question="ما هي معادلة كلية التجارة؟"
-            answer={
-              <div className="space-y-4">
+            answer={ <div className="space-y-4">
                 <p className="text-base leading-relaxed">مسابقة يعقدها المجلس الأعلى للجامعات كل عام للالتحاق بكلية التجارة للدبلومات والمعاهد الفنية التالية:</p>
                 <ul className="list-disc list-inside space-y-2 text-sm bg-blue-50/50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <li className="text-gray-700 dark:text-gray-200">دبلوم الثانوي الصناعي نظام 3 سنوات</li>
@@ -64,35 +61,29 @@ export const FAQSection = () => {
                   <li className="text-gray-700 dark:text-gray-200">دبلوم الحاسب الآلي</li>
                   <li className="text-gray-700 dark:text-gray-200">دبلوم العلاقات الصناعية من الجامعة العمالية</li>
                 </ul>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي شروط التقديم للامتحان معادلة كلية التجارة؟"
-            answer={
-              <div className="space-y-4">
+            answer={ <div className="space-y-4">
                 <ol className="list-decimal list-inside space-y-3 bg-green-50/50 dark:bg-green-900/20 p-4 rounded-lg">
                   <li className="text-gray-700 dark:text-gray-200 font-medium">الحصول على 70% في حال دبلوم نظام 3 سنوات، أو 50% للدبلوم نظام 5 سنوات</li>
                   <li className="text-gray-700 dark:text-gray-200 font-medium">أن تكون خريج دفعة حديثة آخر ثلاث سنوات من سنة تخرجك "2021, 2022, 2023"</li>
                 </ol>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي عدد مرات دخول الامتحان؟"
-            answer={
-              <div className="bg-amber-50/50 dark:bg-amber-900/20 p-4 rounded-lg">
+            answer={ <div className="bg-amber-50/50 dark:bg-amber-900/20 p-4 rounded-lg">
                 <p className="text-gray-700 dark:text-gray-200 font-medium">يسمح لك بدخول امتحان المعادلة مرتين منذ سنة تخرجك.</p>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي المواد المطلوبة في الامتحان؟"
-            answer={
-              <div className="space-y-6">
+            answer={ <div className="space-y-6">
                 <div className="bg-purple-50/50 dark:bg-purple-900/20 p-5 rounded-lg">
                   <h4 className="font-bold text-lg mb-3 text-purple-800 dark:text-purple-300">مواد الصف الثالث الثانوي العام لخريجي:</h4>
                   <ul className="list-disc list-inside space-y-2">
@@ -111,26 +102,22 @@ export const FAQSection = () => {
                     <li className="text-gray-700 dark:text-gray-200 font-medium">محاسبة</li>
                   </ul>
                 </div>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي درجات النجاح في الامتحان؟"
-            answer={
-              <div className="bg-emerald-50/50 dark:bg-emerald-900/20 p-5 rounded-lg">
+            answer={ <div className="bg-emerald-50/50 dark:bg-emerald-900/20 p-5 rounded-lg">
                 <p className="text-gray-700 dark:text-gray-200 leading-relaxed font-medium">
                   درجة كل مادة 20 درجة، يطلب من الطالب أن يحقق 10 درجات ويحصل على الإجمالي 40 من 80 يدخل كلية تجارة انتساب.
                   وفي حال حصول الطالب على 65% يدخل كلية تجارة انتظام، أما طلاب نظام خمس سنوات فيحتاجون إلى تحقيق 50% للنجاح.
                 </p>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي الأوراق المطلوبة وخطوات التقديم لمعادلة كلية التجارة؟"
-            answer={
-              <div className="space-y-4">
+            answer={ <div className="space-y-4">
                 <ol className="list-decimal list-inside space-y-3 bg-rose-50/50 dark:bg-rose-900/20 p-5 rounded-lg">
                   <li className="text-gray-700 dark:text-gray-200 leading-relaxed">الدخول على الموقع الإلكتروني واختيار نوع الامتحان وإدخال بيانات المتقدم الأساسية</li>
                   <li className="text-gray-700 dark:text-gray-200 leading-relaxed">طباعة إذن الدفع والذي يشتمل على القيمة المطلوب دفعها وطريقة الدفع الذي يوضح البنك ورقم الحساب المطلوب الدفع فيه</li>
@@ -141,14 +128,12 @@ export const FAQSection = () => {
                   <li className="text-gray-700 dark:text-gray-200 leading-relaxed">متابعة الموقع بعد يومين عمل لمعرفة حالة الطلب ومراجعة ملف المستندات</li>
                   <li className="text-gray-700 dark:text-gray-200 leading-relaxed">في حالة قبول الطلب، طباعة رقم الجلوس الخاص بك للاحتفاظ به</li>
                 </ol>
-              </div>
-            }
+              </div> }
           />
 
           <FAQDropdown
             question="ما هي مواقع الامتحانات وأماكن انعقادها؟"
-            answer={
-              <div className="space-y-6">
+            answer={ <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 p-5 rounded-xl">
                     <h4 className="font-bold text-lg mb-4 text-blue-800 dark:text-blue-300">مكان التقدم بالمستندات وانعقاد الامتحان</h4>
@@ -188,8 +173,7 @@ export const FAQSection = () => {
                     <strong>ملاحظة مهمة:</strong> يتم توزيع الطلاب على مراكز الامتحانات حسب محافظة الإقامة والقطاع الجغرافي المحدد لكل منطقة.
                   </p>
                 </div>
-              </div>
-            }
+              </div> }
           />
         </CardContent>
       </Card>

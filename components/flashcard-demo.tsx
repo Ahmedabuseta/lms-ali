@@ -5,34 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Zap, BookOpen, Target, Users, Plus, Shuffle, RefreshCw, ArrowRight } from 'lucide-react';
 
-export const FlashcardDemo = () => {
-  const [demoStep, setDemoStep] = useState(0);
+export const FlashcardDemo = () => { const [demoStep, setDemoStep] = useState(0);
 
   const demoSteps = [
     {
       title: "البطاقات الأولى (25 بطاقة)",
       description: "يتم تحميل 25 بطاقة مع خلط عشوائي",
       cards: "1-25",
-      color: "blue"
-    },
-    {
-      title: "بعد 20 بطاقة - ظهور زر التحميل",
+      color: "blue" },
+    { title: "بعد 20 بطاقة - ظهور زر التحميل",
       description: "يظهر زر 'تحميل المزيد' بعد مراجعة 20 بطاقة",
       cards: "20/25",
-      color: "orange"
-    },
-    {
-      title: "تحميل المجموعة الثانية",
+      color: "orange" },
+    { title: "تحميل المجموعة الثانية",
       description: "تحميل 25 بطاقة إضافية مع خلط جديد",
       cards: "26-50",
-      color: "purple"
-    },
-    {
-      title: "استمرار التحميل",
+      color: "purple" },
+    { title: "استمرار التحميل",
       description: "يمكن تحميل المزيد حتى انتهاء جميع البطاقات",
       cards: "51-75",
-      color: "green"
-    }
+      color: "green" }
   ];
 
   const currentStep = demoSteps[demoStep];
@@ -62,34 +54,30 @@ export const FlashcardDemo = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {demoSteps.map((step, index) => (
+                { demoSteps.map((step, index) => (
                   <div
-                    key={index}
-                    className={`p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
+                    key={index }
+                    className={ `p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
                       index === demoStep
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
-                    }`}
+                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-300' }`}
                     onClick={() => setDemoStep(index)}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className={`font-semibold font-arabic ${
-                          index === demoStep ? 'text-blue-800 dark:text-blue-200' : 'text-gray-800 dark:text-gray-200'
-                        }`}>
+                        <h3 className={ `font-semibold font-arabic ${
+                          index === demoStep ? 'text-blue-800 dark:text-blue-200' : 'text-gray-800 dark:text-gray-200' }`}>
                           {step.title}
                         </h3>
-                        <p className={`text-sm font-arabic ${
-                          index === demoStep ? 'text-blue-600 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400'
-                        }`}>
+                        <p className={ `text-sm font-arabic ${
+                          index === demoStep ? 'text-blue-600 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400' }`}>
                           {step.description}
                         </p>
                       </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      <div className={ `px-3 py-1 rounded-full text-xs font-medium ${
                         index === demoStep
                           ? 'bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-200'
-                          : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
-                      }`}>
+                          : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400' }`}>
                         {step.cards}
                       </div>
                     </div>
@@ -102,14 +90,14 @@ export const FlashcardDemo = () => {
             <div className="flex justify-between">
               <Button
                 variant="outline"
-                onClick={() => setDemoStep(Math.max(0, demoStep - 1))}
+                onClick={ () => setDemoStep(Math.max(0, demoStep - 1)) }
                 disabled={demoStep === 0}
               >
                 <ArrowRight className="h-4 w-4 ml-1 rotate-180" />
                 السابق
               </Button>
               <Button
-                onClick={() => setDemoStep(Math.min(demoSteps.length - 1, demoStep + 1))}
+                onClick={ () => setDemoStep(Math.min(demoSteps.length - 1, demoStep + 1)) }
                 disabled={demoStep === demoSteps.length - 1}
               >
                 التالي
@@ -129,7 +117,7 @@ export const FlashcardDemo = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Current Step Visualization */}
-                {demoStep === 0 && (
+                { demoStep === 0 && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-5 gap-2">
                       {Array.from({ length: 25 }, (_, i) => (
@@ -149,19 +137,18 @@ export const FlashcardDemo = () => {
                   </div>
                 )}
 
-                {demoStep === 1 && (
+                { demoStep === 1 && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-5 gap-2">
                       {Array.from({ length: 25 }, (_, i) => (
                         <div
                           key={i}
-                          className={`aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
+                          className={ `aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
                             i < 20
                               ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                          }`}
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400' }`}
                         >
-                          {i < 20 ? '✓' : i + 1}
+                          { i < 20 ? '✓' : i + 1 }
                         </div>
                       ))}
                     </div>
@@ -177,17 +164,16 @@ export const FlashcardDemo = () => {
                   </div>
                 )}
 
-                {demoStep === 2 && (
+                { demoStep === 2 && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-5 gap-2">
                       {Array.from({ length: 50 }, (_, i) => (
                         <div
                           key={i}
-                          className={`aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
+                          className={ `aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
                             i < 25
                               ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200'
-                              : 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-200'
-                          }`}
+                              : 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-200' }`}
                         >
                           {i + 1}
                         </div>
@@ -201,21 +187,20 @@ export const FlashcardDemo = () => {
                   </div>
                 )}
 
-                {demoStep === 3 && (
+                { demoStep === 3 && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-5 gap-2">
                       {Array.from({ length: 75 }, (_, i) => (
                         <div
                           key={i}
-                          className={`aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
+                          className={ `aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${
                             i < 25
                               ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200'
                               : i < 50
                               ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-200'
-                              : 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-                          }`}
+                              : 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200' }`}
                         >
-                          {i + 1 > 75 ? '...' : i + 1}
+                          { i + 1 > 75 ? '...' : i + 1 }
                         </div>
                       ))}
                     </div>
@@ -316,4 +301,4 @@ export const FlashcardDemo = () => {
       </div>
     </div>
   );
-}; 
+};

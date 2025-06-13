@@ -3,8 +3,7 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
 
-type ChartProps = {
-  data: { name: string; total: number }[];
+type ChartProps = { data: { name: string; total: number }[];
 };
 
 export default function Chart({ data }: ChartProps) {
@@ -21,7 +20,7 @@ export default function Chart({ data }: ChartProps) {
             tickFormatter={(value) => `$${value}`}
           />
 
-          <Bar dataKey="total" fill="#0369a1" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="total" fill="#0369a1" radius={ [4, 4, 0, 0] } />
         </BarChart>
       </ResponsiveContainer>
     </Card>

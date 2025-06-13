@@ -16,20 +16,15 @@ export default async function Analytics() {
   // Get additional analytics data
   const [totalCourses, publishedCourses, totalStudents, recentEnrollments] = await Promise.all([
     db.course.count(),
-    db.course.count({
-      where: {
-        isPublished: true,
-      },
+    db.course.count({ where: {
+        isPublished: true, },
     }),
-    db.user.count({
-      where: { role: 'STUDENT' },
+    db.user.count({ where: { role: 'STUDENT' },
     }),
-    db.user.count({
-      where: {
+    db.user.count({ where: {
         role: 'STUDENT',
         createdAt: {
-          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
-        },
+          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days },
       },
     }),
   ]);
@@ -41,11 +36,11 @@ export default async function Analytics() {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-secondary/5 to-accent/5 blur-3xl"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
       </div>
 
@@ -68,20 +63,18 @@ export default async function Analytics() {
           shouldFormat
           variant="success"
           icon={DollarSign}
-          trend={{
+          trend={ {
             value: 12.5,
-            isPositive: true,
-          }}
+            isPositive: true, }}
         />
         <DataCard
           label="إجمالي المبيعات"
           value={totalSales}
           variant="info"
           icon={TrendingUp}
-          trend={{
+          trend={ {
             value: 8.2,
-            isPositive: true,
-          }}
+            isPositive: true, }}
         />
         <DataCard label="الدورات المنشورة" value={publishedCourses} variant="warning" icon={BookOpen} />
         <DataCard
@@ -89,10 +82,9 @@ export default async function Analytics() {
           value={totalStudents}
           variant="default"
           icon={Users}
-          trend={{
+          trend={ {
             value: recentEnrollments,
-            isPositive: true,
-          }}
+            isPositive: true, }}
         />
       </div>
 
@@ -170,11 +162,11 @@ export default async function Analytics() {
               <div className="space-y-2">
                 <h4 className="font-medium text-foreground">أفضل الدورات أداءً</h4>
                 <div className="space-y-2">
-                  {data
+                  { data
                     .sort((a, b) => b.total - a.total)
                     .slice(0, 3)
                     .map((course, index) => (
-                      <div key={course.name} className="flex items-center justify-between rounded bg-muted/50 p-2">
+                      <div key={course.name } className="flex items-center justify-between rounded bg-muted/50 p-2">
                         <div className="flex items-center gap-2">
                           <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/10 text-xs font-medium text-primary">
                             {index + 1}
@@ -193,13 +185,13 @@ export default async function Analytics() {
                   <div className="flex items-center justify-between rounded bg-muted/50 p-2">
                     <span className="text-sm text-muted-foreground">معدل النجاح</span>
                     <span className="text-sm font-medium text-foreground">
-                      {publishedCourses > 0 ? Math.round((publishedCourses / totalCourses) * 100) : 0}%
+                      { publishedCourses > 0 ? Math.round((publishedCourses / totalCourses) * 100) : 0 }%
                     </span>
                   </div>
                   <div className="flex items-center justify-between rounded bg-muted/50 p-2">
                     <span className="text-sm text-muted-foreground">متوسط الطلاب لكل دورة</span>
                     <span className="text-sm font-medium text-foreground">
-                      {publishedCourses > 0 ? Math.round(totalStudents / publishedCourses) : 0}
+                      { publishedCourses > 0 ? Math.round(totalStudents / publishedCourses) : 0 }
                     </span>
                   </div>
                   <div className="flex items-center justify-between rounded bg-muted/50 p-2">

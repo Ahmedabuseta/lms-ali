@@ -6,25 +6,19 @@ import { ArrowLeft } from 'lucide-react';
 import { QuestionForm } from '../_components/question-form';
 import { db } from '@/lib/db';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function CreateQuestionPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function CreateQuestionPage({ params }: PageProps) { const user = await requireTeacher();
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: {
+      id: params.examId, },
+    include: { course: {
         select: {
           id: true,
-          title: true,
-        },
+          title: true, },
       },
     },
   });
@@ -39,10 +33,8 @@ export default async function CreateQuestionPage({ params }: PageProps) {
   }
 
   // Get the current highest position
-  const questionsCount = await db.question.count({
-    where: {
-      examId: params.examId,
-    },
+  const questionsCount = await db.question.count({ where: {
+      examId: params.examId, },
   });
 
   return (
@@ -67,8 +59,8 @@ export default async function CreateQuestionPage({ params }: PageProps) {
         </div>
       </div>
       <div className="mt-8 max-w-4xl">
-        <QuestionForm 
-          examId={params.examId} 
+        <QuestionForm
+          examId={params.examId}
           nextPosition={questionsCount + 1}
         />
       </div>

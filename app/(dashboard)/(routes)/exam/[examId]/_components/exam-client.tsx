@@ -10,8 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -19,58 +18,46 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 
-interface ExamAttempt {
-  id: string;
+interface ExamAttempt { id: string;
   startedAt: string;
   completedAt?: string;
   score?: number;
   isPassed?: boolean;
   timeSpent?: number;
-  isTimedOut?: boolean;
-}
+  isTimedOut?: boolean; }
 
-interface ExamStats {
-  totalAttempts: number;
+interface ExamStats { totalAttempts: number;
   completedAttempts: number;
   remainingAttempts: number;
   bestScore?: number;
   averageScore?: number;
-  hasPassedAttempt: boolean;
-}
+  hasPassedAttempt: boolean; }
 
-interface ExamInfo {
-  title: string;
+interface ExamInfo { title: string;
   timeLimit?: number;
   totalQuestions: number;
   maxAttempts: number;
-  passingScore: number;
-}
+  passingScore: number; }
 
-interface ExamClientProps {
-  examId: string;
+interface ExamClientProps { examId: string;
   activeAttemptId?: string;
   timeLimit?: number | null;
   userId?: string;
   title?: string;
   totalQuestions?: number;
   maxAttempts?: number;
-  passingScore?: number;
-}
+  passingScore?: number; }
 
-export const ExamClient = ({ 
-  examId, 
-  activeAttemptId, 
-  timeLimit, 
-  userId, 
+export const ExamClient = ({ examId,
+  activeAttemptId,
+  timeLimit,
+  userId,
   title = 'امتحان',
   totalQuestions = 0,
   maxAttempts = 1,
-  passingScore = 70,
-}: ExamClientProps) => {
-  const router = useRouter();
+  passingScore = 70, }: ExamClientProps) => { const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
@@ -80,31 +67,27 @@ export const ExamClient = ({
 
   // Load exam attempts and stats
   useEffect(() => {
-    loadExamData();
-  }, [examId]);
+    loadExamData(); }, [examId]);
 
   const loadExamData = async () => {
     try {
       const response = await axios.get(`/api/exam/${examId}/attempt`);
       const data = response.data;
-      
+
       setAttempts(data.attempts || []);
       setStats(data.stats || null);
       setExamInfo(data.exam || null);
-    } catch (error) {
-      console.error('Failed to load exam data:', error);
-      // Don't show error for this, as it's not critical
-    }
+    } catch (error) { console.error('Failed to load exam data:', error);
+      // Don't show error for this, as it's not critical }
   };
 
-  const handleExamStart = async () => {
-    try {
+  const handleExamStart = async () => { try {
       setIsLoading(true);
       setError(null);
 
       // If there's an active attempt, redirect to it
       if (activeAttemptId) {
-        router.push(`/exam/${examId}/attempt/${activeAttemptId}`);
+        router.push(`/exam/${examId }/attempt/${activeAttemptId}`);
         return;
       }
 
@@ -112,11 +95,9 @@ export const ExamClient = ({
       const response = await axios.post(
         `/api/exam/${examId}/attempt`,
         {},
-        {
-          timeout: 15000, // 15s timeout
-        },
+        { timeout: 15000, // 15s timeout },
       );
-      
+
       const data = response.data;
 
       if (data.isExisting) {
@@ -126,14 +107,13 @@ export const ExamClient = ({
       }
 
       router.push(`/exam/${examId}/attempt/${data.attempt.id}`);
-    } catch (error: any) {
-      console.error('Exam start error:', error);
-      
+    } catch (error: any) { console.error('Exam start error:', error);
+
       if (error.response?.data) {
         const errorData = error.response.data;
-        
+
         if (errorData.maxAttemptsReached) {
-          setError(`لقد وصلت إلى الحد الأقصى من المحاولات (${errorData.maxAttempts || maxAttempts})`);
+          setError(`لقد وصلت إلى الحد الأقصى من المحاولات (${errorData.maxAttempts || maxAttempts })`);
         } else if (errorData.requiresAccess) {
           setError(`${errorData.message}\nالفصل: ${errorData.chapterTitle || 'غير محدد'}`);
         } else if (errorData.timeExpired) {
@@ -148,7 +128,7 @@ export const ExamClient = ({
       } else {
         setError('فشل في بدء الامتحان. برجاء المحاولة مرة أخرى.');
       }
-      
+
       toast.error('فشل في بدء الامتحان');
     } finally {
       setIsLoading(false);
@@ -171,14 +151,12 @@ export const ExamClient = ({
     return `${hours} ساعة${mins > 0 ? ` و ${mins} دقيقة` : ''}`;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ar-SA', {
+  const formatDate = (dateString: string) => { return new Date(dateString).toLocaleDateString('ar-SA', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
-    });
+      minute: '2-digit', });
   };
 
   const getScoreColor = (score: number) => {
@@ -250,7 +228,7 @@ export const ExamClient = ({
       </div>
 
       {/* Stats Card */}
-      {stats && stats.totalAttempts > 0 && (
+      { stats && stats.totalAttempts > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>إحصائياتك</CardTitle>
@@ -258,10 +236,10 @@ export const ExamClient = ({
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{stats.completedAttempts}</div>
+                <div className="text-2xl font-bold text-blue-600">{stats.completedAttempts }</div>
                 <div className="text-sm text-muted-foreground">محاولات مكتملة</div>
               </div>
-              
+
               {stats.bestScore !== null && (
                 <div className="text-center">
                   <div className={`text-2xl font-bold ${getScoreColor(stats.bestScore)}`}>
@@ -270,7 +248,7 @@ export const ExamClient = ({
                   <div className="text-sm text-muted-foreground">أفضل نتيجة</div>
                 </div>
               )}
-              
+
               {stats.averageScore !== null && (
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-600">{stats.averageScore}%</div>
@@ -298,7 +276,7 @@ export const ExamClient = ({
             size="lg"
             className="w-full"
           >
-            {isLoading ? (
+            { isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 جاري التحميل...
@@ -308,7 +286,7 @@ export const ExamClient = ({
                 <Timer className="mr-2 h-4 w-4" />
                 متابعة الامتحان
               </>
-            )}
+            ) }
           </Button>
         ) : (
           <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
@@ -318,7 +296,7 @@ export const ExamClient = ({
                 size="lg"
                 className="w-full"
               >
-                {isLoading ? (
+                { isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     جاري البدء...
@@ -327,7 +305,7 @@ export const ExamClient = ({
                   'لا توجد محاولات متبقية'
                 ) : (
                   'بدء الامتحان'
-                )}
+                ) }
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -349,14 +327,14 @@ export const ExamClient = ({
               <AlertDialogFooter>
             <AlertDialogCancel>إلغاء</AlertDialogCancel>
                 <AlertDialogAction onClick={handleExamStart} disabled={isLoading}>
-                  {isLoading ? (
+                  { isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       جاري البدء...
                     </>
                   ) : (
                     'بدء الامتحان'
-                  )}
+                  ) }
                 </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -375,9 +353,9 @@ export const ExamClient = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {attempts.map((attempt, index) => (
+              { attempts.map((attempt, index) => (
                 <div
-                  key={attempt.id}
+                  key={attempt.id }
                   className="flex items-center justify-between p-3 border rounded-lg"
                 >
                   <div className="flex items-center space-x-3">
@@ -388,20 +366,20 @@ export const ExamClient = ({
                       {formatDate(attempt.completedAt || attempt.startedAt)}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     {attempt.score !== undefined && (
                       <Badge variant={getScoreBadgeVariant(attempt.score)}>
                         {attempt.score}%
                       </Badge>
                     )}
-                    
-                    {attempt.isPassed ? (
+
+                    { attempt.isPassed ? (
                       <CheckCircle className="h-4 w-4 text-green-600" />
                     ) : (
                       <XCircle className="h-4 w-4 text-red-600" />
-                    )}
-                    
+                    ) }
+
                     {attempt.isTimedOut && (
                       <Badge variant="outline" className="text-orange-600">
                         انتهت المدة

@@ -13,28 +13,22 @@ import { PageProtection } from '@/components/page-protection';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { IconBadge } from '@/components/icon-badge';
 
-interface PageProps {
-  searchParams: {
+interface PageProps { searchParams: {
     courseId?: string;
-    chapterId?: string;
-  };
+    chapterId?: string; };
 }
 
-export default async function ExamPage({ searchParams }: PageProps) {
-  const user = await getCurrentUser();
+export default async function ExamPage({ searchParams }: PageProps) { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   const result = await getExams({
     userId: user.id,
     courseId: searchParams.courseId,
-    chapterId: searchParams.chapterId,
-  });
+    chapterId: searchParams.chapterId, });
   const exams = result?.exams ? result.exams : [];
 
-  const courses = await getCourses({
-    userId: user.id,
-    ...searchParams,
-  });
+  const courses = await getCourses({ userId: user.id,
+    ...searchParams, });
 
   // Calculate statistics
   const totalQuestions = exams.reduce((total, exam) => total + (exam._count?.questions || 0), 0);
@@ -49,11 +43,11 @@ export default async function ExamPage({ searchParams }: PageProps) {
           <div className="absolute right-10 top-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-blue-500/10 to-indigo-500/5 blur-3xl" />
           <div
             className="absolute bottom-1/4 left-20 h-80 w-80 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 blur-3xl"
-            style={{ animationDelay: '2s' }}
+            style={ { animationDelay: '2s' }}
           />
           <div
             className="absolute right-1/3 top-1/2 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-green-500/8 to-emerald-500/4 blur-3xl"
-            style={{ animationDelay: '4s' }}
+            style={ { animationDelay: '4s' }}
           />
         </div>
 
@@ -87,7 +81,7 @@ export default async function ExamPage({ searchParams }: PageProps) {
               <CardContent className="relative">
                 <div className="text-3xl font-bold text-foreground font-arabic">{availableExams}</div>
                 <p className="mt-1 text-sm text-muted-foreground font-arabic">
-                  {availableExams === 0 ? 'لا توجد امتحانات' : 'امتحان متاح للحل'}
+                  { availableExams === 0 ? 'لا توجد امتحانات' : 'امتحان متاح للحل' }
                 </p>
               </CardContent>
             </Card>
@@ -104,7 +98,7 @@ export default async function ExamPage({ searchParams }: PageProps) {
               <CardContent className="relative">
                 <div className="text-3xl font-bold text-foreground font-arabic">{activeCourses}</div>
                 <p className="mt-1 text-sm text-muted-foreground font-arabic">
-                  {activeCourses === 0 ? 'لا توجد كورسات' : 'كورس مسجل'}
+                  { activeCourses === 0 ? 'لا توجد كورسات' : 'كورس مسجل' }
                 </p>
               </CardContent>
             </Card>
@@ -121,7 +115,7 @@ export default async function ExamPage({ searchParams }: PageProps) {
               <CardContent className="relative">
                 <div className="text-3xl font-bold text-foreground font-arabic">{totalQuestions}</div>
                 <p className="mt-1 text-sm text-muted-foreground font-arabic">
-                  {totalQuestions === 0 ? 'لا توجد أسئلة' : 'سؤال للممارسة'}
+                  { totalQuestions === 0 ? 'لا توجد أسئلة' : 'سؤال للممارسة' }
                 </p>
               </CardContent>
             </Card>
@@ -156,8 +150,8 @@ export default async function ExamPage({ searchParams }: PageProps) {
                   <div>
                     <CardTitle className="text-xl font-semibold text-foreground font-arabic">الامتحانات المتاحة</CardTitle>
                     <CardDescription className="text-sm text-muted-foreground font-arabic mt-1">
-                      {exams.length > 0 
-                        ? `${exams.length} امتحان متاح للحل` 
+                      {exams.length > 0
+                        ? `${exams.length} امتحان متاح للحل`
                         : 'لا توجد امتحانات متاحة حالياً'
                       }
                     </CardDescription>
@@ -171,23 +165,22 @@ export default async function ExamPage({ searchParams }: PageProps) {
               </div>
             </CardHeader>
             <CardContent className="relative p-6">
-              {exams.length === 0 ? (
+              { exams.length === 0 ? (
                 <div className="flex h-64 w-full flex-col items-center justify-center rounded-2xl border border-dashed border-border/50 bg-gradient-to-br from-muted/20 to-muted/10 backdrop-blur-sm text-center">
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm border border-border/30 mb-4">
                     <FileQuestion className="h-10 w-10 text-muted-foreground" />
                   </div>
                   <h3 className="text-xl font-semibold text-foreground font-arabic mb-2">مفيش امتحانات متاحة</h3>
                   <p className="text-sm text-muted-foreground font-arabic max-w-md">
-                    {searchParams.courseId 
+                    {searchParams.courseId
                       ? 'لا توجد امتحانات متاحة للكورس المحدد حالياً'
-                      : 'حالياً مفيش امتحانات متاحة للكورسات بتاعتك'
-                    }
+                      : 'حالياً مفيش امتحانات متاحة للكورسات بتاعتك' }
                   </p>
-                  {searchParams.courseId && (
-                    <Button 
-                      variant="outline" 
+                  { searchParams.courseId && (
+                    <Button
+                      variant="outline"
                       className="mt-4 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-muted/50 font-arabic"
-                      onClick={() => window.location.href = '/exam'}
+                      onClick={() => window.location.href = '/exam' }
                     >
                       عرض جميع الامتحانات
                     </Button>

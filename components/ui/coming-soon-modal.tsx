@@ -4,10 +4,8 @@ import { useState } from 'react';
 import { X, Calendar, Sparkles, Star, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface ComingSoonModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+interface ComingSoonModalProps { isOpen: boolean;
+  onClose: () => void; }
 
 export const ComingSoonModal = ({ isOpen, onClose }: ComingSoonModalProps) => {
   if (!isOpen) return null;
@@ -64,8 +62,8 @@ export const ComingSoonModal = ({ isOpen, onClose }: ComingSoonModalProps) => {
             </div>
 
             <div className="flex items-center justify-center gap-1">
-              {[1, 2, 3].map((star) => (
-                <Star key={star} className="h-4 w-4 fill-current text-yellow-400" />
+              { [1, 2, 3].map((star) => (
+                <Star key={star } className="h-4 w-4 fill-current text-yellow-400" />
               ))}
             </div>
           </div>

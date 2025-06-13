@@ -12,17 +12,13 @@ import { Button } from '@/components/ui/button';
 import { FileUploadArabic } from '@/components/file-upload-arabic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface AttachmentFormProps {
-  initialData: Course & { attachments: Attachment[] };
+interface AttachmentFormProps { initialData: Course & { attachments: Attachment[] };
   courseId: string;
 }
 
-const formSchema = z.object({
-  url: z.string().min(1),
-});
+const formSchema = z.object({ url: z.string().min(1), });
 
-export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => { const [isEditing, setIsEditing] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -31,7 +27,7 @@ export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) =
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${courseId}/attachments`, values);
+      await axios.post(`/api/courses/${courseId }/attachments`, values);
       toast.success('تم إضافة المرفق بنجاح');
       toggleEdit();
       router.refresh();
@@ -86,7 +82,7 @@ export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) =
         </Button>
       </CardHeader>
       <CardContent>
-        {!isEditing && (
+        { !isEditing && (
           <>
             {initialData.attachments.length === 0 && (
               <div className="flex items-center justify-center h-32 bg-slate-100 dark:bg-slate-800 rounded-md border-2 border-dashed border-slate-300 dark:border-slate-600">
@@ -95,7 +91,7 @@ export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) =
                   <p className="text-sm text-slate-500 font-arabic">لا توجد مرفقات بعد</p>
                 </div>
               </div>
-            )}
+            ) }
             {initialData.attachments.length > 0 && (
               <div className="space-y-2">
                 {initialData.attachments.map((attachment) => (
@@ -104,7 +100,7 @@ export const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) =
                     <p className="text-xs line-clamp-1 flex-grow font-arabic">{attachment.name}</p>
                     <div className="flex items-center mr-auto space-x-2 space-x-reverse">
                       <Button
-                        onClick={() => downloadAttachment(attachment.url, attachment.name)}
+                        onClick={ () => downloadAttachment(attachment.url, attachment.name) }
                         size="sm"
                         variant="ghost"
                         className="p-1 h-auto text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200"

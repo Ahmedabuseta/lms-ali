@@ -14,22 +14,18 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { cn } from '@/lib/utils';
 import { Combobox } from '@/components/ui/combobox';
 
-type CategoryFormProps = {
-  initialData: Course;
+type CategoryFormProps = { initialData: Course;
   courseId: string;
   options: Array<{ label: string; value: string }>;
 };
 
-const formSchema = z.object({
-  categoryId: z.string().min(1, {
-    message: 'التصنيف مطلوب',
-  }),
+const formSchema = z.object({ categoryId: z.string().min(1, {
+    message: 'التصنيف مطلوب', }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function CategoryForm({ initialData, courseId, options }: CategoryFormProps) {
-  const [isEditing, setIsEditing] = useState(false);
+export default function CategoryForm({ initialData, courseId, options }: CategoryFormProps) { const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -64,22 +60,22 @@ export default function CategoryForm({ initialData, courseId, options }: Categor
           <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 font-arabic">تصنيف الدورة</h4>
         </div>
         <Button variant="ghost" onClick={toggleEdit} size="sm" className="text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <PencilIcon className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing ? (
+      { !isEditing ? (
         <div className="mt-4">
           {selectedOption?.label ? (
             <div className="rounded-lg border border-blue-200/50 bg-blue-100/50 p-4 backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-800/20">
-              <p className="text-blue-900 dark:text-blue-100 font-medium font-arabic">{selectedOption.label}</p>
+              <p className="text-blue-900 dark:text-blue-100 font-medium font-arabic">{selectedOption.label }</p>
             </div>
           ) : (
             <div className="rounded-lg border border-blue-200/50 bg-blue-50/40 p-4 text-center backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-900/20">

@@ -4,8 +4,7 @@ import { useEffect } from 'react';
 import { GuidedTour, TourButton } from '@/components/ui/guided-tour';
 import { useTourStore } from '@/hooks/use-tour';
 
-export const DashboardTour = () => {
-  const { isTourOpen, hasCompletedTour, openTour, closeTour, completeTour } = useTourStore();
+export const DashboardTour = () => { const { isTourOpen, hasCompletedTour, openTour, closeTour, completeTour } = useTourStore();
 
   // Auto-show tour for first-time users
   useEffect(() => {
@@ -20,42 +19,30 @@ export const DashboardTour = () => {
   }, []);
 
   const tourSteps = [
-    {
-      target: '[data-tour="sidebar"]',
+    { target: '[data-tour="sidebar"]',
       title: 'Main Navigation',
       content: 'Use this sidebar to navigate between different sections of the learning platform.',
-      placement: 'right' as const,
-    },
-    {
-      target: '[data-tour="theme-toggle"]',
+      placement: 'right' as const, },
+    { target: '[data-tour="theme-toggle"]',
       title: 'Customize Your Experience',
       content: 'Switch between light and dark mode for comfortable learning at any time of day.',
-      placement: 'bottom' as const,
-    },
-    {
-      target: '[data-tour="course-cards"]',
+      placement: 'bottom' as const, },
+    { target: '[data-tour="course-cards"]',
       title: 'Your Courses',
       content: 'Find all your enrolled courses here. Click on any course to continue your learning journey.',
-      placement: 'top' as const,
-    },
-    {
-      target: '[data-tour="ai-tutor"]',
+      placement: 'top' as const, },
+    { target: '[data-tour="ai-tutor"]',
       title: 'AI Tutor',
       content: 'Get instant help with your studies using our AI tutor that can answer questions about your courses.',
-      placement: 'bottom' as const,
-    },
-    {
-      target: '[data-tour="practice"]',
+      placement: 'bottom' as const, },
+    { target: '[data-tour="practice"]',
       title: 'Practice Questions',
       content: 'Test your knowledge with practice questions related to your course material.',
-      placement: 'bottom' as const,
-    },
-    {
-      target: '[data-tour="exams"]',
+      placement: 'bottom' as const, },
+    { target: '[data-tour="exams"]',
       title: 'Exams',
       content: 'Access course exams and assessments to evaluate your progress.',
-      placement: 'left' as const,
-    },
+      placement: 'left' as const, },
   ];
 
   return (

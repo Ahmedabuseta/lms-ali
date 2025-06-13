@@ -2,9 +2,7 @@ import { getAuthenticatedUser } from '@/lib/api-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadToSpaces } from '@/lib/digitalocean-spaces';
 
-
-export async function POST(req: NextRequest) {
-  try {
+export async function POST(req: NextRequest) { try {
     const user = await getAuthenticatedUser();
 
     if (!user || user.role !== 'TEACHER') {
@@ -15,8 +13,7 @@ export async function POST(req: NextRequest) {
     const file = formData.get('file') as File;
     const folder = formData.get('folder') as string || 'uploads';
 
-    if (!file) {
-      return new NextResponse('No file provided', { status: 400 });
+    if (!file) { return new NextResponse('No file provided', { status: 400 });
     }
 
     // Convert file to buffer
@@ -27,8 +24,7 @@ export async function POST(req: NextRequest) {
     const fileUrl = await uploadToSpaces(buffer, file.name, file.type, folder);
 
     return NextResponse.json({ url: fileUrl });
-  } catch (error) {
-    console.error('[UPLOAD_ERROR]', error);
+  } catch (error) { console.error('[UPLOAD_ERROR]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

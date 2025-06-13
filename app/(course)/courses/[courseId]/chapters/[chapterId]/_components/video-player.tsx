@@ -10,35 +10,28 @@ import { Loader2, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useConfettiStore } from '@/hooks/use-confetti';
 
-interface VideoPlayerProps {
-  playbackId: string;
+interface VideoPlayerProps { playbackId: string;
   courseId: string;
   chapterId: string;
   nextChapterId?: string;
   isLocked: boolean;
   completeOnEnd: boolean;
-  title: string;
-}
+  title: string; }
 
-export const VideoPlayer = ({
-  playbackId,
+export const VideoPlayer = ({ playbackId,
   courseId,
   chapterId,
   nextChapterId,
   isLocked,
   completeOnEnd,
-  title,
-}: VideoPlayerProps) => {
-  const [isReady, setIsReady] = useState(false);
+  title, }: VideoPlayerProps) => { const [isReady, setIsReady] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
 
   const onEnd = async () => {
     try {
       if (completeOnEnd) {
-        await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
-          isCompleted: true,
-        });
+        await axios.put(`/api/courses/${courseId }/chapters/${chapterId}/progress`, { isCompleted: true, });
 
         if (!nextChapterId) {
           confetti.onOpen();

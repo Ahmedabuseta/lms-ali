@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import {
-  BookOpen,
+import { BookOpen,
   Clock,
   Users,
   Award,
@@ -11,8 +10,7 @@ import {
   Lock,
   Star,
   Calendar,
-  Target
-} from 'lucide-react';
+  Target } from 'lucide-react';
 import Link from 'next/link';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
@@ -24,10 +22,8 @@ import { Badge } from '@/components/ui/badge';
 import { getCurrentUser, canAccessChapterContent } from '@/lib/user';
 import { getChapterAccessInfo } from '@/actions/can-access-next-chapter';
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const session = await auth.api.getSession({
-    headers: headers(),
-  });
+const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { const session = await auth.api.getSession({
+    headers: headers(), });
 
   if (!session) {
     return redirect('/sign-in');
@@ -35,25 +31,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 
   const userId = session.user.id;
 
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-    },
-    include: {
-      chapters: {
+  const course = await db.course.findUnique({ where: {
+      id: params.courseId, },
+    include: { chapters: {
         where: {
-          isPublished: true,
-        },
-        include: {
-          userProgress: {
+          isPublished: true, },
+        include: { userProgress: {
             where: {
-              userId,
-            },
+              userId, },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
       category: true,
     },
@@ -64,8 +52,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   }
 
   const progressCount = await getProgress(userId, course.id);
-
-
 
   const completedChapters = course.chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
@@ -108,9 +94,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 <h1 className="text-4xl font-bold text-foreground font-arabic leading-relaxed mb-4">
                   {course.title}
                 </h1>
-                {course.description && (
+                { course.description && (
                   <div className="prose dark:prose-invert max-w-none font-arabic">
-                    <Preview value={course.description} />
+                    <Preview value={course.description } />
                   </div>
                 )}
               </div>
@@ -171,7 +157,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                   <Link href={`/courses/${course.id}/chapters/${firstChapter.id}`}>
                     <Button size="lg" className="w-full font-arabic">
                       <PlayCircle className="h-5 w-5 ml-2" />
-                      {progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة'}
+                      { progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة' }
                     </Button>
                   </Link>
                 )}
@@ -198,7 +184,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
           </div>
 
           <div className="space-y-3">
-            {course.chapters.map((chapter, index) => {
+            { course.chapters.map((chapter, index) => {
               const isCompleted = !!chapter.userProgress?.[0]?.isCompleted;
               // Use pre-calculated access
               const hasAccess = chapterAccess[index];
@@ -206,37 +192,36 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               const isLocked = !hasAccess || !canProgressToChapter;
 
               return (
-                <Card key={chapter.id} className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
+                <Card key={chapter.id } className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
                       {/* Chapter Number */}
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
+                      <div className={ `flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
                         isCompleted
                           ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
                           : isLocked
                           ? 'bg-gray-200 text-gray-500'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200'
-                      }`}>
+                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200' }`}>
                         {index + 1}
                       </div>
 
                       {/* Chapter Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          {isCompleted ? (
+                          { isCompleted ? (
                             <CheckCircle className="h-5 w-5 text-green-600" />
                           ) : isLocked ? (
                             <Lock className="h-5 w-5 text-gray-400" />
                           ) : (
                             <PlayCircle className="h-5 w-5 text-blue-600" />
-                          )}
+                          ) }
                           <h3 className="font-semibold text-foreground font-arabic truncate">
                             {chapter.title}
                           </h3>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="font-arabic">
-                            {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
+                            { isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح' }
                           </span>
                           {isLocked && hasAccess && !canProgressToChapter && (
                             <Badge variant="destructive" className="text-xs font-arabic">
@@ -257,7 +242,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                         {!isLocked ? (
                           <Link href={`/courses/${course.id}/chapters/${chapter.id}`}>
                             <Button variant="ghost" size="sm" className="font-arabic">
-                              {isCompleted ? 'مراجعة' : 'بدء'}
+                              { isCompleted ? 'مراجعة' : 'بدء' }
                             </Button>
                           </Link>
                         ) : (

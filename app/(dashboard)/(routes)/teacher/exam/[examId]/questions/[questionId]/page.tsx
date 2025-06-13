@@ -6,26 +6,20 @@ import { ArrowLeft } from 'lucide-react';
 import { QuestionForm } from '../../_components/question-form';
 import { db } from '@/lib/db';
 
-interface PageProps {
-  params: {
+interface PageProps { params: {
     examId: string;
-    questionId: string;
-  };
+    questionId: string; };
 }
 
-export default async function EditQuestionPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function EditQuestionPage({ params }: PageProps) { const user = await requireTeacher();
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: {
+      id: params.examId, },
+    include: { course: {
         select: {
           id: true,
-          title: true,
-        },
+          title: true, },
       },
     },
   });
@@ -39,20 +33,16 @@ export default async function EditQuestionPage({ params }: PageProps) {
     return redirect(`/teacher/exam/${params.examId}/questions`);
   }
 
-  const question = await db.question.findUnique({
-    where: {
+  const question = await db.question.findUnique({ where: {
       id: params.questionId,
       examQuestions: {
         some: {
-          examId: params.examId,
-        },
+          examId: params.examId, },
       },
     },
-    include: {
-      options: {
+    include: { options: {
         orderBy: {
-          id: 'asc',
-        },
+          id: 'asc', },
       },
     },
   });
@@ -84,15 +74,14 @@ export default async function EditQuestionPage({ params }: PageProps) {
       </div>
       <div className="mt-8 max-w-4xl">
         <QuestionForm
-          initialData={{
+          initialData={ {
             id: question.id,
             text: question.text,
             type: question.type as 'MULTIPLE_CHOICE' | 'TRUE_FALSE',
             options: question.options.map(option => ({
               id: option.id,
               text: option.text,
-              isCorrect: option.isCorrect,
-            })),
+              isCorrect: option.isCorrect, })),
           }}
           examId={params.examId}
         />

@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 
-interface ExamAnswer {
-  questionId: string;
+interface ExamAnswer { questionId: string;
   optionId: string;
-  answeredAt: number; // timestamp
-}
+  answeredAt: number; // timestamp }
 
-interface ExamProgress {
-  attemptId: string;
+interface ExamProgress { attemptId: string;
   examId: string;
   answers: ExamAnswer[];
   lastVisitedQuestion: number;
-  lastSyncedTime?: number; // timestamp of last server sync
-}
+  lastSyncedTime?: number; // timestamp of last server sync }
 
 export const useExamLocalStorage = (attemptId: string, examId: string) => {
   const storageKey = `exam_progress_${attemptId}`;
@@ -24,31 +20,24 @@ export const useExamLocalStorage = (attemptId: string, examId: string) => {
       if (savedProgress) {
         try {
           return JSON.parse(savedProgress);
-        } catch (e) {
-          console.error('Failed to parse saved exam progress', e);
-        }
+        } catch (e) { console.error('Failed to parse saved exam progress', e); }
       }
     }
 
     // Default initial state
-    return {
-      attemptId,
+    return { attemptId,
       examId,
       answers: [],
-      lastVisitedQuestion: 0,
-    };
+      lastVisitedQuestion: 0, };
   });
 
   // Update local storage whenever the state changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(storageKey, JSON.stringify(examProgress));
-    }
+  useEffect(() => { if (typeof window !== 'undefined') {
+      localStorage.setItem(storageKey, JSON.stringify(examProgress)); }
   }, [examProgress, storageKey]);
 
   // Save an answer to local storage
-  const saveAnswer = (questionId: string, optionId: string) => {
-    setExamProgress((prev) => {
+  const saveAnswer = (questionId: string, optionId: string) => { setExamProgress((prev) => {
       // Remove any existing answer for this question
       const filteredAnswers = prev.answers.filter((a) => a.questionId !== questionId);
 
@@ -60,27 +49,22 @@ export const useExamLocalStorage = (attemptId: string, examId: string) => {
           {
             questionId,
             optionId,
-            answeredAt: Date.now(),
-          },
+            answeredAt: Date.now(), },
         ],
       };
     });
   };
 
   // Update the last visited question
-  const updateLastVisitedQuestion = (index: number) => {
-    setExamProgress((prev) => ({
+  const updateLastVisitedQuestion = (index: number) => { setExamProgress((prev) => ({
       ...prev,
-      lastVisitedQuestion: index,
-    }));
+      lastVisitedQuestion: index, }));
   };
 
   // Mark data as synced with server
-  const markSynced = () => {
-    setExamProgress((prev) => ({
+  const markSynced = () => { setExamProgress((prev) => ({
       ...prev,
-      lastSyncedTime: Date.now(),
-    }));
+      lastSyncedTime: Date.now(), }));
   };
 
   // Get an answer by question ID
@@ -103,18 +87,15 @@ export const useExamLocalStorage = (attemptId: string, examId: string) => {
   const getAnsweredCount = () => examProgress.answers.length;
 
   // Clear the exam progress from local storage
-  const clearExamProgress = () => {
-    localStorage.removeItem(storageKey);
+  const clearExamProgress = () => { localStorage.removeItem(storageKey);
     setExamProgress({
       attemptId,
       examId,
       answers: [],
-      lastVisitedQuestion: 0,
-    });
+      lastVisitedQuestion: 0, });
   };
 
-  return {
-    saveAnswer,
+  return { saveAnswer,
     getAnswer,
     updateLastVisitedQuestion,
     markSynced,
@@ -122,6 +103,5 @@ export const useExamLocalStorage = (attemptId: string, examId: string) => {
     getAllAnswers,
     getAnsweredCount,
     clearExamProgress,
-    lastVisitedQuestion: examProgress.lastVisitedQuestion,
-  };
+    lastVisitedQuestion: examProgress.lastVisitedQuestion, };
 };

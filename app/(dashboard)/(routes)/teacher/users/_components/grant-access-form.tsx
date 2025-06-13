@@ -8,19 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-interface GrantAccessFormProps {
-  user: User;
+interface GrantAccessFormProps { user: User;
   onGrantAccess: (
     userId: string,
     accessType: StudentAccessType,
     paymentAmount?: number,
     paymentNotes?: string
   ) => void;
-  isPending: boolean;
-}
+  isPending: boolean; }
 
-export const GrantAccessForm = ({ user, onGrantAccess, isPending }: GrantAccessFormProps) => {
-  const [accessType, setAccessType] = useState<StudentAccessType>(StudentAccessType.FULL_ACCESS);
+export const GrantAccessForm = ({ user, onGrantAccess, isPending }: GrantAccessFormProps) => { const [accessType, setAccessType] = useState<StudentAccessType>(StudentAccessType.FULL_ACCESS);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentNotes, setPaymentNotes] = useState('');
 
@@ -30,8 +27,7 @@ export const GrantAccessForm = ({ user, onGrantAccess, isPending }: GrantAccessF
       accessType,
       paymentAmount ? parseFloat(paymentAmount) : undefined,
       paymentNotes || undefined,
-    );
-  };
+    ); };
 
   return (
     <div className="space-y-4">
@@ -42,7 +38,7 @@ export const GrantAccessForm = ({ user, onGrantAccess, isPending }: GrantAccessF
       <div className="space-y-3">
         <div>
           <label className="text-sm font-medium text-foreground font-arabic">نوع الوصول</label>
-          <Select value={accessType} onValueChange={(value: StudentAccessType) => setAccessType(value)}>
+          <Select value={accessType} onValueChange={ (value: StudentAccessType) => setAccessType(value) }>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -85,9 +81,9 @@ export const GrantAccessForm = ({ user, onGrantAccess, isPending }: GrantAccessF
 
         <Button onClick={handleGrantAccess} disabled={isPending} className="w-full font-arabic">
           <CreditCard className="mr-2 h-4 w-4" />
-          {isPending ? 'جاري المنح...' : 'منح الوصول'}
+          { isPending ? 'جاري المنح...' : 'منح الوصول' }
         </Button>
       </div>
     </div>
   );
-}; 
+};

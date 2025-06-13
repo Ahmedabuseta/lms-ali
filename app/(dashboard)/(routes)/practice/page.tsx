@@ -4,8 +4,7 @@ import { db } from '@/lib/db';
 import { PageProtection } from '@/components/page-protection';
 import { getCurrentUser } from '@/lib/auth-helpers';
 
-const PracticePage = async () => {
-  const user = await getCurrentUser();
+const PracticePage = async () => { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   // Get all courses that have questions in question banks
@@ -14,13 +13,12 @@ const PracticePage = async () => {
       questionBanks: {
         some: {
           questions: {
-            some: {},
+            some: { },
           },
         },
       },
     },
-    select: {
-      id: true,
+    select: { id: true,
       title: true,
       chapters: {
         where: {
@@ -29,51 +27,44 @@ const PracticePage = async () => {
           questionBanks: {
             some: {
               questions: {
-                some: {},
+                some: { },
               },
             },
           },
         },
-        select: {
-          id: true,
+        select: { id: true,
           title: true,
           _count: {
             select: {
               questionBanks: {
                 where: {
                   questions: {
-                    some: {},
+                    some: { },
                   },
                 },
               },
             },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
-      _count: {
-        select: {
+      _count: { select: {
           questionBanks: {
             where: {
               questions: {
-                some: {},
+                some: { },
               },
             },
           },
         },
       },
     },
-    orderBy: {
-      title: 'asc',
-    },
+    orderBy: { title: 'asc', },
   });
 
   console.log(courses);
-  
-  if (courses.length === 0) {
-    return (
+
+  if (courses.length === 0) { return (
       <PageProtection requiredPermission="canAccessPractice">
         <div className="p-4 sm:p-6" dir="rtl">
           <div className="flex h-48 flex-col items-center justify-center text-center sm:h-60">
@@ -87,8 +78,7 @@ const PracticePage = async () => {
           </div>
         </div>
       </PageProtection>
-    );
-  }
+    ); }
 
   return (
     <PageProtection requiredPermission="canAccessPractice">

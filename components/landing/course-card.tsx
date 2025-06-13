@@ -3,8 +3,7 @@ import { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-interface CourseCardProps {
-  title: string;
+interface CourseCardProps { title: string;
   description: string;
   icon: LucideIcon;
   gradientFrom: string;
@@ -13,11 +12,9 @@ interface CourseCardProps {
   iconGradientTo: string;
   priceColor: string;
   href?: string;
-  onStartClick?: () => void;
-}
+  onStartClick?: () => void; }
 
-export const CourseCard = ({
-  title,
+export const CourseCard = ({ title,
   description,
   icon: Icon,
   gradientFrom,
@@ -26,10 +23,9 @@ export const CourseCard = ({
   iconGradientTo,
   priceColor,
   href = '/dashboard',
-  onStartClick
-}: CourseCardProps) => {
+  onStartClick }: CourseCardProps) => {
   return (
-    <Card className={`group transform border-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} transition-all duration-500 hover:shadow-2xl dark:${gradientFrom.replace('50', '900/20')} dark:${gradientTo.replace('100', '900/20')}`}>
+    <Card className={`group transform border-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} transition-all duration-500 hover:shadow-2xl dark:${ gradientFrom.replace('50', '900/20') } dark:${ gradientTo.replace('100', '900/20') }`}>
                   <CardContent className="p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className={`flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r ${iconGradientFrom} ${iconGradientTo} transition-transform duration-300 group- e-110`}>

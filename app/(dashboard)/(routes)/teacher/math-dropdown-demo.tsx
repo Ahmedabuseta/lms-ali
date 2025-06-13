@@ -3,32 +3,25 @@
 import { MathDropdown } from '@/components/ui/math-dropdown';
 import { Card } from '@/components/ui/card';
 
-export default function MathDropdownDemo() {
-  const examples = [
+export default function MathDropdownDemo() { const examples = [
     {
       title: 'Quadratic Formula',
       content:
-        'The roots of $ax^2 + bx + c = 0$ are given by:\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$\n\nThis formula is derived by completing the square for a general quadratic equation.',
+        'The roots of $ax^2 + bx + c = 0$ are given by:\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac }}{2a}$$\n\nThis formula is derived by completing the square for a general quadratic equation.',
     },
-    {
-      title: 'Calculus: Integration by Parts',
+    { title: 'Calculus: Integration by Parts',
       content:
-        'The integration by parts formula is:\n\n$$\\int u(x)v\'(x)\\,dx = u(x)v(x) - \\int u\'(x)v(x)\\,dx$$\n\nThis is often remembered with the mnemonic: \'LIATE\' (Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential).',
+        'The integration by parts formula is:\n\n$$\\int u(x)v\'(x)\\,dx = u(x)v(x) - \\int u\'(x)v(x)\\,dx$$\n\nThis is often remembered with the mnemonic: \'LIATE\' (Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential).', },
+    { title: 'Multiple Choice Question Example',
+      content:
+        'If $f(x) = 3x^2 - 4x + 2$, what is the value of $f\'(2)$?\n\n**Options:**\n\nA. $8$\n\nB. $8 - 4 = 4$\n\nC. $12 - 4 = 8$\n\nD. $2$\n\n**Answer:** Option B is correct because $f\'(x) = 6x - 4$, so $f\'(2) = 6(2) - 4 = 12 - 4 = 8$.', },
+    { title: 'Statistics: Normal Distribution',
+      content:
+        'The probability density function of the normal distribution is:\n\n$$f(x) = \\frac{1 }{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$\n\nWhere:\n- $\\mu$ is the mean\n- $\\sigma$ is the standard deviation',
     },
-    {
-      title: 'Multiple Choice Question Example',
+    { title: 'Linear Algebra: Determinant of a 2×2 Matrix',
       content:
-        'If $f(x) = 3x^2 - 4x + 2$, what is the value of $f\'(2)$?\n\n**Options:**\n\nA. $8$\n\nB. $8 - 4 = 4$\n\nC. $12 - 4 = 8$\n\nD. $2$\n\n**Answer:** Option B is correct because $f\'(x) = 6x - 4$, so $f\'(2) = 6(2) - 4 = 12 - 4 = 8$.',
-    },
-    {
-      title: 'Statistics: Normal Distribution',
-      content:
-        'The probability density function of the normal distribution is:\n\n$$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$\n\nWhere:\n- $\\mu$ is the mean\n- $\\sigma$ is the standard deviation',
-    },
-    {
-      title: 'Linear Algebra: Determinant of a 2×2 Matrix',
-      content:
-        'For a matrix $A = \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$, the determinant is calculated as:\n\n$$\\det(A) = ad - bc$$',
+        'For a matrix $A = \\begin{pmatrix } a & b \\\\ c & d \\end{pmatrix}$, the determinant is calculated as:\n\n$$\\det(A) = ad - bc$$',
     },
   ];
 
@@ -39,7 +32,7 @@ export default function MathDropdownDemo() {
         <div className="absolute left-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 right-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
       </div>
 
@@ -52,8 +45,8 @@ export default function MathDropdownDemo() {
         </div>
 
         <div className="space-y-4">
-          {examples.map((example, index) => (
-            <MathDropdown key={index} title={example.title} content={example.content} defaultOpen={index === 0} />
+          { examples.map((example, index) => (
+            <MathDropdown key={index } title={example.title} content={example.content} defaultOpen={index === 0} />
           ))}
         </div>
 

@@ -6,14 +6,11 @@ export async function POST(req: Request, { params }: { params: { examId: string;
   try {
 const {id} = await requireAuth()
 
-    const examAttempt = await completeExam({
-      userId:id,
-      attemptId: params.attemptId,
-    });
+    const examAttempt = await completeExam({ userId:id,
+      attemptId: params.attemptId, });
 
     return NextResponse.json(examAttempt);
-  } catch (error) {
-    console.error('[COMPLETE_EXAM_ERROR]', error);
+  } catch (error) { console.error('[COMPLETE_EXAM_ERROR]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

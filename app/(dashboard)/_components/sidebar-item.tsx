@@ -3,13 +3,11 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-interface SidebarItemProps {
-  icon: any;
+interface SidebarItemProps { icon: any;
   label: string;
   href: string;
   tourId?: string;
-  collapsed?: boolean;
-}
+  collapsed?: boolean; }
 
 export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false }: SidebarItemProps) => {
   const pathname = usePathname();
@@ -25,15 +23,15 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
     <button
       onClick={onClick}
       type="button"
-      className={cn(
+      className={ cn(
         'group relative flex transform items-center gap-x-3  text-sm font-medium font-arabic transition-all duration-300     overflow-hidden',
         collapsed ? 'mx1 px-6 py-2 mb-3 justify-center rounded-md ' : ' rounded-xl mx-2 mb-3 p-4',
         isActive
           ? 'shadow-xl'
           : 'hover:shadow-lg',
-      )}
+      ) }
       data-tour={tourId}
-      title={collapsed ? label : undefined}
+      title={ collapsed ? label : undefined }
     >
       {/* Active state backgrounds */}
       {isActive ? (
@@ -66,13 +64,13 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
 
       {/* Icon container */}
       <div
-        className={cn(
+        className={ cn(
           'relative flex items-center justify-center rounded-xl transition-all duration-300 group- e-110 shrink-0',
           collapsed ? 'h-10 w-10' : 'h-12 w-12',
           isActive
             ? 'bg-white/25 backdrop-blur-sm shadow-lg'
             : 'bg-gray-100/80 group-hover:bg-blue-100/80 dark:bg-gray-800/80 dark:group-hover:bg-blue-900/50',
-        )}
+        ) }
       >
         {/* Icon glow for active state */}
         {isActive && (
@@ -80,25 +78,25 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
         )}
 
         <Icon
-          size={collapsed ? 16 : 22}
-          className={cn(
+          size={ collapsed ? 16 : 22 }
+          className={ cn(
             'relative z-10 transition-all duration-300',
             isActive
               ? 'text-white drop-shadow-lg'
               : 'text-gray-600 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400',
-          )}
+          ) }
         />
       </div>
 
       {/* Label - hidden when collapsed */}
-      {!collapsed && (
+      { !collapsed && (
         <span
           className={cn(
             'relative z-10 flex-1 text-right transition-all duration-300',
             isActive
               ? 'text-white font-semibold drop-shadow-sm'
               : 'text-gray-700 group-hover:text-blue-700 dark:text-gray-300 dark:group-hover:text-blue-300'
-          )}
+          ) }
         >
           {label}
         </span>
@@ -118,12 +116,12 @@ export const SidebarItem = ({ icon: Icon, label, href, tourId, collapsed = false
       )}
 
       {/* Subtle border for definition */}
-      <div className={cn(
+      <div className={ cn(
         'absolute inset-0 rounded-xl border transition-all duration-300',
         isActive
           ? 'border-white/20'
           : 'border-transparent group-hover:border-blue-200/50 dark:group-hover:border-blue-400/30'
-      )} />
+      ) } />
     </button>
   );
 };

@@ -7,14 +7,11 @@ export async function POST(request: NextRequest) {
    requireTeacher();
     const { title } = await request.json();
 
-    const course = await db.course.create({
-      data: {
-        title,
-      },
+    const course = await db.course.create({ data: {
+        title, },
     });
 
     return NextResponse.json(course);
-  } catch (error) {
-    return new NextResponse('Internal Server Error', { status: 500 });
+  } catch (error) { return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

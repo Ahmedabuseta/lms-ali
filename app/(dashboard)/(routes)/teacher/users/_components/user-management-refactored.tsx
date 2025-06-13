@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import {
-  ColumnDef,
+import { ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -10,10 +9,8 @@ import {
   getSortedRowModel,
   useReactTable,
   SortingState,
-  ColumnFiltersState,
-} from '@tanstack/react-table';
-import {
-  CheckCircle,
+  ColumnFiltersState, } from '@tanstack/react-table';
+import { CheckCircle,
   XCircle,
   Clock,
   DollarSign,
@@ -26,8 +23,7 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  Users,
-} from 'lucide-react';
+  Users, } from 'lucide-react';
 import { User, UserRole, StudentAccessType } from '@/lib/types';
 import { useUserManagement } from '../_hooks/use-user-management';
 import { GrantAccessForm } from './grant-access-form';
@@ -39,32 +35,24 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle, } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-interface UserManagementProps {
-  users: User[];
-}
+interface UserManagementProps { users: User[]; }
 
-const accessTypeLabels: Record<StudentAccessType, string> = {
-  NO_ACCESS: 'لا يوجد وصول',
+const accessTypeLabels: Record<StudentAccessType, string> = { NO_ACCESS: 'لا يوجد وصول',
   FREE_TRIAL: 'تجربة مجانية',
   FULL_ACCESS: 'وصول كامل مدفوع',
-  LIMITED_ACCESS: 'وصول محدود مدفوع',
-};
+  LIMITED_ACCESS: 'وصول محدود مدفوع', };
 
-const accessTypeColors: Record<StudentAccessType, string> = {
-  NO_ACCESS: 'bg-muted text-muted-foreground',
+const accessTypeColors: Record<StudentAccessType, string> = { NO_ACCESS: 'bg-muted text-muted-foreground',
   FREE_TRIAL: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
   FULL_ACCESS: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  LIMITED_ACCESS: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-};
+  LIMITED_ACCESS: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300', };
 
 const getTrialStatus = (user: User) => {
   if (user.accessType !== StudentAccessType.FREE_TRIAL) return null;
@@ -88,8 +76,7 @@ const getStatusIcon = (user: User) => {
     return <CheckCircle className="h-5 w-5 text-green-500" />;
   }
 
-  switch (user.accessType) {
-    case StudentAccessType.NO_ACCESS:
+  switch (user.accessType) { case StudentAccessType.NO_ACCESS:
       return <XCircle className="h-5 w-5 text-muted-foreground" />;
     case StudentAccessType.FREE_TRIAL:
       const trialStatus = getTrialStatus(user);
@@ -102,12 +89,10 @@ const getStatusIcon = (user: User) => {
     case StudentAccessType.LIMITED_ACCESS:
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     default:
-      return <XCircle className="h-5 w-5 text-muted-foreground" />;
-  }
+      return <XCircle className="h-5 w-5 text-muted-foreground" />; }
 };
 
-export const UserManagement = ({ users }: UserManagementProps) => {
-  const {
+export const UserManagement = ({ users }: UserManagementProps) => { const {
     localUsers,
     isPending,
     selectedUser,
@@ -127,8 +112,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
     openGrantAccessModal,
     openBanModal,
     openSessionsModal,
-    closeModals,
-  } = useUserManagement(users);
+    closeModals, } = useUserManagement(users);
 
   // TanStack Table state
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -137,8 +121,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
 
   // Column definitions
   const columns: ColumnDef<User>[] = useMemo(() => [
-    {
-      accessorKey: 'name',
+    { accessorKey: 'name',
       header: ({ column }) => {
         return (
           <Button
@@ -174,8 +157,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      accessorKey: 'role',
+    { accessorKey: 'role',
       header: ({ column }) => {
         return (
           <Button
@@ -191,9 +173,9 @@ export const UserManagement = ({ users }: UserManagementProps) => {
       cell: ({ row }) => {
         const user = row.original;
         return (
-          <Select 
-            value={user.role} 
-            onValueChange={(value: UserRole) => handleUpdateUserRole(user.id, value)}
+          <Select
+            value={user.role}
+            onValueChange={ (value: UserRole) => handleUpdateUserRole(user.id, value) }
             disabled={isPending}
           >
             <SelectTrigger className="w-28 h-9">
@@ -207,8 +189,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      accessorKey: 'accessType',
+    { accessorKey: 'accessType',
       header: ({ column }) => {
         return (
           <Button
@@ -230,8 +211,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      id: 'status',
+    { id: 'status',
       header: () => <div className="font-arabic">الحالة</div>,
       cell: ({ row }) => {
         const user = row.original;
@@ -239,12 +219,12 @@ export const UserManagement = ({ users }: UserManagementProps) => {
           <div className="flex items-center gap-2">
             {getStatusIcon(user)}
             <div className="text-sm">
-              {user.role === UserRole.TEACHER ? (
+              { user.role === UserRole.TEACHER ? (
                 <span className="text-foreground font-arabic">نشط</span>
               ) : (
                 <>
                   {user.accessType === StudentAccessType.FREE_TRIAL ? (
-                    <span className="text-blue-600 dark:text-blue-400 font-arabic">{getTrialStatus(user)}</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-arabic">{getTrialStatus(user) }</span>
                   ) : user.accessType === StudentAccessType.NO_ACCESS ? (
                     <span className="text-muted-foreground font-arabic">لا يوجد وصول</span>
                   ) : (
@@ -257,11 +237,9 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      id: 'accountStatus',
+    { id: 'accountStatus',
       header: () => <div className="font-arabic">حالة الحساب</div>,
-      cell: ({ row }) => {
-        const user = row.original;
+      cell: ({ row }) => { const user = row.original;
         return (
           <div className="flex items-center gap-2">
             {user.banned ? (
@@ -271,7 +249,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   <span className="text-red-600 dark:text-red-400 font-arabic">محظور</span>
                   {user.banReason && (
                     <div className="text-xs text-muted-foreground font-arabic">
-                      السبب: {user.banReason}
+                      السبب: {user.banReason }
                     </div>
                   )}
                 </div>
@@ -286,8 +264,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      accessorKey: 'paymentAmount',
+    { accessorKey: 'paymentAmount',
       header: ({ column }) => {
         return (
           <Button
@@ -300,10 +277,9 @@ export const UserManagement = ({ users }: UserManagementProps) => {
           </Button>
         );
       },
-      cell: ({ row }) => {
-        const user = row.original;
+      cell: ({ row }) => { const user = row.original;
         if (user.role === UserRole.TEACHER) return null;
-        
+
         return (
           <div className="text-sm">
             {user.paymentReceived ? (
@@ -313,7 +289,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                   <span className="font-arabic">تم الدفع</span>
                 </div>
                 {user.paymentAmount && (
-                  <div className="text-xs text-muted-foreground font-arabic">{user.paymentAmount} ر.س</div>
+                  <div className="text-xs text-muted-foreground font-arabic">{user.paymentAmount } ر.س</div>
                 )}
               </div>
             ) : (
@@ -323,12 +299,11 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         );
       },
     },
-    {
-      id: 'actions',
+    { id: 'actions',
       header: () => <div className="font-arabic">الإجراءات</div>,
       cell: ({ row }) => {
         const user = row.original;
-        
+
         if (user.role === UserRole.TEACHER) {
           return <span className="text-muted-foreground text-sm font-arabic">معلم</span>;
         }
@@ -339,10 +314,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             {!user.banned && (user.accessType === StudentAccessType.NO_ACCESS ||
               (user.accessType === StudentAccessType.FREE_TRIAL &&
                 getTrialStatus(user)?.includes('انتهت'))) && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="font-arabic h-7 text-xs" 
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-arabic h-7 text-xs"
                 disabled={isPending}
                 onClick={() => openGrantAccessModal(user)}
               >
@@ -352,10 +327,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             )}
 
             {!user.banned && user.accessType === StudentAccessType.NO_ACCESS && !user.isTrialUsed && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleGrantTrial(user.id)} 
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleGrantTrial(user.id)}
                 className="font-arabic h-7 text-xs"
                 disabled={isPending}
               >
@@ -366,10 +341,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
 
             {!user.banned && (user.accessType === StudentAccessType.FULL_ACCESS ||
               user.accessType === StudentAccessType.LIMITED_ACCESS) && (
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                onClick={() => handleRevokeAccess(user.id)} 
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => handleRevokeAccess(user.id)}
                 className="font-arabic h-7 text-xs"
                 disabled={isPending}
               >
@@ -379,10 +354,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
 
             {/* Ban/Unban */}
             {user.banned ? (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleUnbanUser(user.id)} 
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleUnbanUser(user.id)}
                 className="font-arabic h-7 text-xs text-green-600 border-green-600 hover:bg-green-50"
                 disabled={isPending}
               >
@@ -390,10 +365,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                 إلغاء الحظر
               </Button>
             ) : (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="font-arabic h-7 text-xs text-red-600 border-red-600 hover:bg-red-50" 
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-arabic h-7 text-xs text-red-600 border-red-600 hover:bg-red-50"
                 disabled={isPending}
                 onClick={() => openBanModal(user)}
               >
@@ -403,10 +378,10 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             )}
 
             {/* Session Management */}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="font-arabic h-7 text-xs" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-arabic h-7 text-xs"
               disabled={isPending}
               onClick={() => openSessionsModal(user)}
             >
@@ -420,8 +395,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
   ], [isPending, handleUpdateUserRole, openGrantAccessModal, handleGrantTrial, handleRevokeAccess, handleUnbanUser, openBanModal, openSessionsModal]);
 
   // Initialize table
-  const table = useReactTable({
-    data: localUsers,
+  const table = useReactTable({ data: localUsers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -436,17 +410,12 @@ export const UserManagement = ({ users }: UserManagementProps) => {
       return (
         user.name?.toLowerCase().includes(searchValue) ||
         user.email.toLowerCase().includes(searchValue)
-      );
-    },
-    state: {
-      sorting,
+      ); },
+    state: { sorting,
       columnFilters,
-      globalFilter,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
+      globalFilter, },
+    initialState: { pagination: {
+        pageSize: 10, },
     },
   });
 
@@ -479,8 +448,8 @@ export const UserManagement = ({ users }: UserManagementProps) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent side="top">
-                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                { [5, 10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize } value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
                 ))}
@@ -497,33 +466,33 @@ export const UserManagement = ({ users }: UserManagementProps) => {
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow 
+                <TableRow
                   key={headerGroup.id}
                   className="border-b border-white/20 bg-white/20 dark:bg-white/5"
                 >
                   {headerGroup.headers.map((header) => (
                     <TableHead key={header.id} className="h-12">
-                      {header.isPlaceholder
+                      { header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(header.column.columnDef.header, header.getContext()) }
                     </TableHead>
                   ))}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              { table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row, index) => (
                   <TableRow
-                    key={row.id}
-                    className={cn(
+                    key={row.id }
+                    className={ cn(
                       'border-b border-white/10 transition-all duration-200 hover:bg-white/20 dark:hover:bg-white/10',
                       index % 2 === 0 ? 'bg-white/5' : 'bg-white/10 dark:bg-white/5'
-                    )}
+                    ) }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-4">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        { flexRender(cell.column.columnDef.cell, cell.getContext()) }
                       </TableCell>
                     ))}
                   </TableRow>
@@ -550,13 +519,13 @@ export const UserManagement = ({ users }: UserManagementProps) => {
         <div className="flex items-center justify-between space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground font-arabic">
             عرض {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} إلى{' '}
-            {Math.min(
+            { Math.min(
               (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
               table.getFilteredRowModel().rows.length
-            )}{' '}
+            ) }{' '}
             من أصل {table.getFilteredRowModel().rows.length} مستخدم
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -590,8 +559,8 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             <DialogDescription className="font-arabic">قم بتحديد نوع الوصول وإدخال تفاصيل الدفع</DialogDescription>
           </DialogHeader>
           {selectedUser && (
-            <GrantAccessForm 
-              user={selectedUser} 
+            <GrantAccessForm
+              user={selectedUser}
               onGrantAccess={grantPaidAccess}
               isPending={isPending}
             />
@@ -606,8 +575,8 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             <DialogDescription className="font-arabic">قم بإدخال سبب الحظر ومدته (اختياري)</DialogDescription>
           </DialogHeader>
           {selectedUser && (
-            <BanUserForm 
-              user={selectedUser} 
+            <BanUserForm
+              user={selectedUser}
               onBanUser={handleBanUser}
               isPending={isPending}
             />
@@ -622,7 +591,7 @@ export const UserManagement = ({ users }: UserManagementProps) => {
             <DialogDescription className="font-arabic">عرض وإدارة جلسات المستخدم النشطة</DialogDescription>
           </DialogHeader>
           {selectedUser && (
-            <SessionsManager 
+            <SessionsManager
               user={selectedUser}
               userSessions={userSessions}
               onLoadSessions={loadUserSessions}
@@ -635,4 +604,4 @@ export const UserManagement = ({ users }: UserManagementProps) => {
       </Dialog>
     </Card>
   );
-}; 
+};

@@ -19,33 +19,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface CreateExamFormProps {
-  courses: {
+interface CreateExamFormProps { courses: {
     id: string;
     title: string;
     chapters: {
       id: string;
-      title: string;
-    }[];
+      title: string; }[];
   }[];
   selectedCourseId?: string;
   selectedChapterId?: string;
 }
 
-const formSchema = z.object({
-  title: z
+const formSchema = z.object({ title: z
     .string()
     .min(1, {
-      message: 'عنوان الاختبار مطلوب',
-    })
+      message: 'عنوان الاختبار مطلوب', })
     .max(100, 'العنوان يجب أن يكون أقل من 100 حرف'),
   description: z
     .string()
     .max(500, 'الوصف يجب أن يكون أقل من 500 حرف')
     .optional(),
-  courseId: z.string().min(1, {
-    message: 'اختيار الدورة مطلوب',
-  }),
+  courseId: z.string().min(1, { message: 'اختيار الدورة مطلوب', }),
   chapterId: z.string().optional(),
   timeLimit: z
     .union([
@@ -57,21 +51,18 @@ const formSchema = z.object({
   isPublished: z.boolean().default(false),
 });
 
-export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }: CreateExamFormProps) => {
-  const router = useRouter();
+export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }: CreateExamFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableChapters, setAvailableChapters] = useState<{ id: string; title: string }[]>([]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchema>>({ resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
       description: '',
       courseId: selectedCourseId || '',
       chapterId: selectedChapterId || '',
       timeLimit: 30,
-      isPublished: false,
-    },
+      isPublished: false, },
   });
 
   const { watch, setValue, formState } = form;
@@ -81,21 +72,17 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
   const watchedCourseId = watch('courseId');
 
   // Update available chapters when course changes
-  useEffect(() => {
-    if (watchedCourseId) {
+  useEffect(() => { if (watchedCourseId) {
       const selectedCourse = courses.find((course) => course.id === watchedCourseId);
       if (selectedCourse) {
         setAvailableChapters(selectedCourse.chapters);
         // Reset chapter selection if it's not valid for the new course
         const currentChapterId = form.getValues('chapterId');
         if (currentChapterId && !selectedCourse.chapters.find(ch => ch.id === currentChapterId)) {
-          setValue('chapterId', '');
-        }
+          setValue('chapterId', ''); }
       }
-    } else {
-      setAvailableChapters([]);
-      setValue('chapterId', '');
-    }
+    } else { setAvailableChapters([]);
+      setValue('chapterId', ''); }
   }, [watchedCourseId, courses, setValue, form]);
 
   // Set initial chapters based on selected course
@@ -122,12 +109,10 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
 
       toast.success('تم إنشاء الاختبار بنجاح! 🎉');
       router.push(`/teacher/exam/${response.data.id}`);
-    } catch (error: any) {
-      console.error('Error creating exam:', error);
-      
+    } catch (error: any) { console.error('Error creating exam:', error);
+
       if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else if (error.response?.status === 403) {
+        toast.error(error.response.data.message); } else if (error.response?.status === 403) {
         toast.error('ليس لديك صلاحية لإنشاء اختبارات');
       } else if (error.response?.status === 400) {
         toast.error('بيانات غير صحيحة، يرجى التحقق من المدخلات');
@@ -168,11 +153,11 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                 <FormItem>
                   <FormLabel className="text-base font-medium font-arabic">عنوان الاختبار</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="مثال: الاختبار النهائي - الفصل الأول" 
+                    <Input
+                      placeholder="مثال: الاختبار النهائي - الفصل الأول"
                       className="text-right font-arabic"
                       disabled={isSubmitting}
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription className="text-sm text-gray-600 font-arabic">
@@ -219,13 +204,13 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                       {courses.map((course) => (
                         <Card
                           key={course.id}
-                          className={cn(
+                          className={ cn(
                             'cursor-pointer border-2 transition-all duration-300 hover:shadow-md',
                             field.value === course.id
                               ? 'border-blue-500 bg-blue-50 shadow-md dark:border-blue-400 dark:bg-blue-900/20'
                               : 'border-gray-200 bg-white hover:border-blue-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600',
                             isSubmitting && 'pointer-events-none opacity-50'
-                          )}
+                          ) }
                           onClick={() => {
                             if (!isSubmitting) {
                               field.onChange(course.id);
@@ -235,23 +220,23 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                           <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                               <div
-                                className={cn(
+                                className={ cn(
                                   'rounded-lg p-2 transition-colors',
                                   field.value === course.id
                                     ? 'bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-300'
                                     : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
-                                )}
+                                ) }
                               >
                                 <BookOpen className="h-5 w-5" />
                               </div>
                               <div className="min-w-0 flex-1">
                                 <h3
-                                  className={cn(
+                                  className={ cn(
                                     'truncate font-medium font-arabic',
-                                    field.value === course.id 
-                                      ? 'text-blue-700 dark:text-blue-300' 
+                                    field.value === course.id
+                                      ? 'text-blue-700 dark:text-blue-300'
                                       : 'text-gray-800 dark:text-gray-200',
-                                  )}
+                                  ) }
                                 >
                                   {course.title}
                                 </h3>
@@ -283,8 +268,8 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base font-medium font-arabic">الفصل (اختياري)</FormLabel>
-                    <Select 
-                      value={field.value || ''} 
+                    <Select
+                      value={field.value || ''}
                       onValueChange={field.onChange}
                       disabled={isSubmitting}
                     >
@@ -322,10 +307,10 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                     الوقت المحدد (بالدقائق)
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      min="1" 
-                      max="300" 
+                    <Input
+                      type="number"
+                      min="1"
+                      max="300"
                       placeholder="30"
                       className="text-right font-arabic"
                       disabled={isSubmitting}
@@ -354,8 +339,8 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
                     </FormDescription>
                   </div>
                   <FormControl>
-                    <Switch 
-                      checked={field.value} 
+                    <Switch
+                      checked={field.value}
                       onCheckedChange={field.onChange}
                       disabled={isSubmitting}
                     />
@@ -386,19 +371,19 @@ export const CreateExamForm = ({ courses, selectedCourseId, selectedChapterId }:
               >
                 إلغاء
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isSubmitting || Object.keys(errors).length > 0}
                 className="font-arabic min-w-[120px]"
               >
-                {isSubmitting ? (
+                { isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     جاري الإنشاء...
                   </>
                 ) : (
                   'إنشاء الاختبار'
-                )}
+                ) }
               </Button>
             </div>
           </CardFooter>

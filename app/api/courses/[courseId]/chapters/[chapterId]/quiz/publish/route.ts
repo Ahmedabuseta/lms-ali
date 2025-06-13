@@ -5,34 +5,28 @@ import { requireTeacher } from '@/lib/api-auth';
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { courseId: string; chapterId: string } }
-) {
-  try {
+) { try {
     const user = await requireTeacher();
 
     const quiz = await db.quiz.findFirst({
       where: {
-        chapterId: params.chapterId,
-      },
-      include: {
-        quizQuestions: {
+        chapterId: params.chapterId, },
+      include: { quizQuestions: {
           include: {
             question: {
               include: {
-                options: true,
-              },
+                options: true, },
             },
           },
         },
       },
     });
 
-    if (!quiz) {
-      return new NextResponse('Quiz not found', { status: 404 });
+    if (!quiz) { return new NextResponse('Quiz not found', { status: 404 });
     }
 
     // Validate quiz has questions
-    if (quiz.quizQuestions.length === 0) {
-      return new NextResponse('Cannot publish quiz without questions', { status: 400 });
+    if (quiz.quizQuestions.length === 0) { return new NextResponse('Cannot publish quiz without questions', { status: 400 });
     }
 
     // Validate all questions have correct answers
@@ -46,18 +40,13 @@ export async function PATCH(
       }
     }
 
-    const updatedQuiz = await db.quiz.update({
-      where: {
-        id: quiz.id,
-      },
-      data: {
-        isPublished: true,
-      },
+    const updatedQuiz = await db.quiz.update({ where: {
+        id: quiz.id, },
+      data: { isPublished: true, },
     });
 
     return NextResponse.json(updatedQuiz);
-  } catch (error) {
-    console.error('[QUIZ_PUBLISH]', error);
+  } catch (error) { console.error('[QUIZ_PUBLISH]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
-} 
+}

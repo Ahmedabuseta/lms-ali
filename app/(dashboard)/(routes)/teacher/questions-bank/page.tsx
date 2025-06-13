@@ -10,8 +10,7 @@ import { CourseQuestionsList } from './_components/course-questions-list';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 
-const QuestionsPage = async () => {
-  await requireAuth();
+const QuestionsPage = async () => { await requireAuth();
 
   const courses = await db.course.findMany({
     include: {
@@ -23,57 +22,45 @@ const QuestionsPage = async () => {
             include: {
               _count: {
                 select: {
-                  questions: true,
-                },
+                  questions: true, },
               },
-              questions: {
-                select: {
+              questions: { select: {
                   id: true,
                   type: true,
                   passage: {
                     select: {
                       id: true,
-                      title: true,
-                    },
+                      title: true, },
                   },
                 },
               },
             },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
-      questionBanks: {
-        include: {
+      questionBanks: { include: {
           _count: {
             select: {
-              questions: true,
-            },
+              questions: true, },
           },
-          questions: {
-            select: {
+          questions: { select: {
               id: true,
               type: true,
               passage: {
                 select: {
                   id: true,
-                  title: true,
-                },
+                  title: true, },
               },
             },
           },
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: { createdAt: 'desc', },
   });
 
-  const coursesWithQuestions: CourseWithQuestionsCount[] = courses.map((course) => {
-    // Calculate question type counts for the course
+  const coursesWithQuestions: CourseWithQuestionsCount[] = courses.map((course) => { // Calculate question type counts for the course
     const allQuestions = course.questionBanks.flatMap(qb => qb.questions);
     const multipleChoiceCount = allQuestions.filter(q => q.type === 'MULTIPLE_CHOICE').length;
     const trueFalseCount = allQuestions.filter(q => q.type === 'TRUE_FALSE').length;
@@ -89,23 +76,18 @@ const QuestionsPage = async () => {
           id: chapter.id,
           title: chapter.title,
           _count: {
-            questions: chapter.questionBanks.reduce((acc, qb) => acc + qb._count.questions, 0)
-          },
-          questionTypes: {
-            multipleChoice: chapterQuestions.filter(q => q.type === 'MULTIPLE_CHOICE').length,
+            questions: chapter.questionBanks.reduce((acc, qb) => acc + qb._count.questions, 0) },
+          questionTypes: { multipleChoice: chapterQuestions.filter(q => q.type === 'MULTIPLE_CHOICE').length,
             trueFalse: chapterQuestions.filter(q => q.type === 'TRUE_FALSE').length,
             passage: chapterQuestions.filter(q => q.type === 'PASSAGE').length,
-            passageQuestions: chapterQuestions.filter(q => q.passage).length,
-          }
+            passageQuestions: chapterQuestions.filter(q => q.passage).length, }
         };
       }),
       questionCount: course.questionBanks.reduce((acc, qb) => acc + qb._count.questions, 0),
-      questionTypes: {
-        multipleChoice: multipleChoiceCount,
+      questionTypes: { multipleChoice: multipleChoiceCount,
         trueFalse: trueFalseCount,
         passage: passageCount,
-        passageQuestions: passageQuestionCount,
-      }
+        passageQuestions: passageQuestionCount, }
     };
   });
 
@@ -208,12 +190,12 @@ const QuestionsPage = async () => {
 
       {/* Content Section */}
       <div className="space-y-6">
-      {coursesWithQuestions.length === 0 ? (
+      { coursesWithQuestions.length === 0 ? (
         <QuestionsEmptyState />
       ) : (
         <div className="space-y-6">
           {coursesWithQuestions.map((course) => (
-            <CourseQuestionsList key={course.id} course={course} />
+            <CourseQuestionsList key={course.id } course={course} />
           ))}
         </div>
       )}

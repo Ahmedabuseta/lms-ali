@@ -5,8 +5,7 @@ import { UserRole, StudentAccessType } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface UserFiltersProps {
-  searchTerm: string;
+interface UserFiltersProps { searchTerm: string;
   setSearchTerm: (value: string) => void;
   roleFilter: UserRole | 'ALL';
   setRoleFilter: (value: UserRole | 'ALL') => void;
@@ -18,11 +17,9 @@ interface UserFiltersProps {
   setBanStatusFilter: (value: 'ALL' | 'BANNED' | 'ACTIVE') => void;
   itemsPerPage: number;
   setItemsPerPage: (value: number) => void;
-  onFilterChange: () => void;
-}
+  onFilterChange: () => void; }
 
-export const UserFilters = ({
-  searchTerm,
+export const UserFilters = ({ searchTerm,
   setSearchTerm,
   roleFilter,
   setRoleFilter,
@@ -34,12 +31,9 @@ export const UserFilters = ({
   setBanStatusFilter,
   itemsPerPage,
   setItemsPerPage,
-  onFilterChange,
-}: UserFiltersProps) => {
-  const handleSearchChange = (value: string) => {
+  onFilterChange, }: UserFiltersProps) => { const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    onFilterChange();
-  };
+    onFilterChange(); };
 
   const handleRoleFilterChange = (value: UserRole | 'ALL') => {
     setRoleFilter(value);
@@ -143,4 +137,4 @@ export const UserFilters = ({
       </Select>
     </div>
   );
-}; 
+};

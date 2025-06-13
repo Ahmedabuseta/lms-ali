@@ -6,18 +6,15 @@ import { ArrowUpDown, MoreHorizontal, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger, } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 export const columns: ColumnDef<Course>[] = [
-  {
-    accessorKey: 'title',
+  { accessorKey: 'title',
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
@@ -27,8 +24,7 @@ export const columns: ColumnDef<Course>[] = [
       );
     },
   },
-  {
-    accessorKey: 'price',
+  { accessorKey: 'price',
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
@@ -37,18 +33,15 @@ export const columns: ColumnDef<Course>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const price = parseFloat(row.getValue('price') || '0');
+    cell: ({ row }) => { const price = parseFloat(row.getValue('price') || '0');
       const formatted = new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD',
-      }).format(price);
+        currency: 'USD', }).format(price);
 
       return <div>{formatted}</div>;
     },
   },
-  {
-    accessorKey: 'isPublished',
+  { accessorKey: 'isPublished',
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
@@ -57,16 +50,14 @@ export const columns: ColumnDef<Course>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const isPublished = row.getValue('isPublished') || false;
+    cell: ({ row }) => { const isPublished = row.getValue('isPublished') || false;
 
       return (
-        <Badge className={cn('bg-slate-500', isPublished && 'bg-sky-700')}>{isPublished ? 'Published' : 'Draft'}</Badge>
+        <Badge className={cn('bg-slate-500', isPublished && 'bg-sky-700') }>{ isPublished ? 'Published' : 'Draft' }</Badge>
       );
     },
   },
-  {
-    id: 'actions',
+  { id: 'actions',
     cell: ({ row }) => {
       const { id } = row.original;
 

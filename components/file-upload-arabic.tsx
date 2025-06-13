@@ -7,8 +7,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
-interface FileUploadArabicProps {
-  onChange: (url?: string) => void;
+interface FileUploadArabicProps { onChange: (url?: string) => void;
   value?: string;
   folder?: string;
   acceptedFileTypes?: string;
@@ -16,11 +15,9 @@ interface FileUploadArabicProps {
   className?: string;
   disabled?: boolean;
   description?: string;
-  showProgress?: boolean;
-}
+  showProgress?: boolean; }
 
-export const FileUploadArabic = ({
-  onChange,
+export const FileUploadArabic = ({ onChange,
   value,
   folder = 'uploads',
   acceptedFileTypes = '*/*',
@@ -28,9 +25,7 @@ export const FileUploadArabic = ({
   className,
   disabled = false,
   description,
-  showProgress = true,
-}: FileUploadArabicProps) => {
-  const [isUploading, setIsUploading] = useState(false);
+  showProgress = true, }: FileUploadArabicProps) => { const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'preparing' | 'uploading' | 'success' | 'error'>('idle');
@@ -45,24 +40,19 @@ export const FileUploadArabic = ({
     if (fileType.startsWith('image/')) return Image;
     if (fileType.startsWith('video/')) return Video;
     if (fileType.includes('pdf') || fileType.includes('document')) return FileText;
-    return File;
-  };
+    return File; };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 بايت';
+  const formatFileSize = (bytes: number) => { if (bytes === 0) return '0 بايت';
     const k = 1024;
     const sizes = ['بايت', 'كيلوبايت', 'ميجابايت', 'جيجابايت'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; };
 
-  const getAcceptedTypesArabic = (types: string) => {
-    if (types === '*/*') return 'جميع أنواع الملفات';
+  const getAcceptedTypesArabic = (types: string) => { if (types === '*/*') return 'جميع أنواع الملفات';
     if (types === 'image/*') return 'ملفات الصور (JPG, PNG, GIF)';
     if (types === 'video/*') return 'ملفات الفيديو (MP4, AVI, MOV)';
     if (types.includes('pdf')) return 'ملفات PDF والمستندات';
-    return types.replace(/\./g, '').replace(/,/g, '، ');
-  };
+    return types.replace(/\./g, '').replace(/,/g, '، '); };
 
   const validateFile = (file: File) => {
     if (file.size > maxFileSize) {
@@ -70,12 +60,10 @@ export const FileUploadArabic = ({
       return false;
     }
 
-    if (acceptedFileTypes !== '*/*') {
-      const types = acceptedFileTypes.split(',').map(type => type.trim());
+    if (acceptedFileTypes !== '*/*') { const types = acceptedFileTypes.split(',').map(type => type.trim());
       const isValidType = types.some(type => {
         if (type.startsWith('.')) {
-          return file.name.toLowerCase().endsWith(type.toLowerCase());
-        }
+          return file.name.toLowerCase().endsWith(type.toLowerCase()); }
         return file.type.includes(type.replace('*', ''));
       });
 
@@ -93,21 +81,20 @@ export const FileUploadArabic = ({
     const elapsedTime = (currentTime - startTime) / 1000; // seconds
     const speed = loaded / elapsedTime; // bytes per second
     const remaining = (total - loaded) / speed; // seconds remaining
-    
+
     const speedMB = speed / (1024 * 1024);
-    const speedText = speedMB > 1 
+    const speedText = speedMB > 1
       ? `${speedMB.toFixed(1)} ميجابايت/ث`
       : `${(speed / 1024).toFixed(1)} كيلوبايت/ث`;
-      
-    const remainingText = remaining < 60 
+
+    const remainingText = remaining < 60
       ? `${Math.round(remaining)} ثانية`
       : `${Math.round(remaining / 60)} دقيقة`;
-      
+
     return { speedText, remainingText };
   };
 
-  const uploadFile = async (file: File) => {
-    if (!validateFile(file)) return;
+  const uploadFile = async (file: File) => { if (!validateFile(file)) return;
 
     // Step 1: Show preparing state
     setUploadStatus('preparing');
@@ -119,7 +106,7 @@ export const FileUploadArabic = ({
     return new Promise<void>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhrRef.current = xhr; // Store reference for potential cancellation
-      
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folder', folder);
@@ -131,18 +118,15 @@ export const FileUploadArabic = ({
           if (uploadStatus === 'preparing') {
             setUploadStatus('uploading');
             setIsUploading(true);
-            uploadStartTime.current = Date.now();
-          }
-          
+            uploadStartTime.current = Date.now(); }
+
           const percentComplete = Math.round((event.loaded / event.total) * 100);
           setUploadProgress(percentComplete);
-          
+
           // Calculate upload speed and time remaining
-          if (event.loaded > 0 && uploadStartTime.current > 0) {
-            const stats = calculateUploadStats(event.loaded, event.total, uploadStartTime.current);
+          if (event.loaded > 0 && uploadStartTime.current > 0) { const stats = calculateUploadStats(event.loaded, event.total, uploadStartTime.current);
             setUploadSpeed(stats.speedText);
-            setTimeRemaining(stats.remainingText);
-          }
+            setTimeRemaining(stats.remainingText); }
         }
       });
 
@@ -161,12 +145,12 @@ export const FileUploadArabic = ({
           try {
             const data = JSON.parse(xhr.responseText);
             setUploadProgress(100);
-            
+
             setTimeout(() => {
               onChange(data.url);
               setUploadStatus('success');
               toast.success('تم رفع الملف بنجاح');
-              
+
               // Reset after showing success
               setTimeout(() => {
                 setIsUploading(false);
@@ -175,16 +159,14 @@ export const FileUploadArabic = ({
                 resolve();
               }, 1500);
             }, 300);
-          } catch (error) {
-            console.error('Parse error:', error);
+          } catch (error) { console.error('Parse error:', error);
             setUploadStatus('error');
             toast.error('خطأ في معالجة الاستجابة');
             setTimeout(() => {
               setIsUploading(false);
               setUploadProgress(0);
               setUploadStatus('idle');
-              reject(error);
-            }, 2000);
+              reject(error); }, 2000);
           }
         } else {
           // Handle HTTP errors
@@ -195,11 +177,11 @@ export const FileUploadArabic = ({
           } catch (e) {
             // Use default error message
           }
-          
+
           console.error('Upload error:', xhr.status, xhr.statusText);
           setUploadStatus('error');
           toast.error(errorMessage);
-          
+
           setTimeout(() => {
             setIsUploading(false);
             setUploadProgress(0);
@@ -214,7 +196,7 @@ export const FileUploadArabic = ({
         console.error('Network error during upload');
         setUploadStatus('error');
         toast.error('خطأ في الشبكة أثناء الرفع');
-        
+
         setTimeout(() => {
           setIsUploading(false);
           setUploadProgress(0);
@@ -228,7 +210,7 @@ export const FileUploadArabic = ({
         console.log('Upload cancelled');
         setUploadStatus('error');
         toast.error('تم إلغاء رفع الملف');
-        
+
         setTimeout(() => {
           setIsUploading(false);
           setUploadProgress(0);
@@ -308,21 +290,20 @@ export const FileUploadArabic = ({
   };
 
   // Display uploaded file
-  if (value && uploadStatus !== 'uploading') {
-    const isImage = value.includes('image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(value);
-    
+  if (value && uploadStatus !== 'uploading') { const isImage = value.includes('image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(value);
+
     // Extract original filename from the URL (remove timestamp and random ID)
     const urlFileName = value.split('/').pop() || 'ملف مرفوع';
-    const fileName = urlFileName.includes('_') 
+    const fileName = urlFileName.includes('_')
       ? urlFileName.split('_').slice(2).join('_') // Remove timestamp and random ID
       : urlFileName;
 
     return (
-      <div className={cn('relative', className)}>
-        {isImage ? (
+      <div className={cn('relative', className) }>
+        { isImage ? (
           <div className="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
             <img
-              src={value}
+              src={value }
               alt="الملف المرفوع"
               className="w-full h-48 object-cover"
             />
@@ -370,7 +351,7 @@ export const FileUploadArabic = ({
   }
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={ cn('w-full', className) }>
       <input
         ref={fileInputRef}
         type="file"
@@ -385,7 +366,7 @@ export const FileUploadArabic = ({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={cn(
+        className={ cn(
           'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-300 relative overflow-hidden',
           dragActive && 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-[1.02] shadow-lg',
           !dragActive && uploadStatus === 'idle' && 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-md',
@@ -393,7 +374,7 @@ export const FileUploadArabic = ({
           uploadStatus === 'success' && 'border-green-500 bg-green-50 dark:bg-green-950/20 shadow-green-100 dark:shadow-green-950/20',
           uploadStatus === 'error' && 'border-red-500 bg-red-50 dark:bg-red-950/20 shadow-red-100 dark:shadow-red-950/20',
           (disabled || isUploading || uploadStatus === 'preparing') && 'cursor-not-allowed opacity-50'
-        )}
+        ) }
       >
         <div className="space-y-4">
           {/* Icon */}
@@ -414,14 +395,14 @@ export const FileUploadArabic = ({
 
           {/* Text */}
           <div>
-            {uploadStatus === 'preparing' && (
+            { uploadStatus === 'preparing' && (
               <>
                 <p className="text-lg font-medium text-blue-700 dark:text-blue-300 font-arabic">
                   جاري تحضير الملف...
                 </p>
                 {currentFileName && (
                   <p className="text-sm text-blue-600 dark:text-blue-400 mt-1 font-arabic truncate max-w-md">
-                    📄 {currentFileName}
+                    📄 {currentFileName }
                   </p>
                 )}
                 <p className="text-xs text-blue-500 dark:text-blue-400 mt-2 font-arabic">
@@ -429,27 +410,27 @@ export const FileUploadArabic = ({
                 </p>
               </>
             )}
-            {uploadStatus === 'uploading' && (
+            { uploadStatus === 'uploading' && (
               <>
                 <p className="text-lg font-medium text-blue-700 dark:text-blue-300 font-arabic">
                   جاري رفع الملف...
                 </p>
                 {currentFileName && (
                   <p className="text-sm text-blue-600 dark:text-blue-400 mt-1 font-arabic truncate max-w-md">
-                    📄 {currentFileName}
+                    📄 {currentFileName }
                   </p>
                 )}
                 <div className="text-xs text-blue-500 dark:text-blue-400 mt-2 space-y-1">
-                  {uploadSpeed && (
-                    <p className="font-arabic">⚡ سرعة الرفع: {uploadSpeed}</p>
+                  { uploadSpeed && (
+                    <p className="font-arabic">⚡ سرعة الرفع: {uploadSpeed }</p>
                   )}
-                  {timeRemaining && uploadProgress < 95 && (
-                    <p className="font-arabic">⏱️ الوقت المتبقي: {timeRemaining}</p>
+                  { timeRemaining && uploadProgress < 95 && (
+                    <p className="font-arabic">⏱️ الوقت المتبقي: {timeRemaining }</p>
                   )}
                 </div>
               </>
             )}
-            {uploadStatus === 'success' && (
+            { uploadStatus === 'success' && (
               <>
                 <p className="text-lg font-medium text-green-700 dark:text-green-300 font-arabic">
                   تم رفع الملف بنجاح!
@@ -458,8 +439,8 @@ export const FileUploadArabic = ({
                   يمكنك الآن استخدام الملف
                 </p>
               </>
-            )}
-            {uploadStatus === 'error' && (
+            ) }
+            { uploadStatus === 'error' && (
               <>
                 <p className="text-lg font-medium text-red-700 dark:text-red-300 font-arabic">
                   فشل في رفع الملف
@@ -468,8 +449,8 @@ export const FileUploadArabic = ({
                   يرجى المحاولة مرة أخرى
                 </p>
               </>
-            )}
-            {uploadStatus === 'idle' && (
+            ) }
+            { uploadStatus === 'idle' && (
               <>
                 <p className="text-lg font-medium text-gray-700 dark:text-gray-300 font-arabic">
                   اسحب الملف هنا أو انقر للتصفح
@@ -478,16 +459,16 @@ export const FileUploadArabic = ({
                   <div className="flex items-center justify-center space-x-4 space-x-reverse text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center space-x-1 space-x-reverse">
                       <span className="text-blue-500">📎</span>
-                      <span className="font-arabic">{getAcceptedTypesArabic(acceptedFileTypes)}</span>
+                      <span className="font-arabic">{getAcceptedTypesArabic(acceptedFileTypes) }</span>
                     </div>
                     <div className="flex items-center space-x-1 space-x-reverse">
                       <span className="text-green-500">📏</span>
                       <span className="font-arabic">{formatFileSize(maxFileSize)}</span>
                     </div>
                   </div>
-                  {description && (
+                  { description && (
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 font-arabic bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-md">
-                      💡 {description}
+                      💡 {description }
                     </p>
                   )}
                 </div>
@@ -499,34 +480,34 @@ export const FileUploadArabic = ({
           {showProgress && uploadStatus === 'uploading' && uploadProgress > 0 && (
             <div className="w-full max-w-sm mx-auto space-y-3">
               <div className="space-y-2">
-                <Progress 
-                  value={uploadProgress} 
-                  variant="default" 
-                  className="h-4 bg-gray-200 dark:bg-gray-700" 
+                <Progress
+                  value={uploadProgress}
+                  variant="default"
+                  className="h-4 bg-gray-200 dark:bg-gray-700"
                 />
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-blue-600 dark:text-blue-400 font-arabic font-semibold">
                     {Math.round(uploadProgress)}%
                   </span>
-                  {uploadSpeed && (
+                  { uploadSpeed && (
                     <span className="text-gray-500 dark:text-gray-400 font-arabic">
-                      {uploadSpeed}
+                      {uploadSpeed }
                     </span>
                   )}
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                {timeRemaining && uploadProgress < 95 ? (
+                { timeRemaining && uploadProgress < 95 ? (
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-arabic">
-                    ⏱️ {timeRemaining}
+                    ⏱️ {timeRemaining }
                   </span>
                 ) : (
                   <span className="text-xs text-green-600 dark:text-green-400 font-arabic">
-                    {uploadProgress >= 95 ? 'جاري الانتهاء...' : ''}
+                    { uploadProgress >= 95 ? 'جاري الانتهاء...' : '' }
                   </span>
                 )}
-                
+
                 <Button
                   onClick={handleCancelUpload}
                   variant="ghost"
@@ -543,4 +524,4 @@ export const FileUploadArabic = ({
       </div>
     </div>
   );
-}; 
+};

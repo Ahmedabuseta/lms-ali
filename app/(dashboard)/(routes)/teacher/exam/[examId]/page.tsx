@@ -12,21 +12,16 @@ import { Badge } from '@/components/ui/badge';
 import { Banner } from '@/components/banner';
 import { Separator } from '@/components/ui/separator';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamDetailPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function ExamDetailPage({ params }: PageProps) { const user = await requireTeacher();
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: true,
+      id: params.examId, },
+    include: { course: true,
       chapter: true,
       _count: {
         select: { examQuestions: true },
@@ -39,12 +34,10 @@ export default async function ExamDetailPage({ params }: PageProps) {
   }
 
   // Get count of past attempts for this exam
-  const attemptCount = await db.examAttempt.count({
-    where: {
+  const attemptCount = await db.examAttempt.count({ where: {
       examId: params.examId,
       completedAt: {
-        not: null,
-      },
+        not: null, },
     },
   });
 
@@ -64,7 +57,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
         {/* Background Elements */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute right-20 top-32 h-40 w-40 animate-pulse rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 blur-3xl" />
-          <div className="absolute bottom-20 left-32 h-52 w-52 animate-pulse rounded-full bg-gradient-to-br from-accent/8 to-primary/8 blur-3xl" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-20 left-32 h-52 w-52 animate-pulse rounded-full bg-gradient-to-br from-accent/8 to-primary/8 blur-3xl" style={ { animationDelay: '2s' }} />
         </div>
 
         <div className="relative z-10 flex items-center justify-between">
@@ -77,8 +70,8 @@ export default async function ExamDetailPage({ params }: PageProps) {
                 </Link>
                 <div className="flex items-center gap-x-3">
                   <h1 className="text-3xl font-bold font-arabic bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">{exam.title}</h1>
-                  <Badge variant={exam.isPublished ? 'default' : 'outline'} className="backdrop-blur-sm">
-                    {exam.isPublished ? 'منشور' : 'مسودة'}
+                  <Badge variant={ exam.isPublished ? 'default' : 'outline' } className="backdrop-blur-sm">
+                    { exam.isPublished ? 'منشور' : 'مسودة' }
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground font-arabic">
@@ -159,8 +152,8 @@ export default async function ExamDetailPage({ params }: PageProps) {
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted/40 backdrop-blur-sm">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ${isComplete ? 'bg-gradient-to-r from-emerald-500 to-green-400' : 'bg-gradient-to-r from-amber-500 to-yellow-400'}`}
-                    style={{ width: `${(completedFields / totalFields) * 100}%` }}
+                    className={ `h-full rounded-full transition-all duration-500 ${isComplete ? 'bg-gradient-to-r from-emerald-500 to-green-400' : 'bg-gradient-to-r from-amber-500 to-yellow-400' }`}
+                    style={ { width: `${(completedFields / totalFields) * 100 }%` }}
                   />
                 </div>
               </div>
@@ -170,20 +163,19 @@ export default async function ExamDetailPage({ params }: PageProps) {
                   <div className="rounded-full border border-green-500/50 p-1 backdrop-blur-sm bg-green-500/10">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                   </div>
-                  <div className="text-sm font-medium font-arabic">العنوان {exam.title ? '✓' : '✗'}</div>
+                  <div className="text-sm font-medium font-arabic">العنوان { exam.title ? '✓' : '✗' }</div>
                 </div>
                 <div className="flex items-center gap-x-3">
                   <div
-                    className={`rounded-full border p-1 backdrop-blur-sm ${
-                      exam._count.examQuestions > 0 ? 'border-green-500/50 bg-green-500/10' : 'border-muted bg-muted/20'
-                    }`}
+                    className={ `rounded-full border p-1 backdrop-blur-sm ${
+                      exam._count.examQuestions > 0 ? 'border-green-500/50 bg-green-500/10' : 'border-muted bg-muted/20' }`}
                   >
                     <div
-                      className={`h-2 w-2 rounded-full ${exam._count.examQuestions > 0 ? 'bg-green-500' : 'bg-muted-foreground'}`}
+                      className={ `h-2 w-2 rounded-full ${exam._count.examQuestions > 0 ? 'bg-green-500' : 'bg-muted-foreground' }`}
                     />
                   </div>
-                  <div className={`text-sm font-medium font-arabic ${exam._count.examQuestions > 0 ? '' : 'text-muted-foreground'}`}>
-                    الأسئلة {exam._count.examQuestions > 0 ? '✓' : '✗'}
+                  <div className={ `text-sm font-medium font-arabic ${exam._count.examQuestions > 0 ? '' : 'text-muted-foreground' }`}>
+                    الأسئلة { exam._count.examQuestions > 0 ? '✓' : '✗' }
                   </div>
                 </div>
               </div>

@@ -9,15 +9,13 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Pencil, Trash2, Save, X, Settings, Eye, EyeOff } from 'lucide-react';
 
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from '@/components/ui/form';
+  FormDescription, } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,16 +23,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { Badge } from '@/components/ui/badge';
 
-const formSchema = z.object({
-  title: z.string().min(1, 'Quiz title is required'),
+const formSchema = z.object({ title: z.string().min(1, 'Quiz title is required'),
   description: z.string().optional(),
   timeLimit: z.coerce.number().min(1).optional(),
   requiredScore: z.coerce.number().min(0).max(100).default(100),
-  freeAttempts: z.coerce.number().min(-1).default(-1),
-});
+  freeAttempts: z.coerce.number().min(-1).default(-1), });
 
-interface QuizSettingsProps {
-  courseId: string;
+interface QuizSettingsProps { courseId: string;
   chapterId: string;
   quiz: {
     id: string;
@@ -43,12 +38,10 @@ interface QuizSettingsProps {
     timeLimit?: number | null;
     requiredScore: number;
     freeAttempts: number;
-    isPublished: boolean;
-  };
+    isPublished: boolean; };
 }
 
-export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) => {
-  const router = useRouter();
+export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) => { const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -61,8 +54,7 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
       description: quiz.description || '',
       timeLimit: quiz.timeLimit || undefined,
       requiredScore: quiz.requiredScore,
-      freeAttempts: quiz.freeAttempts,
-    },
+      freeAttempts: quiz.freeAttempts, },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -98,17 +90,16 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
     }
   };
 
-  const onPublishToggle = async () => {
-    try {
+  const onPublishToggle = async () => { try {
       setIsPublishing(true);
 
       const endpoint = quiz.isPublished ? 'unpublish' : 'publish';
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/quiz/${endpoint}`);
+      await axios.patch(`/api/courses/${courseId }/chapters/${chapterId}/quiz/${endpoint}`);
 
-      const message = quiz.isPublished 
-        ? 'تم إلغاء نشر الاختبار بنجاح' 
+      const message = quiz.isPublished
+        ? 'تم إلغاء نشر الاختبار بنجاح'
         : 'تم نشر الاختبار بنجاح';
-      
+
       toast.success(message);
       router.refresh();
     } catch (error: any) {
@@ -120,16 +111,14 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
     }
   };
 
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
+  const toggleEdit = () => { setIsEditing(!isEditing);
     if (!isEditing) {
       form.reset({
         title: quiz.title,
         description: quiz.description || '',
         timeLimit: quiz.timeLimit || undefined,
         requiredScore: quiz.requiredScore,
-        freeAttempts: quiz.freeAttempts,
-      });
+        freeAttempts: quiz.freeAttempts, });
     }
   };
 
@@ -141,7 +130,7 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
           <CardTitle className="font-arabic">إعدادات الاختبار</CardTitle>
         </div>
         <div className="flex items-center gap-2">
-          {quiz.isPublished ? (
+          { quiz.isPublished ? (
             <Badge variant="default" className="font-arabic bg-green-600">
               منشور
             </Badge>
@@ -149,15 +138,15 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
             <Badge variant="secondary" className="font-arabic">
               غير منشور
             </Badge>
-          )}
-          <Button 
-            onClick={onPublishToggle} 
-            variant="outline" 
+          ) }
+          <Button
+            onClick={onPublishToggle}
+            variant="outline"
             size="sm"
             disabled={isPublishing}
             className="font-arabic"
           >
-            {isPublishing ? (
+            { isPublishing ? (
               'جاري المعالجة...'
             ) : quiz.isPublished ? (
               <>
@@ -169,10 +158,10 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
                 <Eye className="h-4 w-4 mr-2" />
                 نشر الاختبار
               </>
-            )}
+            ) }
           </Button>
           <Button onClick={toggleEdit} variant="ghost" size="sm">
-            {isEditing ? (
+            { isEditing ? (
               <>
                 <X className="h-4 w-4 mr-2" />
                 إلغاء
@@ -182,26 +171,26 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
                 <Pencil className="h-4 w-4 mr-2" />
                 تعديل
               </>
-            )}
+            ) }
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        {!isEditing ? (
+        { !isEditing ? (
           <div className="space-y-4">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400 font-arabic">
                 عنوان الاختبار
               </p>
-              <p className="text-sm font-arabic">{quiz.title}</p>
+              <p className="text-sm font-arabic">{quiz.title }</p>
             </div>
-            
-            {quiz.description && (
+
+            { quiz.description && (
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 font-arabic">
                   الوصف
                 </p>
-                <p className="text-sm font-arabic">{quiz.description}</p>
+                <p className="text-sm font-arabic">{quiz.description }</p>
               </div>
             )}
 
@@ -214,20 +203,20 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
                   {quiz.timeLimit ? `${quiz.timeLimit} دقيقة` : 'غير محدد'}
                 </p>
               </div>
-              
+
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 font-arabic">
                   النتيجة المطلوبة
                 </p>
                 <p className="text-sm font-arabic">{quiz.requiredScore}%</p>
               </div>
-              
+
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 font-arabic">
                   المحاولات المجانية
                 </p>
                 <p className="text-sm font-arabic">
-                  {quiz.freeAttempts === -1 ? 'غير محدود' : quiz.freeAttempts}
+                  { quiz.freeAttempts === -1 ? 'غير محدود' : quiz.freeAttempts }
                 </p>
               </div>
             </div>
@@ -243,7 +232,7 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
                   className="font-arabic"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  {isDeleting ? 'جاري الحذف...' : 'حذف الاختبار'}
+                  { isDeleting ? 'جاري الحذف...' : 'حذف الاختبار' }
                 </Button>
               </ConfirmModal>
               {quiz.isPublished && (
@@ -371,7 +360,7 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
                   className="font-arabic"
                 >
                   <Save className="h-4 w-4 mr-2" />
-                  {isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                  { isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات' }
                 </Button>
               </div>
             </form>
@@ -380,4 +369,4 @@ export const QuizSettings = ({ courseId, chapterId, quiz }: QuizSettingsProps) =
       </CardContent>
     </Card>
   );
-}; 
+};

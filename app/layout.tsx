@@ -7,15 +7,13 @@ import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/compon
 const inter = Inter({ subsets: ['latin'] });
 const cairo = Cairo({ subsets: ['arabic'] });
 
-export const metadata: Metadata = {
-  title: 'درب النجاح p2s',
+export const metadata: Metadata = { title: 'درب النجاح p2s',
   description: 'نظام إدارة التعلم',
   icons: {
     icon: [
       {
         url: '/favicon.svg',
-        type: 'image/svg+xml',
-      },
+        type: 'image/svg+xml', },
     ],
     shortcut: '/favicon.svg',
     apple: '/favicon.svg',
@@ -27,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
           {/* Enhanced dark mode script with better transition handling */}
-          {/*
+          { /*
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -40,8 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     // Apply theme class immediately to avoid flash
                     if (storedTheme === 'dark' || (!storedTheme && systemPrefersDark)) {
                       document.documentElement.classList.add('dark');
-                      document.documentElement.style.colorScheme = 'dark';
-                    } else {
+                      document.documentElement.style.colorScheme = 'dark'; } else {
                       document.documentElement.classList.remove('dark');
                       document.documentElement.style.colorScheme = 'light';
                     }
@@ -69,9 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         }
                       }
                     });
-                  } catch (e) {
-                    console.warn('Failed to apply theme early:', e);
-                  }
+                  } catch (e) { console.warn('Failed to apply theme early:', e); }
                 })();
               `,
             }}

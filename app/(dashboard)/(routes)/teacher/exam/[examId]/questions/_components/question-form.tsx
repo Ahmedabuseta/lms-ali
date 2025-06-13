@@ -19,27 +19,23 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 
-interface QuestionFormProps {
-  initialData?: {
+interface QuestionFormProps { initialData?: {
     id: string;
     text: string;
     type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE';
     options: {
       id: string;
       text: string;
-      isCorrect: boolean;
-    }[];
+      isCorrect: boolean; }[];
   };
   examId: string;
 }
 
-const formSchema = z.object({
-  text: z.string().min(1, { message: 'نص السؤال مطلوب' }),
+const formSchema = z.object({ text: z.string().min(1, { message: 'نص السؤال مطلوب' }),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE']),
   options: z
     .array(
-      z.object({
-        id: z.string().optional(),
+      z.object({ id: z.string().optional(),
         text: z.string().min(1, { message: 'نص الخيار مطلوب' }),
         isCorrect: z.boolean().default(false),
       }),
@@ -48,14 +44,11 @@ const formSchema = z.object({
       (options) => {
         return options.some((option) => option.isCorrect);
       },
-      {
-        message: 'يجب تحديد خيار واحد على الأقل كإجابة صحيحة',
-      },
+      { message: 'يجب تحديد خيار واحد على الأقل كإجابة صحيحة', },
     ),
 });
 
-export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
-  const router = useRouter();
+export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -76,10 +69,8 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
   const { control, watch, setValue, formState } = form;
   const questionType = watch('type');
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'options',
-  });
+  const { fields, append, remove } = useFieldArray({ control,
+    name: 'options', });
 
   // Set up true/false options if the type is TRUE_FALSE
   useEffect(() => {
@@ -88,13 +79,11 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
       return; // Keep initial data as is
     }
 
-    if (questionType === 'TRUE_FALSE') {
-      setValue('options', [
+    if (questionType === 'TRUE_FALSE') { setValue('options', [
         { text: 'صحيح', isCorrect: false },
         { text: 'خطأ', isCorrect: false },
       ]);
-    } else if (!initialData && questionType === 'MULTIPLE_CHOICE' && fields.length < 2) {
-      // Restore default options for multiple choice if needed
+    } else if (!initialData && questionType === 'MULTIPLE_CHOICE' && fields.length < 2) { // Restore default options for multiple choice if needed
       setValue('options', [
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
@@ -213,12 +202,12 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
               </Alert>
             )}
 
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-x-4">
+            { fields.map((field, index) => (
+              <div key={field.id } className="flex items-center gap-x-4">
                 <FormField
                   control={form.control}
                   name={`options.${index}.text`}
-                  render={({ field: textField }) => (
+                  render={ ({ field: textField }) => (
                     <FormItem className="flex-1">
                       <FormControl>
                         <Input
@@ -234,20 +223,19 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
                 <FormField
                   control={form.control}
                   name={`options.${index}.isCorrect`}
-                  render={({ field: checkboxField }) => (
+                  render={ ({ field: checkboxField }) => (
                     <FormItem>
                       <FormControl>
                         <Checkbox
                           checked={checkboxField.value}
-                          onCheckedChange={(checked) => {
+                          onCheckedChange={ (checked) => {
                             // For true/false questions, uncheck all other options first
                             if (questionType === 'TRUE_FALSE' && checked) {
                               form.setValue(
                                 'options',
                                 form.getValues('options').map((opt, i) => ({
                                   ...opt,
-                                  isCorrect: i === index,
-                                })),
+                                  isCorrect: i === index, })),
                               );
                             } else {
                               checkboxField.onChange(checked);
@@ -274,7 +262,7 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
               </div>
             ))}
 
-            {questionType === 'MULTIPLE_CHOICE' && (
+            { questionType === 'MULTIPLE_CHOICE' && (
               <Button
                 type="button"
                 onClick={() => append({ text: '', isCorrect: false })}
@@ -290,7 +278,7 @@ export const QuestionForm = ({ initialData, examId }: QuestionFormProps) => {
 
           <div className="flex items-center gap-x-2">
             <Button disabled={!form.formState.isValid || isSubmitting} type="submit" className="font-arabic">
-              {initialData ? 'حفظ التغييرات' : 'إنشاء السؤال'}
+              { initialData ? 'حفظ التغييرات' : 'إنشاء السؤال' }
             </Button>
             <Button
               type="button"

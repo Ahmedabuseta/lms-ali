@@ -12,8 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { QuizQuestionEditForm } from './quiz-question-edit-form';
 
-interface QuizQuestionsListProps {
-  courseId: string;
+interface QuizQuestionsListProps { courseId: string;
   chapterId: string;
   quizId: string;
   questions: Array<{
@@ -29,28 +28,24 @@ interface QuizQuestionsListProps {
       options: Array<{
         id: string;
         text: string;
-        isCorrect: boolean;
-      }>;
+        isCorrect: boolean; }>;
     };
   }>;
   isLocked: boolean;
 }
 
-export const QuizQuestionsList = ({ 
-  courseId, 
-  chapterId, 
-  quizId, 
-  questions, 
-  isLocked 
-}: QuizQuestionsListProps) => {
-  const router = useRouter();
+export const QuizQuestionsList = ({ courseId,
+  chapterId,
+  quizId,
+  questions,
+  isLocked }: QuizQuestionsListProps) => { const router = useRouter();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
 
   const onDelete = async (questionId: string) => {
     try {
       setIsDeleting(questionId);
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/quiz/questions/${questionId}`);
+      await axios.delete(`/api/courses/${courseId }/chapters/${chapterId}/quiz/questions/${questionId}`);
       toast.success('تم حذف السؤال بنجاح');
       router.refresh();
     } catch (error) {
@@ -60,8 +55,7 @@ export const QuizQuestionsList = ({
     }
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
+  const getDifficultyColor = (difficulty: string) => { switch (difficulty) {
       case 'EASY':
         return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
       case 'MEDIUM':
@@ -69,12 +63,10 @@ export const QuizQuestionsList = ({
       case 'HARD':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300';
-    }
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300'; }
   };
 
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
+  const getDifficultyText = (difficulty: string) => { switch (difficulty) {
       case 'EASY':
         return 'سهل';
       case 'MEDIUM':
@@ -82,37 +74,32 @@ export const QuizQuestionsList = ({
       case 'HARD':
         return 'صعب';
       default:
-        return difficulty;
-    }
+        return difficulty; }
   };
 
-  const getTypeText = (type: string) => {
-    switch (type) {
+  const getTypeText = (type: string) => { switch (type) {
       case 'MULTIPLE_CHOICE':
         return 'اختيار من متعدد';
       case 'TRUE_FALSE':
         return 'صح أو خطأ';
       default:
-        return type;
-    }
+        return type; }
   };
 
-  if (questions.length === 0) {
-    return (
+  if (questions.length === 0) { return (
       <div className="text-center py-8">
         <div className="text-gray-500 dark:text-gray-400 font-arabic">
           لا توجد أسئلة بعد. ابدأ بإضافة سؤال جديد.
         </div>
       </div>
-    );
-  }
+    ); }
 
   return (
     <div className="space-y-4">
-      {questions.map((quizQuestion, index) => (
+      { questions.map((quizQuestion, index) => (
         editingQuestion === quizQuestion.question.id ? (
           <QuizQuestionEditForm
-            key={`edit-${quizQuestion.question.id}`}
+            key={`edit-${quizQuestion.question.id }`}
             courseId={courseId}
             chapterId={chapterId}
             question={quizQuestion.question}
@@ -131,7 +118,7 @@ export const QuizQuestionsList = ({
                   <Badge variant="outline" className="font-arabic">
                     {getTypeText(quizQuestion.question.type)}
                   </Badge>
-                  <Badge 
+                  <Badge
                     className={`font-arabic ${getDifficultyColor(quizQuestion.question.difficulty)}`}
                   >
                     {getDifficultyText(quizQuestion.question.difficulty)}
@@ -144,12 +131,12 @@ export const QuizQuestionsList = ({
                   {quizQuestion.question.text}
                 </CardTitle>
               </div>
-              
+
               {!isLocked && (
                 <div className="flex items-center gap-2">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     className="font-arabic"
                     onClick={() => setEditingQuestion(quizQuestion.question.id)}
                   >
@@ -159,8 +146,8 @@ export const QuizQuestionsList = ({
                   <ConfirmModal
                     onConfirm={() => onDelete(quizQuestion.question.id)}
                   >
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
                       disabled={isDeleting === quizQuestion.question.id}
                       className="text-red-600 hover:text-red-700 hover:bg-red-50 font-arabic"
@@ -177,25 +164,23 @@ export const QuizQuestionsList = ({
           <CardContent className="pt-0">
             {/* Options */}
             <div className="space-y-2">
-              {quizQuestion.question.options.map((option, optionIndex) => (
-                <div 
-                  key={option.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg border ${
-                    option.isCorrect 
-                      ? 'bg-green-50 border-green-200 dark:bg-green-900/10 dark:border-green-800' 
-                      : 'bg-gray-50 border-gray-200 dark:bg-gray-900/10 dark:border-gray-800'
-                  }`}
+              { quizQuestion.question.options.map((option, optionIndex) => (
+                <div
+                  key={option.id }
+                  className={ `flex items-center gap-3 p-3 rounded-lg border ${
+                    option.isCorrect
+                      ? 'bg-green-50 border-green-200 dark:bg-green-900/10 dark:border-green-800'
+                      : 'bg-gray-50 border-gray-200 dark:bg-gray-900/10 dark:border-gray-800' }`}
                 >
-                  {option.isCorrect ? (
+                  { option.isCorrect ? (
                     <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
                   ) : (
                     <XCircle className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                  )}
-                  <span className={`font-arabic ${
-                    option.isCorrect 
-                      ? 'text-green-800 dark:text-green-300 font-semibold' 
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}>
+                  ) }
+                  <span className={ `font-arabic ${
+                    option.isCorrect
+                      ? 'text-green-800 dark:text-green-300 font-semibold'
+                      : 'text-gray-700 dark:text-gray-300' }`}>
                     {option.text}
                   </span>
                 </div>
@@ -203,13 +188,13 @@ export const QuizQuestionsList = ({
             </div>
 
             {/* Explanation */}
-            {quizQuestion.question.explanation && (
+            { quizQuestion.question.explanation && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900/10 dark:border-blue-800">
                 <div className="text-sm font-semibold text-blue-800 dark:text-blue-300 font-arabic mb-1">
                   تفسير الإجابة:
                 </div>
                 <div className="text-blue-700 dark:text-blue-300 font-arabic">
-                  {quizQuestion.question.explanation}
+                  {quizQuestion.question.explanation }
                 </div>
               </div>
             )}
@@ -218,11 +203,11 @@ export const QuizQuestionsList = ({
         )
       ))}
 
-      {isLocked && (
+      { isLocked && (
         <div className="text-center py-4 text-yellow-700 dark:text-yellow-300 font-arabic">
           الاختبار منشور - لا يمكن تعديل الأسئلة
         </div>
-      )}
+      ) }
     </div>
   );
-}; 
+};

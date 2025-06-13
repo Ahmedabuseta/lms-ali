@@ -8,18 +8,14 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-interface CourseQuestionsListProps {
-  course: CourseWithQuestionsCount;
-}
+interface CourseQuestionsListProps { course: CourseWithQuestionsCount; }
 
-export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => { const [isExpanded, setIsExpanded] = useState(false);
 
   const hasChaptersWithQuestions = course.chapters.some((chapter) => chapter._count.questions > 0);
 
   const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+    setIsExpanded(!isExpanded); };
 
   return (
     <Card className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 dark:bg-gray-800 dark:border-gray-700">
@@ -29,7 +25,7 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
       >
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 transition-colors duration-200">
-            {isExpanded ? <ChevronDown className="h-5 w-5 text-white" /> : <ChevronRight className="h-5 w-5 text-white" />}
+            { isExpanded ? <ChevronDown className="h-5 w-5 text-white" /> : <ChevronRight className="h-5 w-5 text-white" /> }
           </div>
           <div className="space-y-1">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white font-arabic">{course.title}</h3>
@@ -72,14 +68,14 @@ export const CourseQuestionsList = ({ course }: CourseQuestionsListProps) => {
         </Button>
       </CardHeader>
 
-      {isExpanded && hasChaptersWithQuestions && (
+      { isExpanded && hasChaptersWithQuestions && (
         <CardContent className="border-t border-gray-200 bg-gray-50 pb-6 pt-6 dark:border-gray-700 dark:bg-gray-800">
           <div className="space-y-4 pr-6">
             {course.chapters
               .filter((chapter) => chapter._count.questions > 0)
               .map((chapter) => (
                 <div
-                  key={chapter.id}
+                  key={chapter.id }
                   className="flex items-center justify-between rounded-lg bg-white p-4 border border-gray-200 hover:border-gray-300 transition-all duration-200 dark:bg-gray-700 dark:border-gray-600"
                 >
                   <div className="flex items-center gap-3">

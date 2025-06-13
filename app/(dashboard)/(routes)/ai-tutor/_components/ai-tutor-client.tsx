@@ -11,8 +11,7 @@ import { ImageUploadDialog } from './image-upload-dialog';
 import { showNotification } from '@/components/ui/notifications';
 import { Card } from '@/components/ui/card';
 
-export const AITutorClient = () => {
-  // Message state
+export const AITutorClient = () => { // Message state
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isMounted, setIsMounted] = useState(false);
@@ -21,8 +20,7 @@ export const AITutorClient = () => {
   // Use custom hooks
   const { isLoading, thinking, streamingContent, connectionError, sendMessage, abortRequest } = useChatApi();
 
-  const {
-    imagePreview,
+  const { imagePreview,
     extractedText,
     isProcessingImage,
     progress,
@@ -31,8 +29,7 @@ export const AITutorClient = () => {
     setUseClientSideOCR,
     processImage,
     resetImageProcessing,
-    setExtractedText,
-  } = useImageProcessor();
+    setExtractedText, } = useImageProcessor();
 
   // Image dialog state
   const [imageProcessingOpen, setImageProcessingOpen] = useState(false);
@@ -51,11 +48,9 @@ export const AITutorClient = () => {
   }, [abortRequest]);
 
   // Handle reset conversation button click
-  const handleReset = () => {
-    abortRequest();
+  const handleReset = () => { abortRequest();
     setMessages([]);
-    showNotification.info('Conversation reset', 'Started a new chat session');
-  };
+    showNotification.info('Conversation reset', 'Started a new chat session'); };
 
   // Add extracted text to chat input
   const addExtractedTextToInput = () => {
@@ -70,8 +65,7 @@ export const AITutorClient = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!input.trim() || isLoading) return;
 
@@ -83,15 +77,13 @@ export const AITutorClient = () => {
     // Send message to API
     const result = await sendMessage(messages, userMessage);
 
-    if (result.success) {
-      // Add assistant response to messages
+    if (result.success) { // Add assistant response to messages
       setMessages((prev) => [...prev, { role: 'assistant', content: result.text }]);
     }
   };
 
   // Prevent hydration issues by not rendering until mounted
-  if (!isMounted) {
-    return (
+  if (!isMounted) { return (
       <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">
         <div className="h-full max-w-4xl mx-auto p-4 flex items-center justify-center">
           <div className="text-center">
@@ -100,8 +92,7 @@ export const AITutorClient = () => {
           </div>
         </div>
       </div>
-    );
-  }
+    ); }
 
   return (
     // <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">

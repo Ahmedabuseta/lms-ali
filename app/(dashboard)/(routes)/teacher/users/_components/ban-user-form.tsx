@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -16,24 +15,19 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 
-interface BanUserFormProps {
-  user: User;
+interface BanUserFormProps { user: User;
   onBanUser: (userId: string, reason: string, duration?: number) => void;
-  isPending: boolean;
-}
+  isPending: boolean; }
 
-export const BanUserForm = ({ user, onBanUser, isPending }: BanUserFormProps) => {
-  const [banReason, setBanReason] = useState('');
+export const BanUserForm = ({ user, onBanUser, isPending }: BanUserFormProps) => { const [banReason, setBanReason] = useState('');
   const [banDuration, setBanDuration] = useState('');
 
   const handleBan = () => {
     if (!banReason.trim()) {
-      return;
-    }
-    
+      return; }
+
     const duration = banDuration ? parseInt(banDuration) : undefined;
     onBanUser(user.id, banReason, duration);
   };
@@ -67,13 +61,13 @@ export const BanUserForm = ({ user, onBanUser, isPending }: BanUserFormProps) =>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               className="w-full font-arabic"
               disabled={!banReason.trim() || isPending}
             >
               <ShieldOff className="mr-2 h-4 w-4" />
-              {isPending ? 'جاري الحظر...' : 'تأكيد الحظر'}
+              { isPending ? 'جاري الحظر...' : 'تأكيد الحظر' }
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -85,7 +79,7 @@ export const BanUserForm = ({ user, onBanUser, isPending }: BanUserFormProps) =>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="font-arabic">إلغاء</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogAction
                 onClick={handleBan}
                 className="font-arabic bg-red-600 hover:bg-red-700"
                 disabled={isPending}
@@ -98,4 +92,4 @@ export const BanUserForm = ({ user, onBanUser, isPending }: BanUserFormProps) =>
       </div>
     </div>
   );
-}; 
+};

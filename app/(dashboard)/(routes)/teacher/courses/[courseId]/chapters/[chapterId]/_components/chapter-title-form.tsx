@@ -13,22 +13,17 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-interface ChapterTitleFormProps {
-  initialData: {
-    title: string;
-  };
+interface ChapterTitleFormProps { initialData: {
+    title: string; };
   courseId: string;
   chapterId: string;
 }
 
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'عنوان الفصل مطلوب',
-  }),
+const formSchema = z.object({ title: z.string().min(1, {
+    message: 'عنوان الفصل مطلوب', }),
 });
 
-export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTitleFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTitleFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -36,8 +31,7 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
-  });
+    defaultValues: initialData, });
 
   const { isSubmitting, isValid } = form.formState;
 
@@ -62,22 +56,22 @@ export const ChapterTitleForm = ({ initialData, courseId, chapterId }: ChapterTi
           <h4 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 font-arabic">عنوان الفصل</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           {initialData.title ? (
             <div className="rounded-lg border border-emerald-200/50 bg-emerald-100/50 p-4 backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-800/20">
-              <p className="text-emerald-900 dark:text-emerald-100 font-medium font-arabic">{initialData.title}</p>
+              <p className="text-emerald-900 dark:text-emerald-100 font-medium font-arabic">{initialData.title }</p>
             </div>
           ) : (
             <div className="rounded-lg border border-emerald-200/50 bg-emerald-50/40 p-4 text-center backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-900/20">

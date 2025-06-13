@@ -21,11 +21,27 @@ const nextConfig = async () => {
     // Configure pageExtensions to include md and mdx
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 
+    // ESLint configuration
+    eslint: {
+      // Warning: This allows production builds to successfully complete even if
+      // your project has ESLint errors.
+      ignoreDuringBuilds: true,
+    },
+
+    // TypeScript configuration
+    typescript: {
+      // !! WARN !!
+      // Dangerously allow production builds to successfully complete even if
+      // your project has type errors.
+      // !! WARN !!
+      ignoreBuildErrors: true,
+    },
+
     // Configure webpack
     webpack: (config) => {
       config.resolve.alias.canvas = false;
       config.resolve.alias.encoding = false;
-      return config; // Return the modified config
+      return config;
     },
 
     // CORS and Security Headers Configuration

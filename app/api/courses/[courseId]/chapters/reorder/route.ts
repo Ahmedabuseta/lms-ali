@@ -8,15 +8,13 @@ requireAuth()
 
     const { list } = await req.json();
 
-    for (const item of list) {
-      await db.chapter.update({
+    for (const item of list) { await db.chapter.update({
         where: { id: item.id },
         data: { position: item.position },
       });
     }
 
     return new NextResponse('Success', { status: 200 });
-  } catch {
-    return new NextResponse('Internal server error', { status: 500 });
+  } catch { return new NextResponse('Internal server error', { status: 500 });
   }
 }

@@ -5,8 +5,7 @@ import { getAuthenticatedUser } from '@/lib/api-auth';
 export async function GET(
   req: NextRequest,
   { params }: { params: { courseId: string; chapterId: string } }
-) {
-  try {
+) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -14,24 +13,18 @@ export async function GET(
     }
 
     // Get latest quiz attempt for this user
-    const attempt = await db.quizAttempt.findFirst({
-      where: {
+    const attempt = await db.quizAttempt.findFirst({ where: {
         userId: user.id,
         quiz: {
-          chapterId: params.chapterId,
-        },
+          chapterId: params.chapterId, },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        quiz: true,
+      orderBy: { createdAt: 'desc', },
+      include: { quiz: true,
         questionAttempts: {
           include: {
             question: {
               include: {
-                options: true,
-              },
+                options: true, },
             },
             selectedOption: true,
           },
@@ -40,8 +33,7 @@ export async function GET(
     });
 
     return NextResponse.json(attempt);
-  } catch (error) {
-    console.error('[QUIZ_ATTEMPT_GET]', error);
+  } catch (error) { console.error('[QUIZ_ATTEMPT_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
@@ -49,8 +41,7 @@ export async function GET(
 export async function POST(
   req: NextRequest,
   { params }: { params: { courseId: string; chapterId: string } }
-) {
-  try {
+) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -58,72 +49,54 @@ export async function POST(
     }
 
     // Get the quiz for this chapter
-    const quiz = await db.quiz.findFirst({
-      where: {
-        chapterId: params.chapterId,
-      },
-      include: {
-        quizQuestions: {
+    const quiz = await db.quiz.findFirst({ where: {
+        chapterId: params.chapterId, },
+      include: { quizQuestions: {
           include: {
             question: {
               include: {
-                options: true,
-              },
+                options: true, },
             },
           },
-          orderBy: {
-            position: 'asc',
-          },
+          orderBy: { position: 'asc', },
         },
-        attempts: {
-          where: {
-            userId: user.id,
-          },
+        attempts: { where: {
+            userId: user.id, },
         },
       },
     });
 
-    if (!quiz) {
-      return new NextResponse('Quiz not found', { status: 404 });
+    if (!quiz) { return new NextResponse('Quiz not found', { status: 404 });
     }
 
-    if (!quiz.isPublished) {
-      return new NextResponse('Quiz is not published', { status: 400 });
+    if (!quiz.isPublished) { return new NextResponse('Quiz is not published', { status: 400 });
     }
 
     // Check if user has attempts remaining
     const userAttempts = quiz.attempts.length;
-    if (quiz.freeAttempts !== -1 && userAttempts >= quiz.freeAttempts) {
-      return new NextResponse('No attempts remaining', { status: 400 });
+    if (quiz.freeAttempts !== -1 && userAttempts >= quiz.freeAttempts) { return new NextResponse('No attempts remaining', { status: 400 });
     }
 
     // Check if user has already passed
     const passedAttempt = quiz.attempts.find(attempt => attempt.isPassed);
-    if (passedAttempt) {
-      return new NextResponse('Quiz already passed', { status: 400 });
+    if (passedAttempt) { return new NextResponse('Quiz already passed', { status: 400 });
     }
 
     // Create new attempt
-    const attempt = await db.quizAttempt.create({
-      data: {
+    const attempt = await db.quizAttempt.create({ data: {
         userId: user.id,
         quizId: quiz.id,
-        isFreeAttempt: userAttempts < (quiz.freeAttempts === -1 ? 999999 : quiz.freeAttempts),
-      },
-      include: {
-        quiz: {
+        isFreeAttempt: userAttempts < (quiz.freeAttempts === -1 ? 999999 : quiz.freeAttempts), },
+      include: { quiz: {
           include: {
             quizQuestions: {
               include: {
                 question: {
                   include: {
-                    options: true,
-                  },
+                    options: true, },
                 },
               },
-              orderBy: {
-                position: 'asc',
-              },
+              orderBy: { position: 'asc', },
             },
           },
         },
@@ -131,8 +104,7 @@ export async function POST(
     });
 
     return NextResponse.json(attempt);
-  } catch (error) {
-    console.error('[QUIZ_ATTEMPT_POST]', error);
+  } catch (error) { console.error('[QUIZ_ATTEMPT_POST]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
-} 
+}

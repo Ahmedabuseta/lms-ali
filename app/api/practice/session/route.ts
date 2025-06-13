@@ -5,66 +5,52 @@ import { canAccessChapterServices } from '@/lib/user';
 
 export const dynamic = 'force-dynamic';
 
-interface CreateSessionRequest {
-  courseId: string;
+interface CreateSessionRequest { courseId: string;
   chapterIds?: string[];
   batchSize?: number;
   difficulty?: 'EASY' | 'MEDIUM' | 'HARD' | 'ALL';
-  includePassages?: boolean;
-}
+  includePassages?: boolean; }
 
-export async function POST(req: NextRequest) {
-  try {
+export async function POST(req: NextRequest) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const { 
-      courseId, 
-      chapterIds = [], 
+    const { courseId,
+      chapterIds = [],
       batchSize = 10,
       difficulty = 'ALL',
-      includePassages = true 
-    }: CreateSessionRequest = await req.json();
+      includePassages = true }: CreateSessionRequest = await req.json();
 
-    if (!courseId) {
-      return new NextResponse('Course ID required', { status: 400 });
+    if (!courseId) { return new NextResponse('Course ID required', { status: 400 });
     }
 
     // Verify course access
-    const course = await db.course.findUnique({
-      where: { id: courseId },
+    const course = await db.course.findUnique({ where: { id: courseId },
       select: { id: true, title: true }
     });
 
-    if (!course) {
-      return new NextResponse('Course not found', { status: 404 });
+    if (!course) { return new NextResponse('Course not found', { status: 404 });
     }
 
     // Check chapter access if specific chapters requested
-    if (chapterIds.length > 0) {
-      for (const chapterId of chapterIds) {
+    if (chapterIds.length > 0) { for (const chapterId of chapterIds) {
         const hasAccess = await canAccessChapterServices(user, chapterId);
         if (!hasAccess) {
-          return new NextResponse(`Access denied for chapter ${chapterId}`, { status: 403 });
+          return new NextResponse(`Access denied for chapter ${chapterId }`, { status: 403 });
         }
       }
     }
 
     // Build question bank filter conditions
-    const questionBankWhere: any = {
-      courseId: courseId,
-    };
+    const questionBankWhere: any = { courseId: courseId, };
 
     // If specific chapters requested, filter by them
-    if (chapterIds.length > 0) {
-      questionBankWhere.chapterId = {
-        in: chapterIds,
-      };
-    } else {
-      // For trial users without specific chapters, only show questions from free chapters
+    if (chapterIds.length > 0) { questionBankWhere.chapterId = {
+        in: chapterIds, };
+    } else { // For trial users without specific chapters, only show questions from free chapters
       if (user.accessType === 'FREE_TRIAL') {
         questionBankWhere.chapter = {
           OR: [
@@ -76,9 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Build question filter
-    const questionWhere: any = {
-      questionBank: questionBankWhere
-    };
+    const questionWhere: any = { questionBank: questionBankWhere };
 
     // Add difficulty filter if specified
     if (difficulty !== 'ALL') {
@@ -86,33 +70,26 @@ export async function POST(req: NextRequest) {
     }
 
     // Get total count for pagination info
-    const totalQuestions = await db.question.count({
-      where: questionWhere,
-    });
+    const totalQuestions = await db.question.count({ where: questionWhere, });
 
-    if (totalQuestions === 0) {
-      return new NextResponse('No questions found', { status: 404 });
+    if (totalQuestions === 0) { return new NextResponse('No questions found', { status: 404 });
     }
 
     // Get first batch of questions (randomized)
-    const questions = await db.question.findMany({
-      where: questionWhere,
+    const questions = await db.question.findMany({ where: questionWhere,
       include: {
         options: {
           orderBy: {
-            createdAt: 'asc'
-          }
+            createdAt: 'asc' }
         },
         passage: true,
-        questionBank: {
-          include: {
+        questionBank: { include: {
             chapter: {
               select: {
                 id: true,
                 title: true,
                 position: true,
-                isFree: true
-              }
+                isFree: true }
             }
           }
         }
@@ -120,31 +97,27 @@ export async function POST(req: NextRequest) {
       take: batchSize,
       skip: 0,
       // Use random ordering by using a random field or sorting by created date with offset
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc', },
     });
 
     // Shuffle the questions for randomness
     const shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
 
     // Get selected chapters info
-    const selectedChapters = chapterIds.length > 0 
-      ? await db.chapter.findMany({
-          where: { 
+    const selectedChapters = chapterIds.length > 0
+      ? await db.chapter.findMany({ where: {
             id: { in: chapterIds },
-            courseId: courseId 
+            courseId: courseId
           },
           select: { id: true, title: true }
         })
       : [];
 
     // Create session ID
-    const sessionId = `session_${user.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const sessionId = `session_${user.id}_${Date.now()}_${ Math.random().toString(36).substr(2, 9) }`;
 
     // Transform questions to match expected format
-    const transformedQuestions = shuffledQuestions.map(question => {
-      // Get user's previous attempts for this question
+    const transformedQuestions = shuffledQuestions.map(question => { // Get user's previous attempts for this question
       const attemptCount = 0; // TODO: Count from practice attempts
       const lastAttempt = null; // TODO: Get last attempt
 
@@ -159,19 +132,15 @@ export async function POST(req: NextRequest) {
         options: question.options.map(option => ({
           id: option.id,
           text: option.text,
-          isCorrect: option.isCorrect,
-        })),
-        questionBank: {
-          title: question.questionBank.title || 'Unknown',
-          chapterId: question.questionBank.chapterId,
-        },
+          isCorrect: option.isCorrect, })),
+        questionBank: { title: question.questionBank.title || 'Unknown',
+          chapterId: question.questionBank.chapterId, },
         attemptCount,
         lastAttempt,
       };
     });
 
-    const sessionData = {
-      sessionId,
+    const sessionData = { sessionId,
       courseId,
       selectedChapters,
       questions: transformedQuestions,
@@ -181,21 +150,18 @@ export async function POST(req: NextRequest) {
       hasMoreQuestions: totalQuestions > batchSize,
       settings: {
         difficulty,
-        includePassages,
-      }
+        includePassages, }
     };
 
     console.log(`Created practice session ${sessionId} with ${transformedQuestions.length} questions`);
 
     return NextResponse.json(sessionData);
-  } catch (error) {
-    console.log('[PRACTICE_SESSION_CREATE]', error);
+  } catch (error) { console.log('[PRACTICE_SESSION_CREATE]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
 
-export async function GET(req: NextRequest) {
-  try {
+export async function GET(req: NextRequest) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -210,23 +176,17 @@ export async function GET(req: NextRequest) {
     const batchSize = parseInt(searchParams.get('batchSize') || '10');
     const difficulty = searchParams.get('difficulty') || 'ALL';
 
-    if (!sessionId || !courseId) {
-      return new NextResponse('Session ID and Course ID required', { status: 400 });
+    if (!sessionId || !courseId) { return new NextResponse('Session ID and Course ID required', { status: 400 });
     }
 
     const chapterIds = chapterIdsParam ? chapterIdsParam.split(',').filter(Boolean) : [];
 
     // Build question bank filter conditions (same as POST)
-    const questionBankWhere: any = {
-      courseId: courseId,
-    };
+    const questionBankWhere: any = { courseId: courseId, };
 
-    if (chapterIds.length > 0) {
-      questionBankWhere.chapterId = {
-        in: chapterIds,
-      };
-    } else {
-      if (user.accessType === 'FREE_TRIAL') {
+    if (chapterIds.length > 0) { questionBankWhere.chapterId = {
+        in: chapterIds, };
+    } else { if (user.accessType === 'FREE_TRIAL') {
         questionBankWhere.chapter = {
           OR: [
             { position: 1 },
@@ -236,69 +196,57 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const questionWhere: any = {
-      questionBank: questionBankWhere
-    };
+    const questionWhere: any = { questionBank: questionBankWhere };
 
     if (difficulty !== 'ALL') {
       questionWhere.difficulty = difficulty;
     }
 
     // Get total count
-    const totalQuestions = await db.question.count({
-      where: questionWhere,
-    });
+    const totalQuestions = await db.question.count({ where: questionWhere, });
 
     // Calculate pagination
     const skip = (batch - 1) * batchSize;
 
     // Get questions for the requested batch
-    const questions = await db.question.findMany({
-      where: questionWhere,
+    const questions = await db.question.findMany({ where: questionWhere,
       include: {
         options: {
           orderBy: {
-            createdAt: 'asc'
-          }
+            createdAt: 'asc' }
         },
         passage: true,
-        questionBank: {
-          include: {
+        questionBank: { include: {
             chapter: {
               select: {
                 id: true,
                 title: true,
                 position: true,
-                isFree: true
-              }
+                isFree: true }
             }
           }
         }
       },
       take: batchSize,
       skip: skip,
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc', },
     });
 
     // Shuffle for randomness
     const shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
 
     // Get selected chapters info
-    const selectedChapters = chapterIds.length > 0 
-      ? await db.chapter.findMany({
-          where: { 
+    const selectedChapters = chapterIds.length > 0
+      ? await db.chapter.findMany({ where: {
             id: { in: chapterIds },
-            courseId: courseId 
+            courseId: courseId
           },
           select: { id: true, title: true }
         })
       : [];
 
     // Transform questions
-    const transformedQuestions = shuffledQuestions.map(question => ({
-      id: question.id,
+    const transformedQuestions = shuffledQuestions.map(question => ({ id: question.id,
       text: question.text,
       type: question.type,
       difficulty: question.difficulty,
@@ -308,18 +256,14 @@ export async function GET(req: NextRequest) {
       options: question.options.map(option => ({
         id: option.id,
         text: option.text,
-        isCorrect: option.isCorrect,
-      })),
-      questionBank: {
-        title: question.questionBank.title || 'Unknown',
-        chapterId: question.questionBank.chapterId,
-      },
+        isCorrect: option.isCorrect, })),
+      questionBank: { title: question.questionBank.title || 'Unknown',
+        chapterId: question.questionBank.chapterId, },
       attemptCount: 0,
       lastAttempt: null,
     }));
 
-    const sessionData = {
-      sessionId,
+    const sessionData = { sessionId,
       courseId,
       selectedChapters,
       questions: transformedQuestions,
@@ -329,13 +273,11 @@ export async function GET(req: NextRequest) {
       hasMoreQuestions: (batch * batchSize) < totalQuestions,
       settings: {
         difficulty,
-        includePassages: true,
-      }
+        includePassages: true, }
     };
 
     return NextResponse.json(sessionData);
-  } catch (error) {
-    console.log('[PRACTICE_SESSION_GET]', error);
+  } catch (error) { console.log('[PRACTICE_SESSION_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

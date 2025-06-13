@@ -14,18 +14,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface ChapterAccessFormProps {
-  initialData: Chapter;
+interface ChapterAccessFormProps { initialData: Chapter;
   courseId: string;
-  chapterId: string;
-}
+  chapterId: string; }
 
-const formSchema = z.object({
-  isFree: z.boolean().default(false),
-});
+const formSchema = z.object({ isFree: z.boolean().default(false), });
 
-export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterAccessFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterAccessFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -34,8 +29,7 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isFree: !!initialData.isFree,
-    },
+      isFree: !!initialData.isFree, },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -56,36 +50,36 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-200/80 dark:bg-teal-700/50">
-            {initialData.isFree ? (
+            { initialData.isFree ? (
               <Eye className="h-4 w-4 text-teal-700 dark:text-teal-300" />
             ) : (
               <Lock className="h-4 w-4 text-teal-700 dark:text-teal-300" />
-            )}
+            ) }
           </div>
           <h4 className="text-lg font-semibold text-teal-900 dark:text-teal-100 font-arabic">إعدادات الوصول</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-teal-700 hover:text-teal-900 dark:text-teal-300 dark:hover:text-teal-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           <div className={cn(
             'rounded-lg border p-4 backdrop-blur-sm',
             initialData.isFree
               ? 'border-emerald-200/50 bg-emerald-100/50 dark:border-emerald-400/30 dark:bg-emerald-800/20'
               : 'border-orange-200/50 bg-orange-100/50 dark:border-orange-400/30 dark:bg-orange-800/20'
-          )}>
+          ) }>
             <div className="flex items-center gap-3">
-              {initialData.isFree ? (
+              { initialData.isFree ? (
                 <>
                   <Eye className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   <div>
@@ -101,7 +95,7 @@ export const ChapterAccessForm = ({ initialData, courseId, chapterId }: ChapterA
                     <p className="text-sm text-orange-700 dark:text-orange-300 font-arabic">يتطلب شراء الدورة للوصول إلى هذا الفصل</p>
                   </div>
                 </>
-              )}
+              ) }
             </div>
           </div>
         </div>

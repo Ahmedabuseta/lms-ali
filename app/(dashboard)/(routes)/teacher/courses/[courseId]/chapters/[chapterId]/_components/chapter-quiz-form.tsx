@@ -10,15 +10,13 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from '@/components/ui/form';
+  FormDescription, } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,8 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 
-interface ChapterQuizFormProps {
-  initialData?: {
+interface ChapterQuizFormProps { initialData?: {
     id: string;
     title: string;
     description?: string;
@@ -36,16 +33,13 @@ interface ChapterQuizFormProps {
     requiredScore: number;
     freeAttempts: number;
     isPublished: boolean;
-    quizQuestions?: any[];
-  };
+    quizQuestions?: any[]; };
   courseId: string;
   chapterId: string;
 }
 
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'Quiz title is required',
-  }),
+const formSchema = z.object({ title: z.string().min(1, {
+    message: 'Quiz title is required', }),
   description: z.string().optional(),
   timeLimit: z.coerce.number().min(0).optional(),
   requiredScore: z.coerce.number().min(0).max(100).default(100),
@@ -53,8 +47,7 @@ const formSchema = z.object({
   isPublished: z.boolean().default(false),
 });
 
-export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQuizFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQuizFormProps) => { const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -69,8 +62,7 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
       timeLimit: initialData?.timeLimit || undefined,
       requiredScore: initialData?.requiredScore || 100,
       freeAttempts: initialData?.freeAttempts || -1,
-      isPublished: initialData?.isPublished || false,
-    },
+      isPublished: initialData?.isPublished || false, },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -157,42 +149,42 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
           </div>
           <div className="flex items-center gap-2">
             <Button onClick={toggleEdit} variant="ghost" size="sm">
-              {isEditing ? (
+              { isEditing ? (
                 <span className="font-arabic">إلغاء</span>
               ) : (
                 <>
                   <Pencil className="h-4 w-4 ml-2" />
                   <span className="font-arabic">تعديل</span>
                 </>
-              )}
+              ) }
             </Button>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {!isEditing && !initialData && (
+        { !isEditing && !initialData && (
           <div className="text-center py-8">
             <FileQuestion className="h-12 w-12 text-purple-400 mx-auto mb-4" />
             <p className="text-purple-700 dark:text-purple-300 font-arabic mb-4">
               لم يتم إنشاء اختبار لهذا الفصل بعد
             </p>
-            <Button onClick={toggleEdit} className="font-arabic">
+            <Button onClick={toggleEdit } className="font-arabic">
               <PlusCircle className="h-4 w-4 ml-2" />
               إنشاء اختبار
             </Button>
           </div>
         )}
 
-        {!isEditing && initialData && (
+        { !isEditing && initialData && (
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-purple-900 dark:text-purple-100 font-arabic">
-                {initialData.title}
+                {initialData.title }
               </h3>
-              {initialData.description && (
+              { initialData.description && (
                 <p className="text-purple-700 dark:text-purple-300 mt-2 font-arabic">
-                  {initialData.description}
+                  {initialData.description }
                 </p>
               )}
             </div>
@@ -223,7 +215,7 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
                 <div>
                   <p className="text-xs text-purple-600 font-arabic">المحاولات المجانية</p>
                   <p className="font-semibold text-purple-900 dark:text-purple-100 font-arabic">
-                    {initialData.freeAttempts === -1 ? 'غير محدود' : initialData.freeAttempts}
+                    { initialData.freeAttempts === -1 ? 'غير محدود' : initialData.freeAttempts }
                   </p>
                 </div>
               </div>
@@ -246,23 +238,21 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
                   إدارة الأسئلة
                 </Button>
               </Link>
-              
+
               {hasQuestions && (
                 <ConfirmModal
                   onConfirm={onPublish}
-                  title={initialData.isPublished ? 'إلغاء نشر الاختبار' : 'نشر الاختبار'}
-                  description={
-                    initialData.isPublished 
-                      ? 'هل أنت متأكد من إلغاء نشر هذا الاختبار؟ لن يتمكن الطلاب من الوصول إليه.' 
-                      : 'هل أنت متأكد من نشر هذا الاختبار؟ سيتمكن الطلاب من الوصول إليه.'
-                  }
+                  title={ initialData.isPublished ? 'إلغاء نشر الاختبار' : 'نشر الاختبار' }
+                  description={ initialData.isPublished
+                      ? 'هل أنت متأكد من إلغاء نشر هذا الاختبار؟ لن يتمكن الطلاب من الوصول إليه.'
+                      : 'هل أنت متأكد من نشر هذا الاختبار؟ سيتمكن الطلاب من الوصول إليه.' }
                 >
                   <Button
-                    variant={initialData.isPublished ? "secondary" : "default"}
+                    variant={ initialData.isPublished ? "secondary" : "default" }
                     disabled={isLoading}
                     className="font-arabic"
                   >
-                    {isLoading ? 'جاري التحديث...' : (initialData.isPublished ? 'إلغاء النشر' : 'نشر الاختبار')}
+                    { isLoading ? 'جاري التحديث...' : (initialData.isPublished ? 'إلغاء النشر' : 'نشر الاختبار') }
                   </Button>
                 </ConfirmModal>
               )}
@@ -277,7 +267,7 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
                   disabled={isLoading}
                   className="font-arabic"
                 >
-                  {isLoading ? 'جاري الحذف...' : 'حذف الاختبار'}
+                  { isLoading ? 'جاري الحذف...' : 'حذف الاختبار' }
                 </Button>
               </ConfirmModal>
             </div>
@@ -396,7 +386,7 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
 
               <div className="flex items-center gap-x-2">
                 <Button disabled={!isValid || isSubmitting} type="submit" className="font-arabic">
-                  {initialData ? 'حفظ التغييرات' : 'إنشاء الاختبار'}
+                  { initialData ? 'حفظ التغييرات' : 'إنشاء الاختبار' }
                 </Button>
               </div>
             </form>
@@ -405,4 +395,4 @@ export const ChapterQuizForm = ({ initialData, courseId, chapterId }: ChapterQui
       </CardContent>
     </Card>
   );
-}; 
+};

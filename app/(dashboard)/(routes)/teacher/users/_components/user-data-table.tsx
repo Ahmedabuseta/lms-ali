@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  ColumnDef,
+import { ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -11,41 +10,32 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import {
-  ChevronLeft,
+  useReactTable, } from '@tanstack/react-table';
+import { ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Users,
-} from 'lucide-react';
+  Users, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData, TValue> { columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchPlaceholder?: string;
-  searchKey?: string;
-}
+  searchKey?: string; }
 
-export function UserDataTable<TData, TValue>({
-  columns,
+export function UserDataTable<TData, TValue>({ columns,
   data,
   searchPlaceholder = "البحث...",
-  searchKey = "name",
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  searchKey = "name", }: DataTableProps<TData, TValue>) { const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({ });
   const [globalFilter, setGlobalFilter] = useState('');
 
-  const table = useReactTable({
-    data,
+  const table = useReactTable({ data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -60,12 +50,9 @@ export function UserDataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
-      globalFilter,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
+      globalFilter, },
+    initialState: { pagination: {
+        pageSize: 10, },
     },
   });
 
@@ -95,8 +82,8 @@ export function UserDataTable<TData, TValue>({
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
+              { [5, 10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize } value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
               ))}
@@ -113,19 +100,19 @@ export function UserDataTable<TData, TValue>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow 
+              <TableRow
                 key={headerGroup.id}
                 className="border-b border-white/20 bg-white/20 dark:bg-white/5"
               >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="h-12">
-                      {header.isPlaceholder
+                      { header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
-                          )}
+                          ) }
                     </TableHead>
                   );
                 })}
@@ -133,22 +120,22 @@ export function UserDataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            { table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, index) => (
                 <TableRow
-                  key={row.id}
+                  key={row.id }
                   data-state={row.getIsSelected() && "selected"}
-                  className={cn(
+                  className={ cn(
                     'border-b border-white/10 transition-all duration-200 hover:bg-white/20 dark:hover:bg-white/10',
                     index % 2 === 0 ? 'bg-white/5' : 'bg-white/10 dark:bg-white/5'
-                  )}
+                  ) }
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-4">
-                      {flexRender(
+                      { flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
-                      )}
+                      ) }
                     </TableCell>
                   ))}
                 </TableRow>
@@ -186,10 +173,10 @@ export function UserDataTable<TData, TValue>({
           </span>{' '}
           إلى{' '}
           <span className="font-semibold">
-            {Math.min(
+            { Math.min(
               (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
               table.getFilteredRowModel().rows.length
-            )}
+            ) }
           </span>{' '}
           من أصل{' '}
           <span className="font-semibold">
@@ -197,7 +184,7 @@ export function UserDataTable<TData, TValue>({
           </span>{' '}
           مستخدم
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <div className="flex items-center gap-2 bg-white/40 dark:bg-white/10 rounded-xl p-2 backdrop-blur-xl border border-white/30">
             <Button
@@ -218,13 +205,13 @@ export function UserDataTable<TData, TValue>({
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-            
+
             <div className="flex items-center gap-1 mx-2">
               <span className="text-sm font-medium font-arabic">
                 صفحة {table.getState().pagination.pageIndex + 1} من {table.getPageCount()}
               </span>
             </div>
-            
+
             <Button
               variant="ghost"
               className="h-8 w-8 p-0 hover:bg-white/50 dark:hover:bg-white/20"
@@ -248,4 +235,4 @@ export function UserDataTable<TData, TValue>({
       </div>
     </div>
   );
-} 
+}

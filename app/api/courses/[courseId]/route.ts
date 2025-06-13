@@ -11,39 +11,31 @@ export async function PATCH(req: Request, { params }: { params: { courseId: stri
     const { courseId } = params;
     const values = await req.json();
 
-    const course = await db.course.update({
-      where: {
-        id: courseId,
-      },
-      data: {
-        title: values?.title,
+    const course = await db.course.update({ where: {
+        id: courseId, },
+      data: { title: values?.title,
         description: values?.description,
         imageUrl: values?.imageUrl,
         categoryId: values?.categoryId,
         price: values?.price,
-        attachments: values?.attachments,
-      },
+        attachments: values?.attachments, },
     });
 
     return NextResponse.json(course);
-  } catch (error) {
-    return new NextResponse('Internal Error', { status: 500 });
+  } catch (error) { return new NextResponse('Internal Error', { status: 500 });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { courseId: string } }) {
-  try {
+export async function DELETE(req: NextRequest, { params }: { params: { courseId: string } }) { try {
     const user = await requireTeacher();
 
     const course = await db.course.findUnique({
       where: { id: params.courseId },
-      include: {
-        chapters: { include: { muxData: true } },
+      include: { chapters: { include: { muxData: true } },
       },
     });
 
-    if (!course) {
-      return new NextResponse('Not found', { status: 404 });
+    if (!course) { return new NextResponse('Not found', { status: 404 });
     }
 
     /** Removing mux data for all chapters */
@@ -56,7 +48,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { courseId:
     const deletedCourse = await db.course.delete({ where: { id: params.courseId } });
 
     return NextResponse.json(deletedCourse);
-  } catch {
-    return new NextResponse('Internal server exception', { status: 500 });
+  } catch { return new NextResponse('Internal server exception', { status: 500 });
   }
 }

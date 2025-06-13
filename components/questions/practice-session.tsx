@@ -6,26 +6,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  X, 
-  CheckCircle, 
-  XCircle, 
+import { ChevronLeft,
+  ChevronRight,
+  X,
+  CheckCircle,
+  XCircle,
   BookOpen,
   Target,
   RotateCcw,
   Lightbulb,
   Timer,
-  Play
-} from 'lucide-react';
+  Play } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { QuestionDisplay, Question } from './question-display';
 import { cn } from '@/lib/utils';
 
-export interface PracticeSessionData {
-  sessionId: string;
+export interface PracticeSessionData { sessionId: string;
   courseId: string;
   selectedChapters: { id: string; title: string }[];
   questions: Question[];
@@ -35,8 +32,7 @@ export interface PracticeSessionData {
   hasMoreQuestions: boolean;
 }
 
-export interface PracticeSessionProps {
-  sessionData: PracticeSessionData;
+export interface PracticeSessionProps { sessionData: PracticeSessionData;
   onExit: () => void;
   onLoadNextBatch?: () => Promise<void>;
   // Options
@@ -46,19 +42,15 @@ export interface PracticeSessionProps {
   autoAdvance?: boolean;
   // Callbacks
   onQuestionAnswer?: (questionId: string, optionId: string, isCorrect: boolean) => void;
-  onBatchComplete?: (batchResults: any) => void;
-}
+  onBatchComplete?: (batchResults: any) => void; }
 
-interface QuestionResult {
-  questionId: string;
+interface QuestionResult { questionId: string;
   selectedOptionId: string | null;
   isCorrect: boolean | null;
   timeSpent: number;
-  attempts: number;
-}
+  attempts: number; }
 
-export const PracticeSession: React.FC<PracticeSessionProps> = ({
-  sessionData,
+export const PracticeSession: React.FC<PracticeSessionProps> = ({ sessionData,
   onExit,
   onLoadNextBatch,
   showTimer = false,
@@ -66,20 +58,18 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
   showExplanations = true,
   autoAdvance = false,
   onQuestionAnswer,
-  onBatchComplete,
-}) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  onBatchComplete, }) => { const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerResult, setAnswerResult] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
-  
+
   // Session state
   const [sessionResults, setSessionResults] = useState<QuestionResult[]>([]);
   const [sessionStartTime] = useState(Date.now());
   const [questionStartTime, setQuestionStartTime] = useState(Date.now());
-  
+
   // Stats
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -94,8 +84,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
     setSelectedOption('');
     setShowAnswer(false);
     setAnswerResult(null);
-    setQuestionStartTime(Date.now());
-  }, [currentQuestionIndex]);
+    setQuestionStartTime(Date.now()); }, [currentQuestionIndex]);
 
   // Auto-advance logic
   useEffect(() => {
@@ -113,8 +102,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
     }
   };
 
-  const submitAnswer = async () => {
-    if (!selectedOption || !currentQuestion) return;
+  const submitAnswer = async () => { if (!selectedOption || !currentQuestion) return;
 
     setIsSubmitting(true);
     try {
@@ -128,24 +116,20 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
         questionId: currentQuestion.id,
         selectedOptionId: selectedOption,
         isCorrect,
-        timeSpent,
-      });
+        timeSpent, });
 
       const result = response.data;
       setAnswerResult(result);
       setShowAnswer(true);
 
       // Update session results
-      const questionResult: QuestionResult = {
-        questionId: currentQuestion.id,
+      const questionResult: QuestionResult = { questionId: currentQuestion.id,
         selectedOptionId: selectedOption,
         isCorrect,
         timeSpent,
-        attempts: 1, // TODO: Track retry attempts
-      };
+        attempts: 1, // TODO: Track retry attempts };
 
-      setSessionResults(prev => {
-        const existing = prev.findIndex(r => r.questionId === currentQuestion.id);
+      setSessionResults(prev => { const existing = prev.findIndex(r => r.questionId === currentQuestion.id);
         if (existing >= 0) {
           const updated = [...prev];
           updated[existing] = { ...updated[existing], ...questionResult, attempts: updated[existing].attempts + 1 };
@@ -164,10 +148,8 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
       onQuestionAnswer?.(currentQuestion.id, selectedOption, isCorrect);
 
       toast.success(isCorrect ? 'إجابة صحيحة!' : 'إجابة خاطئة');
-    } catch (error) {
-      console.error('Error submitting answer:', error);
-      toast.error('حدث خطأ في إرسال الإجابة');
-    } finally {
+    } catch (error) { console.error('Error submitting answer:', error);
+      toast.error('حدث خطأ في إرسال الإجابة'); } finally {
       setIsSubmitting(false);
     }
   };
@@ -197,7 +179,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
 
   const loadNextBatch = async () => {
     if (!onLoadNextBatch) return;
-    
+
     setIsLoadingNext(true);
     try {
       await onLoadNextBatch();
@@ -207,21 +189,16 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
       setQuestionsAnswered(0);
       setCorrectAnswers(0);
       toast.success('تم تحميل مجموعة أسئلة جديدة!');
-    } catch (error) {
-      console.error('Error loading next batch:', error);
-      toast.error('حدث خطأ في تحميل الأسئلة الجديدة');
-    } finally {
+    } catch (error) { console.error('Error loading next batch:', error);
+      toast.error('حدث خطأ في تحميل الأسئلة الجديدة'); } finally {
       setIsLoadingNext(false);
     }
   };
 
-  const getBatchScore = () => {
-    return questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
-  };
+  const getBatchScore = () => { return questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0; };
 
   // Batch completion view
-  if (batchCompleted) {
-    return (
+  if (batchCompleted) { return (
       <div className="max-w-4xl mx-auto p-6">
         <Card className="border-green-200 bg-green-50/50 dark:bg-green-900/10">
           <CardHeader>
@@ -231,7 +208,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Batch Stats */}
+            {/* Batch Stats */ }
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border">
                 <div className="text-2xl font-bold text-blue-600">{questionsAnswered}</div>
@@ -265,15 +242,15 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
                 <X className="h-4 w-4 mr-2" />
                 إنهاء التدريب
               </Button>
-              
+
               {sessionData.hasMoreQuestions && onLoadNextBatch && (
-                <Button 
+                <Button
                   onClick={loadNextBatch}
                   disabled={isLoadingNext}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
                   <Play className="h-4 w-4 mr-2" />
-                  {isLoadingNext ? 'جاري التحميل...' : 'مجموعة أسئلة جديدة'}
+                  { isLoadingNext ? 'جاري التحميل...' : 'مجموعة أسئلة جديدة' }
                 </Button>
               )}
             </div>
@@ -314,7 +291,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
             إنهاء التدريب
           </Button>
           <div className="text-sm text-gray-600">
-            الفصول: {sessionData.selectedChapters.map(c => c.title).join(', ')}
+            الفصول: { sessionData.selectedChapters.map(c => c.title).join(', ') }
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -337,7 +314,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
           </div>
           <Progress value={progress} className="h-2" />
         </div>
-        
+
         {/* Overall Progress */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -381,30 +358,30 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
       />
 
       {/* Answer Result */}
-      {showAnswer && answerResult && (
+      { showAnswer && answerResult && (
         <Card className={cn(
           'mb-6 border-2',
-          answerResult.isCorrect 
-            ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
+          answerResult.isCorrect
+            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
             : 'border-red-500 bg-red-50 dark:bg-red-900/20'
-        )}>
+        ) }>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              {answerResult.isCorrect ? (
+              { answerResult.isCorrect ? (
                 <CheckCircle className="h-6 w-6 text-green-600" />
               ) : (
                 <XCircle className="h-6 w-6 text-red-600" />
-              )}
+              ) }
               <div>
-                <div className={cn(
+                <div className={ cn(
                   'font-semibold',
                   answerResult.isCorrect ? 'text-green-800' : 'text-red-800'
-                )}>
-                  {answerResult.isCorrect ? 'إجابة صحيحة!' : 'إجابة خاطئة'}
+                ) }>
+                  { answerResult.isCorrect ? 'إجابة صحيحة!' : 'إجابة خاطئة' }
                 </div>
-                {answerResult.score && (
+                { answerResult.score && (
                   <div className="text-sm text-gray-600">
-                    النقاط المكتسبة: {answerResult.score}
+                    النقاط المكتسبة: {answerResult.score }
                   </div>
                 )}
               </div>
@@ -431,7 +408,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
               disabled={!selectedOption || isSubmitting}
               className="px-6"
             >
-              {isSubmitting ? 'جاري الإرسال...' : 'إرسال الإجابة'}
+              { isSubmitting ? 'جاري الإرسال...' : 'إرسال الإجابة' }
             </Button>
           ) : (
             <>
@@ -460,15 +437,15 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
       {/* Question Navigation Dots */}
       <div className="flex justify-center mt-8">
         <div className="flex gap-2 max-w-full overflow-x-auto pb-2">
-          {sessionData.questions.map((_, index) => {
+          { sessionData.questions.map((_, index) => {
             const isAnswered = sessionResults.some(r => r.questionId === sessionData.questions[index].id);
             const isCorrect = sessionResults.find(r => r.questionId === sessionData.questions[index].id)?.isCorrect;
-            
+
             return (
               <button
-                key={index}
+                key={index }
                 onClick={() => setCurrentQuestionIndex(index)}
-                className={cn(
+                className={ cn(
                   'w-8 h-8 rounded-full text-xs font-medium transition-all flex-shrink-0',
                   index === currentQuestionIndex
                     ? 'bg-blue-600 text-white'
@@ -477,7 +454,7 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
                       ? 'bg-green-500 text-white'
                       : 'bg-red-500 text-white'
                     : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                )}
+                ) }
               >
                 {index + 1}
               </button>
@@ -487,4 +464,4 @@ export const PracticeSession: React.FC<PracticeSessionProps> = ({
       </div>
     </div>
   );
-}; 
+};

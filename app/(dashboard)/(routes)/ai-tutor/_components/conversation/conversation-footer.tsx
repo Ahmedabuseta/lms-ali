@@ -5,29 +5,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface ConversationFooterProps {
-  input: string;
+interface ConversationFooterProps { input: string;
   setInput: (value: string) => void;
   isLoading: boolean;
   onSubmit: (e: React.FormEvent) => Promise<void>;
   onImageClick: () => void;
   hasMessages: boolean;
-  onReset: () => void;
-}
+  onReset: () => void; }
 
-export const ConversationFooter = ({
-  input,
+export const ConversationFooter = ({ input,
   setInput,
   isLoading,
   onSubmit,
   onImageClick,
   hasMessages,
-  onReset,
-}: ConversationFooterProps) => {
-  return (
+  onReset, }: ConversationFooterProps) => { return (
     <CardFooter className="p-4 sm:p-6">
       <div className="w-full">
-        <form onSubmit={onSubmit} className="flex w-full flex-col gap-3">
+        <form onSubmit={onSubmit } className="flex w-full flex-col gap-3">
           <div className="relative flex items-center">
             <Textarea
               placeholder="اكتب سؤالك هنا..."
@@ -69,7 +64,7 @@ export const ConversationFooter = ({
 
             {/* Buttons - positioned at right */}
             <div className="absolute right-3 flex items-center gap-2">
-              {hasMessages && (
+              { hasMessages && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -78,7 +73,7 @@ export const ConversationFooter = ({
                         variant="ghost"
                         size="icon"
                         className="h-9 w-9 rounded-full bg-white/60 hover:bg-white/80 border border-gray-200/50 shadow-md backdrop-blur-sm transition-all duration-300     dark:bg-gray-700/60 dark:hover:bg-gray-700/80 dark:border-gray-600/50"
-                        onClick={onReset}
+                        onClick={onReset }
                       >
                         <RefreshCw className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                       </Button>
@@ -96,13 +91,13 @@ export const ConversationFooter = ({
                     <Button
                       type="submit"
                       size="icon"
-                      className={cn(
+                      className={ cn(
                         'h-9 w-9 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border border-blue-400/50 shadow-lg backdrop-blur-sm transition-all duration-300     hover:shadow-xl dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800',
                         (isLoading || !input.trim()) && 'cursor-not-allowed opacity-50  e-100',
-                      )}
+                      ) }
                       disabled={isLoading || !input.trim()}
                     >
-                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                      { isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" /> }
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">

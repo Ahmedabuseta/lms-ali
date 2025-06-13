@@ -4,10 +4,9 @@ import Link from 'next/link';
 import { FileQuestion, Plus, BookOpen, Target, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const QuestionsEmptyState = () => {
-  return (
+export const QuestionsEmptyState = () => { return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-12 text-center shadow-lg dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20">
-      {/* Background decorations */}
+      {/* Background decorations */ }
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
       <div className="absolute left-8 top-8 h-20 w-20 rounded-full bg-gradient-to-br from-blue-200/40 to-indigo-300/30 blur-2xl" />
       <div className="absolute right-8 bottom-8 h-16 w-16 rounded-full bg-gradient-to-br from-purple-200/40 to-pink-300/30 blur-2xl" />

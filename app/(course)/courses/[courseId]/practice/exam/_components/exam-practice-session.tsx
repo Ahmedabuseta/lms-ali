@@ -5,23 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  ArrowRight, 
-  ArrowLeft, 
+import { Clock,
+  CheckCircle,
+  XCircle,
+  ArrowRight,
+  ArrowLeft,
   Flag,
   RotateCcw,
   Home,
   BookOpen,
   Target,
-  Award
-} from 'lucide-react';
+  Award } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-interface SessionData {
-  sessionId: string;
+interface SessionData { sessionId: string;
   courseId: string;
   mode: string;
   selectedChapters: { id: string; title: string }[];
@@ -30,14 +27,11 @@ interface SessionData {
   timeLimit: number; // in minutes
 }
 
-interface ExamPracticeSessionProps {
-  sessionData: SessionData;
-  onExit: () => void;
-}
+interface ExamPracticeSessionProps { sessionData: SessionData;
+  onExit: () => void; }
 
-export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSessionProps) {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSessionProps) { const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({ });
   const [timeRemaining, setTimeRemaining] = useState(sessionData.timeLimit * 60);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -63,55 +57,48 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
     };
   }, [timeRemaining, isCompleted]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
+  const formatTime = (seconds: number) => { const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, '0') }:${ secs.toString().padStart(2, '0') }`;
   };
 
-  const handleAnswerSelect = (optionId: string) => {
-    setAnswers(prev => ({
+  const handleAnswerSelect = (optionId: string) => { setAnswers(prev => ({
       ...prev,
-      [currentQuestionIndex]: optionId
-    }));
+      [currentQuestionIndex]: optionId }));
   };
 
-  const handleSubmit = async (autoSubmit = false) => {
-    try {
+  const handleSubmit = async (autoSubmit = false) => { try {
       setIsCompleted(true);
-      
+
       const results = sessionData.questions.map((question, index) => {
         const userAnswer = answers[index];
         const correctOption = question.options.find((opt: any) => opt.isCorrect);
         const isCorrect = userAnswer === correctOption?.id;
-        
+
         return {
           questionIndex: index,
           questionId: question.id,
           userAnswer,
           correctAnswer: correctOption?.id,
           isCorrect,
-          points: isCorrect ? (question.points || 1) : 0
-        };
+          points: isCorrect ? (question.points || 1) : 0 };
       });
 
       const totalPoints = results.reduce((sum, r) => sum + r.points, 0);
       const maxPoints = sessionData.questions.reduce((sum, q) => sum + (q.points || 1), 0);
       const percentage = (totalPoints / maxPoints) * 100;
 
-      const sessionResults = {
-        sessionId: sessionData.sessionId,
+      const sessionResults = { sessionId: sessionData.sessionId,
         results,
         totalPoints,
         maxPoints,
         percentage,
         timeSpent: sessionData.timeLimit * 60 - timeRemaining,
         completedAt: new Date().toISOString(),
-        autoSubmitted: autoSubmit
-      };
+        autoSubmitted: autoSubmit };
 
       localStorage.setItem(`practice_results_${sessionData.sessionId}`, JSON.stringify(sessionResults));
-      
+
       if (autoSubmit) {
         toast.error('انتهى الوقت المحدد! تم إرسال الإجابات تلقائياً');
       } else {
@@ -119,15 +106,13 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
       }
 
       setShowResults(true);
-    } catch (error) {
-      console.error('Error submitting exam:', error);
-      toast.error('خطأ في إرسال الإجابات');
-    }
+    } catch (error) { console.error('Error submitting exam:', error);
+      toast.error('خطأ في إرسال الإجابات'); }
   };
 
   if (showResults) {
     const results = JSON.parse(localStorage.getItem(`practice_results_${sessionData.sessionId}`) || '{}');
-    
+
     return (
       <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 via-white to-indigo-50/60 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
         <div className="relative z-10 container mx-auto px-4 py-8">
@@ -142,7 +127,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                 نتائج الامتحان التدريبي
               </CardTitle>
             </CardHeader>
-            
+
             <CardContent className="p-6">
               <div className="grid gap-6 md:grid-cols-3 mb-8">
                 <div className="text-center">
@@ -191,7 +176,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-orange-600" />
-                  <span className={`font-mono text-lg font-bold ${timeRemaining < 300 ? 'text-red-600' : 'text-orange-600'}`}>
+                  <span className={ `font-mono text-lg font-bold ${timeRemaining < 300 ? 'text-red-600' : 'text-orange-600' }`}>
                     {formatTime(timeRemaining)}
                   </span>
                 </div>
@@ -199,7 +184,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                   السؤال {currentQuestionIndex + 1} من {sessionData.totalQuestions}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -213,7 +198,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                     }
                     return newSet;
                   })}
-                  className={flaggedQuestions.has(currentQuestionIndex) ? 'text-amber-600 border-amber-200' : ''}
+                  className={ flaggedQuestions.has(currentQuestionIndex) ? 'text-amber-600 border-amber-200' : '' }
                 >
                   <Flag className="h-4 w-4" />
                 </Button>
@@ -223,7 +208,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                 </Button>
               </div>
             </div>
-            
+
             <Progress value={progress} className="h-2" />
           </CardContent>
         </Card>
@@ -236,12 +221,12 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                   <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200">
                     {currentQuestion?.question}
                   </h2>
-                  
-                  {currentQuestion?.passage && (
+
+                  { currentQuestion?.passage && (
                     <Card className="mb-6 bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
                       <CardContent className="p-4">
                         <div className="prose prose-sm max-w-none text-slate-700 dark:text-slate-300">
-                          {currentQuestion.passage}
+                          {currentQuestion.passage }
                         </div>
                       </CardContent>
                     </Card>
@@ -249,23 +234,21 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                 </div>
 
                 <div className="space-y-3">
-                  {currentQuestion?.options?.map((option: any) => (
+                  { currentQuestion?.options?.map((option: any) => (
                     <Card
-                      key={option.id}
-                      className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      key={option.id }
+                      className={ `cursor-pointer transition-all duration-200 hover:shadow-md ${
                         answers[currentQuestionIndex] === option.id
                           ? 'border-2 border-blue-500 bg-blue-50/50 dark:bg-blue-900/20'
-                          : 'border border-slate-200 hover:border-slate-300 dark:border-slate-700'
-                      }`}
+                          : 'border border-slate-200 hover:border-slate-300 dark:border-slate-700' }`}
                       onClick={() => handleAnswerSelect(option.id)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                          <div className={ `w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                             answers[currentQuestionIndex] === option.id
                               ? 'border-blue-500 bg-blue-500'
-                              : 'border-slate-300 dark:border-slate-600'
-                          }`}>
+                              : 'border-slate-300 dark:border-slate-600' }`}>
                             {answers[currentQuestionIndex] === option.id && (
                               <CheckCircle className="h-3 w-3 text-white" />
                             )}
@@ -282,13 +265,13 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                 <div className="flex justify-between mt-8">
                   <Button
                     variant="outline"
-                    onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
+                    onClick={ () => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1)) }
                     disabled={currentQuestionIndex === 0}
                   >
                     <ArrowRight className="h-4 w-4 mr-2" />
                     السابق
                   </Button>
-                  
+
                   {currentQuestionIndex === sessionData.totalQuestions - 1 ? (
                     <Button
                       onClick={() => handleSubmit()}
@@ -299,7 +282,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                     </Button>
                   ) : (
                     <Button
-                      onClick={() => setCurrentQuestionIndex(Math.min(sessionData.totalQuestions - 1, currentQuestionIndex + 1))}
+                      onClick={ () => setCurrentQuestionIndex(Math.min(sessionData.totalQuestions - 1, currentQuestionIndex + 1)) }
                       className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
                     >
                       التالي
@@ -318,25 +301,22 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
               </CardHeader>
               <CardContent className="p-4">
                 <div className="grid grid-cols-5 gap-2">
-                  {sessionData.questions.map((_, index) => {
+                  { sessionData.questions.map((_, index) => {
                     const hasAnswer = answers[index] !== undefined;
                     const isFlagged = flaggedQuestions.has(index);
                     const isCurrent = index === currentQuestionIndex;
-                    
+
                     let className = 'w-8 h-8 rounded text-xs font-medium transition-all duration-200 ';
-                    
+
                     if (isCurrent) {
-                      className += 'bg-blue-600 text-white shadow-lg';
-                    } else if (hasAnswer && isFlagged) {
+                      className += 'bg-blue-600 text-white shadow-lg'; } else if (hasAnswer && isFlagged) {
                       className += 'bg-amber-500 text-white';
                     } else if (hasAnswer) {
                       className += 'bg-emerald-500 text-white';
                     } else if (isFlagged) {
                       className += 'bg-amber-200 text-amber-800 border border-amber-400';
-                    } else {
-                      className += 'bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300';
-                    }
-                    
+                    } else { className += 'bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'; }
+
                     return (
                       <button
                         key={index}
@@ -348,7 +328,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
                     );
                   })}
                 </div>
-                
+
                 <div className="mt-4 text-xs space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-blue-600 rounded"></div>
@@ -374,4 +354,4 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
       </div>
     </div>
   );
-} 
+}

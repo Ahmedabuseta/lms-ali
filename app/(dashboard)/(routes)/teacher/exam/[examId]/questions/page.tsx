@@ -7,37 +7,27 @@ import { QuestionsList } from './_components/questions-list';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamQuestionsPage({ params }: PageProps) {
-  const user = await requireTeacher();
+export default async function ExamQuestionsPage({ params }: PageProps) { const user = await requireTeacher();
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      course: {
+      id: params.examId, },
+    include: { course: {
         select: {
           id: true,
-          title: true,
-        },
+          title: true, },
       },
-      examQuestions: {
-        include: {
+      examQuestions: { include: {
           question: {
             include: {
-              options: true,
-            },
+              options: true, },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
     },
   });

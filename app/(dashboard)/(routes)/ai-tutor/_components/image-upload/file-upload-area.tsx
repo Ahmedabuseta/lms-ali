@@ -1,20 +1,15 @@
 import { Upload, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface FileUploadAreaProps {
-  imagePreview: string | null;
+interface FileUploadAreaProps { imagePreview: string | null;
   isProcessingImage: boolean;
   onFileSelect: (file: File) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
-}
+  fileInputRef: React.RefObject<HTMLInputElement>; }
 
-export const FileUploadArea = ({
-  imagePreview,
+export const FileUploadArea = ({ imagePreview,
   isProcessingImage,
   onFileSelect,
-  fileInputRef,
-}: FileUploadAreaProps) => {
-  return (
+  fileInputRef, }: FileUploadAreaProps) => { return (
     <div
       className={cn(
         'rounded-lg border-2 border-dashed p-6',
@@ -22,10 +17,10 @@ export const FileUploadArea = ({
           ? 'cursor-not-allowed bg-muted opacity-50'
           : 'cursor-pointer transition-colors hover:bg-muted/30',
         'flex flex-col items-center justify-center text-center',
-      )}
+      ) }
       onClick={() => !isProcessingImage && fileInputRef.current?.click()}
     >
-      {!imagePreview ? (
+      { !imagePreview ? (
         <>
           <div className="mb-3 rounded-full bg-primary/10 p-3">
             <Upload className="h-6 w-6 text-primary" />
@@ -36,10 +31,10 @@ export const FileUploadArea = ({
       ) : (
         <div className="relative w-full">
           <img
-            src={imagePreview}
+            src={imagePreview }
             alt="Preview"
             className="mx-auto rounded-md object-contain"
-            style={{ maxHeight: '250px' }}
+            style={ { maxHeight: '250px' }}
           />
           {isProcessingImage && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50">

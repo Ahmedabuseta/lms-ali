@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  ArrowRight,
+import { ArrowRight,
   BookOpen,
   Users,
   Trophy,
@@ -24,8 +23,7 @@ import {
   FileText,
   Globe,
   Calculator,
-  MapPin,
-} from 'lucide-react';
+  MapPin, } from 'lucide-react';
 import { useSession } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { FAQSection } from '@/components/faq-section';
@@ -38,8 +36,7 @@ import { VideoPlayer } from '@/components/landing/video-player';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 import { ThemeToggle } from '@/components/theme-toggle';
 
-export default function LandingPage() {
-  const { data: session, isPending } = useSession();
+export default function LandingPage() { const { data: session, isPending } = useSession();
   const router = useRouter();
 
   // Modal state
@@ -48,8 +45,7 @@ export default function LandingPage() {
   const closeModal = () => setIsModalOpen(false);
 
   // Scroll to video section
-  const scrollToVideo = () => {
-    const videoSection = document.getElementById('demo-section');
+  const scrollToVideo = () => { const videoSection = document.getElementById('demo-section');
     if (videoSection) {
       videoSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -63,16 +59,14 @@ export default function LandingPage() {
   }, [isPending, session, router]);
 
   // Show loading state while auth is loading
-  if (isPending) {
-    return (
+  if (isPending) { return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-300 font-arabic">جاري التحميل...</p>
         </div>
       </div>
-    );
-  }
+    ); }
 
   // Don't render if user is authenticated (will redirect)
   if (session?.user) {

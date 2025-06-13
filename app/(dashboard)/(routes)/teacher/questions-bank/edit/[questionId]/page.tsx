@@ -3,26 +3,20 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { EditQuestionForm } from './_components/edit-question-form';
 
-interface EditQuestionPageProps {
-  params: {
-    questionId: string;
-  };
+interface EditQuestionPageProps { params: {
+    questionId: string; };
 }
 
-const EditQuestionPage = async ({ params }: EditQuestionPageProps) => {
-  await requireAuth();
+const EditQuestionPage = async ({ params }: EditQuestionPageProps) => { await requireAuth();
 
   const question = await db.question.findUnique({
     where: {
-      id: params.questionId,
-    },
-    include: {
-      options: true,
+      id: params.questionId, },
+    include: { options: true,
       questionBank: {
         include: {
           course: true,
-          chapter: true,
-        },
+          chapter: true, },
       },
       passage: true,
     },
@@ -43,22 +37,22 @@ const EditQuestionPage = async ({ params }: EditQuestionPageProps) => {
         </p>
       </div>
 
-      <EditQuestionForm 
-        question={{
+      <EditQuestionForm
+        question={ {
           ...question,
           questionBank: {
             ...question.questionBank,
-            chapter: question.questionBank.chapter 
+            chapter: question.questionBank.chapter
               ? { id: question.questionBank.chapter.id, title: question.questionBank.chapter.title }
               : undefined
           },
-          passage: question.passage 
+          passage: question.passage
             ? { id: question.passage.id, title: question.passage.title, content: question.passage.content }
             : undefined
-        }} 
+        }}
       />
     </div>
   );
 };
 
-export default EditQuestionPage; 
+export default EditQuestionPage;

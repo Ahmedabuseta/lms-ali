@@ -1,8 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  CheckCircle,
+import { CheckCircle,
   XCircle,
   Clock,
   DollarSign,
@@ -14,40 +13,32 @@ import {
   Monitor,
   UserX,
   Gift,
-  ArrowUpDown,
-} from 'lucide-react';
+  ArrowUpDown, } from 'lucide-react';
 import { User, UserRole, StudentAccessType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  DialogTrigger, } from '@/components/ui/dialog';
 import { GrantAccessForm } from './grant-access-form';
 import { BanUserForm } from './ban-user-form';
 import { SessionsManager } from './sessions-manager';
 
-const accessTypeLabels: Record<StudentAccessType, string> = {
-  NO_ACCESS: 'لا يوجد وصول',
+const accessTypeLabels: Record<StudentAccessType, string> = { NO_ACCESS: 'لا يوجد وصول',
   FREE_TRIAL: 'تجربة مجانية',
   FULL_ACCESS: 'وصول كامل مدفوع',
-  LIMITED_ACCESS: 'وصول محدود مدفوع',
-};
+  LIMITED_ACCESS: 'وصول محدود مدفوع', };
 
-const accessTypeColors: Record<StudentAccessType, string> = {
-  NO_ACCESS: 'bg-muted text-muted-foreground',
+const accessTypeColors: Record<StudentAccessType, string> = { NO_ACCESS: 'bg-muted text-muted-foreground',
   FREE_TRIAL: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
   FULL_ACCESS: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  LIMITED_ACCESS: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-};
+  LIMITED_ACCESS: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300', };
 
-export interface UserTableActions {
-  onUpdateRole: (userId: string, role: UserRole) => void;
+export interface UserTableActions { onUpdateRole: (userId: string, role: UserRole) => void;
   onGrantAccess: (userId: string, accessType: StudentAccessType, paymentAmount?: number, paymentNotes?: string) => void;
   onRevokeAccess: (userId: string) => void;
   onBanUser: (userId: string, reason: string, duration?: number) => void;
@@ -56,8 +47,7 @@ export interface UserTableActions {
   openGrantAccessModal: (user: User) => void;
   openBanModal: (user: User) => void;
   openSessionsModal: (user: User) => void;
-  isPending: boolean;
-}
+  isPending: boolean; }
 
 const getTrialStatus = (user: User) => {
   if (user.accessType !== StudentAccessType.FREE_TRIAL) return null;
@@ -81,8 +71,7 @@ const getStatusIcon = (user: User) => {
     return <CheckCircle className="h-5 w-5 text-green-500" />;
   }
 
-  switch (user.accessType) {
-    case StudentAccessType.NO_ACCESS:
+  switch (user.accessType) { case StudentAccessType.NO_ACCESS:
       return <XCircle className="h-5 w-5 text-muted-foreground" />;
     case StudentAccessType.FREE_TRIAL:
       const trialStatus = getTrialStatus(user);
@@ -95,13 +84,11 @@ const getStatusIcon = (user: User) => {
     case StudentAccessType.LIMITED_ACCESS:
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     default:
-      return <XCircle className="h-5 w-5 text-muted-foreground" />;
-  }
+      return <XCircle className="h-5 w-5 text-muted-foreground" />; }
 };
 
 export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] => [
-  {
-    accessorKey: 'name',
+  { accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
@@ -137,8 +124,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    accessorKey: 'role',
+  { accessorKey: 'role',
     header: ({ column }) => {
       return (
         <Button
@@ -154,9 +140,9 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <Select 
-          value={user.role} 
-          onValueChange={(value: UserRole) => actions.onUpdateRole(user.id, value)}
+        <Select
+          value={user.role}
+          onValueChange={ (value: UserRole) => actions.onUpdateRole(user.id, value) }
           disabled={actions.isPending}
         >
           <SelectTrigger className="w-28 h-9">
@@ -170,8 +156,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    accessorKey: 'accessType',
+  { accessorKey: 'accessType',
     header: ({ column }) => {
       return (
         <Button
@@ -193,8 +178,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    id: 'status',
+  { id: 'status',
     header: () => <div className="font-arabic">الحالة</div>,
     cell: ({ row }) => {
       const user = row.original;
@@ -202,12 +186,12 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
         <div className="flex items-center gap-2">
           {getStatusIcon(user)}
           <div className="text-sm">
-            {user.role === UserRole.TEACHER ? (
+            { user.role === UserRole.TEACHER ? (
               <span className="text-foreground font-arabic">نشط</span>
             ) : (
               <>
                 {user.accessType === StudentAccessType.FREE_TRIAL ? (
-                  <span className="text-blue-600 dark:text-blue-400 font-arabic">{getTrialStatus(user)}</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-arabic">{getTrialStatus(user) }</span>
                 ) : user.accessType === StudentAccessType.NO_ACCESS ? (
                   <span className="text-muted-foreground font-arabic">لا يوجد وصول</span>
                 ) : (
@@ -220,11 +204,9 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    id: 'accountStatus',
+  { id: 'accountStatus',
     header: () => <div className="font-arabic">حالة الحساب</div>,
-    cell: ({ row }) => {
-      const user = row.original;
+    cell: ({ row }) => { const user = row.original;
       return (
         <div className="flex items-center gap-2">
           {user.banned ? (
@@ -234,7 +216,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
                 <span className="text-red-600 dark:text-red-400 font-arabic">محظور</span>
                 {user.banReason && (
                   <div className="text-xs text-muted-foreground font-arabic">
-                    السبب: {user.banReason}
+                    السبب: {user.banReason }
                   </div>
                 )}
               </div>
@@ -249,8 +231,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    accessorKey: 'paymentAmount',
+  { accessorKey: 'paymentAmount',
     header: ({ column }) => {
       return (
         <Button
@@ -263,10 +244,9 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const user = row.original;
+    cell: ({ row }) => { const user = row.original;
       if (user.role === UserRole.TEACHER) return null;
-      
+
       return (
         <div className="text-sm">
           {user.paymentReceived ? (
@@ -276,7 +256,7 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
                 <span className="font-arabic">تم الدفع</span>
               </div>
               {user.paymentAmount && (
-                <div className="text-xs text-muted-foreground font-arabic">{user.paymentAmount} ر.س</div>
+                <div className="text-xs text-muted-foreground font-arabic">{user.paymentAmount } ر.س</div>
               )}
             </div>
           ) : (
@@ -286,12 +266,11 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-  {
-    id: 'actions',
+  { id: 'actions',
     header: () => <div className="font-arabic">الإجراءات</div>,
     cell: ({ row }) => {
       const user = row.original;
-      
+
       if (user.role === UserRole.TEACHER) {
         return <span className="text-muted-foreground text-sm font-arabic">معلم</span>;
       }
@@ -302,10 +281,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
           {!user.banned && (user.accessType === StudentAccessType.NO_ACCESS ||
             (user.accessType === StudentAccessType.FREE_TRIAL &&
               getTrialStatus(user)?.includes('انتهت'))) && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="font-arabic h-7 text-xs" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-arabic h-7 text-xs"
               disabled={actions.isPending}
               onClick={() => actions.openGrantAccessModal(user)}
             >
@@ -315,10 +294,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
           )}
 
           {!user.banned && user.accessType === StudentAccessType.NO_ACCESS && !user.isTrialUsed && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => actions.onGrantTrial(user.id)} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => actions.onGrantTrial(user.id)}
               className="font-arabic h-7 text-xs"
               disabled={actions.isPending}
             >
@@ -329,10 +308,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
 
           {!user.banned && (user.accessType === StudentAccessType.FULL_ACCESS ||
             user.accessType === StudentAccessType.LIMITED_ACCESS) && (
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              onClick={() => actions.onRevokeAccess(user.id)} 
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => actions.onRevokeAccess(user.id)}
               className="font-arabic h-7 text-xs"
               disabled={actions.isPending}
             >
@@ -342,10 +321,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
 
           {/* Ban/Unban */}
           {user.banned ? (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => actions.onUnbanUser(user.id)} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => actions.onUnbanUser(user.id)}
               className="font-arabic h-7 text-xs text-green-600 border-green-600 hover:bg-green-50"
               disabled={actions.isPending}
             >
@@ -353,10 +332,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
               إلغاء الحظر
             </Button>
           ) : (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="font-arabic h-7 text-xs text-red-600 border-red-600 hover:bg-red-50" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-arabic h-7 text-xs text-red-600 border-red-600 hover:bg-red-50"
               disabled={actions.isPending}
               onClick={() => actions.openBanModal(user)}
             >
@@ -366,10 +345,10 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
           )}
 
           {/* Session Management */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="font-arabic h-7 text-xs" 
+          <Button
+            variant="outline"
+            size="sm"
+            className="font-arabic h-7 text-xs"
             disabled={actions.isPending}
             onClick={() => actions.openSessionsModal(user)}
           >
@@ -380,4 +359,4 @@ export const createUserColumns = (actions: UserTableActions): ColumnDef<User>[] 
       );
     },
   },
-]; 
+];

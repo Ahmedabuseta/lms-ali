@@ -4,15 +4,11 @@ import { useState } from 'react';
 import { FileUploadArabic } from './file-upload-arabic';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
-export const UploadProgressDemo = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: string }>({
-    image: '',
+export const UploadProgressDemo = () => { const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: string }>({ image: '',
     video: '',
-    document: '',
-  });
+    document: '', });
 
-  const handleFileUpload = (type: string) => (url?: string) => {
-    if (url) {
+  const handleFileUpload = (type: string) => (url?: string) => { if (url) {
       setUploadedFiles(prev => ({ ...prev, [type]: url }));
     }
   };
@@ -44,13 +40,13 @@ export const UploadProgressDemo = () => {
               description="جرب رفع صورة ولاحظ التقدم الحقيقي"
               showProgress={true}
             />
-            {uploadedFiles.image && (
+            { uploadedFiles.image && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-md">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع الصورة بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </CardContent>
         </Card>
 
@@ -69,13 +65,13 @@ export const UploadProgressDemo = () => {
               description="رفع فيديو كبير لرؤية التقدم التفصيلي"
               showProgress={true}
             />
-            {uploadedFiles.video && (
+            { uploadedFiles.video && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-md">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع الفيديو بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </CardContent>
         </Card>
 
@@ -94,13 +90,13 @@ export const UploadProgressDemo = () => {
               description="رفع مستند لرؤية التقدم المباشر"
               showProgress={true}
             />
-            {uploadedFiles.document && (
+            { uploadedFiles.document && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-md">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع المستند بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </CardContent>
         </Card>
       </div>
@@ -164,4 +160,4 @@ export const UploadProgressDemo = () => {
       </Card>
     </div>
   );
-}; 
+};

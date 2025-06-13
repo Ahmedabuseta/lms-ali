@@ -2,55 +2,37 @@ import { db } from '@/lib/db';
 import { Prisma } from '@prisma/client';
 
 // Types
-interface StartExamAttemptProps {
-  userId: string;
-  examId: string;
-}
+interface StartExamAttemptProps { userId: string;
+  examId: string; }
 
-interface SubmitAnswerProps {
-  userId: string;
+interface SubmitAnswerProps { userId: string;
   attemptId: string;
   questionId: string;
-  optionId: string;
-}
+  optionId: string; }
 
-interface CompleteExamProps {
-  userId: string;
-  attemptId: string;
-}
+interface CompleteExamProps { userId: string;
+  attemptId: string; }
 
-interface GetExamAttemptProps {
-  userId: string;
-  attemptId: string;
-}
+interface GetExamAttemptProps { userId: string;
+  attemptId: string; }
 
-interface GetExamStatisticsProps {
-  userId: string;
-  examId: string;
-}
+interface GetExamStatisticsProps { userId: string;
+  examId: string; }
 
-interface ResumeExamAttemptProps {
-  userId: string;
-  examId: string;
-}
+interface ResumeExamAttemptProps { userId: string;
+  examId: string; }
 
-interface GetExamsProps {
-  userId: string;
+interface GetExamsProps { userId: string;
   examId?: string;
-  courseId?: string;
-}
+  courseId?: string; }
 
-interface ValidateExamAccessProps {
-  userId: string;
-  examId: string;
-}
+interface ValidateExamAccessProps { userId: string;
+  examId: string; }
 
 // Utility functions
-async function validateExamAccess({ userId, examId }: ValidateExamAccessProps) {
-  const exam = await db.exam.findUnique({
+async function validateExamAccess({ userId, examId }: ValidateExamAccessProps) { const exam = await db.exam.findUnique({
     where: { id: examId, isPublished: true },
-    include: {
-      course: { select: { id: true, isPublished: true } },
+    include: { course: { select: { id: true, isPublished: true } },
       chapter: { select: { id: true, isPublished: true } },
     },
   });
@@ -70,23 +52,18 @@ async function validateExamAccess({ userId, examId }: ValidateExamAccessProps) {
   return exam;
 }
 
-async function calculateExamScore(attemptId: string) {
-  const attempt = await db.examAttempt.findUnique({
+async function calculateExamScore(attemptId: string) { const attempt = await db.examAttempt.findUnique({
     where: { id: attemptId },
-    include: {
-      exam: {
+    include: { exam: {
         include: {
           examQuestions: {
             include: {
-              question: true,
-            },
+              question: true, },
           },
         },
       },
-      questionAttempts: {
-        include: {
-          question: true,
-        },
+      questionAttempts: { include: {
+          question: true, },
       },
     },
   });
@@ -115,42 +92,36 @@ async function calculateExamScore(attemptId: string) {
     }
   }
 
-  const scorePercentage = totalPossiblePoints > 0 
+  const scorePercentage = totalPossiblePoints > 0
     ? Math.round((totalEarnedPoints / totalPossiblePoints) * 100)
     : 0;
 
-  return {
-    score: scorePercentage,
+  return { score: scorePercentage,
     totalPoints: totalEarnedPoints,
     maxPoints: totalPossiblePoints,
     correctAnswers,
     totalQuestions,
-    isPassed: scorePercentage >= attempt.exam.passingScore,
-  };
+    isPassed: scorePercentage >= attempt.exam.passingScore, };
 }
 
 // Main functions
-export async function startExamAttempt({ userId, examId }: StartExamAttemptProps) {
-  try {
+export async function startExamAttempt({ userId, examId }: StartExamAttemptProps) { try {
     // Validate exam access
     const exam = await validateExamAccess({ userId, examId });
 
     // Check if there's already an active attempt
-    const existingAttempt = await db.examAttempt.findFirst({
-      where: {
+    const existingAttempt = await db.examAttempt.findFirst({ where: {
         userId,
         examId,
-        completedAt: null,
-      },
+        completedAt: null, },
     });
 
-    if (existingAttempt) {
-      // Check if the attempt has timed out
+    if (existingAttempt) { // Check if the attempt has timed out
       if (exam.timeLimit) {
         const timeElapsed = Math.floor(
           (Date.now() - existingAttempt.startedAt.getTime()) / (1000 * 60)
         );
-        
+
         if (timeElapsed >= exam.timeLimit) {
           // Auto-complete the timed-out attempt
           await completeExam({ userId, attemptId: existingAttempt.id });
@@ -164,8 +135,7 @@ export async function startExamAttempt({ userId, examId }: StartExamAttemptProps
     }
 
     // Check attempt limits
-    const completedAttempts = await db.examAttempt.count({
-      where: {
+    const completedAttempts = await db.examAttempt.count({ where: {
         userId,
         examId,
         completedAt: { not: null },
@@ -177,13 +147,10 @@ export async function startExamAttempt({ userId, examId }: StartExamAttemptProps
     }
 
     // Create a new attempt
-    const attempt = await db.examAttempt.create({
-      data: {
+    const attempt = await db.examAttempt.create({ data: {
         userId,
-        examId,
-      },
-      include: {
-        exam: {
+        examId, },
+      include: { exam: {
           include: {
             examQuestions: {
               include: {
@@ -192,14 +159,13 @@ export async function startExamAttempt({ userId, examId }: StartExamAttemptProps
                     options: {
                       select: {
                         id: true,
-                        text: true,
-                      },
+                        text: true, },
                     },
                     passage: true,
                   },
                 },
               },
-              orderBy: exam.isRandomized 
+              orderBy: exam.isRandomized
                 ? { position: 'asc' } // Will be shuffled on client side if needed
                 : { position: 'asc' },
             },
@@ -209,26 +175,20 @@ export async function startExamAttempt({ userId, examId }: StartExamAttemptProps
     });
 
     return attempt;
-  } catch (error) {
-    console.error('[START_EXAM_ATTEMPT_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to start exam attempt');
-  }
+  } catch (error) { console.error('[START_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to start exam attempt'); }
 }
 
-export async function submitAnswer({ userId, attemptId, questionId, optionId }: SubmitAnswerProps) {
-  try {
+export async function submitAnswer({ userId, attemptId, questionId, optionId }: SubmitAnswerProps) { try {
     // Verify the attempt belongs to the user and is active
     const attempt = await db.examAttempt.findFirst({
       where: {
         id: attemptId,
         userId,
-        completedAt: null,
-      },
-      include: {
-        exam: {
+        completedAt: null, },
+      include: { exam: {
           select: {
-            timeLimit: true,
-          },
+            timeLimit: true, },
         },
       },
     });
@@ -242,18 +202,16 @@ export async function submitAnswer({ userId, attemptId, questionId, optionId }: 
       const timeElapsed = Math.floor(
         (Date.now() - attempt.startedAt.getTime()) / (1000 * 60)
       );
-      
+
       if (timeElapsed >= attempt.exam.timeLimit) {
         throw new Error('Exam time has expired');
       }
     }
 
     // Validate the option belongs to the question
-    const option = await db.option.findFirst({
-      where: {
+    const option = await db.option.findFirst({ where: {
         id: optionId,
-        questionId: questionId,
-      },
+        questionId: questionId, },
     });
 
     if (!option) {
@@ -261,79 +219,61 @@ export async function submitAnswer({ userId, attemptId, questionId, optionId }: 
     }
 
     // Calculate points earned
-    const examQuestion = await db.examQuestion.findFirst({
-      where: {
+    const examQuestion = await db.examQuestion.findFirst({ where: {
         examId: attempt.examId,
-        questionId: questionId,
-      },
+        questionId: questionId, },
     });
 
     const pointsEarned = option.isCorrect ? (examQuestion?.points || 1) : 0;
 
     // Check if there's an existing answer for this question
-    const existingAnswer = await db.questionAttempt.findFirst({
-      where: {
+    const existingAnswer = await db.questionAttempt.findFirst({ where: {
         examAttemptId: attemptId,
-        questionId,
-      },
+        questionId, },
     });
 
-    if (existingAnswer) {
-      // Update existing answer
+    if (existingAnswer) { // Update existing answer
       return await db.questionAttempt.update({
         where: {
-          id: existingAnswer.id,
-        },
-        data: {
-          selectedOptionId: optionId,
+          id: existingAnswer.id, },
+        data: { selectedOptionId: optionId,
           isCorrect: option.isCorrect,
           pointsEarned,
-          answeredAt: new Date(),
-        },
+          answeredAt: new Date(), },
       });
     }
 
     // Create new answer
-    return await db.questionAttempt.create({
-      data: {
+    return await db.questionAttempt.create({ data: {
         examAttemptId: attemptId,
         questionId,
         selectedOptionId: optionId,
         isCorrect: option.isCorrect,
         pointsEarned,
-        answeredAt: new Date(),
-      },
+        answeredAt: new Date(), },
     });
-  } catch (error) {
-    console.error('[SUBMIT_ANSWER_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to submit answer');
-  }
+  } catch (error) { console.error('[SUBMIT_ANSWER_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to submit answer'); }
 }
 
-export async function completeExam({ userId, attemptId }: CompleteExamProps) {
-  try {
+export async function completeExam({ userId, attemptId }: CompleteExamProps) { try {
     // Verify the attempt belongs to the user and is active
     const attempt = await db.examAttempt.findFirst({
       where: {
         id: attemptId,
         userId,
-        completedAt: null,
-      },
-      include: {
-        exam: {
+        completedAt: null, },
+      include: { exam: {
           include: {
             examQuestions: {
               include: {
-                question: true,
-              },
+                question: true, },
             },
           },
         },
-        questionAttempts: {
-          include: {
+        questionAttempts: { include: {
             question: true,
-            selectedOption: true,
-          },
+            selectedOption: true, },
         },
       },
     });
@@ -348,7 +288,7 @@ export async function completeExam({ userId, attemptId }: CompleteExamProps) {
     );
 
     // Check if timed out
-    const isTimedOut = attempt.exam.timeLimit 
+    const isTimedOut = attempt.exam.timeLimit
       ? timeSpent >= attempt.exam.timeLimit
       : false;
 
@@ -356,49 +296,37 @@ export async function completeExam({ userId, attemptId }: CompleteExamProps) {
     const scoreData = await calculateExamScore(attemptId);
 
     // Complete the attempt
-    const completedAttempt = await db.examAttempt.update({
-      where: {
-        id: attemptId,
-      },
-      data: {
-        completedAt: new Date(),
+    const completedAttempt = await db.examAttempt.update({ where: {
+        id: attemptId, },
+      data: { completedAt: new Date(),
         submittedAt: new Date(),
         score: scoreData.score,
         totalPoints: scoreData.totalPoints,
         maxPoints: scoreData.maxPoints,
         isPassed: scoreData.isPassed,
         timeSpent,
-        isTimedOut,
-      },
-      include: {
-        questionAttempts: {
+        isTimedOut, },
+      include: { questionAttempts: {
           include: {
             question: {
               include: {
                 options: true,
-                passage: true,
-              },
+                passage: true, },
             },
             selectedOption: true,
           },
-          orderBy: {
-            createdAt: 'asc',
-          },
+          orderBy: { createdAt: 'asc', },
         },
-        exam: {
-          include: {
+        exam: { include: {
             examQuestions: {
               include: {
                 question: {
                   include: {
                     options: true,
-                    passage: true,
-                  },
+                    passage: true, },
                 },
               },
-              orderBy: {
-                position: 'asc',
-              },
+              orderBy: { position: 'asc', },
             },
           },
         },
@@ -406,54 +334,40 @@ export async function completeExam({ userId, attemptId }: CompleteExamProps) {
     });
 
     return completedAttempt;
-  } catch (error) {
-    console.error('[COMPLETE_EXAM_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to complete exam');
-  }
+  } catch (error) { console.error('[COMPLETE_EXAM_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to complete exam'); }
 }
 
-export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps) {
-  try {
+export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps) { try {
     const attempt = await db.examAttempt.findUnique({
       where: {
         id: attemptId,
-        userId,
-      },
-      include: {
-        exam: {
+        userId, },
+      include: { exam: {
           include: {
             examQuestions: {
               include: {
                 question: {
                   include: {
                     options: true,
-                    passage: true,
-                  },
+                    passage: true, },
                 },
               },
-              orderBy: {
-                position: 'asc',
-              },
+              orderBy: { position: 'asc', },
             },
-            course: {
-              select: {
-                title: true,
-              },
+            course: { select: {
+                title: true, },
             },
-            chapter: {
-              select: {
-                title: true,
-              },
+            chapter: { select: {
+                title: true, },
             },
           },
         },
-        questionAttempts: {
-          include: {
+        questionAttempts: { include: {
             question: {
               include: {
                 options: true,
-                passage: true,
-              },
+                passage: true, },
             },
             selectedOption: true,
           },
@@ -466,11 +380,10 @@ export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps)
     }
 
     // Check if attempt should be auto-completed due to timeout
-    if (!attempt.completedAt && attempt.exam.timeLimit) {
-      const timeElapsed = Math.floor(
+    if (!attempt.completedAt && attempt.exam.timeLimit) { const timeElapsed = Math.floor(
         (Date.now() - attempt.startedAt.getTime()) / (1000 * 60)
       );
-      
+
       if (timeElapsed >= attempt.exam.timeLimit) {
         // Auto-complete the attempt
         return await completeExam({ userId, attemptId });
@@ -478,24 +391,18 @@ export async function getExamAttempt({ userId, attemptId }: GetExamAttemptProps)
     }
 
     return attempt;
-  } catch (error) {
-    console.error('[GET_EXAM_ATTEMPT_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to get exam attempt');
-  }
+  } catch (error) { console.error('[GET_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to get exam attempt'); }
 }
 
-export async function getExamStatistics({ userId, examId }: GetExamStatisticsProps) {
-  try {
+export async function getExamStatistics({ userId, examId }: GetExamStatisticsProps) { try {
     // Verify exam exists and user has access (teacher check should be done in API)
     const exam = await db.exam.findUnique({
       where: {
-        id: examId,
-      },
-      include: {
-        examQuestions: {
+        id: examId, },
+      include: { examQuestions: {
           include: {
-            question: true,
-          },
+            question: true, },
         },
       },
     });
@@ -505,29 +412,22 @@ export async function getExamStatistics({ userId, examId }: GetExamStatisticsPro
     }
 
     // Get all completed attempts for this exam
-    const attempts = await db.examAttempt.findMany({
-      where: {
+    const attempts = await db.examAttempt.findMany({ where: {
         examId,
         completedAt: {
-          not: null,
-        },
+          not: null, },
       },
-      include: {
-        questionAttempts: {
+      include: { questionAttempts: {
           include: {
-            question: true,
-          },
+            question: true, },
         },
       },
-      orderBy: {
-        completedAt: 'desc',
-      },
+      orderBy: { completedAt: 'desc', },
     });
 
     const totalAttempts = attempts.length;
 
-    if (totalAttempts === 0) {
-      return {
+    if (totalAttempts === 0) { return {
         totalAttempts: 0,
         averageScore: 0,
         highestScore: 0,
@@ -536,8 +436,7 @@ export async function getExamStatistics({ userId, examId }: GetExamStatisticsPro
         averageTimeSpent: 0,
         questionStats: [],
         studentResults: [],
-        recentAttempts: [],
-      };
+        recentAttempts: [], };
     }
 
     // Calculate basic statistics
@@ -549,66 +448,57 @@ export async function getExamStatistics({ userId, examId }: GetExamStatisticsPro
     const lowestScore = Math.min(...scores);
     const passCount = attempts.filter(attempt => attempt.isPassed).length;
     const passRate = Math.round((passCount / totalAttempts) * 100);
-    const averageTimeSpent = timeSpents.length > 0 
+    const averageTimeSpent = timeSpents.length > 0
       ? Math.round(timeSpents.reduce((sum, time) => sum + time, 0) / timeSpents.length)
       : 0;
 
     // Question-specific statistics
     const questionStats = await Promise.all(
-      exam.examQuestions.map(async (examQuestion) => {
-        const questionAttempts = await db.questionAttempt.count({
+      exam.examQuestions.map(async (examQuestion) => { const questionAttempts = await db.questionAttempt.count({
           where: {
             questionId: examQuestion.questionId,
             examAttempt: {
               examId: examId,
               completedAt: {
-                not: null,
-              },
+                not: null, },
             },
           },
         });
 
-        const correctAnswers = await db.questionAttempt.count({
-          where: {
+        const correctAnswers = await db.questionAttempt.count({ where: {
             questionId: examQuestion.questionId,
             isCorrect: true,
             examAttempt: {
               examId: examId,
               completedAt: {
-                not: null,
-              },
+                not: null, },
             },
           },
         });
 
-        const correctRate = questionAttempts > 0 
-          ? Math.round((correctAnswers / questionAttempts) * 100) 
+        const correctRate = questionAttempts > 0
+          ? Math.round((correctAnswers / questionAttempts) * 100)
           : 0;
 
-        return {
-          questionId: examQuestion.questionId,
+        return { questionId: examQuestion.questionId,
           text: examQuestion.question.text.substring(0, 100) + '...',
           correctRate,
           attemptCount: questionAttempts,
           difficulty: examQuestion.question.difficulty,
-          points: examQuestion.points,
-        };
+          points: examQuestion.points, };
       })
     );
 
     // Recent attempts for activity feed
-    const recentAttempts = attempts.slice(0, 10).map(attempt => ({
-      id: attempt.id,
+    const recentAttempts = attempts.slice(0, 10).map(attempt => ({ id: attempt.id,
         userId: attempt.userId,
       score: attempt.score,
       isPassed: attempt.isPassed,
       timeSpent: attempt.timeSpent,
       completedAt: attempt.completedAt,
-      isTimedOut: attempt.isTimedOut,
-    }));
+      isTimedOut: attempt.isTimedOut, }));
 
-    return {
-      totalAttempts,
+    return { totalAttempts,
       averageScore,
       highestScore,
       lowestScore,
@@ -622,45 +512,36 @@ export async function getExamStatistics({ userId, examId }: GetExamStatisticsPro
         timeSpent: attempt.timeSpent,
         completedAt: attempt.completedAt,
         correctAnswers: attempt.questionAttempts.filter(qa => qa.isCorrect).length,
-        totalQuestions: exam.examQuestions.length,
-      })),
+        totalQuestions: exam.examQuestions.length, })),
       recentAttempts,
     };
-  } catch (error) {
-    console.error('[GET_EXAM_STATISTICS_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to get exam statistics');
-  }
+  } catch (error) { console.error('[GET_EXAM_STATISTICS_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to get exam statistics'); }
 }
 
-export async function resumeExamAttempt({ userId, examId }: ResumeExamAttemptProps) {
-  try {
+export async function resumeExamAttempt({ userId, examId }: ResumeExamAttemptProps) { try {
     // Find the active attempt
     const activeAttempt = await db.examAttempt.findFirst({
       where: {
         userId,
         examId,
-        completedAt: null,
-      },
-      include: {
-        exam: {
+        completedAt: null, },
+      include: { exam: {
           select: {
-            timeLimit: true,
-          },
+            timeLimit: true, },
         },
       },
     });
 
     // If there's no active attempt, start a new one
-    if (!activeAttempt) {
-      return await startExamAttempt({ userId, examId });
+    if (!activeAttempt) { return await startExamAttempt({ userId, examId });
     }
 
     // Check if the attempt has timed out
-    if (activeAttempt.exam.timeLimit) {
-      const timeElapsed = Math.floor(
+    if (activeAttempt.exam.timeLimit) { const timeElapsed = Math.floor(
         (Date.now() - activeAttempt.startedAt.getTime()) / (1000 * 60)
       );
-      
+
       if (timeElapsed >= activeAttempt.exam.timeLimit) {
         // Auto-complete the timed-out attempt and start a new one
         await completeExam({ userId, attemptId: activeAttempt.id });
@@ -669,51 +550,39 @@ export async function resumeExamAttempt({ userId, examId }: ResumeExamAttemptPro
     }
 
     return activeAttempt;
-  } catch (error) {
-    console.error('[RESUME_EXAM_ATTEMPT_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to resume exam attempt');
-  }
+  } catch (error) { console.error('[RESUME_EXAM_ATTEMPT_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to resume exam attempt'); }
 }
 
-export async function getExams({ userId, examId, courseId }: GetExamsProps) {
-  try {
+export async function getExams({ userId, examId, courseId }: GetExamsProps) { try {
     // If examId is provided, get a specific exam
     if (examId) {
       const exam = await db.exam.findFirst({
         where: {
           id: examId,
-          isPublished: true,
-        },
-        include: {
-          examQuestions: {
+          isPublished: true, },
+        include: { examQuestions: {
             include: {
               question: {
                 include: {
                   options: {
                     select: {
                       id: true,
-                      text: true,
-                    },
+                      text: true, },
                   },
                   passage: true,
                 },
               },
             },
-            orderBy: {
-              position: 'asc',
-            },
+            orderBy: { position: 'asc', },
           },
-          course: {
-            select: {
+          course: { select: {
               id: true,
-              title: true,
-            },
+              title: true, },
           },
-          chapter: {
-            select: {
+          chapter: { select: {
               id: true,
-              title: true,
-            },
+              title: true, },
           },
         },
       });
@@ -723,95 +592,69 @@ export async function getExams({ userId, examId, courseId }: GetExamsProps) {
       }
 
       // Get active attempt if exists
-      const activeAttempt = await db.examAttempt.findFirst({
-        where: {
+      const activeAttempt = await db.examAttempt.findFirst({ where: {
           userId,
           examId,
-          completedAt: null,
-        },
-        orderBy: {
-          startedAt: 'desc',
-        },
+          completedAt: null, },
+        orderBy: { startedAt: 'desc', },
       });
 
       // Get past attempts
-      const pastAttempts = await db.examAttempt.findMany({
-        where: {
+      const pastAttempts = await db.examAttempt.findMany({ where: {
           userId,
           examId,
           completedAt: {
-            not: null,
-          },
+            not: null, },
         },
-        orderBy: {
-          completedAt: 'desc',
-        },
+        orderBy: { completedAt: 'desc', },
         take: 10, // Limit to recent attempts
       });
 
-      return {
-        exam,
+      return { exam,
         activeAttempt,
-        pastAttempts,
-      };
+        pastAttempts, };
     }
 
     // Get all exams for a course or all accessible exams
-    const where: Prisma.ExamWhereInput = {
-      isPublished: true,
-    };
+    const where: Prisma.ExamWhereInput = { isPublished: true, };
 
     if (courseId) {
       where.courseId = courseId;
     }
 
-    const exams = await db.exam.findMany({
-      where,
+    const exams = await db.exam.findMany({ where,
       include: {
         _count: {
           select: {
-            examQuestions: true,
-          },
+            examQuestions: true, },
         },
-        course: {
-          select: {
+        course: { select: {
             id: true,
-            title: true,
-          },
+            title: true, },
         },
-        chapter: {
-          select: {
+        chapter: { select: {
             id: true,
-            title: true,
-          },
+            title: true, },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc', },
     });
 
     return { exams };
-  } catch (error) {
-    console.error('[GET_EXAMS_ERROR]', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to get exams');
-  }
+  } catch (error) { console.error('[GET_EXAMS_ERROR]', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to get exams'); }
 }
 
 // Additional utility functions
-export async function getExamProgress(userId: string, examId: string) {
-  try {
+export async function getExamProgress(userId: string, examId: string) { try {
     const activeAttempt = await db.examAttempt.findFirst({
       where: {
         userId,
         examId,
-        completedAt: null,
-      },
-      include: {
-        exam: {
+        completedAt: null, },
+      include: { exam: {
           include: {
-            examQuestions: true,
-          },
+            examQuestions: true, },
         },
         questionAttempts: true,
       },
@@ -825,63 +668,50 @@ export async function getExamProgress(userId: string, examId: string) {
     const answeredQuestions = activeAttempt.questionAttempts.length;
     const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
 
-    return {
-      attemptId: activeAttempt.id,
+    return { attemptId: activeAttempt.id,
       totalQuestions,
       answeredQuestions,
       progress: Math.round(progress),
       startedAt: activeAttempt.startedAt,
-      timeLimit: activeAttempt.exam.timeLimit,
-    };
-  } catch (error) {
-    console.error('[GET_EXAM_PROGRESS_ERROR]', error);
-    return null;
-  }
+      timeLimit: activeAttempt.exam.timeLimit, };
+  } catch (error) { console.error('[GET_EXAM_PROGRESS_ERROR]', error);
+    return null; }
 }
 
-export async function validateExamAttempt(userId: string, attemptId: string) {
-  try {
+export async function validateExamAttempt(userId: string, attemptId: string) { try {
     const attempt = await db.examAttempt.findFirst({
       where: {
         id: attemptId,
-        userId,
-      },
-      include: {
-        exam: {
+        userId, },
+      include: { exam: {
           select: {
             timeLimit: true,
-            isPublished: true,
-          },
+            isPublished: true, },
         },
       },
     });
 
-    if (!attempt) {
-      return { valid: false, reason: 'Attempt not found' };
+    if (!attempt) { return { valid: false, reason: 'Attempt not found' };
     }
 
-    if (!attempt.exam.isPublished) {
-      return { valid: false, reason: 'Exam is not published' };
+    if (!attempt.exam.isPublished) { return { valid: false, reason: 'Exam is not published' };
     }
 
-    if (attempt.completedAt) {
-      return { valid: false, reason: 'Attempt already completed' };
+    if (attempt.completedAt) { return { valid: false, reason: 'Attempt already completed' };
     }
 
     // Check timeout
-    if (attempt.exam.timeLimit) {
-      const timeElapsed = Math.floor(
+    if (attempt.exam.timeLimit) { const timeElapsed = Math.floor(
         (Date.now() - attempt.startedAt.getTime()) / (1000 * 60)
       );
-      
+
       if (timeElapsed >= attempt.exam.timeLimit) {
         return { valid: false, reason: 'Time limit exceeded' };
       }
     }
 
     return { valid: true };
-  } catch (error) {
-    console.error('[VALIDATE_EXAM_ATTEMPT_ERROR]', error);
+  } catch (error) { console.error('[VALIDATE_EXAM_ATTEMPT_ERROR]', error);
     return { valid: false, reason: 'Validation failed' };
   }
 }

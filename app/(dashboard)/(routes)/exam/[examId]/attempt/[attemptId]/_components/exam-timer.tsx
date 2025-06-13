@@ -7,15 +7,12 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { formatTime } from '@/lib/utils';
 
-interface ExamTimerProps {
-  timeLimit: number;
+interface ExamTimerProps { timeLimit: number;
   startedAt: string;
   attemptId: string;
-  examId: string;
-}
+  examId: string; }
 
-export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimerProps) => {
-  const router = useRouter();
+export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimerProps) => { const router = useRouter();
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isWarning, setIsWarning] = useState(false);
   const [isAlmostTimeUp, setIsAlmostTimeUp] = useState(false);
@@ -25,15 +22,14 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
   // Ensure we're on the client side before showing time
   useEffect(() => {
     setIsClient(true);
-    
+
     // Add debug information
     const startTime = new Date(startedAt);
     const now = new Date();
-    setDebugInfo(`Start: ${startTime.toLocaleTimeString()}, Now: ${now.toLocaleTimeString()}, Limit: ${timeLimit}min`);
+    setDebugInfo(`Start: ${startTime.toLocaleTimeString() }, Now: ${now.toLocaleTimeString()}, Limit: ${timeLimit}min`);
   }, [startedAt, timeLimit]);
 
-  useEffect(() => {
-    if (!isClient) return;
+  useEffect(() => { if (!isClient) return;
 
     // Validate inputs
     if (!startedAt || !timeLimit || timeLimit <= 0) {
@@ -49,20 +45,17 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
     const initialTimeLeft = Math.max(0, endTime - now);
 
     // Debug logging
-    console.log('Timer Debug:', {
-      startedAt,
+    console.log('Timer Debug:', { startedAt,
       startTime: new Date(startTime).toLocaleString(),
       now: new Date(now).toLocaleString(),
       endTime: new Date(endTime).toLocaleString(),
       timeLimit,
       initialTimeLeft,
-      initialTimeLeftMinutes: Math.floor(initialTimeLeft / 60000),
-    });
+      initialTimeLeftMinutes: Math.floor(initialTimeLeft / 60000), });
 
     // If time has already expired, redirect immediately
-    if (initialTimeLeft <= 0) {
-      console.log('Time already expired, redirecting...');
-      router.push(`/exam/${examId}/attempt/${attemptId}/submit`);
+    if (initialTimeLeft <= 0) { console.log('Time already expired, redirecting...');
+      router.push(`/exam/${examId }/attempt/${attemptId}/submit`);
       return;
     }
 
@@ -77,11 +70,10 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
 
     // If we've stored the timer before, use that end time
     // otherwise, use the calculated end time and store it
-    if (storedTimer) {
-      try {
+    if (storedTimer) { try {
         const parsed = JSON.parse(storedTimer);
         timerEndTime = parsed.endTime;
-        
+
         // Validate stored time - if it's too far off, recalculate
         const timeDiff = Math.abs(timerEndTime - endTime);
         if (timeDiff > 60000) { // More than 1 minute difference
@@ -92,35 +84,29 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
             JSON.stringify({
               endTime,
               timeLimit,
-              startedAt,
-            }),
+              startedAt, }),
           );
         }
-      } catch (error) {
-        console.error('Error parsing stored timer:', error);
+      } catch (error) { console.error('Error parsing stored timer:', error);
         timerEndTime = endTime;
         localStorage.setItem(
           storedTimerKey,
           JSON.stringify({
             endTime,
             timeLimit,
-            startedAt,
-          }),
+            startedAt, }),
         );
       }
-    } else {
-      localStorage.setItem(
+    } else { localStorage.setItem(
         storedTimerKey,
         JSON.stringify({
           endTime,
           timeLimit,
-          startedAt,
-        }),
+          startedAt, }),
       );
     }
 
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
+    const timer = setInterval(() => { const now = new Date().getTime();
       const remaining = Math.max(0, timerEndTime - now);
 
       if (remaining <= 0) {
@@ -129,7 +115,7 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
         localStorage.removeItem(storedTimerKey);
         // Auto-submit when time is up
         console.log('Timer expired, auto-submitting...');
-        router.push(`/exam/${examId}/attempt/${attemptId}/submit`);
+        router.push(`/exam/${examId }/attempt/${attemptId}/submit`);
         return;
       }
 
@@ -142,13 +128,9 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
         // Show a toast notification (only once per session)
         if (!document.hidden && !sessionStorage.getItem(`timer_alert_${attemptId}`)) {
           sessionStorage.setItem(`timer_alert_${attemptId}`, 'shown');
-          try {
-          const notification = new Audio('/sounds/timer-alert.mp3');
+          try { const notification = new Audio('/sounds/timer-alert.mp3');
           notification.volume = 0.5;
-          notification.play().catch((e) => console.error('Error playing sound', e));
-          } catch (error) {
-            console.error('Error with audio notification:', error);
-          }
+          notification.play().catch((e) => console.error('Error playing sound', e)); } catch (error) { console.error('Error with audio notification:', error); }
         }
       } else if (remaining <= 5 * 60 * 1000) {
         // 5 minutes
@@ -160,8 +142,7 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
   }, [timeLimit, startedAt, attemptId, examId, router, isClient]);
 
   // Don't render on server or while loading on client
-  if (!isClient || timeLeft === null) {
-    return (
+  if (!isClient || timeLeft === null) { return (
       <div className="space-y-2">
         <Card className="p-4">
           <div className="flex items-center justify-between">
@@ -174,60 +155,56 @@ export const ExamTimer = ({ timeLimit, startedAt, attemptId, examId }: ExamTimer
           </div>
         </Card>
       </div>
-    );
-  }
+    ); }
 
   return (
     <div className="space-y-2">
       <Card
-        className={`p-4 transition-colors ${
+        className={ `p-4 transition-colors ${
           isAlmostTimeUp
             ? 'animate-pulse border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950/50'
             : isWarning
               ? 'border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/50'
-              : ''
-        }`}
+              : '' }`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Clock
-              className={`ml-2 h-5 w-5 ${
+              className={ `ml-2 h-5 w-5 ${
                 isAlmostTimeUp
                   ? 'text-red-500 dark:text-red-400'
                   : isWarning
                     ? 'text-amber-500 dark:text-amber-400'
-                    : 'text-primary'
-              }`}
+                    : 'text-primary' }`}
             />
             <div
-              className={`text-right text-lg font-medium ${
+              className={ `text-right text-lg font-medium ${
                 isAlmostTimeUp
                   ? 'text-red-600 dark:text-red-400'
                   : isWarning
                     ? 'text-amber-600 dark:text-amber-400'
-                    : ''
-              }`}
+                    : '' }`}
             >
               الوقت المتبقي: {formatTime(timeLeft)}
             </div>
           </div>
         </div>
-        
+
         {/* Debug info - only show in development */}
-        {process.env.NODE_ENV === 'development' && debugInfo && (
+        { process.env.NODE_ENV === 'development' && debugInfo && (
           <div className="mt-2 text-xs text-gray-500 border-t pt-2">
-            Debug: {debugInfo}
+            Debug: {debugInfo }
           </div>
         )}
       </Card>
 
-      {isWarning && (
-        <Alert variant={isAlmostTimeUp ? 'destructive' : 'default'} className="animate-pulse">
+      { isWarning && (
+        <Alert variant={isAlmostTimeUp ? 'destructive' : 'default' } className="animate-pulse">
           <AlertTriangle className="ml-2 h-4 w-4" />
           <AlertDescription className="text-right">
-            {isAlmostTimeUp
+            { isAlmostTimeUp
               ? 'أقل من دقيقة متبقية! سيتم تسليم الامتحان تلقائياً.'
-              : 'فاضل أقل من 5 دقايق! لو سمحت احفظ إجاباتك بسرعة.'}
+              : 'فاضل أقل من 5 دقايق! لو سمحت احفظ إجاباتك بسرعة.' }
           </AlertDescription>
         </Alert>
       )}

@@ -11,59 +11,44 @@ export async function POST(
 
     const { questions } = await req.json();
 
-    if (!Array.isArray(questions) || questions.length === 0) {
-      return new NextResponse('Questions array is required', { status: 400 });
+    if (!Array.isArray(questions) || questions.length === 0) { return new NextResponse('Questions array is required', { status: 400 });
     }
 
     // Get the quiz for this chapter
-    const quiz = await db.quiz.findFirst({
-      where: {
-        chapterId: params.chapterId,
-      },
+    const quiz = await db.quiz.findFirst({ where: {
+        chapterId: params.chapterId, },
     });
 
-    if (!quiz) {
-      return new NextResponse('Quiz not found', { status: 404 });
+    if (!quiz) { return new NextResponse('Quiz not found', { status: 404 });
     }
 
     // Create question bank if it doesn't exist
-    let questionBank = await db.questionBank.findFirst({
-      where: {
+    let questionBank = await db.questionBank.findFirst({ where: {
         courseId: params.courseId,
-        chapterId: params.chapterId,
-      },
+        chapterId: params.chapterId, },
     });
 
-    if (!questionBank) {
-      questionBank = await db.questionBank.create({
+    if (!questionBank) { questionBank = await db.questionBank.create({
         data: {
           title: `Chapter Questions`,
           description: `Questions for chapter quiz`,
           courseId: params.courseId,
-          chapterId: params.chapterId,
-        },
+          chapterId: params.chapterId, },
       });
     }
 
     // Get the current max position for questions in this quiz
-    const maxPosition = await db.quizQuestion.findFirst({
-      where: {
-        quizId: quiz.id,
-      },
-      orderBy: {
-        position: 'desc',
-      },
-      select: {
-        position: true,
-      },
+    const maxPosition = await db.quizQuestion.findFirst({ where: {
+        quizId: quiz.id, },
+      orderBy: { position: 'desc', },
+      select: { position: true, },
     });
 
     const startPosition = (maxPosition?.position || 0) + 1;
 
     const createdQuestions = [];
 
-    for (let i = 0; i < questions.length; i++) {
-      const questionData = questions[i];
+    for (let i = 0; i < questions.length; i++) { const questionData = questions[i];
 
       // Create the question
       const question = await db.question.create({
@@ -77,30 +62,24 @@ export async function POST(
           options: {
             create: questionData.options.map((option: any) => ({
               text: option.text,
-              isCorrect: option.isCorrect,
-            })),
+              isCorrect: option.isCorrect, })),
           },
         },
-        include: {
-          options: true,
-        },
+        include: { options: true, },
       });
 
       // Add question to quiz
-      await db.quizQuestion.create({
-        data: {
+      await db.quizQuestion.create({ data: {
           quizId: quiz.id,
           questionId: question.id,
-          position: startPosition + i,
-        },
+          position: startPosition + i, },
       });
 
       createdQuestions.push(question);
     }
 
     return NextResponse.json({ questions: createdQuestions });
-  } catch (error) {
-    console.error('[QUIZ_QUESTIONS_POST]', error);
+  } catch (error) { console.error('[QUIZ_QUESTIONS_POST]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
-} 
+}

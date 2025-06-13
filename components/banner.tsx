@@ -5,32 +5,24 @@ import { cn } from '@/lib/utils';
 
 const bannerVariants = cva(
   'border text-center p-4 text-sm flex items-center w-full rounded-xl backdrop-blur-xl font-arabic transition-all duration-300 shadow-lg',
-  {
-    variants: {
+  { variants: {
       variant: {
         warning: 'bg-yellow-100/80 border-yellow-200/70 text-yellow-800 dark:bg-yellow-500/20 dark:border-yellow-400/30 dark:text-yellow-300',
         success: 'bg-emerald-100/80 border-emerald-200/70 text-emerald-800 dark:bg-emerald-500/20 dark:border-emerald-400/30 dark:text-emerald-300',
         error: 'bg-red-100/80 border-red-200/70 text-red-800 dark:bg-red-500/20 dark:border-red-400/30 dark:text-red-300',
-        info: 'bg-blue-100/80 border-blue-200/70 text-blue-800 dark:bg-blue-500/20 dark:border-blue-400/30 dark:text-blue-300',
-      },
+        info: 'bg-blue-100/80 border-blue-200/70 text-blue-800 dark:bg-blue-500/20 dark:border-blue-400/30 dark:text-blue-300', },
     },
-    defaultVariants: {
-      variant: 'warning',
-    },
+    defaultVariants: { variant: 'warning', },
   }
 );
 
-interface BannerProps extends VariantProps<typeof bannerVariants> {
-  label: string;
-  onDismiss?: () => void;
-}
+interface BannerProps extends VariantProps<typeof bannerVariants> { label: string;
+  onDismiss?: () => void; }
 
-const iconMap = {
-  warning: AlertTriangle,
+const iconMap = { warning: AlertTriangle,
   success: CheckCircleIcon,
   error: AlertTriangle,
-  info: Info,
-};
+  info: Info, };
 
 export const Banner = ({ label, variant, onDismiss }: BannerProps) => {
   const Icon = iconMap[variant || 'warning'];

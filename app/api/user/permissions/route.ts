@@ -4,8 +4,7 @@ import { getUserPermissions } from '@/lib/user';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
-  try {
+export async function GET(req: NextRequest) { try {
     // Try to get cached permissions first
     const userWithPermissions = await getCurrentUserWithPermissions();
 
@@ -26,8 +25,7 @@ export async function GET(req: NextRequest) {
     const permissions = await getUserPermissions();
 
     return NextResponse.json(permissions);
-  } catch (error) {
-    console.log('[USER_PERMISSIONS]', error);
+  } catch (error) { console.log('[USER_PERMISSIONS]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

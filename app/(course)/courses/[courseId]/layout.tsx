@@ -5,21 +5,16 @@ import CourseNavbar from './_components/course-navbar';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
 
-export default async function CourseLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
+export default async function CourseLayout({ children,
+  params, }: { children: React.ReactNode;
   params: { courseId: string };
 }) {
   const {session} = await requireAuth();
   if (!session) {
     return redirect('/');
   }
-  const course = await db.course.findUnique({
-    where: { id: params.courseId },
-    include: {
-      chapters: {
+  const course = await db.course.findUnique({ where: { id: params.courseId },
+    include: { chapters: {
         where: { isPublished: true },
         include: { userProgress: { where: { userId: session.userId } } },
         orderBy: { position: 'asc' },

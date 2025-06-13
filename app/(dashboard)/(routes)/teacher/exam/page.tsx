@@ -2,8 +2,7 @@ import { requireTeacher } from '@/lib/auth-helpers';
 
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import {
-  Plus,
+import { Plus,
   Clock,
   File,
   FileQuestion,
@@ -12,23 +11,19 @@ import {
   ChevronRight,
   BookOpen,
   Users,
-  BarChart3,
-} from 'lucide-react';
+  BarChart3, } from 'lucide-react';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger, } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { IconBadge } from '@/components/icon-badge';
 import { cn } from '@/lib/utils';
 
-export default async function TeacherExamPage() {
-  const user = await requireTeacher();
+export default async function TeacherExamPage() { const user = await requireTeacher();
 
   // Get all courses created by this teacher
   const courses = await db.course.findMany({
@@ -41,16 +36,12 @@ export default async function TeacherExamPage() {
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: { createdAt: 'desc', },
   });
 
   // Group exams by course
-  const coursesWithExams = courses.map((course) => ({
-    ...course,
-    examCount: course.exams.length,
-  }));
+  const coursesWithExams = courses.map((course) => ({ ...course,
+    examCount: course.exams.length, }));
 
   const totalExams = courses.reduce((acc, course) => acc + course.exams.length, 0);
   const publishedExams = courses.reduce(
@@ -65,11 +56,11 @@ export default async function TeacherExamPage() {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/10 to-primary/10 blur-3xl"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-secondary/10 to-accent/10 blur-3xl"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
       </div>
 
@@ -123,7 +114,7 @@ export default async function TeacherExamPage() {
           <CardContent className="relative">
             <div className="text-2xl font-bold text-foreground font-arabic">{publishedExams}</div>
             <p className="mt-1 text-xs text-muted-foreground font-arabic">
-              {totalExams > 0 ? Math.round((publishedExams / totalExams) * 100) : 0}% معدل النشر
+              { totalExams > 0 ? Math.round((publishedExams / totalExams) * 100) : 0 }% معدل النشر
             </p>
           </CardContent>
         </Card>
@@ -147,7 +138,7 @@ export default async function TeacherExamPage() {
       </div>
 
       <div className="relative z-10 space-y-8">
-        {coursesWithExams.length === 0 && (
+        { coursesWithExams.length === 0 && (
           <Card className="group border-dashed border-primary/20 bg-gradient-to-br from-card/60 via-card/40 to-muted/20 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5">
             <CardContent className="flex h-60 flex-col items-center justify-center p-8 text-center">
               <div className="rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 p-8 backdrop-blur-sm border border-primary/10">
@@ -165,7 +156,7 @@ export default async function TeacherExamPage() {
               </Button>
             </CardContent>
           </Card>
-        )}
+        ) }
 
         {coursesWithExams.map((course) => (
           <div key={course.id} className="space-y-6">
@@ -181,7 +172,7 @@ export default async function TeacherExamPage() {
                     <div>
                       <h2 className="text-xl font-semibold text-foreground font-arabic">{course.title}</h2>
                       <p className="text-sm text-muted-foreground font-arabic">
-                        {course.examCount} اختبار • {course.isPublished ? 'منشورة' : 'مسودة'}
+                        {course.examCount} اختبار • { course.isPublished ? 'منشورة' : 'مسودة' }
                       </p>
                     </div>
                   </div>
@@ -195,13 +186,13 @@ export default async function TeacherExamPage() {
               </CardHeader>
             </Card>
 
-            {course.examCount === 0 ? (
+            { course.examCount === 0 ? (
               <Card className="group border-dashed border-muted/40 bg-gradient-to-br from-muted/20 via-card/30 to-transparent backdrop-blur-xl transition-all duration-300 hover:shadow-xl">
                 <CardContent className="flex h-32 flex-col items-center justify-center p-6 text-center">
                   <FileQuestion className="mb-2 h-8 w-8 text-muted-foreground" />
                   <p className="mb-3 text-sm text-muted-foreground font-arabic">لم يتم إنشاء أي اختبارات لهذه الدورة بعد.</p>
                   <Button variant="outline" size="sm" asChild className="hover:bg-primary/10 backdrop-blur-sm border-primary/20 font-arabic">
-                    <Link href={`/teacher/exam/create?courseId=${course.id}`}>
+                    <Link href={`/teacher/exam/create?courseId=${course.id }`}>
                       <Plus className="ml-2 h-4 w-4" />
                       إنشاء اختبار
                     </Link>
@@ -210,14 +201,14 @@ export default async function TeacherExamPage() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {course.exams.slice(0, 6).map((exam) => (
+                { course.exams.slice(0, 6).map((exam) => (
                   <Card
-                    key={exam.id}
+                    key={exam.id }
                     className="group relative overflow-hidden bg-gradient-to-br from-card/80 via-card/60 to-muted/20 backdrop-blur-xl border border-border/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
+
                     <CardHeader className="relative overflow-hidden p-4">
                       <div className="absolute inset-0 bg-gradient-to-br from-muted/10 to-transparent" />
                       <div className="relative flex items-start justify-between">
@@ -258,8 +249,8 @@ export default async function TeacherExamPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <Badge variant={exam.isPublished ? 'default' : 'secondary'} className="text-xs font-arabic backdrop-blur-sm">
-                          {exam.isPublished ? 'منشور' : 'مسودة'}
+                        <Badge variant={ exam.isPublished ? 'default' : 'secondary' } className="text-xs font-arabic backdrop-blur-sm">
+                          { exam.isPublished ? 'منشور' : 'مسودة' }
                         </Badge>
                         <Button size="sm" variant="outline" asChild className="backdrop-blur-sm border-primary/20 hover:bg-primary/10 font-arabic">
                           <Link href={`/teacher/exam/${exam.id}`}>عرض</Link>
@@ -269,11 +260,11 @@ export default async function TeacherExamPage() {
                   </Card>
                 ))}
 
-                {course.exams.length > 6 && (
+                { course.exams.length > 6 && (
                   <Card className="group flex items-center justify-center border-dashed border-border/40 bg-gradient-to-br from-card/30 via-card/20 to-transparent backdrop-blur-xl transition-all duration-300 hover:bg-muted/30 hover:shadow-xl">
                     <CardContent className="p-8 text-center">
                       <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground backdrop-blur-sm font-arabic">
-                        <Link href={`/teacher/exam/course/${course.id}`}>
+                        <Link href={`/teacher/exam/course/${course.id }`}>
                           <Plus className="ml-2 h-4 w-4" />
                           عرض المزيد ({course.exams.length - 6})
                         </Link>
@@ -289,4 +280,3 @@ export default async function TeacherExamPage() {
     </div>
   );
 }
-

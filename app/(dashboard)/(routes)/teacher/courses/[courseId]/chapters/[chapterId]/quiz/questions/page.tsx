@@ -11,27 +11,21 @@ import { Banner } from '@/components/banner';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 
-interface PageProps {
-  params: {
+interface PageProps { params: {
     courseId: string;
-    chapterId: string;
-  };
+    chapterId: string; };
 }
 
-export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
-   requireAuth()
+export default async function ChapterQuizQuestionsPage({ params }: PageProps) { requireAuth()
 
   // Get chapter and quiz data
   const chapter = await db.chapter.findUnique({
     where: {
       id: params.chapterId,
-      courseId: params.courseId,
-    },
-    include: {
-      course: {
+      courseId: params.courseId, },
+    include: { course: {
         select: {
-          title: true,
-        },
+          title: true, },
       },
     },
   });
@@ -41,47 +35,36 @@ export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
   }
 
   // Get or create quiz for this chapter
-  let quiz = await db.quiz.findFirst({
-    where: {
-      chapterId: params.chapterId,
-    },
-    include: {
-      quizQuestions: {
+  let quiz = await db.quiz.findFirst({ where: {
+      chapterId: params.chapterId, },
+    include: { quizQuestions: {
         include: {
           question: {
             include: {
-              options: true,
-            },
+              options: true, },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
     },
   });
 
   // Create quiz if it doesn't exist
-  if (!quiz) {
-    quiz = await db.quiz.create({
+  if (!quiz) { quiz = await db.quiz.create({
       data: {
-        title: `${chapter.title} Quiz`,
+        title: `${chapter.title } Quiz`,
         chapterId: params.chapterId,
         requiredScore: 100,
         freeAttempts: -1,
       },
-      include: {
-        quizQuestions: {
+      include: { quizQuestions: {
           include: {
             question: {
               include: {
-                options: true,
-              },
+                options: true, },
             },
           },
-          orderBy: {
-            position: 'asc',
-          },
+          orderBy: { position: 'asc', },
         },
       },
     });
@@ -94,16 +77,16 @@ export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-purple-400/25 to-violet-400/15 blur-3xl dark:from-purple-400/40 dark:to-violet-400/25" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-indigo-400/25 to-blue-400/15 blur-3xl dark:from-indigo-400/40 dark:to-blue-400/25"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
       </div>
 
       <div className="relative z-10">
         {!quiz.isPublished && (
           <div className="p-4">
-            <Banner 
-              variant="warning" 
-              label="هذا الاختبار غير منشور. لن يكون مرئياً للطلاب" 
+            <Banner
+              variant="warning"
+              label="هذا الاختبار غير منشور. لن يكون مرئياً للطلاب"
             />
           </div>
         )}
@@ -197,7 +180,7 @@ export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
                   courseId={params.courseId}
                   chapterId={params.chapterId}
                   quizId={quiz.id}
-                  questions={quiz.quizQuestions
+                  questions={ quiz.quizQuestions
                     .filter(q => q.question.type !== 'PASSAGE')
                     .map(q => ({
                       id: q.id,
@@ -212,8 +195,7 @@ export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
                         options: q.question.options.map(o => ({
                           id: o.id,
                           text: o.text,
-                          isCorrect: o.isCorrect
-                        }))
+                          isCorrect: o.isCorrect }))
                       }
                     }))
                   }
@@ -226,4 +208,4 @@ export default async function ChapterQuizQuestionsPage({ params }: PageProps) {
       </div>
     </div>
   );
-} 
+}

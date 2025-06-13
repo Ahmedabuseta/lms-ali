@@ -6,25 +6,21 @@ import { CourseProgress } from './course-progress';
 import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
-type CourseCardProps = {
-  id: string;
+type CourseCardProps = { id: string;
   title: string;
   imageUrl: string | null;
   chaptersLength: number;
   price: number | null;
   progress: number | null;
-  category: string | null;
-};
+  category: string | null; };
 
-export default function CourseCard({
-  id,
+export default function CourseCard({ id,
   title,
   imageUrl,
   chaptersLength,
   price,
   progress,
-  category,
-}: CourseCardProps) {
+  category, }: CourseCardProps) {
   return (
     <Link href={`/courses/${id}`}>
       <div className="group h-full transform overflow-hidden rounded-2xl border-0 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 shadow-lg backdrop-blur-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl dark:from-gray-800 dark:via-blue-900/10 dark:to-purple-900/10">
@@ -47,24 +43,24 @@ export default function CourseCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {/* Category Badge */}
-          {category && (
+          { category && (
             <div className="absolute right-3 top-3">
               <div className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700 shadow-lg backdrop-blur-sm dark:bg-gray-800/90 dark:text-gray-300">
-                {category}
+                {category }
               </div>
             </div>
           )}
 
           {/* Progress Badge */}
-          {progress !== null && (
+          { progress !== null && (
             <div className="absolute left-3 top-3">
               <div
                 className={cn(
                   'rounded-full px-3 py-1 text-xs font-bold shadow-lg backdrop-blur-sm',
                   progress === 100 ? 'bg-green-500/90 text-white' : 'bg-blue-500/90 text-white',
-                )}
+                ) }
               >
-                {progress === 100 ? 'مكتمل' : `${Math.round(progress)}%`}
+                { progress === 100 ? 'مكتمل' : `${Math.round(progress) }%`}
               </div>
             </div>
           )}
@@ -86,7 +82,7 @@ export default function CourseCard({
                 <BookOpenIcon className="h-4 w-4 text-white" />
               </div>
               <span className="font-medium">
-                {chaptersLength} {chaptersLength === 1 ? 'فصل' : 'فصول'}
+                {chaptersLength} { chaptersLength === 1 ? 'فصل' : 'فصول' }
               </span>
             </div>
 
@@ -98,9 +94,9 @@ export default function CourseCard({
 
           {/* Progress or Price */}
           <div className="space-y-3">
-            {progress !== null ? (
+            { progress !== null ? (
               <div className="space-y-2">
-                <CourseProgress variant={progress === 100 ? 'success' : 'default'} size="sm" value={progress} />
+                <CourseProgress variant={progress === 100 ? 'success' : 'default' } size="sm" value={progress} />
                 <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
                   <span>تقدمك</span>
                   <span>{Math.round(progress)}%</span>
@@ -124,7 +120,7 @@ export default function CourseCard({
           {/* Action Button */}
           <div className="pt-2">
             <div className="w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-center text-sm font-medium text-white shadow-lg transition-all duration-300 group-    group-hover:from-purple-600 group-hover:to-blue-600 group-hover:shadow-xl">
-              {progress !== null ? 'متابعة التعلم' : 'عرض التفاصيل'}
+              { progress !== null ? 'متابعة التعلم' : 'عرض التفاصيل' }
             </div>
           </div>
         </div>

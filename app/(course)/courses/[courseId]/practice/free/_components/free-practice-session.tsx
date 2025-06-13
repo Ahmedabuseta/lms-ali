@@ -8,12 +8,11 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  X, 
-  CheckCircle, 
-  XCircle, 
+import { ChevronLeft,
+  ChevronRight,
+  X,
+  CheckCircle,
+  XCircle,
   BookOpen,
   Target,
   RotateCcw,
@@ -21,14 +20,12 @@ import {
   Award,
   Infinity,
   Brain,
-  Zap
-} from 'lucide-react';
+  Zap } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { MathRenderer } from '@/components/math-renderer';
 import { cn } from '@/lib/utils';
 
-interface Question {
-  id: string;
+interface Question { id: string;
   text: string;
   type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'PASSAGE';
   difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
@@ -37,27 +34,19 @@ interface Question {
   options: Array<{
     id: string;
     text: string;
-    isCorrect: boolean;
-  }>;
-  passage?: {
-    id: string;
+    isCorrect: boolean; }>;
+  passage?: { id: string;
     title: string;
-    content: string;
-  };
-  questionBank: {
-    title: string;
-    chapterId?: string;
-  };
+    content: string; };
+  questionBank: { title: string;
+    chapterId?: string; };
   attemptCount: number;
-  lastAttempt?: {
-    selectedOptionId: string;
+  lastAttempt?: { selectedOptionId: string;
     isCorrect: boolean;
-    createdAt: string;
-  };
+    createdAt: string; };
 }
 
-interface SessionData {
-  sessionId: string;
+interface SessionData { sessionId: string;
   courseId: string;
   mode: string;
   selectedChapters: { id: string; title: string }[];
@@ -66,21 +55,16 @@ interface SessionData {
   timeLimit: null;
 }
 
-interface FreePracticeSessionProps {
-  sessionData: SessionData;
-  onExit: () => void;
-}
+interface FreePracticeSessionProps { sessionData: SessionData;
+  onExit: () => void; }
 
-export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
-  sessionData,
-  onExit,
-}) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessionData,
+  onExit, }) => { const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerResult, setAnswerResult] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Session stats
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -94,8 +78,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
   useEffect(() => {
     setSelectedOption('');
     setShowAnswer(false);
-    setAnswerResult(null);
-  }, [currentQuestionIndex]);
+    setAnswerResult(null); }, [currentQuestionIndex]);
 
   const renderContent = (content: string) => {
     if (!content) return null;
@@ -108,11 +91,10 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
     }
   };
 
-  const submitAnswer = () => {
-    if (!selectedOption || !currentQuestion) return;
+  const submitAnswer = () => { if (!selectedOption || !currentQuestion) return;
 
     setIsSubmitting(true);
-    
+
     const selectedOptionObj = currentQuestion.options.find(opt => opt.id === selectedOption);
     const isCorrect = selectedOptionObj?.isCorrect || false;
 
@@ -121,8 +103,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
       selectedOptionId: selectedOption,
       isCorrect,
       correctAnswer: currentQuestion.options.find(opt => opt.isCorrect),
-      explanation: currentQuestion.explanation
-    };
+      explanation: currentQuestion.explanation };
 
     setAnswerResult(result);
     setShowAnswer(true);
@@ -144,8 +125,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
   const nextQuestion = () => {
     if (currentQuestionIndex < sessionData.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-    } else {
-      toast.success(`تم إنهاء التدريب! النقاط: ${correctAnswers}/${questionsAnswered} - الدقة: ${accuracy.toFixed(1)}%`);
+    } else { toast.success(`تم إنهاء التدريب! النقاط: ${correctAnswers }/${questionsAnswered} - الدقة: ${accuracy.toFixed(1)}%`);
     }
   };
 
@@ -207,7 +187,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
                 <span className="font-semibold text-gray-800">التدريب الحر</span>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-green-600" />
@@ -226,7 +206,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className="mt-3">
             <Progress value={progress} className="h-2" />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -243,8 +223,8 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="text-blue-600 bg-blue-50 border-blue-200">
-                  {currentQuestion.type === 'MULTIPLE_CHOICE' ? 'اختيار متعدد' : 
-                   currentQuestion.type === 'TRUE_FALSE' ? 'صح أو خطأ' : 'قطعة فهم'}
+                  { currentQuestion.type === 'MULTIPLE_CHOICE' ? 'اختيار متعدد' :
+                   currentQuestion.type === 'TRUE_FALSE' ? 'صح أو خطأ' : 'قطعة فهم' }
                 </Badge>
                 {currentQuestion.questionBank?.title && (
                   <Badge variant="outline" className="text-purple-600 bg-purple-50 border-purple-200">
@@ -281,13 +261,13 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
               {currentQuestion.options.map((option) => (
                 <div
                   key={option.id}
-                  className={cn(
+                  className={ cn(
                     "flex items-center space-x-3 space-x-reverse p-4 rounded-lg border transition-all",
                     !showAnswer && "hover:bg-gray-50 cursor-pointer",
                     showAnswer && option.isCorrect && "bg-green-50 border-green-200",
                     showAnswer && selectedOption === option.id && !option.isCorrect && "bg-red-50 border-red-200",
                     selectedOption === option.id && !showAnswer && "bg-blue-50 border-blue-200"
-                  )}
+                  ) }
                 >
                   <RadioGroupItem
                     value={option.id}
@@ -307,11 +287,11 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
               ))}
             </RadioGroup>
 
-            {showAnswer && currentQuestion.explanation && (
+            { showAnswer && currentQuestion.explanation && (
               <Alert className="mt-6">
                 <Lightbulb className="h-4 w-4" />
                 <AlertDescription className="leading-relaxed">
-                  <strong>التفسير:</strong> {renderContent(currentQuestion.explanation)}
+                  <strong>التفسير:</strong> {renderContent(currentQuestion.explanation) }
                 </AlertDescription>
               </Alert>
             )}
@@ -333,7 +313,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
                     disabled={!selectedOption || isSubmitting}
                     className="px-8"
                   >
-                    {isSubmitting ? 'جاري الإرسال...' : 'إرسال الإجابة'}
+                    { isSubmitting ? 'جاري الإرسال...' : 'إرسال الإجابة' }
                   </Button>
                 ) : (
                   <div className="flex gap-2">
@@ -341,7 +321,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
                       <RotateCcw className="h-4 w-4 mr-1" />
                       إعادة المحاولة
                     </Button>
-                    
+
                     {currentQuestionIndex < sessionData.questions.length - 1 ? (
                       <Button onClick={nextQuestion}>
                         التالي
@@ -362,4 +342,4 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({
       </div>
     </div>
   );
-}; 
+};

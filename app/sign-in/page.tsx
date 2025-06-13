@@ -7,8 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { authClient, signIn } from '@/lib/auth-client';
 
-export default function SignInPage() {
-  const [isLoading, setIsLoading] = useState(false);
+export default function SignInPage() { const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
@@ -16,12 +15,9 @@ export default function SignInPage() {
       setIsLoading(true);
       await signIn.social({
         provider: 'google',
-        callbackURL: '/dashboard',
-      });
-    } catch (error) {
-      console.error('Sign in error:', error);
-      toast.error('خطأ في تسجيل الدخول');
-    } finally {
+        callbackURL: '/dashboard', });
+    } catch (error) { console.error('Sign in error:', error);
+      toast.error('خطأ في تسجيل الدخول'); } finally {
       setIsLoading(false);
       await authClient.revokeOtherSessions();
     }
@@ -46,7 +42,7 @@ export default function SignInPage() {
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200     shadow-lg"
             >
               <FcGoogle className="w-6 h-6 mr-3" />
-              {isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول بنقرة واحدة'}
+              { isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول بنقرة واحدة' }
             </Button>
 
             <div className="text-center">

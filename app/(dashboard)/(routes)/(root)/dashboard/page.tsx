@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation';
-import { 
-  BookOpen, 
-  FileQuestion, 
-  TrendingUp, 
-  Clock, 
+import { BookOpen,
+  FileQuestion,
+  TrendingUp,
+  Clock,
   CheckCircle,
   Brain,
   Trophy,
@@ -18,8 +17,7 @@ import {
   PlayCircle,
   BookmarkPlus,
   Search,
-  Filter
-} from 'lucide-react';
+  Filter } from 'lucide-react';
 
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { getDashboardStats, getQuickActionsData } from '@/actions/dashboard-actions';
@@ -74,7 +72,7 @@ export default async function Dashboard() {
                 </p>
               </div>
             </div>
-            
+
             {/* Student Quick Navigation */}
             <div className="animate-slide-up animation-delay-400 mt-6 flex flex-wrap gap-3">
               <Button asChild variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm">
@@ -121,9 +119,9 @@ export default async function Dashboard() {
           {/* Student Quick Actions */}
           <div className="lg:col-span-2">
             {quickActionsData && (
-              <QuickActionsSection 
-                data={quickActionsData} 
-                userRole="STUDENT" 
+              <QuickActionsSection
+                data={quickActionsData}
+                userRole="STUDENT"
               />
             )}
           </div>
@@ -131,9 +129,9 @@ export default async function Dashboard() {
           {/* Student Recent Activity */}
           <div className="lg:col-span-1">
             {stats?.recentActivity && (
-              <RecentActivity 
-                activities={stats.recentActivity} 
-                userRole="STUDENT" 
+              <RecentActivity
+                activities={stats.recentActivity}
+                userRole="STUDENT"
               />
             )}
           </div>
@@ -294,4 +292,4 @@ export default async function Dashboard() {
       </div>
     </div>
   );
-} 
+}

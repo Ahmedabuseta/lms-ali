@@ -2,8 +2,7 @@ import { requireAuth } from '@/lib/auth-helpers';
 
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import {
-  BookOpen,
+import { BookOpen,
   Users,
   FileQuestion,
   MemoryStick,
@@ -15,8 +14,7 @@ import {
   DollarSign,
   CheckCircle,
   Clock,
-  Activity,
-} from 'lucide-react';
+  Activity, } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getAnalytics } from '@/actions/get-analytics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,8 +31,7 @@ const TeacherDashboard = async () => {
 
   // Get dashboard stats
   const [courses, users, recentActivity] = await Promise.all([
-    db.course.findMany({
-      include: {
+    db.course.findMany({ include: {
         chapters: {
           include: {
             _count: {
@@ -46,13 +43,11 @@ const TeacherDashboard = async () => {
       orderBy: { createdAt: 'desc' },
       take: 6,
     }),
-    db.user.findMany({
-      where: { role: 'STUDENT' },
+    db.user.findMany({ where: { role: 'STUDENT' },
       orderBy: { createdAt: 'desc' },
       take: 10,
     }),
-    db.course.findMany({
-      include: {
+    db.course.findMany({ include: {
         chapters: {
           include: {
             userProgress: {
@@ -77,11 +72,11 @@ const TeacherDashboard = async () => {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-secondary/5 to-accent/5 blur-3xl"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
       </div>
 
@@ -157,11 +152,11 @@ const TeacherDashboard = async () => {
           </CardHeader>
           <CardContent className="relative">
             <div className="text-2xl font-bold text-foreground">
-              {recentActivity.reduce(
+              { recentActivity.reduce(
                 (acc, course) =>
                   acc + course.chapters.reduce((chAcc: number, chapter: any) => chAcc + chapter.userProgress.length, 0),
                 0,
-              )}
+              ) }
             </div>
             <p className="mt-1 text-xs text-muted-foreground">تفاعل جديد</p>
           </CardContent>
@@ -291,17 +286,17 @@ const TeacherDashboard = async () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {courses.slice(0, 4).map((course) => (
+            { courses.slice(0, 4).map((course) => (
               <div
-                key={course.id}
+                key={course.id }
                 className="flex items-center justify-between rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={cn(
+                    className={ cn(
                       'h-2 w-2 rounded-full',
                       course.isPublished ? 'bg-green-500 dark:bg-green-400' : 'bg-yellow-500 dark:bg-yellow-400',
-                    )}
+                    ) }
                   />
                   <div>
                     <p className="text-sm font-medium text-foreground">{course.title}</p>
@@ -336,26 +331,26 @@ const TeacherDashboard = async () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {recentActivity
+            { recentActivity
               .slice(0, 4)
               .map((course) =>
                 course.chapters.map((chapter: any) =>
                   chapter.userProgress.slice(0, 2).map((progress: any) => (
                     <div
-                      key={`${chapter.id}-${progress.userId}`}
+                      key={`${chapter.id }-${progress.userId}`}
                       className="flex items-center justify-between rounded-lg bg-muted/50 p-3"
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={cn(
+                          className={ cn(
                             'h-2 w-2 rounded-full',
                             progress.isCompleted ? 'bg-green-500 dark:bg-green-400' : 'bg-blue-500 dark:bg-blue-400',
-                          )}
+                          ) }
                         />
                         <div>
                           <p className="text-sm font-medium text-foreground">طالب</p>
                           <p className="text-xs text-muted-foreground">
-                            {progress.isCompleted ? 'أكمل' : 'بدأ'} {chapter.title}
+                            { progress.isCompleted ? 'أكمل' : 'بدأ' } {chapter.title}
                           </p>
                         </div>
                       </div>
@@ -368,14 +363,14 @@ const TeacherDashboard = async () => {
               )
               .flat()
               .slice(0, 5)}
-            {recentActivity.every((course) =>
+            { recentActivity.every((course) =>
               course.chapters.every((chapter: any) => chapter.userProgress.length === 0),
             ) && (
               <div className="py-8 text-center">
                 <Activity className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
                 <p className="text-muted-foreground">لا يوجد نشاط حديث</p>
               </div>
-            )}
+            ) }
           </CardContent>
         </Card>
       </div>

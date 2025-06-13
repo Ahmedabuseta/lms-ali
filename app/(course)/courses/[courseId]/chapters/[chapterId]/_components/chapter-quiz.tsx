@@ -4,16 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { 
-  FileQuestion, 
-  Clock, 
-  Award, 
-  CheckCircle, 
-  XCircle, 
+import { FileQuestion,
+  Clock,
+  Award,
+  CheckCircle,
+  XCircle,
   RotateCcw,
   AlertCircle,
-  Play
-} from 'lucide-react';
+  Play } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,8 +20,7 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 
-interface ChapterQuizProps {
-  quiz: {
+interface ChapterQuizProps { quiz: {
     id: string;
     title: string;
     description?: string;
@@ -42,25 +39,21 @@ interface ChapterQuizProps {
         options: Array<{
           id: string;
           text: string;
-          isCorrect: boolean;
-        }>;
+          isCorrect: boolean; }>;
       };
     }>;
-    attempts: Array<{
-      id: string;
+    attempts: Array<{ id: string;
       score?: number;
       isPassed: boolean;
-      completedAt?: Date;
-    }>;
+      completedAt?: Date; }>;
   };
   courseId: string;
   chapterId: string;
 }
 
-export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => {
-  const router = useRouter();
+export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => { const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({ });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
@@ -96,7 +89,7 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
       setIsStarted(true);
       setCurrentQuestionIndex(0);
       setAnswers({});
-      
+
       if (quiz.timeLimit) {
         setTimeRemaining(quiz.timeLimit * 60); // Convert minutes to seconds
       }
@@ -105,11 +98,9 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
     }
   };
 
-  const handleAnswerSelect = (questionId: string, optionId: string) => {
-    setAnswers(prev => ({
+  const handleAnswerSelect = (questionId: string, optionId: string) => { setAnswers(prev => ({
       ...prev,
-      [questionId]: optionId
-    }));
+      [questionId]: optionId }));
   };
 
   const goToNextQuestion = () => {
@@ -124,27 +115,23 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
     }
   };
 
-  const handleSubmitQuiz = async () => {
-    if (!currentAttemptId) return;
+  const handleSubmitQuiz = async () => { if (!currentAttemptId) return;
 
     try {
       setIsSubmitting(true);
-      
+
       const submissionData = Object.entries(answers).map(([questionId, selectedOptionId]) => ({
         questionId,
-        selectedOptionId,
-      }));
+        selectedOptionId, }));
 
-      const response = await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/quiz/submit`, {
-        attemptId: currentAttemptId,
-        answers: submissionData,
-      });
+      const response = await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/quiz/submit`, { attemptId: currentAttemptId,
+        answers: submissionData, });
 
       setShowResults(true);
-      
+
       // Refresh the page to update progress
       router.refresh();
-      
+
       if (response.data.isPassed) {
         toast.success('مبروك! لقد نجحت في الاختبار');
       } else {
@@ -169,15 +156,14 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${ secs.toString().padStart(2, '0') }`;
   };
 
   const currentQuestion = quiz.quizQuestions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quiz.quizQuestions.length) * 100;
   const answeredQuestions = Object.keys(answers).length;
 
-  if (!isStarted && !showResults) {
-    return (
+  if (!isStarted && !showResults) { return (
       <Card className="border border-indigo-200/60 bg-indigo-50/80 backdrop-blur-2xl shadow-xl">
         <CardHeader>
           <div className="flex items-center gap-4">
@@ -186,11 +172,11 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
             </div>
             <div className="flex-1">
               <CardTitle className="text-2xl font-bold text-indigo-900 dark:text-indigo-100 font-arabic">
-                {quiz.title}
+                {quiz.title }
               </CardTitle>
-              {quiz.description && (
+              { quiz.description && (
                 <p className="text-indigo-700 dark:text-indigo-300 mt-2 font-arabic">
-                  {quiz.description}
+                  {quiz.description }
                 </p>
               )}
             </div>
@@ -208,12 +194,12 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
               </p>
             </div>
 
-            {quiz.timeLimit && (
+            { quiz.timeLimit && (
               <div className="text-center">
                 <Clock className="h-6 w-6 text-indigo-600 mx-auto mb-2" />
                 <p className="text-sm text-indigo-600 font-arabic">المدة الزمنية</p>
                 <p className="font-bold text-indigo-900 dark:text-indigo-100 font-arabic">
-                  {quiz.timeLimit} دقيقة
+                  {quiz.timeLimit } دقيقة
                 </p>
               </div>
             )}
@@ -230,25 +216,24 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
               <RotateCcw className="h-6 w-6 text-indigo-600 mx-auto mb-2" />
               <p className="text-sm text-indigo-600 font-arabic">المحاولات المتبقية</p>
               <p className="font-bold text-indigo-900 dark:text-indigo-100 font-arabic">
-                {quiz.freeAttempts === -1 
-                  ? 'غير محدود' 
-                  : Math.max(0, quiz.freeAttempts - quiz.attempts.length)
-                }
+                { quiz.freeAttempts === -1
+                  ? 'غير محدود'
+                  : Math.max(0, quiz.freeAttempts - quiz.attempts.length) }
               </p>
             </div>
           </div>
 
           {/* Previous Attempt Result */}
-          {lastAttempt && (
-            <Alert className={hasPassedQuiz ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+          { lastAttempt && (
+            <Alert className={hasPassedQuiz ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50" }>
               <div className="flex items-center gap-2">
-                {hasPassedQuiz ? (
+                { hasPassedQuiz ? (
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 ) : (
                   <XCircle className="h-5 w-5 text-red-600" />
-                )}
-                <AlertDescription className={`font-arabic ${hasPassedQuiz ? 'text-green-800' : 'text-red-800'}`}>
-                  {hasPassedQuiz 
+                ) }
+                <AlertDescription className={ `font-arabic ${hasPassedQuiz ? 'text-green-800' : 'text-red-800' }`}>
+                  {hasPassedQuiz
                     ? `تهانينا! لقد نجحت في الاختبار بدرجة ${lastAttempt.score}%`
                     : `لم تنجح في المحاولة السابقة. حصلت على ${lastAttempt.score}%`
                   }
@@ -260,13 +245,13 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
           {/* Start Quiz Button */}
           <div className="text-center">
             {canTakeQuiz ? (
-              <Button 
+              <Button
                 onClick={startQuiz}
                 size="lg"
                 className="font-arabic"
               >
                 <Play className="h-5 w-5 ml-2" />
-                {hasPassedQuiz ? 'إعادة المحاولة' : 'بدء الاختبار'}
+                { hasPassedQuiz ? 'إعادة المحاولة' : 'بدء الاختبار' }
               </Button>
             ) : (
               <Alert>
@@ -282,8 +267,7 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
     );
   }
 
-  if (showResults) {
-    return (
+  if (showResults) { return (
       <Card className="border border-green-200/60 bg-green-50/80 backdrop-blur-2xl shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-green-900 dark:text-green-100 font-arabic text-center">
@@ -294,7 +278,7 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
           <div className="text-lg font-arabic text-green-800 dark:text-green-200">
             تم إرسال إجاباتك بنجاح. يمكنك مراجعة النتائج في قسم التقدم.
           </div>
-          <Button onClick={resetQuiz} variant="outline" className="font-arabic">
+          <Button onClick={resetQuiz } variant="outline" className="font-arabic">
             العودة للاختبار
           </Button>
         </CardContent>
@@ -316,21 +300,20 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
                 تم الإجابة على {answeredQuestions} من {quiz.quizQuestions.length} أسئلة
               </p>
             </div>
-            
+
             <div className="flex items-center gap-4">
-              {timeRemaining !== null && (
+              { timeRemaining !== null && (
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-indigo-600" />
                   <span className={`font-bold font-arabic ${
-                    timeRemaining < 300 ? 'text-red-600' : 'text-indigo-900 dark:text-indigo-100'
-                  }`}>
+                    timeRemaining < 300 ? 'text-red-600' : 'text-indigo-900 dark:text-indigo-100' }`}>
                     {formatTime(timeRemaining)}
                   </span>
                 </div>
               )}
             </div>
           </div>
-          
+
           <Progress value={progress} className="mt-4" />
         </CardContent>
       </Card>
@@ -343,7 +326,7 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="font-arabic">
-              {currentQuestion.question.type === 'MULTIPLE_CHOICE' ? 'اختيار من متعدد' : 'صح أو خطأ'}
+              { currentQuestion.question.type === 'MULTIPLE_CHOICE' ? 'اختيار من متعدد' : 'صح أو خطأ' }
             </Badge>
             <Badge variant="secondary" className="font-arabic">
               {currentQuestion.question.points} نقطة
@@ -357,19 +340,17 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
             {currentQuestion.question.options.map((option) => (
               <div
                 key={option.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                className={ `p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                   answers[currentQuestion.question.id] === option.id
                     ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                    : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
-                }`}
-                onClick={() => handleAnswerSelect(currentQuestion.question.id, option.id)}
+                    : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50' }`}
+                onClick={ () => handleAnswerSelect(currentQuestion.question.id, option.id) }
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 ${
+                  <div className={ `w-4 h-4 rounded-full border-2 ${
                     answers[currentQuestion.question.id] === option.id
                       ? 'border-indigo-500 bg-indigo-500'
-                      : 'border-gray-300'
-                  }`}>
+                      : 'border-gray-300' }`}>
                     {answers[currentQuestion.question.id] === option.id && (
                       <div className="w-full h-full rounded-full bg-white scale-50"></div>
                     )}
@@ -400,7 +381,7 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
                   disabled={isSubmitting || answeredQuestions < quiz.quizQuestions.length}
                   className="font-arabic"
                 >
-                  {isSubmitting ? 'جاري الإرسال...' : 'إرسال الاختبار'}
+                  { isSubmitting ? 'جاري الإرسال...' : 'إرسال الاختبار' }
                 </Button>
               ) : (
                 <Button
@@ -417,4 +398,4 @@ export const ChapterQuiz = ({ quiz, courseId, chapterId }: ChapterQuizProps) => 
       </Card>
     </div>
   );
-}; 
+};

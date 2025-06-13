@@ -14,20 +14,16 @@ import { Banner } from '@/components/banner';
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 
-const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => {
-   requireAuth()
+const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId: string } }) => { requireAuth()
 
   const chapter = await db.chapter.findUnique({
     where: {
       id: params.chapterId,
-      courseId: params.courseId,
-    },
-    include: {
-      muxData: true,
+      courseId: params.courseId, },
+    include: { muxData: true,
       quizzes: {
         include: {
-          quizQuestions: true,
-        },
+          quizQuestions: true, },
       },
     },
   });
@@ -54,15 +50,15 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-emerald-400/25 to-green-400/15 blur-3xl dark:from-emerald-400/40 dark:to-green-400/25" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-teal-400/25 to-cyan-400/15 blur-3xl dark:from-teal-400/40 dark:to-cyan-400/25"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-400/25 to-emerald-400/15 blur-3xl dark:from-green-400/40 dark:to-emerald-400/25"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
         <div
           className="absolute right-1/3 bottom-1/3 h-40 w-40 animate-pulse rounded-full bg-gradient-to-br from-mint-400/20 to-teal-400/12 blur-3xl dark:from-mint-400/35 dark:to-teal-400/20"
-          style={{ animationDelay: '1s' }}
+          style={ { animationDelay: '1s' }}
          />
       </div>
 
@@ -97,7 +93,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
                   <div className="h-2 w-64 overflow-hidden rounded-full bg-emerald-200/60 backdrop-blur-xl dark:bg-emerald-800/30">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500 ease-out"
-                      style={{ width: `${(completedFields / totalFields) * 100}%` }}
+                      style={ { width: `${(completedFields / totalFields) * 100 }%` }}
                      />
                   </div>
                 </div>
@@ -167,7 +163,7 @@ const ChapterIdPage = async ({ params }: { params: { courseId: string; chapterId
               </div>
 
               {/* Chapter Quiz */}
-              <ChapterQuizForm 
+              <ChapterQuizForm
                 initialData={chapterQuiz}
                 courseId={params.courseId}
                 chapterId={params.chapterId}

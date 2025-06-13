@@ -1,44 +1,32 @@
 import { db } from '@/lib/db';
 
-interface GetExamsProps {
-  userId: string;
+interface GetExamsProps { userId: string;
   courseId?: string;
   chapterId?: string;
-  examId?: string;
-}
+  examId?: string; }
 
-export async function getExams({ userId, courseId, chapterId, examId }: GetExamsProps) {
-  try {
+export async function getExams({ userId, courseId, chapterId, examId }: GetExamsProps) { try {
     // If examId is provided, get a single exam with its questions and options
     if (examId) {
       const exam = await db.exam.findUnique({
         where: {
           id: examId,
-          isPublished: true,
-        },
-        include: {
-          course: {
+          isPublished: true, },
+        include: { course: {
             select: {
-              title: true,
-            },
+              title: true, },
           },
-          chapter: {
-            select: {
-              title: true,
-            },
+          chapter: { select: {
+              title: true, },
           },
-          examQuestions: {
-            include: {
+          examQuestions: { include: {
               question: {
                 include: {
                   options: true,
-                  passage: true,
-                },
+                  passage: true, },
               },
             },
-            orderBy: {
-              position: 'asc',
-            },
+            orderBy: { position: 'asc', },
           },
         },
       });
@@ -48,12 +36,11 @@ export async function getExams({ userId, courseId, chapterId, examId }: GetExams
       }
 
       // // Check if the user has purchased the course
-      // const purchase = await db.purchase.findUnique({
-      //   where: {
+      // const purchase = await db.purchase.findUnique({ //   where: {
       //     userId_courseId: {
       //       userId,
       //       courseId: exam.courseId,
-      //     },
+      // },
       //   },
       // });
 
@@ -62,38 +49,28 @@ export async function getExams({ userId, courseId, chapterId, examId }: GetExams
       // }
 
       // Check if the user has an active attempt
-      const activeAttempt = await db.examAttempt.findFirst({
-        where: {
+      const activeAttempt = await db.examAttempt.findFirst({ where: {
           userId,
           examId: exam.id,
-          completedAt: null,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
+          completedAt: null, },
+        orderBy: { createdAt: 'desc', },
       });
 
       // Get the user's past attempts
-      const pastAttempts = await db.examAttempt.findMany({
-        where: {
+      const pastAttempts = await db.examAttempt.findMany({ where: {
           userId,
           examId: exam.id,
           completedAt: {
-            not: null,
-          },
+            not: null, },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy: { createdAt: 'desc', },
       });
 
       return { exam, activeAttempt, pastAttempts };
     }
 
     // Create base query
-    const where: any = {
-      isPublished: true,
-    };
+    const where: any = { isPublished: true, };
 
     // Add filters
     if (courseId) {
@@ -105,70 +82,55 @@ export async function getExams({ userId, courseId, chapterId, examId }: GetExams
     }
 
     // If courseId is specified, verify the user has purchased the course
-    // if (courseId) {
-    // const purchase = await db.purchase.findUnique({
+    // if (courseId) { // const purchase = await db.purchase.findUnique({
     //   where: {
     //     userId_courseId: {
     //       userId,
     //       courseId,
-    //     },
+    // },
     //   },
     // });
 
-    // if (!purchase) {
-    //   return { exams: [] };
+    // if (!purchase) { //   return { exams: [] };
     // }
     // }
 
     // Get all courses purchased by the user if no courseId filter
-    // if (!courseId) {
-    //   const purchases = await db.purchase.findMany({
+    // if (!courseId) { //   const purchases = await db.purchase.findMany({
     //     where: {
     //       userId,
-    //     },
-    //     select: {
-    //       courseId: true,
-    //     },
+    // },
+    //     select: { //       courseId: true,
+    // },
     //   });
 
     //   const courseIds = purchases.map(purchase => purchase.courseId);
 
-    //   if (courseIds.length > 0) {
-    //     where.courseId = {
+    //   if (courseIds.length > 0) { //     where.courseId = {
     //       in: courseIds,
-    //     };
-    //   } else {
-    //     return { exams: [] };
+    // };
+    //   } else { //     return { exams: [] };
     //   }
     // }
 
     // Get the exams
-    const exams = await db.exam.findMany({
-      where,
+    const exams = await db.exam.findMany({ where,
       include: {
         course: {
           select: {
-            title: true,
-          },
+            title: true, },
         },
-        chapter: {
-          select: {
-            title: true,
-          },
+        chapter: { select: {
+            title: true, },
         },
-        _count: {
-          select: {
-            examQuestions: true,
-          },
+        _count: { select: {
+            examQuestions: true, },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc', },
     });
     return { exams };
-  } catch (error) {
-    console.error('[GET_EXAMS_ERROR]', error);
+  } catch (error) { console.error('[GET_EXAMS_ERROR]', error);
     return { exams: [] };
   }
 }

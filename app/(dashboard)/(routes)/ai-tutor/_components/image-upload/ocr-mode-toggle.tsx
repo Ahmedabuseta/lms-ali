@@ -2,11 +2,9 @@ import { Cpu } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-interface OCRModeToggleProps {
-  useClientSideOCR: boolean;
+interface OCRModeToggleProps { useClientSideOCR: boolean;
   onToggle: (value: boolean) => void;
-  disabled: boolean;
-}
+  disabled: boolean; }
 
 export const OCRModeToggle = ({ useClientSideOCR, onToggle, disabled }: OCRModeToggleProps) => {
   return (
@@ -21,9 +19,9 @@ export const OCRModeToggle = ({ useClientSideOCR, onToggle, disabled }: OCRModeT
         <Switch id="client-side-ocr" checked={useClientSideOCR} onCheckedChange={onToggle} disabled={disabled} />
       </div>
       <p className="text-xs text-muted-foreground">
-        {useClientSideOCR
+        { useClientSideOCR
           ? 'Process images in your browser (faster, works offline)'
-          : 'Process images on the server (more accurate)'}
+          : 'Process images on the server (more accurate)' }
       </p>
     </div>
   );

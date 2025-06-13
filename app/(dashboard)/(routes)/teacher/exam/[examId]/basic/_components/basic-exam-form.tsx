@@ -15,35 +15,28 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface BasicExamFormProps {
-  initialData: {
+interface BasicExamFormProps { initialData: {
     title: string;
     description: string;
     chapterId: string;
-    timeLimit?: number;
-  };
+    timeLimit?: number; };
   examId: string;
   courseId: string;
-  chapters: {
-    id: string;
-    title: string;
-  }[];
+  chapters: { id: string;
+    title: string; }[];
 }
 
-const formSchema = z.object({
-  title: z
+const formSchema = z.object({ title: z
     .string()
     .min(1, {
-      message: 'Title is required',
-    })
+      message: 'Title is required', })
     .max(100),
   description: z.string().max(500).optional(),
   chapterId: z.string().optional(),
   timeLimit: z.coerce.number().int().min(1).max(180).optional(),
 });
 
-export const BasicExamForm = ({ initialData, examId, courseId, chapters }: BasicExamFormProps) => {
-  const router = useRouter();
+export const BasicExamForm = ({ initialData, examId, courseId, chapters }: BasicExamFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,19 +45,16 @@ export const BasicExamForm = ({ initialData, examId, courseId, chapters }: Basic
       title: initialData.title,
       description: initialData.description || '',
       chapterId: initialData.chapterId || 'no-chapter',
-      timeLimit: initialData.timeLimit || undefined,
-    },
+      timeLimit: initialData.timeLimit || undefined, },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => { try {
       setIsSubmitting(true);
 
       // Convert 'no-chapter' back to null for database storage
       const submitData = {
         ...values,
-        chapterId: values.chapterId === 'no-chapter' ? null : values.chapterId,
-      };
+        chapterId: values.chapterId === 'no-chapter' ? null : values.chapterId, };
 
       await axios.patch(`/api/exam/${examId}`, submitData);
 

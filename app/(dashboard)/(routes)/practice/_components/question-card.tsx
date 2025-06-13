@@ -9,67 +9,55 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { MathRenderer } from '@/components/math-renderer';
 
-interface Question {
-  id: string;
+interface Question { id: string;
   text: string;
   type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE';
   options: {
     id: string;
     text: string;
-    isCorrect: boolean;
-  }[];
+    isCorrect: boolean; }[];
   difficulty?: string;
 }
 
-interface SavedAnswer {
-  questionId: string;
+interface SavedAnswer { questionId: string;
   selectedOptionId: string;
-  isCorrect: boolean;
-}
+  isCorrect: boolean; }
 
-interface QuestionCardProps {
-  question: Question;
+interface QuestionCardProps { question: Question;
   onNext: () => void;
   onPrevious: () => void;
   isFirstQuestion: boolean;
   isLastQuestion: boolean;
   savedAnswer?: SavedAnswer;
-  onAnswerSubmit?: (questionId: string, selectedOptionId: string, isCorrect: boolean) => void;
-}
+  onAnswerSubmit?: (questionId: string, selectedOptionId: string, isCorrect: boolean) => void; }
 
-export const QuestionCard = ({
-  question,
+export const QuestionCard = ({ question,
   onNext,
   onPrevious,
   isFirstQuestion,
   isLastQuestion,
   savedAnswer,
-  onAnswerSubmit,
-}: QuestionCardProps) => {
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  onAnswerSubmit, }: QuestionCardProps) => { const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
 
   // Load saved answer if available
   useEffect(() => {
     if (savedAnswer) {
       setSelectedOptionId(savedAnswer.selectedOptionId);
-      setShowAnswer(true);
-    } else {
+      setShowAnswer(true); } else {
       setSelectedOptionId(null);
       setShowAnswer(false);
     }
   }, [savedAnswer, question.id]);
 
-  const handleOptionSelect = (optionId: string) => {
-    if (!showAnswer) {
+  const handleOptionSelect = (optionId: string) => { if (!showAnswer) {
       setSelectedOptionId(optionId);
       setShowAnswer(true);
 
       // Save the answer
       const selectedOption = question.options.find((opt) => opt.id === optionId);
       if (selectedOption && onAnswerSubmit) {
-        onAnswerSubmit(question.id, optionId, selectedOption.isCorrect);
-      }
+        onAnswerSubmit(question.id, optionId, selectedOption.isCorrect); }
     }
   };
 
@@ -81,11 +69,9 @@ export const QuestionCard = ({
     onPrevious();
   };
 
-  const getAnswerStatus = () => {
-    if (!showAnswer || !selectedOptionId) return null;
+  const getAnswerStatus = () => { if (!showAnswer || !selectedOptionId) return null;
     const selectedOption = question.options.find((opt) => opt.id === selectedOptionId);
-    return selectedOption?.isCorrect ? 'صحيح' : 'خطأ';
-  };
+    return selectedOption?.isCorrect ? 'صحيح' : 'خطأ'; };
 
   const answerStatus = getAnswerStatus();
 
@@ -98,8 +84,8 @@ export const QuestionCard = ({
             <span>السؤال</span>
           </CardTitle>
           <div className="flex items-center gap-2">
-            {answerStatus && (
-              <Badge variant={answerStatus === 'صحيح' ? 'default' : 'destructive'}>{answerStatus}</Badge>
+            { answerStatus && (
+              <Badge variant={answerStatus === 'صحيح' ? 'default' : 'destructive' }>{answerStatus}</Badge>
             )}
             {question.difficulty && (
               <Badge variant="secondary">
@@ -131,13 +117,13 @@ export const QuestionCard = ({
           ))}
         </div>
 
-        {showAnswer && (
+        { showAnswer && (
           <div className="pt-4">
             <Separator className="mb-4" />
             <div className="text-sm">
               <p className="mb-1 font-medium">التوضيح:</p>
               <p className="text-slate-600">
-                {question.options.find((opt) => opt.isCorrect)?.text} هي الإجابة الصحيحة.
+                {question.options.find((opt) => opt.isCorrect)?.text } هي الإجابة الصحيحة.
               </p>
             </div>
           </div>

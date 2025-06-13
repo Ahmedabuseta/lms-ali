@@ -7,8 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
-interface UserPermissions {
-  canAccessVideos: boolean;
+interface UserPermissions { canAccessVideos: boolean;
   canAccessCourses: boolean;
   canAccessExams: boolean;
   canAccessFlashcards: boolean;
@@ -18,13 +17,11 @@ interface UserPermissions {
   accessType: string;
   canStartTrial: boolean;
   trialDaysLeft: number;
-  isTrialExpired: boolean;
-}
+  isTrialExpired: boolean; }
 
 type PermissionKey = 'canAccessVideos' | 'canAccessCourses' | 'canAccessExams' | 'canAccessFlashcards' | 'canAccessPractice' | 'canAccessAI';
 
-interface PageProtectionProps {
-  children: React.ReactNode;
+interface PageProtectionProps { children: React.ReactNode;
   requiredPermission?: PermissionKey;
   requiredRole?: 'TEACHER' | 'STUDENT';
   allowTeachers?: boolean;
@@ -36,15 +33,12 @@ interface PageProtectionProps {
   };
 }
 
-export function PageProtection({
-  children,
+export function PageProtection({ children,
   requiredPermission,
   requiredRole,
   allowTeachers = true,
   fallbackUrl = '/dashboard',
-  customMessage,
-}: PageProtectionProps) {
-  const [permissions, setPermissions] = useState<UserPermissions | null>(null);
+  customMessage, }: PageProtectionProps) { const [permissions, setPermissions] = useState<UserPermissions | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -55,19 +49,16 @@ export function PageProtection({
         const response = await fetch('/api/user/permissions');
         if (response.status === 401) {
           router.push('/sign-in');
-          return;
-        }
-        
+          return; }
+
         if (!response.ok) {
           throw new Error('Failed to fetch permissions');
         }
-        
+
         const data = await response.json();
         setPermissions(data);
-      } catch (error) {
-        console.error('Failed to fetch user permissions:', error);
-        setError('Failed to load permissions');
-      } finally {
+      } catch (error) { console.error('Failed to fetch user permissions:', error);
+        setError('Failed to load permissions'); } finally {
         setLoading(false);
       }
     };
@@ -98,8 +89,8 @@ export function PageProtection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button 
-              onClick={() => window.location.reload()} 
+            <Button
+              onClick={() => window.location.reload()}
               className="w-full font-arabic"
             >
               إعادة المحاولة
@@ -113,7 +104,7 @@ export function PageProtection({
   // Check role-based access
   if (requiredRole) {
     const isTeacher = permissions.isTeacher;
-    
+
     if (requiredRole === 'TEACHER' && !isTeacher) {
       return (
         <AccessDeniedCard
@@ -124,7 +115,7 @@ export function PageProtection({
         />
       );
     }
-    
+
     if (requiredRole === 'STUDENT' && isTeacher && !allowTeachers) {
       return (
         <AccessDeniedCard
@@ -140,7 +131,7 @@ export function PageProtection({
   // Check permission-based access
   if (requiredPermission) {
     const hasPermission = permissions[requiredPermission];
-    
+
     if (!hasPermission) {
       // Show custom message if provided
       if (customMessage) {
@@ -155,41 +146,29 @@ export function PageProtection({
       }
 
       // Default messages based on permission type
-      const permissionMessages: Record<PermissionKey, { title: string; description: string; icon: React.ComponentType<{ className?: string }> }> = {
-        canAccessVideos: {
+      const permissionMessages: Record<PermissionKey, { title: string; description: string; icon: React.ComponentType<{ className?: string }> }> = { canAccessVideos: {
           title: 'الوصول للفيديوهات غير متاح',
           description: 'تحتاج إلى اشتراك كامل للوصول إلى الفيديوهات التعليمية.',
-          icon: Lock,
-        },
-        canAccessCourses: {
-          title: 'الوصول للدورات غير متاح',
+          icon: Lock, },
+        canAccessCourses: { title: 'الوصول للدورات غير متاح',
           description: 'تحتاج إلى اشتراك للوصول إلى محتوى الدورات.',
-          icon: Lock,
-        },
-        canAccessExams: {
-          title: 'الوصول للاختبارات غير متاح',
+          icon: Lock, },
+        canAccessExams: { title: 'الوصول للاختبارات غير متاح',
           description: 'تحتاج إلى اشتراك أو تجربة مجانية للوصول إلى الاختبارات.',
-          icon: Lock,
-        },
-        canAccessFlashcards: {
-          title: 'الوصول للبطاقات التعليمية غير متاح',
+          icon: Lock, },
+        canAccessFlashcards: { title: 'الوصول للبطاقات التعليمية غير متاح',
           description: 'تحتاج إلى اشتراك أو تجربة مجانية للوصول إلى البطاقات التعليمية.',
-          icon: Lock,
-        },
-        canAccessPractice: {
-          title: 'الوصول للتمارين غير متاح',
+          icon: Lock, },
+        canAccessPractice: { title: 'الوصول للتمارين غير متاح',
           description: 'تحتاج إلى اشتراك أو تجربة مجانية للوصول إلى التمارين.',
-          icon: Lock,
-        },
-        canAccessAI: {
-          title: 'الوصول للمدرس الذكي غير متاح',
+          icon: Lock, },
+        canAccessAI: { title: 'الوصول للمدرس الذكي غير متاح',
           description: 'تحتاج إلى اشتراك كامل للوصول إلى المدرس الذكي.',
-          icon: Lock,
-        },
+          icon: Lock, },
       };
 
       const message = permissionMessages[requiredPermission];
-      
+
       return (
         <AccessDeniedCard
           title={message?.title || 'الوصول غير مسموح'}
@@ -206,29 +185,25 @@ export function PageProtection({
   return <>{children}</>;
 }
 
-interface AccessDeniedCardProps {
-  title: string;
+interface AccessDeniedCardProps { title: string;
   description: string;
   icon: React.ComponentType<{ className?: string }>;
   fallbackUrl: string;
   permissions?: UserPermissions;
 }
 
-function AccessDeniedCard({ 
-  title, 
-  description, 
-  icon: Icon, 
-  fallbackUrl, 
-  permissions 
-}: AccessDeniedCardProps) {
-  const router = useRouter();
+function AccessDeniedCard({ title,
+  description,
+  icon: Icon,
+  fallbackUrl,
+  permissions }: AccessDeniedCardProps) { const router = useRouter();
 
   return (
     <div className="flex items-center justify-center min-h-[400px] p-4">
       <Card className="w-full max-w-md bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-white/20">
         <CardHeader className="text-center">
           <Icon className="h-16 w-16 text-amber-500 mx-auto mb-4" />
-          <CardTitle className="font-arabic text-xl">{title}</CardTitle>
+          <CardTitle className="font-arabic text-xl">{title }</CardTitle>
           <CardDescription className="font-arabic text-base">
             {description}
           </CardDescription>
@@ -236,37 +211,37 @@ function AccessDeniedCard({
         <CardContent className="space-y-4">
           {/* Show trial option if available */}
           {permissions?.canStartTrial && (
-            <Button 
-              onClick={() => router.push('/dashboard?startTrial=true')} 
+            <Button
+              onClick={() => router.push('/dashboard?startTrial=true')}
               className="w-full font-arabic bg-blue-600 hover:bg-blue-700"
             >
               <Clock className="mr-2 h-4 w-4" />
               بدء التجربة المجانية
             </Button>
           )}
-          
+
           {/* Show trial status if active */}
-          {permissions?.accessType === 'FREE_TRIAL' && !permissions.isTrialExpired && (
+          { permissions?.accessType === 'FREE_TRIAL' && !permissions.isTrialExpired && (
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
               <p className="text-sm text-blue-800 dark:text-blue-200 font-arabic text-center">
                 <Clock className="inline mr-1 h-4 w-4" />
-                متبقي من التجربة المجانية: {permissions.trialDaysLeft} أيام
+                متبقي من التجربة المجانية: {permissions.trialDaysLeft } أيام
               </p>
             </div>
           )}
-          
+
           {/* Show upgrade options */}
-          <Button 
-            onClick={() => router.push('/pricing')} 
-            variant="outline" 
+          <Button
+            onClick={() => router.push('/pricing')}
+            variant="outline"
             className="w-full font-arabic"
           >
             عرض خطط الاشتراك
           </Button>
-          
-          <Button 
-            onClick={() => router.push(fallbackUrl)} 
-            variant="ghost" 
+
+          <Button
+            onClick={() => router.push(fallbackUrl)}
+            variant="ghost"
             className="w-full font-arabic"
           >
             العودة للوحة التحكم
@@ -275,4 +250,4 @@ function AccessDeniedCard({
       </Card>
     </div>
   );
-} 
+}

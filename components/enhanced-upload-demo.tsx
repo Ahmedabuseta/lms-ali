@@ -5,39 +5,32 @@ import { FileUploadArabic } from './file-upload-arabic';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 
-export const EnhancedUploadDemo = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: string }>({});
-  const [uploadHistory, setUploadHistory] = useState<Array<{
-    type: string;
+export const EnhancedUploadDemo = () => { const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: string }>({});
+  const [uploadHistory, setUploadHistory] = useState<Array<{ type: string;
     fileName: string;
     url: string;
-    timestamp: Date;
-  }>>([]);
+    timestamp: Date; }>>([]);
 
-  const handleFileUpload = (type: string, typeLabel: string) => (url?: string) => {
-    if (url) {
+  const handleFileUpload = (type: string, typeLabel: string) => (url?: string) => { if (url) {
       setUploadedFiles(prev => ({ ...prev, [type]: url }));
-      
+
       // Extract original filename from URL
       const urlFileName = url.split('/').pop() || 'ملف مرفوع';
-      const fileName = urlFileName.includes('_') 
+      const fileName = urlFileName.includes('_')
         ? urlFileName.split('_').slice(2).join('_')
         : urlFileName;
-      
+
       setUploadHistory(prev => [
-        {
-          type: typeLabel,
+        { type: typeLabel,
           fileName,
           url,
-          timestamp: new Date()
-        },
+          timestamp: new Date() },
         ...prev
       ].slice(0, 10)); // Keep only last 10 uploads
     }
   };
 
-  const clearFile = (type: string) => {
-    setUploadedFiles(prev => ({ ...prev, [type]: '' }));
+  const clearFile = (type: string) => { setUploadedFiles(prev => ({ ...prev, [type]: '' }));
   };
 
   return (
@@ -59,7 +52,7 @@ export const EnhancedUploadDemo = () => {
 
       {/* Upload Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        
+
         {/* Course Image Upload */}
         <Card className="border-2 hover:border-blue-300 transition-colors">
           <CardHeader>
@@ -70,7 +63,7 @@ export const EnhancedUploadDemo = () => {
           <CardContent>
             <FileUploadArabic
               value={uploadedFiles.courseImage}
-              onChange={handleFileUpload('courseImage', 'صورة دورة')}
+              onChange={ handleFileUpload('courseImage', 'صورة دورة') }
               folder="demo-course-images"
               acceptedFileTypes="image/*"
               maxFileSize={5 * 1024 * 1024} // 5MB
@@ -81,7 +74,7 @@ export const EnhancedUploadDemo = () => {
               <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-arabic text-green-600">✅ تم الرفع بنجاح</span>
-                  <button 
+                  <button
                     onClick={() => clearFile('courseImage')}
                     className="text-xs text-red-500 hover:text-red-700 font-arabic"
                   >
@@ -103,7 +96,7 @@ export const EnhancedUploadDemo = () => {
           <CardContent>
             <FileUploadArabic
               value={uploadedFiles.chapterVideo}
-              onChange={handleFileUpload('chapterVideo', 'فيديو فصل')}
+              onChange={ handleFileUpload('chapterVideo', 'فيديو فصل') }
               folder="demo-chapter-videos"
               acceptedFileTypes="video/*"
               maxFileSize={100 * 1024 * 1024} // 100MB
@@ -114,7 +107,7 @@ export const EnhancedUploadDemo = () => {
               <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-arabic text-green-600">✅ تم الرفع بنجاح</span>
-                  <button 
+                  <button
                     onClick={() => clearFile('chapterVideo')}
                     className="text-xs text-red-500 hover:text-red-700 font-arabic"
                   >
@@ -136,7 +129,7 @@ export const EnhancedUploadDemo = () => {
           <CardContent>
             <FileUploadArabic
               value={uploadedFiles.courseAttachment}
-              onChange={handleFileUpload('courseAttachment', 'مرفق دورة')}
+              onChange={ handleFileUpload('courseAttachment', 'مرفق دورة') }
               folder="demo-course-attachments"
               acceptedFileTypes=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
               maxFileSize={25 * 1024 * 1024} // 25MB
@@ -147,7 +140,7 @@ export const EnhancedUploadDemo = () => {
               <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-arabic text-green-600">✅ تم الرفع بنجاح</span>
-                  <button 
+                  <button
                     onClick={() => clearFile('courseAttachment')}
                     className="text-xs text-red-500 hover:text-red-700 font-arabic"
                   >
@@ -161,7 +154,7 @@ export const EnhancedUploadDemo = () => {
       </div>
 
       {/* Upload History */}
-      {uploadHistory.length > 0 && (
+      { uploadHistory.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="font-arabic flex items-center gap-2">
@@ -171,7 +164,7 @@ export const EnhancedUploadDemo = () => {
           <CardContent>
             <div className="space-y-3">
               {uploadHistory.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={index } className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="flex items-center space-x-3 space-x-reverse">
                     <Badge variant="outline" className="font-arabic">
                       {item.type}
@@ -184,9 +177,9 @@ export const EnhancedUploadDemo = () => {
                     <span className="text-xs text-gray-500 font-arabic">
                       {item.timestamp.toLocaleTimeString('ar-EG')}
                     </span>
-                    <a 
-                      href={item.url} 
-                      target="_blank" 
+                    <a
+                      href={item.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:text-blue-700 text-sm font-arabic"
                     >
@@ -214,7 +207,7 @@ export const EnhancedUploadDemo = () => {
                 الاحتفاظ بأسماء الملفات الأصلية مع ضمان التفرد
               </p>
             </div>
-            
+
             <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
               <div className="text-3xl mb-2">⚡</div>
               <h3 className="font-semibold font-arabic mb-2">شريط تقدم حقيقي</h3>
@@ -222,7 +215,7 @@ export const EnhancedUploadDemo = () => {
                 تتبع دقيق للتقدم مع عرض السرعة والوقت المتبقي
               </p>
             </div>
-            
+
             <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
               <div className="text-3xl mb-2">🎨</div>
               <h3 className="font-semibold font-arabic mb-2">تجربة مستخدم محسنة</h3>
@@ -230,7 +223,7 @@ export const EnhancedUploadDemo = () => {
                 واجهة عربية جميلة مع تأثيرات بصرية متقدمة
               </p>
             </div>
-            
+
             <div className="text-center p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
               <div className="text-3xl mb-2">🛡️</div>
               <h3 className="font-semibold font-arabic mb-2">التحقق من الملفات</h3>
@@ -238,7 +231,7 @@ export const EnhancedUploadDemo = () => {
                 فحص نوع وحجم الملفات مع رسائل خطأ واضحة
               </p>
             </div>
-            
+
             <div className="text-center p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
               <div className="text-3xl mb-2">❌</div>
               <h3 className="font-semibold font-arabic mb-2">إلغاء الرفع</h3>
@@ -246,7 +239,7 @@ export const EnhancedUploadDemo = () => {
                 إمكانية إلغاء الرفع في أي وقت بسهولة
               </p>
             </div>
-            
+
             <div className="text-center p-4 bg-teal-50 dark:bg-teal-950/20 rounded-lg">
               <div className="text-3xl mb-2">🌙</div>
               <h3 className="font-semibold font-arabic mb-2">الوضع الليلي</h3>
@@ -291,4 +284,4 @@ export const EnhancedUploadDemo = () => {
       </Card>
     </div>
   );
-}; 
+};

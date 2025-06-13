@@ -15,8 +15,7 @@ import { Banner } from '@/components/banner';
 import { IconBadge } from '@/components/icon-badge';
 import { db } from '@/lib/db';
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-   requireAuth()
+const CourseIdPage = async ({ params }: { params: { courseId: string } }) => { requireAuth()
 
   const course = await db.course.findUnique({
     where: { id: params.courseId },
@@ -27,10 +26,8 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     return redirect('/');
   }
 
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: 'asc',
-    },
+  const categories = await db.category.findMany({ orderBy: {
+      name: 'asc', },
   });
 
   const requiredFields = [
@@ -56,15 +53,15 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
         <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-400/25 to-indigo-400/15 blur-3xl dark:from-blue-400/40 dark:to-indigo-400/25" />
         <div
           className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-400/25 to-pink-400/15 blur-3xl dark:from-purple-400/40 dark:to-pink-400/25"
-          style={{ animationDelay: '2s' }}
+          style={ { animationDelay: '2s' }}
          />
         <div
           className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-400/15 blur-3xl dark:from-cyan-400/40 dark:to-blue-400/25"
-          style={{ animationDelay: '4s' }}
+          style={ { animationDelay: '4s' }}
          />
         <div
           className="absolute right-1/3 bottom-1/3 h-40 w-40 animate-pulse rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/12 blur-3xl dark:from-indigo-400/35 dark:to-purple-400/20"
-          style={{ animationDelay: '1s' }}
+          style={ { animationDelay: '1s' }}
          />
       </div>
 
@@ -90,7 +87,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 <div className="h-2 w-64 overflow-hidden rounded-full bg-blue-200/60 backdrop-blur-xl dark:bg-blue-800/30">
                   <div
                     className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
-                    style={{ width: `${(completedFields / totalFields) * 100}%` }}
+                    style={ { width: `${(completedFields / totalFields) * 100 }%` }}
                    />
                 </div>
               </div>
@@ -119,10 +116,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                   <CategoryForm
                     initialData={course}
                     courseId={course.id}
-                    options={categories.map((category) => ({
+                    options={ categories.map((category) => ({
                       label: category.name,
-                      value: category.id,
-                    }))}
+                      value: category.id, }))}
                   />
                 </div>
               </div>

@@ -27,12 +27,10 @@ const LANGUAGE_OPTIONS = [
 ];
 
 // Types
-interface ImageToTextProps {
-  onTextExtracted?: (text: string) => void;
+interface ImageToTextProps { onTextExtracted?: (text: string) => void;
   maxHeight?: string;
   showPreview?: boolean;
-  clientSideProcessing?: boolean;
-}
+  clientSideProcessing?: boolean; }
 
 // Helper functions
 const performOptimizedOCR = async (
@@ -40,24 +38,21 @@ const performOptimizedOCR = async (
   language: string,
   enhancedMode: boolean,
   progressCallback: (status: string, progress?: number) => void,
-) => {
-  const worker = await createWorker(language, enhancedMode ? 1 : undefined, {
+) => { const worker = await createWorker(language, enhancedMode ? 1 : undefined, {
     logger: (m) => {
       if (m.status === 'recognizing text') {
-        progressCallback(`Processing: ${Math.round(m.progress * 100)}%`, m.progress * 100);
+        progressCallback(`Processing: ${Math.round(m.progress * 100) }%`, m.progress * 100);
       } else {
         progressCallback(`${m.status}...`);
       }
     },
   });
 
-  try {
-    if (enhancedMode) {
+  try { if (enhancedMode) {
       await worker.setParameters({
         tessedit_pageseg_mode: 6 as any, // Assume a single uniform block of text
         tessedit_ocr_engine_mode: 2 as any, // Legacy + LSTM mode for better accuracy
-        preserve_interword_spaces: 1 as any, // Preserve spaces
-      });
+        preserve_interword_spaces: 1 as any, // Preserve spaces });
     }
 
     const { data } = await worker.recognize(imageData);
@@ -67,13 +62,10 @@ const performOptimizedOCR = async (
   }
 };
 
-export const ImageToText = ({
-  onTextExtracted,
+export const ImageToText = ({ onTextExtracted,
   maxHeight = '300px',
   showPreview = true,
-  clientSideProcessing = false,
-}: ImageToTextProps) => {
-  // State management
+  clientSideProcessing = false, }: ImageToTextProps) => { // State management
   const [state, setState] = useState({
     imagePreview: null as string | null,
     extractedText: '',
@@ -85,16 +77,13 @@ export const ImageToText = ({
     ocrStatus: '',
     language: 'eng',
     confidence: null as number | null,
-    fullscreenPreview: false,
-  });
+    fullscreenPreview: false, });
 
   // Image adjustment state
-  const [imageAdjustments, setImageAdjustments] = useState({
-    rotation: 0,
+  const [imageAdjustments, setImageAdjustments] = useState({ rotation: 0,
     contrastLevel: [0] as number[],
     brightLevel: [0] as number[],
-    enhancedProcessing: false,
-  });
+    enhancedProcessing: false, });
 
   // Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,14 +91,12 @@ export const ImageToText = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Reset image processing settings when a new image is selected
-  useEffect(() => {
-    if (state.selectedImage === null) {
+  useEffect(() => { if (state.selectedImage === null) {
       setImageAdjustments({
         rotation: 0,
         contrastLevel: [0],
         brightLevel: [0],
-        enhancedProcessing: imageAdjustments.enhancedProcessing,
-      });
+        enhancedProcessing: imageAdjustments.enhancedProcessing, });
     }
   }, [state.selectedImage]);
 
@@ -121,8 +108,7 @@ export const ImageToText = ({
   }, [imageAdjustments.rotation, imageAdjustments.contrastLevel, imageAdjustments.brightLevel, state.selectedImage]);
 
   // Image transformation functions
-  const applyImageTransformations = () => {
-    if (!state.selectedImage || !canvasRef.current) return;
+  const applyImageTransformations = () => { if (!state.selectedImage || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -145,8 +131,7 @@ export const ImageToText = ({
       ctx.restore();
 
       // Apply contrast and brightness if needed
-      if (contrastLevel[0] !== 0 || brightLevel[0] !== 0) {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      if (contrastLevel[0] !== 0 || brightLevel[0] !== 0) { const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
         const contrast = (contrastLevel[0] / 50) * 2.5 + 1;
         const brightness = brightLevel[0];
@@ -160,56 +145,45 @@ export const ImageToText = ({
           // Apply contrast
           data[i] = Math.min(255, Math.max(0, (data[i] - 128) * contrast + 128));
           data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * contrast + 128));
-          data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * contrast + 128));
-        }
+          data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * contrast + 128)); }
 
         ctx.putImageData(imageData, 0, 0);
       }
 
       // Update preview
-      setState((prev) => ({
-        ...prev,
-        imagePreview: canvas.toDataURL('image/png'),
-      }));
+      setState((prev) => ({ ...prev,
+        imagePreview: canvas.toDataURL('image/png'), }));
     };
     img.src = state.selectedImage;
   };
 
   // Animation for progress
-  const startProgressAnimation = () => {
-    setState((prev) => ({ ...prev, progress: 0 }));
-    const interval = setInterval(() => {
-      setState((prev) => ({
+  const startProgressAnimation = () => { setState((prev) => ({ ...prev, progress: 0 }));
+    const interval = setInterval(() => { setState((prev) => ({
         ...prev,
-        progress: prev.progress >= 95 ? 95 : prev.progress + 5,
-      }));
+        progress: prev.progress >= 95 ? 95 : prev.progress + 5, }));
     }, 300);
 
     return () => clearInterval(interval);
   };
 
   // Image handling
-  const rotateImage = () => {
-    setImageAdjustments((prev) => ({
+  const rotateImage = () => { setImageAdjustments((prev) => ({
       ...prev,
-      rotation: (prev.rotation + 90) % 360,
-    }));
+      rotation: (prev.rotation + 90) % 360, }));
   };
 
   // OCR Processing
-  const processImage = async () => {
-    if (!state.imagePreview) return;
+  const processImage = async () => { if (!state.imagePreview) return;
 
     // Update state to show processing
     setState((prev) => ({
       ...prev,
       isProcessing: true,
       ocrStatus: 'Processing...',
-      error: null,
-    }));
+      error: null, }));
 
-    try {
-      // Start progress animation
+    try { // Start progress animation
       const cleanupProgress = startProgressAnimation();
 
       if (clientSideProcessing) {
@@ -218,32 +192,26 @@ export const ImageToText = ({
           state.imagePreview,
           state.language,
           imageAdjustments.enhancedProcessing,
-          (status, progress) => {
-            setState((prev) => ({
+          (status, progress) => { setState((prev) => ({
               ...prev,
               ocrStatus: status,
-              progress: progress ? progress * 100 : prev.progress,
-            }));
+              progress: progress ? progress * 100 : prev.progress, }));
           },
         );
 
         // Update state with results
-        setState((prev) => ({
-          ...prev,
+        setState((prev) => ({ ...prev,
           extractedText: text,
           confidence,
           progress: 100,
-          isProcessing: false,
-        }));
+          isProcessing: false, }));
 
         // Notify callback if provided
         if (onTextExtracted) {
           onTextExtracted(text);
         }
 
-        toast.success(`Text extracted with ${Math.round(confidence)}% confidence`, {
-          position: 'bottom-center',
-        });
+        toast.success(`Text extracted with ${Math.round(confidence)}% confidence`, { position: 'bottom-center', });
       } else {
         // Server-side processing
         await serverSideProcessing();
@@ -251,12 +219,11 @@ export const ImageToText = ({
 
       // Cleanup
       return () => cleanupProgress();
-    } catch (error: any) {
-      setState((prev) => ({
+    } catch (error: any) { setState((prev) => ({
         ...prev,
         isProcessing: false,
         progress: 0,
-        error: `Failed to extract text: ${error.message || 'Unknown error'}`,
+        error: `Failed to extract text: ${error.message || 'Unknown error' }`,
         ocrStatus: 'Error occurred during processing.',
       }));
 
@@ -266,17 +233,14 @@ export const ImageToText = ({
   };
 
   // Server-side OCR processing
-  const serverSideProcessing = async () => {
-    if (!state.selectedImage) return;
+  const serverSideProcessing = async () => { if (!state.selectedImage) return;
 
     // Create a blob from the data URL
     const fetchBlob = async (dataUrl: string) => {
       const response = await fetch(dataUrl);
-      return await response.blob();
-    };
+      return await response.blob(); };
 
-    try {
-      const blob = await fetchBlob(state.imagePreview!);
+    try { const blob = await fetchBlob(state.imagePreview!);
       const file = new File([blob], 'image.png', { type: 'image/png' });
 
       const formData = new FormData();
@@ -284,15 +248,11 @@ export const ImageToText = ({
       formData.append('language', state.language);
 
       // Set timeout to prevent indefinite loading
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Request timed out')), 30000);
-      });
+      const timeoutPromise = new Promise<never>((_, reject) => { setTimeout(() => reject(new Error('Request timed out')), 30000); });
 
       // Send to API
-      const fetchPromise = fetch('/api/image-processing', {
-        method: 'POST',
-        body: formData,
-      });
+      const fetchPromise = fetch('/api/image-processing', { method: 'POST',
+        body: formData, });
 
       // Race between fetch and timeout
       const response = (await Promise.race([fetchPromise, timeoutPromise])) as Response;
@@ -305,49 +265,35 @@ export const ImageToText = ({
       const data = await response.json();
 
       // Complete progress animation
-      setState((prev) => ({
-        ...prev,
+      setState((prev) => ({ ...prev,
         progress: 100,
-        confidence: data.confidence || null,
-      }));
+        confidence: data.confidence || null, }));
 
-      setTimeout(() => {
-        setState((prev) => ({ ...prev, isProcessing: false }));
+      setTimeout(() => { setState((prev) => ({ ...prev, isProcessing: false }));
 
-        if (data.text && data.text.trim()) {
-          setState((prev) => ({ ...prev, extractedText: data.text }));
-          toast.success(`Text extracted with ${Math.round(data.confidence)}% confidence`, {
-            position: 'bottom-center',
-          });
-        } else {
-          setState((prev) => ({
+        if (data.text && data.text.trim()) { setState((prev) => ({ ...prev, extractedText: data.text }));
+          toast.success(`Text extracted with ${Math.round(data.confidence)}% confidence`, { position: 'bottom-center', });
+        } else { setState((prev) => ({
             ...prev,
-            extractedText: 'No text was detected in this image.',
-          }));
+            extractedText: 'No text was detected in this image.', }));
 
-          toast.error('No text could be detected in the image', {
-            position: 'bottom-center',
-          });
+          toast.error('No text could be detected in the image', { position: 'bottom-center', });
         }
       }, 500);
-    } catch (err: any) {
-      // Handle specific error cases
+    } catch (err: any) { // Handle specific error cases
       if (err.message && err.message.includes('timed out')) {
         setState((prev) => ({
           ...prev,
           error: 'The request timed out. The image may be too large or complex.',
           isProcessing: false,
-          progress: 0,
-        }));
+          progress: 0, }));
 
         toast.error('Image processing timed out');
-      } else {
-        setState((prev) => ({
+      } else { setState((prev) => ({
           ...prev,
           error: err.message || 'An error occurred while processing the image',
           isProcessing: false,
-          progress: 0,
-        }));
+          progress: 0, }));
 
         toast.error('Failed to extract text from image');
       }
@@ -356,8 +302,7 @@ export const ImageToText = ({
   };
 
   // File handling
-  const handleFileChange = async (file: File) => {
-    if (!file) return;
+  const handleFileChange = async (file: File) => { if (!file) return;
 
     try {
       // Reset states
@@ -367,49 +312,41 @@ export const ImageToText = ({
         extractedText: '',
         copied: false,
         ocrStatus: '',
-        confidence: null,
-      }));
+        confidence: null, }));
 
       // Check file type
-      if (!file.type.startsWith('image/')) {
-        setState((prev) => ({
+      if (!file.type.startsWith('image/')) { setState((prev) => ({
           ...prev,
-          error: 'Please select an image file',
-        }));
+          error: 'Please select an image file', }));
         return;
       }
 
       // Check file size
-      if (file.size > MAX_FILE_SIZE) {
-        setState((prev) => ({
+      if (file.size > MAX_FILE_SIZE) { setState((prev) => ({
           ...prev,
-          error: `Image size exceeds the ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`,
+          error: `Image size exceeds the ${MAX_FILE_SIZE / (1024 * 1024) }MB limit`,
         }));
         return;
       }
 
       // Display image preview
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
+      reader.onload = (e) => { const result = e.target?.result as string;
         setState((prev) => ({
           ...prev,
           imagePreview: result,
           selectedImage: result,
-          isProcessing: true,
-        }));
+          isProcessing: true, }));
 
         // Start processing after a short delay to allow image preview to render
         setTimeout(() => processImage(), 500);
       };
       reader.readAsDataURL(file);
-    } catch (err: any) {
-      setState((prev) => ({
+    } catch (err: any) { setState((prev) => ({
         ...prev,
         isProcessing: false,
         progress: 0,
-        error: err.message || 'An error occurred while processing the image',
-      }));
+        error: err.message || 'An error occurred while processing the image', }));
       console.error(err);
     }
   };
@@ -433,8 +370,7 @@ export const ImageToText = ({
   };
 
   // Copy to clipboard
-  const copyToClipboard = () => {
-    if (!state.extractedText) return;
+  const copyToClipboard = () => { if (!state.extractedText) return;
 
     navigator.clipboard
       .writeText(state.extractedText)
@@ -443,15 +379,12 @@ export const ImageToText = ({
         toast.success('Text copied to clipboard');
         setTimeout(() => setState((prev) => ({ ...prev, copied: false })), 2000);
       })
-      .catch((err) => {
-        console.error('Failed to copy text:', err);
-        toast.error('Failed to copy text');
-      });
+      .catch((err) => { console.error('Failed to copy text:', err);
+        toast.error('Failed to copy text'); });
   };
 
   // Reset component
-  const handleReset = () => {
-    setState({
+  const handleReset = () => { setState({
       imagePreview: null,
       selectedImage: null,
       extractedText: '',
@@ -462,15 +395,12 @@ export const ImageToText = ({
       isProcessing: false,
       language: 'eng',
       confidence: null,
-      fullscreenPreview: false,
-    });
+      fullscreenPreview: false, });
 
-    setImageAdjustments({
-      rotation: 0,
+    setImageAdjustments({ rotation: 0,
       contrastLevel: [0],
       brightLevel: [0],
-      enhancedProcessing: false,
-    });
+      enhancedProcessing: false, });
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -487,7 +417,7 @@ export const ImageToText = ({
             Image to Text
           </CardTitle>
           <CardDescription>
-            Extract text from images with OCR technology {clientSideProcessing ? '(Client-side)' : '(Server-side)'}
+            Extract text from images with OCR technology { clientSideProcessing ? '(Client-side)' : '(Server-side)' }
           </CardDescription>
         </CardHeader>
 
@@ -495,13 +425,12 @@ export const ImageToText = ({
           {/* File upload area */}
           <div
             ref={dropAreaRef}
-            className={`
-              rounded-lg border-2 border-dashed p-6 
+            className={ `
+              rounded-lg border-2 border-dashed p-6
               ${
                 state.isProcessing
                   ? 'cursor-not-allowed bg-muted opacity-50'
-                  : 'cursor-pointer transition-colors hover:bg-muted/30'
-              }
+                  : 'cursor-pointer transition-colors hover:bg-muted/30' }
               flex flex-col items-center justify-center text-center
             `}
             onClick={() => !state.isProcessing && fileInputRef.current?.click()}
@@ -517,7 +446,7 @@ export const ImageToText = ({
               }
             }}
           >
-            {!state.imagePreview ? (
+            { !state.imagePreview ? (
               <>
                 <div className="mb-3 rounded-full bg-primary/10 p-3">
                   <Upload className="h-6 w-6 text-primary" />
@@ -528,20 +457,19 @@ export const ImageToText = ({
             ) : showPreview ? (
               <div className="relative w-full">
                 <img
-                  src={state.imagePreview}
+                  src={state.imagePreview }
                   alt="Preview"
                   className="mx-auto rounded-md object-contain"
                   style={{ maxHeight }}
-                  onError={() => {
+                  onError={ () => {
                     setState((prev) => ({
                       ...prev,
                       error: 'Failed to load image preview',
-                      imagePreview: null,
-                    }));
+                      imagePreview: null, }));
                   }}
                 />
                 {/* Image controls */}
-                {!state.isProcessing && state.imagePreview && (
+                { !state.isProcessing && state.imagePreview && (
                   <div className="absolute right-2 top-2 flex gap-1">
                     <Button
                       variant="secondary"
@@ -593,7 +521,7 @@ export const ImageToText = ({
               hidden
               aria-hidden="true"
             />
-            <canvas ref={canvasRef} style={{ display: 'none' }} />
+            <canvas ref={canvasRef} style={ { display: 'none' }} />
           </div>
 
           {/* Image adjustments */}
@@ -606,7 +534,7 @@ export const ImageToText = ({
                 </Label>
                 <Select
                   value={state.language}
-                  onValueChange={(value) => setState((prev) => ({ ...prev, language: value }))}
+                  onValueChange={ (value) => setState((prev) => ({ ...prev, language: value }))}
                 >
                   <SelectTrigger id="language" className="w-[180px]">
                     <SelectValue placeholder="Select language" />
@@ -633,11 +561,10 @@ export const ImageToText = ({
                   <Switch
                     id="enhanced-processing"
                     checked={imageAdjustments.enhancedProcessing}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={ (checked) =>
                       setImageAdjustments((prev) => ({
                         ...prev,
-                        enhancedProcessing: checked,
-                      }))
+                        enhancedProcessing: checked, }))
                     }
                   />
                 </div>
@@ -648,11 +575,10 @@ export const ImageToText = ({
                 <Label className="text-sm">Brightness</Label>
                 <Slider
                   value={imageAdjustments.brightLevel}
-                  onValueChange={(value) =>
+                  onValueChange={ (value) =>
                     setImageAdjustments((prev) => ({
                       ...prev,
-                      brightLevel: value,
-                    }))
+                      brightLevel: value, }))
                   }
                   min={-50}
                   max={50}
@@ -665,11 +591,10 @@ export const ImageToText = ({
                 <Label className="text-sm">Contrast</Label>
                 <Slider
                   value={imageAdjustments.contrastLevel}
-                  onValueChange={(value) =>
+                  onValueChange={ (value) =>
                     setImageAdjustments((prev) => ({
                       ...prev,
-                      contrastLevel: value,
-                    }))
+                      contrastLevel: value, }))
                   }
                   min={-50}
                   max={50}
@@ -717,12 +642,12 @@ export const ImageToText = ({
                   className="h-8 w-8"
                   title="Copy to clipboard"
                 >
-                  {state.copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  { state.copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" /> }
                 </Button>
               </div>
               <Textarea
                 value={state.extractedText}
-                onChange={(e) => setState((prev) => ({ ...prev, extractedText: e.target.value }))}
+                onChange={ (e) => setState((prev) => ({ ...prev, extractedText: e.target.value }))}
                 className="min-h-[120px] font-mono text-sm"
                 aria-label="Extracted text"
               />
@@ -745,7 +670,7 @@ export const ImageToText = ({
       {/* Fullscreen preview dialog */}
       <Dialog
         open={state.fullscreenPreview}
-        onOpenChange={(open) => setState((prev) => ({ ...prev, fullscreenPreview: open }))}
+        onOpenChange={ (open) => setState((prev) => ({ ...prev, fullscreenPreview: open }))}
       >
         <DialogContent className="flex h-[90vh] w-[90vw] max-w-screen-lg items-center justify-center p-0">
           {state.imagePreview && (

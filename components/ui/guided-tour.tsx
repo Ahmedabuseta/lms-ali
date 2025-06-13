@@ -2,19 +2,15 @@
 
 import { Button } from './button';
 
-interface TourStep {
-  target: string;
+interface TourStep { target: string;
   title: string;
   content: string;
-  placement: 'top' | 'bottom' | 'left' | 'right';
-}
+  placement: 'top' | 'bottom' | 'left' | 'right'; }
 
-interface GuidedTourProps {
-  steps: TourStep[];
+interface GuidedTourProps { steps: TourStep[];
   isOpen: boolean;
   onClose: () => void;
-  onComplete: () => void;
-}
+  onComplete: () => void; }
 
 export const GuidedTour = ({ steps, isOpen, onClose, onComplete }: GuidedTourProps) => {
   // Simple placeholder implementation
@@ -40,9 +36,7 @@ export const GuidedTour = ({ steps, isOpen, onClose, onComplete }: GuidedTourPro
   );
 };
 
-interface TourButtonProps {
-  onClick: () => void;
-}
+interface TourButtonProps { onClick: () => void; }
 
 export const TourButton = ({ onClick }: TourButtonProps) => {
   return (

@@ -1,23 +1,20 @@
 'use client';
 
-import { 
-  BookOpen, 
+import { BookOpen,
   CheckCircle,
-  FileQuestion, 
+  FileQuestion,
   Trophy,
   Target,
   Star,
   Award,
   Activity,
   GraduationCap,
-  Brain
-} from 'lucide-react';
+  Brain } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 
-interface StatsOverviewProps {
-  stats: {
+interface StatsOverviewProps { stats: {
     totalCourses?: number;
     totalStudents?: number;
     totalExams?: number;
@@ -31,14 +28,12 @@ interface StatsOverviewProps {
       type: string;
       title: string;
       timestamp: Date;
-      status?: string;
-    }>;
+      status?: string; }>;
   };
   userRole: string;
 }
 
-export function StatsOverview({ stats }: StatsOverviewProps) {
-  const studentStats = [
+export function StatsOverview({ stats }: StatsOverviewProps) { const studentStats = [
     {
       title: 'الدورات المسجل بها',
       value: stats.enrolledCourses || 0,
@@ -50,10 +45,8 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       iconColor: 'text-blue-600 dark:text-blue-400',
       textColor: 'text-blue-600 dark:text-blue-400',
       description: 'دورة نشطة',
-      cardBg: 'bg-white/80 dark:bg-gray-800/80'
-    },
-    {
-      title: 'الدورات المكتملة',
+      cardBg: 'bg-white/80 dark:bg-gray-800/80' },
+    { title: 'الدورات المكتملة',
       value: stats.completedCourses || 0,
       icon: CheckCircle,
       color: 'emerald',
@@ -63,10 +56,8 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       iconColor: 'text-emerald-600 dark:text-emerald-400',
       textColor: 'text-emerald-600 dark:text-emerald-400',
       description: 'دورة مكتملة',
-      cardBg: 'bg-white/80 dark:bg-gray-800/80'
-    },
-    {
-      title: 'محاولات الامتحان',
+      cardBg: 'bg-white/80 dark:bg-gray-800/80' },
+    { title: 'محاولات الامتحان',
       value: stats.examAttempts || 0,
       icon: FileQuestion,
       color: 'purple',
@@ -76,11 +67,9 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       iconColor: 'text-purple-600 dark:text-purple-400',
       textColor: 'text-purple-600 dark:text-purple-400',
       description: 'محاولة امتحان',
-      cardBg: 'bg-white/80 dark:bg-gray-800/80'
-    },
-    {
-      title: 'متوسط الدرجات',
-      value: `${stats.averageScore || 0}%`,
+      cardBg: 'bg-white/80 dark:bg-gray-800/80' },
+    { title: 'متوسط الدرجات',
+      value: `${stats.averageScore || 0 }%`,
       icon: Trophy,
       color: 'orange',
       bgGradient: 'from-orange-50/80 to-amber-50/60',
@@ -95,11 +84,11 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 sm:gap-6">
-      {studentStats.map((stat, index) => {
+      { studentStats.map((stat, index) => {
         const Icon = stat.icon;
         return (
-          <Card 
-            key={index}
+          <Card
+            key={index }
             className={`group relative overflow-hidden ${stat.borderColor} ${stat.cardBg} backdrop-blur-sm shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-${stat.color}-500/10`}
           >
             <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient}`} />
@@ -122,12 +111,12 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
                   <Icon className={`h-5 w-5 ${stat.iconColor} sm:h-6 sm:w-6`} />
                 </div>
               </div>
-              
+
               {/* Progress indicator for average score */}
               {stat.title === 'متوسط الدرجات' && (
                 <div className="mt-4">
-                  <Progress 
-                    value={stats.averageScore || 0} 
+                  <Progress
+                    value={stats.averageScore || 0}
                     className="h-2 bg-slate-200/50 dark:bg-slate-700/50"
                   />
                   <div className="mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400">
@@ -136,12 +125,12 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
                   </div>
                 </div>
               )}
-              
+
               {/* Completion rate for enrolled courses */}
               {stat.title === 'الدورات المسجل بها' && stats.enrolledCourses && stats.completedCourses && stats.enrolledCourses > 0 && (
                 <div className="mt-4">
-                  <Progress 
-                    value={(stats.completedCourses / stats.enrolledCourses) * 100} 
+                  <Progress
+                    value={(stats.completedCourses / stats.enrolledCourses) * 100}
                     className="h-2 bg-slate-200/50 dark:bg-slate-700/50"
                   />
                   <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
@@ -155,4 +144,4 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       })}
     </div>
   );
-} 
+}

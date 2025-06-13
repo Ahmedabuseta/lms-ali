@@ -11,21 +11,18 @@ import { MathRenderer } from '@/components/math-renderer';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+  FormMessage, } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 
-interface Question {
-  id: string;
+interface Question { id: string;
   text: string;
   type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'PASSAGE';
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
@@ -33,46 +30,34 @@ interface Question {
   options: Array<{
     id: string;
     text: string;
-    isCorrect: boolean;
-  }>;
-  questionBank: {
-    id: string;
+    isCorrect: boolean; }>;
+  questionBank: { id: string;
     title: string;
     course: {
       id: string;
-      title: string;
-    };
-    chapter?: {
-      id: string;
-      title: string;
-    };
+      title: string; };
+    chapter?: { id: string;
+      title: string; };
   };
-  passage?: {
-    id: string;
+  passage?: { id: string;
     title: string;
-    content: string;
-  };
+    content: string; };
 }
 
-interface EditQuestionFormProps {
-  question: Question;
-}
+interface EditQuestionFormProps { question: Question; }
 
-const formSchema = z.object({
-  text: z.string().min(1, 'نص السؤال مطلوب'),
+const formSchema = z.object({ text: z.string().min(1, 'نص السؤال مطلوب'),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE', 'PASSAGE']),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
   points: z.number().min(1, 'النقاط يجب أن تكون أكثر من 0'),
   options: z.array(z.object({
     text: z.string().min(1, 'نص الخيار مطلوب'),
-    isCorrect: z.boolean(),
-  })).min(2, 'يجب إضافة خيارين على الأقل'),
+    isCorrect: z.boolean(), })).min(2, 'يجب إضافة خيارين على الأقل'),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
-  const router = useRouter();
+export const EditQuestionForm = ({ question }: EditQuestionFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormData>({
@@ -84,35 +69,29 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
       points: question.points,
       options: question.options.map(option => ({
         text: option.text,
-        isCorrect: option.isCorrect,
-      })),
+        isCorrect: option.isCorrect, })),
     },
   });
 
-  const addOption = () => {
-    const currentOptions = form.getValues('options');
+  const addOption = () => { const currentOptions = form.getValues('options');
     form.setValue('options', [
       ...currentOptions,
       { text: '', isCorrect: false },
     ]);
   };
 
-  const removeOption = (index: number) => {
-    const currentOptions = form.getValues('options');
+  const removeOption = (index: number) => { const currentOptions = form.getValues('options');
     if (currentOptions.length > 2) {
       form.setValue(
         'options',
         currentOptions.filter((_, i) => i !== index)
-      );
-    }
+      ); }
   };
 
-  const setCorrectAnswer = (index: number) => {
-    const currentOptions = form.getValues('options');
+  const setCorrectAnswer = (index: number) => { const currentOptions = form.getValues('options');
     const updatedOptions = currentOptions.map((option, i) => ({
       ...option,
-      isCorrect: i === index,
-    }));
+      isCorrect: i === index, }));
     form.setValue('options', updatedOptions);
   };
 
@@ -129,11 +108,9 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
         }
       }
 
-      const response = await fetch(`/api/questions/${question.id}`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/questions/${question.id}`, { method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json', },
         body: JSON.stringify(data),
       });
 
@@ -152,8 +129,7 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
     }
   };
 
-  const getTypeLabel = (type: string) => {
-    switch (type) {
+  const getTypeLabel = (type: string) => { switch (type) {
       case 'MULTIPLE_CHOICE':
         return 'اختيار متعدد';
       case 'TRUE_FALSE':
@@ -161,37 +137,35 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
       case 'PASSAGE':
         return 'قطعة';
       default:
-        return type;
-    }
+        return type; }
   };
 
   return (
-    <div className={`${isSubmitting ? 'cursor-wait' : ''}`}>
+    <div className={ `${isSubmitting ? 'cursor-wait' : '' }`}>
       <div className="mb-6 flex items-center gap-4">
         <Button
           variant="outline"
           onClick={() => router.back()}
           disabled={isSubmitting}
-          className={`flex items-center gap-2 font-arabic ${
-            isSubmitting ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800'
-          }`}
+          className={ `flex items-center gap-2 font-arabic ${
+            isSubmitting ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800' }`}
         >
           <ArrowLeft className="h-4 w-4" />
           العودة
         </Button>
-        
-        {question.passage && (
+
+        { question.passage && (
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 font-arabic">
-              مرتبط بالقطعة: {question.passage.title}
+              مرتبط بالقطعة: {question.passage.title }
             </span>
           </div>
         )}
       </div>
 
       {/* Loading overlay */}
-      {isSubmitting && (
+      { isSubmitting && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-2xl border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
@@ -202,10 +176,10 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
             </div>
           </div>
         </div>
-      )}
+      ) }
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className={`space-y-6 ${isSubmitting ? 'pointer-events-none' : ''}`}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className={ `space-y-6 ${isSubmitting ? 'pointer-events-none' : '' }`}>
           <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="font-arabic text-gray-900 dark:text-gray-100">تعديل السؤال</CardTitle>
@@ -220,16 +194,16 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                     <FormControl>
                       <Textarea
                         placeholder="أدخل نص السؤال... يمكنك استخدام صيغ رياضية مثل $x^2$ أو $$\int x dx$$"
-                        className={`font-arabic ${isSubmitting ? 'cursor-wait' : 'cursor-text'}`}
+                        className={ `font-arabic ${isSubmitting ? 'cursor-wait' : 'cursor-text' }`}
                         disabled={isSubmitting}
                         {...field}
                       />
                     </FormControl>
-                    {field.value && (
+                    { field.value && (
                       <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                         <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-arabic">معاينة:</div>
                         <div className="text-sm">
-                          <MathRenderer content={field.value} />
+                          <MathRenderer content={field.value } />
                         </div>
                       </div>
                     )}
@@ -249,9 +223,8 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                         <select
                           {...field}
                           disabled={isSubmitting}
-                          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 font-arabic ${
-                            isSubmitting ? 'cursor-wait' : 'cursor-pointer'
-                          }`}
+                          className={ `flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 font-arabic ${
+                            isSubmitting ? 'cursor-wait' : 'cursor-pointer' }`}
                         >
                           <option value="EASY">سهل</option>
                           <option value="MEDIUM">متوسط</option>
@@ -274,9 +247,8 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                           type="number"
                           min={1}
                           disabled={isSubmitting}
-                          className={`font-arabic ${
-                            isSubmitting ? 'cursor-wait' : 'cursor-text'
-                          }`}
+                          className={ `font-arabic ${
+                            isSubmitting ? 'cursor-wait' : 'cursor-text' }`}
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value))}
                         />
@@ -315,8 +287,8 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
               )}
             </CardHeader>
             <CardContent className="space-y-4">
-              {form.watch('options').map((_, optionIndex) => (
-                <div key={optionIndex} className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              { form.watch('options').map((_, optionIndex) => (
+                <div key={optionIndex } className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                   <input
                     type="radio"
                     name="correctAnswer"
@@ -324,7 +296,7 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                     onChange={() => setCorrectAnswer(optionIndex)}
                     className="h-4 w-4 text-blue-600 mt-1"
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name={`options.${optionIndex}.text`}
@@ -337,10 +309,10 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                               {...field}
                               className="font-arabic"
                             />
-                            {field.value && (field.value.includes('$') || field.value.includes('\\')) && (
+                            { field.value && (field.value.includes('$') || field.value.includes('\\')) && (
                               <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-700">
                                 <div className="text-xs text-blue-700 dark:text-blue-300 mb-1 font-arabic">معاينة:</div>
-                                <MathRenderer content={field.value} />
+                                <MathRenderer content={field.value } />
                               </div>
                             )}
                           </div>
@@ -363,7 +335,7 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                   )}
                 </div>
               ))}
-              
+
               <p className="text-sm text-gray-600 dark:text-gray-400 font-arabic">
                 اختر الدائرة بجانب الإجابة الصحيحة
               </p>
@@ -376,21 +348,19 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
               variant="outline"
               onClick={() => router.back()}
               disabled={isSubmitting}
-              className={`font-arabic ${
-                isSubmitting ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800'
-              }`}
+              className={ `font-arabic ${
+                isSubmitting ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800' }`}
             >
               إلغاء
             </Button>
-            
+
             <Button
               type="submit"
               disabled={isSubmitting}
-              className={`bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-arabic ${
-                isSubmitting ? 'cursor-wait opacity-90' : 'cursor-pointer'
-              }`}
+              className={ `bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-arabic ${
+                isSubmitting ? 'cursor-wait opacity-90' : 'cursor-pointer' }`}
             >
-              {isSubmitting ? (
+              { isSubmitting ? (
                 <>
                   <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   جاري الحفظ...
@@ -400,11 +370,11 @@ export const EditQuestionForm = ({ question }: EditQuestionFormProps) => {
                   <Save className="ml-2 h-4 w-4" />
                   حفظ التغييرات
                 </>
-              )}
+              ) }
             </Button>
           </div>
         </form>
       </Form>
     </div>
   );
-}; 
+};

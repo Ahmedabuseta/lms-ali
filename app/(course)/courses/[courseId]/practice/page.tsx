@@ -4,45 +4,33 @@ import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { PracticeModeSelection } from './_components/practice-mode-selection';
 
-interface PracticePageProps {
-  params: {
-    courseId: string;
-  };
+interface PracticePageProps { params: {
+    courseId: string; };
 }
 
-const PracticePage = async ({ params }: PracticePageProps) => {
-  const session = await auth.api.getSession({
-    headers: headers(),
-  });
+const PracticePage = async ({ params }: PracticePageProps) => { const session = await auth.api.getSession({
+    headers: headers(), });
 
   if (!session) {
     return redirect('/sign-in');
   }
 
-  const course = await db.course.findUnique({
-    where: {
+  const course = await db.course.findUnique({ where: {
       id: params.courseId,
-      isPublished: true,
-    },
-    include: {
-      chapters: {
+      isPublished: true, },
+    include: { chapters: {
         where: {
-          isPublished: true,
-        },
-        include: {
-          questionBanks: {
+          isPublished: true, },
+        include: { questionBanks: {
             include: {
               _count: {
                 select: {
-                  questions: true,
-                },
+                  questions: true, },
               },
             },
           },
         },
-        orderBy: {
-          position: 'asc',
-        },
+        orderBy: { position: 'asc', },
       },
     },
   });
@@ -52,34 +40,27 @@ const PracticePage = async ({ params }: PracticePageProps) => {
   }
 
   // Get user's practice stats
-  const practiceStats = await db.practiceAttempt.groupBy({
-    by: ['questionId'],
+  const practiceStats = await db.practiceAttempt.groupBy({ by: ['questionId'],
     where: {
       userId: session.user.id,
       question: {
         questionBank: {
-          courseId: params.courseId,
-        },
+          courseId: params.courseId, },
       },
     },
-    _count: {
-      questionId: true,
-    },
-    _sum: {
-      score: true,
-    },
+    _count: { questionId: true, },
+    _sum: { score: true, },
   });
 
   // Calculate stats per chapter
-  const chaptersWithStats = course.chapters.map(chapter => {
-    const totalQuestions = chapter.questionBanks.reduce(
+  const chaptersWithStats = course.chapters.map(chapter => { const totalQuestions = chapter.questionBanks.reduce(
       (sum, qb) => sum + qb._count.questions,
       0
     );
 
     // Calculate practice count and performance for this chapter
     const chapterQuestions = chapter.questionBanks.flatMap(qb => qb.questions);
-    const chapterAttempts = practiceStats.filter(stat => 
+    const chapterAttempts = practiceStats.filter(stat =>
       chapterQuestions.some(q => q.id === stat.questionId)
     );
 
@@ -95,19 +76,16 @@ const PracticePage = async ({ params }: PracticePageProps) => {
       totalQuestions,
       practiceCount,
       averageScore,
-      hasPractice: totalQuestions > 0,
-    };
+      hasPractice: totalQuestions > 0, };
   });
 
   // Calculate overall course stats
-  const courseStats = {
-    totalChapters: chaptersWithStats.length,
+  const courseStats = { totalChapters: chaptersWithStats.length,
     totalQuestions: chaptersWithStats.reduce((sum, c) => sum + c.totalQuestions, 0),
     practicedChapters: chaptersWithStats.filter(c => c.practiceCount > 0).length,
     totalAttempts: chaptersWithStats.reduce((sum, c) => sum + c.practiceCount, 0),
-    averageScore: chaptersWithStats.reduce((sum, c) => sum + c.averageScore, 0) / 
-      (chaptersWithStats.filter(c => c.practiceCount > 0).length || 1),
-  };
+    averageScore: chaptersWithStats.reduce((sum, c) => sum + c.averageScore, 0) /
+      (chaptersWithStats.filter(c => c.practiceCount > 0).length || 1), };
 
   return (
     <div className="p-6" dir="rtl">
@@ -129,4 +107,4 @@ const PracticePage = async ({ params }: PracticePageProps) => {
   );
 };
 
-export default PracticePage; 
+export default PracticePage;

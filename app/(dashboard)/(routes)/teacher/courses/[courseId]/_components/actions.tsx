@@ -9,14 +9,11 @@ import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/modals';
 import { useConfettiStore } from '@/hooks/use-confetti';
 
-type ActionsProps = {
-  disabled?: boolean;
+type ActionsProps = { disabled?: boolean;
   isPublished?: boolean;
-  courseId: string;
-};
+  courseId: string; };
 
-export default function Actions({ disabled, isPublished, courseId }: ActionsProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function Actions({ disabled, isPublished, courseId }: ActionsProps) { const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
 
@@ -24,7 +21,7 @@ export default function Actions({ disabled, isPublished, courseId }: ActionsProp
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/courses/${courseId}`);
+      await axios.delete(`/api/courses/${courseId }`);
       toast.success('Course deleted');
       router.refresh();
       router.push(`/teacher/courses/${courseId}`);
@@ -56,7 +53,7 @@ export default function Actions({ disabled, isPublished, courseId }: ActionsProp
   return (
     <div className="flex items-center gap-x-2">
       <Button disabled={disabled || isLoading} variant="outline" size="sm" onClick={onPublish}>
-        {isPublished ? 'Unpublish' : 'Publish'}
+        { isPublished ? 'Unpublish' : 'Publish' }
       </Button>
       <ConfirmModal onConfirm={onDelete}>
         <Button variant="destructive" size="sm" disabled={isLoading}>

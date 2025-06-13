@@ -1,20 +1,15 @@
 // User-related types for client-side components
 // These mirror the Prisma schema but don't import the Prisma client
 
-export enum UserRole {
-  STUDENT = 'STUDENT',
-  TEACHER = 'TEACHER',
-}
+export enum UserRole { STUDENT = 'STUDENT',
+  TEACHER = 'TEACHER', }
 
-export enum StudentAccessType {
-  NO_ACCESS = 'NO_ACCESS',
+export enum StudentAccessType { NO_ACCESS = 'NO_ACCESS',
   FREE_TRIAL = 'FREE_TRIAL',
   FULL_ACCESS = 'FULL_ACCESS',
-  LIMITED_ACCESS = 'LIMITED_ACCESS',
-}
+  LIMITED_ACCESS = 'LIMITED_ACCESS', }
 
-export interface User {
-  id: string;
+export interface User { id: string;
   userId: string;
   email: string;
   name: string | null;
@@ -32,5 +27,4 @@ export interface User {
   banReason?: string | null;
   banExpires?: Date | null;
   createdAt: Date;
-  updatedAt: Date;
-}
+  updatedAt: Date; }

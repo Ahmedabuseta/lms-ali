@@ -6,14 +6,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 
-interface CategoryItemProps {
-  label: string;
+interface CategoryItemProps { label: string;
   value?: string;
-  icon?: IconType;
-}
+  icon?: IconType; }
 
-export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => {
-  const pathname = usePathname();
+export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => { const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -28,8 +25,7 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
         url: pathname || '',
         query: {
           title: currentTitle,
-          categoryId: isSelected ? null : value,
-        },
+          categoryId: isSelected ? null : value, },
       },
       { skipNull: true, skipEmptyString: true },
     );
@@ -40,10 +36,10 @@ export const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) =>
   return (
     <button
       onClick={onClick}
-      className={cn(
+      className={ cn(
         'flex items-center gap-x-1 rounded-full border border-slate-200 px-3 py-2 text-sm transition hover:border-sky-700',
         isSelected && 'border-sky-700 bg-sky-200/20 text-sky-800',
-      )}
+      ) }
       type="button"
     >
       {Icon && <Icon size={20} />}

@@ -1,15 +1,14 @@
 // Sample complex math examples for testing the math rendering capabilities
 // You can paste any of these examples into your AI tutor to test rendering
 
-export const mathExamples = {
-  // Simple inline math
+export const mathExamples = { // Simple inline math
   inlineMath: 'The formula for the area of a circle is $A = \\pi r^2$.',
 
   // Display math with fractions
   fractions: `
 A fraction example:
 
-$$\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$$
+$$\\frac{1 }{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$$
 `,
 
   // Complex equation with multiple elements
@@ -88,10 +87,9 @@ gx + hy + iz
 };
 
 // Function to generate a test message for the AI tutor
-export function generateMathTestMessage(example: keyof typeof mathExamples): string {
-  return `Here's an example of complex math that should render correctly:
+export function generateMathTestMessage(example: keyof typeof mathExamples): string { return `Here's an example of complex math that should render correctly:
 
-${mathExamples[example]}
+${mathExamples[example] }
 
 Please let me know if the math rendering looks correct.`;
 }

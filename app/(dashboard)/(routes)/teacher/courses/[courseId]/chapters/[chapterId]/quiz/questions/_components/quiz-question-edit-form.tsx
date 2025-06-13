@@ -9,15 +9,13 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { PlusCircle, Trash, Save, X, AlertCircle } from 'lucide-react';
 
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from '@/components/ui/form';
+  FormDescription, } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,20 +24,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-const formSchema = z.object({
-  text: z.string().min(1, 'Question text is required'),
+const formSchema = z.object({ text: z.string().min(1, 'Question text is required'),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE']),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).default('MEDIUM'),
   points: z.coerce.number().min(1).default(1),
   explanation: z.string().optional(),
   options: z.array(z.object({
     text: z.string().min(1, 'Option text is required'),
-    isCorrect: z.boolean().default(false),
-  })).min(2, 'At least 2 options are required'),
+    isCorrect: z.boolean().default(false), })).min(2, 'At least 2 options are required'),
 });
 
-interface QuizQuestionEditFormProps {
-  courseId: string;
+interface QuizQuestionEditFormProps { courseId: string;
   chapterId: string;
   question: {
     id: string;
@@ -51,21 +46,17 @@ interface QuizQuestionEditFormProps {
     options: Array<{
       id: string;
       text: string;
-      isCorrect: boolean;
-    }>;
+      isCorrect: boolean; }>;
   };
   onCancel: () => void;
   onSuccess: () => void;
 }
 
-export const QuizQuestionEditForm = ({ 
-  courseId, 
-  chapterId, 
-  question, 
-  onCancel, 
-  onSuccess 
-}: QuizQuestionEditFormProps) => {
-  const router = useRouter();
+export const QuizQuestionEditForm = ({ courseId,
+  chapterId,
+  question,
+  onCancel,
+  onSuccess }: QuizQuestionEditFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -78,29 +69,24 @@ export const QuizQuestionEditForm = ({
       explanation: question.explanation || '',
       options: question.options.map(option => ({
         text: option.text,
-        isCorrect: option.isCorrect,
-      })),
+        isCorrect: option.isCorrect, })),
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'options',
-  });
+  const { fields, append, remove } = useFieldArray({ control: form.control,
+    name: 'options', });
 
   const questionType = form.watch('type');
   const options = form.watch('options');
 
   // Handle question type change
-  useEffect(() => {
-    if (questionType === 'TRUE_FALSE') {
+  useEffect(() => { if (questionType === 'TRUE_FALSE') {
       form.setValue('options', [
         { text: 'صحيح', isCorrect: false },
         { text: 'خطأ', isCorrect: false },
       ]);
-    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length === 2 && 
-               question.type === 'TRUE_FALSE') {
-      // Converting from TRUE_FALSE to MULTIPLE_CHOICE
+    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length === 2 &&
+               question.type === 'TRUE_FALSE') { // Converting from TRUE_FALSE to MULTIPLE_CHOICE
       form.setValue('options', [
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
@@ -122,7 +108,7 @@ export const QuizQuestionEditForm = ({
       setIsSubmitting(true);
 
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}/quiz/questions/${question.id}`, 
+        `/api/courses/${courseId}/chapters/${chapterId}/quiz/questions/${question.id}`,
         values
       );
 
@@ -138,8 +124,7 @@ export const QuizQuestionEditForm = ({
     }
   };
 
-  const addOption = () => {
-    if (fields.length < 6) {
+  const addOption = () => { if (fields.length < 6) {
       append({ text: '', isCorrect: false });
     }
   };
@@ -150,12 +135,10 @@ export const QuizQuestionEditForm = ({
     }
   };
 
-  const toggleCorrectAnswer = (index: number) => {
-    const currentOptions = form.getValues('options');
+  const toggleCorrectAnswer = (index: number) => { const currentOptions = form.getValues('options');
     const newOptions = currentOptions.map((option, i) => ({
       ...option,
-      isCorrect: i === index ? !option.isCorrect : (questionType === 'MULTIPLE_CHOICE' ? option.isCorrect : false),
-    }));
+      isCorrect: i === index ? !option.isCorrect : (questionType === 'MULTIPLE_CHOICE' ? option.isCorrect : false), }));
     form.setValue('options', newOptions);
   };
 
@@ -291,8 +274,8 @@ export const QuizQuestionEditForm = ({
               )}
 
               <div className="space-y-3">
-                {fields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                { fields.map((field, index) => (
+                  <div key={field.id } className="flex items-center gap-3 p-3 border rounded-lg">
                     <FormField
                       control={form.control}
                       name={`options.${index}.isCorrect`}
@@ -377,7 +360,7 @@ export const QuizQuestionEditForm = ({
                 className="font-arabic"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                { isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات' }
               </Button>
               <Button
                 type="button"
@@ -395,4 +378,4 @@ export const QuizQuestionEditForm = ({
       </CardContent>
     </Card>
   );
-}; 
+};

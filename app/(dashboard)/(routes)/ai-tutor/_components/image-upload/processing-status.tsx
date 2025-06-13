@@ -1,11 +1,9 @@
 import { AlertTriangle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
-interface ProcessingStatusProps {
-  isProcessingImage: boolean;
+interface ProcessingStatusProps { isProcessingImage: boolean;
   progress: number;
-  imageError: string | null;
-}
+  imageError: string | null; }
 
 export const ProcessingStatus = ({ isProcessingImage, progress, imageError }: ProcessingStatusProps) => {
   return (

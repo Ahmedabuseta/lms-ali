@@ -10,39 +10,32 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+import { Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
-  FormDescription
-} from '@/components/ui/form';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
+  FormDescription } from '@/components/ui/form';
+import { Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Plus, 
-  Trash2, 
-  Eye, 
+import { Plus,
+  Trash2,
+  Eye,
   Calculator,
   FileText,
   BookOpen,
   AlertCircle,
-  Lightbulb
-} from 'lucide-react';
+  Lightbulb } from 'lucide-react';
 import { MathRenderer } from '@/components/math-renderer';
 import { MDXRenderer } from '@/components/mdx-renderer';
 import { cn } from '@/lib/utils';
 
-const questionSchema = z.object({
-  text: z.string().min(1, 'نص السؤال مطلوب'),
+const questionSchema = z.object({ text: z.string().min(1, 'نص السؤال مطلوب'),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE', 'PASSAGE']),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).optional(),
   points: z.number().min(1, 'النقاط مطلوبة').max(100).optional(),
@@ -52,18 +45,14 @@ const questionSchema = z.object({
   options: z.array(
     z.object({
       text: z.string().min(1, 'نص الخيار مطلوب'),
-      isCorrect: z.boolean(),
-    })
+      isCorrect: z.boolean(), })
   ).min(2, 'يجب أن يكون هناك خياران على الأقل')
-    .refine((options) => options.some((option) => option.isCorrect), {
-      message: 'يجب اختيار إجابة صحيحة واحدة على الأقل',
-    }),
+    .refine((options) => options.some((option) => option.isCorrect), { message: 'يجب اختيار إجابة صحيحة واحدة على الأقل', }),
 });
 
 export type QuestionFormData = z.infer<typeof questionSchema>;
 
-export interface QuestionFormProps {
-  initialData?: {
+export interface QuestionFormProps { initialData?: {
     id?: string;
     text: string;
     type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'PASSAGE';
@@ -75,20 +64,16 @@ export interface QuestionFormProps {
     options: Array<{
       id?: string;
       text: string;
-      isCorrect: boolean;
-    }>;
+      isCorrect: boolean; }>;
   };
-  questionBanks: Array<{
-    id: string;
+  questionBanks: Array<{ id: string;
     title: string;
     course: { title: string };
     chapter?: { title: string };
   }>;
-  passages?: Array<{
-    id: string;
+  passages?: Array<{ id: string;
     title: string;
-    content: string;
-  }>;
+    content: string; }>;
   onSubmit: (data: QuestionFormData) => Promise<void>;
   onCancel?: () => void;
   isSubmitting?: boolean;
@@ -105,26 +90,21 @@ export interface QuestionFormProps {
   defaultQuestionBank?: string;
 }
 
-const getDifficultyLabel = (difficulty?: string) => {
-  switch (difficulty) {
+const getDifficultyLabel = (difficulty?: string) => { switch (difficulty) {
     case 'EASY': return 'سهل';
     case 'MEDIUM': return 'متوسط';
     case 'HARD': return 'صعب';
-    default: return '';
-  }
+    default: return ''; }
 };
 
-const getTypeLabel = (type: string) => {
-  switch (type) {
+const getTypeLabel = (type: string) => { switch (type) {
     case 'MULTIPLE_CHOICE': return 'اختيار متعدد';
     case 'TRUE_FALSE': return 'صح أم خطأ';
     case 'PASSAGE': return 'قطعة';
-    default: return type;
-  }
+    default: return type; }
 };
 
-export const QuestionForm: React.FC<QuestionFormProps> = ({
-  initialData,
+export const QuestionForm: React.FC<QuestionFormProps> = ({ initialData,
   questionBanks,
   passages = [],
   onSubmit,
@@ -137,9 +117,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
   showMathHelp = true,
   allowPassageType = true,
   maxOptions = 6,
-  defaultQuestionBank,
-}) => {
-  const [showQuestionPreview, setShowQuestionPreview] = useState(false);
+  defaultQuestionBank, }) => { const [showQuestionPreview, setShowQuestionPreview] = useState(false);
   const [currentPassage, setCurrentPassage] = useState<any>(null);
 
   const form = useForm<QuestionFormData>({
@@ -161,10 +139,8 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'options',
-  });
+  const { fields, append, remove } = useFieldArray({ control: form.control,
+    name: 'options', });
 
   const questionType = form.watch('type');
   const selectedPassageId = form.watch('passageId');
@@ -181,14 +157,12 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
   }, [selectedPassageId, passages]);
 
   // Reset options when changing question type
-  useEffect(() => {
-    if (questionType === 'TRUE_FALSE') {
+  useEffect(() => { if (questionType === 'TRUE_FALSE') {
       form.setValue('options', [
         { text: 'صحيح', isCorrect: false },
         { text: 'خطأ', isCorrect: false },
       ]);
-    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length < 2) {
-      form.setValue('options', [
+    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length < 2) { form.setValue('options', [
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
@@ -198,14 +172,11 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
   }, [questionType, form, fields.length]);
 
   // Clear passage if not passage type
-  useEffect(() => {
-    if (questionType !== 'PASSAGE') {
-      form.setValue('passageId', '');
-    }
+  useEffect(() => { if (questionType !== 'PASSAGE') {
+      form.setValue('passageId', ''); }
   }, [questionType, form]);
 
-  const addOption = () => {
-    if (fields.length < maxOptions) {
+  const addOption = () => { if (fields.length < maxOptions) {
       append({ text: '', isCorrect: false });
     }
   };
@@ -216,19 +187,15 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
     }
   };
 
-  const toggleCorrectAnswer = (index: number) => {
-    const currentOptions = form.getValues('options');
-    
+  const toggleCorrectAnswer = (index: number) => { const currentOptions = form.getValues('options');
+
     if (questionType === 'TRUE_FALSE') {
       // For true/false, only one can be correct
       currentOptions.forEach((option, i) => {
-        option.isCorrect = i === index;
-      });
-    } else {
-      // For multiple choice, toggle the selected option
-      currentOptions[index].isCorrect = !currentOptions[index].isCorrect;
-    }
-    
+        option.isCorrect = i === index; });
+    } else { // For multiple choice, toggle the selected option
+      currentOptions[index].isCorrect = !currentOptions[index].isCorrect; }
+
     form.setValue('options', currentOptions);
   };
 
@@ -238,7 +205,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
 
   const renderPreview = (content: string) => {
     if (!content.trim()) return null;
-    
+
     if (containsMath(content)) {
       return <MDXRenderer content={content} />;
     }
@@ -248,16 +215,14 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
   const handleSubmit = async (data: QuestionFormData) => {
     try {
       await onSubmit(data);
-    } catch (error) {
-      console.error('Form submission error:', error);
-    }
+    } catch (error) { console.error('Form submission error:', error); }
   };
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={ cn('space-y-6', className) }>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          
+
           {/* Question Bank Selection */}
           <Card>
             <CardHeader>
@@ -274,8 +239,8 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>بنك الأسئلة</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
+                      <Select
+                        onValueChange={field.onChange}
                         value={field.value}
                         disabled={isSubmitting}
                       >
@@ -309,8 +274,8 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>نوع السؤال</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
+                      <Select
+                        onValueChange={field.onChange}
                         value={field.value}
                         disabled={isSubmitting}
                       >
@@ -340,8 +305,8 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>مستوى الصعوبة</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
+                      <Select
+                        onValueChange={field.onChange}
                         value={field.value}
                         disabled={isSubmitting}
                       >
@@ -390,8 +355,8 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>القطعة</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
+                        <Select
+                          onValueChange={field.onChange}
                           value={field.value}
                           disabled={isSubmitting}
                         >
@@ -419,11 +384,11 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
           </Card>
 
           {/* Passage Display */}
-          {currentPassage && (
+          { currentPassage && (
             <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-900/10">
               <CardHeader>
                 <CardTitle className="text-blue-900 dark:text-blue-100">
-                  القطعة: {currentPassage.title}
+                  القطعة: {currentPassage.title }
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -450,7 +415,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                     onClick={() => setShowQuestionPreview(!showQuestionPreview)}
                   >
                     <Eye className="h-4 w-4 mr-2" />
-                    {showQuestionPreview ? 'إخفاء المعاينة' : 'معاينة'}
+                    { showQuestionPreview ? 'إخفاء المعاينة' : 'معاينة' }
                   </Button>
                 )}
               </div>
@@ -478,13 +443,13 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                 )}
               />
 
-              {showMathHelp && (
+              { showMathHelp && (
                 <Alert>
                   <Calculator className="h-4 w-4" />
                   <AlertDescription>
                     <div className="text-sm">
                       <strong>أمثلة على الصيغ الرياضية:</strong>
-                      <br />• للرياضيات المدمجة: {"$x^2 + y^2 = z^2$"}
+                      <br />• للرياضيات المدمجة: {"$x^2 + y^2 = z^2$" }
                       <br />• للمعادلات المعروضة: {"$$\\int_0^1 x^2 dx = \\frac{1}{3}$$"}
                       <br />• للكسور: {"$\\frac{1}{2}$"} أو {"$\\frac{x}{y}$"}
                     </div>
@@ -493,13 +458,13 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               )}
 
               {/* Question Preview */}
-              {showQuestionPreview && questionText && (
+              { showQuestionPreview && questionText && (
                 <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border">
                   <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                     معاينة السؤال:
                   </div>
                   <div className="prose prose-sm max-w-none">
-                    {renderPreview(questionText)}
+                    {renderPreview(questionText) }
                   </div>
                 </div>
               )}
@@ -512,12 +477,12 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               <CardTitle>خيارات الإجابة</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex items-start gap-3 p-4 border rounded-lg">
+              { fields.map((field, index) => (
+                <div key={field.id } className="flex items-start gap-3 p-4 border rounded-lg">
                   <FormField
                     control={form.control}
                     name={`options.${index}.isCorrect`}
-                    render={({ field: checkboxField }) => (
+                    render={ ({ field: checkboxField }) => (
                       <FormItem className="flex items-center space-y-0">
                         <FormControl>
                           <Checkbox
@@ -534,7 +499,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
                     <FormField
                       control={form.control}
                       name={`options.${index}.text`}
-                      render={({ field: textField }) => (
+                      render={ ({ field: textField }) => (
                         <FormItem>
                           <FormControl>
                             <Input
@@ -617,13 +582,13 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               />
 
               {/* Explanation Preview */}
-              {form.watch('explanation') && (
+              { form.watch('explanation') && (
                 <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-lg border border-amber-200">
                   <div className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">
                     معاينة التفسير:
                   </div>
                   <div className="text-amber-700 dark:text-amber-200">
-                    {renderPreview(form.watch('explanation') || '')}
+                    {renderPreview(form.watch('explanation') || '') }
                   </div>
                 </div>
               )}
@@ -647,10 +612,10 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               disabled={isSubmitting}
               className="min-w-[120px]"
             >
-              {isSubmitting ? (
+              { isSubmitting ? (
                 <>جاري الحفظ...</>
               ) : (
-                <>{mode === 'edit' ? 'حفظ التغييرات' : 'إنشاء السؤال'}</>
+                <>{mode === 'edit' ? 'حفظ التغييرات' : 'إنشاء السؤال' }</>
               )}
             </Button>
           </div>
@@ -658,4 +623,4 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
       </Form>
     </div>
   );
-}; 
+};

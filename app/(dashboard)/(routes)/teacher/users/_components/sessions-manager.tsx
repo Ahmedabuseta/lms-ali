@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { Monitor, LogOut } from 'lucide-react';
 import { User } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -13,26 +12,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 
-interface SessionsManagerProps {
-  user: User;
+interface SessionsManagerProps { user: User;
   userSessions: any[];
   onLoadSessions: (userId: string) => void;
   onRevokeSession: (sessionToken: string) => void;
   onRevokeAllSessions: (userId: string) => void;
-  isPending: boolean;
-}
+  isPending: boolean; }
 
-export const SessionsManager = ({
-  user,
+export const SessionsManager = ({ user,
   userSessions,
   onLoadSessions,
   onRevokeSession,
   onRevokeAllSessions,
-  isPending
-}: SessionsManagerProps) => {
+  isPending }: SessionsManagerProps) => {
   useEffect(() => {
     onLoadSessions(user.id);
   }, [user.id, onLoadSessions]);
@@ -43,7 +37,7 @@ export const SessionsManager = ({
         <div className="text-sm text-muted-foreground font-arabic">
           جلسات المستخدم: <strong>{user.name}</strong>
         </div>
-        
+
         {userSessions.length > 0 && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -61,7 +55,7 @@ export const SessionsManager = ({
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="font-arabic">إلغاء</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={() => onRevokeAllSessions(user.id)}
                   className="font-arabic"
                   disabled={isPending}
@@ -75,7 +69,7 @@ export const SessionsManager = ({
       </div>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
-        {isPending ? (
+        { isPending ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             <p className="text-sm text-muted-foreground mt-2 font-arabic">جاري تحميل الجلسات...</p>
@@ -87,8 +81,8 @@ export const SessionsManager = ({
           </div>
         ) : (
           userSessions.map((session, index) => (
-            <div 
-              key={session.id || session.token || index} 
+            <div
+              key={session.id || session.token || index }
               className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
             >
               <div className="flex-1">
@@ -96,35 +90,35 @@ export const SessionsManager = ({
                   <Monitor className="h-4 w-4 text-blue-500" />
                   <span className="text-sm font-medium font-arabic">الجلسة {index + 1}</span>
                 </div>
-                
-                {session.ipAddress && (
+
+                { session.ipAddress && (
                   <div className="text-xs text-muted-foreground">
-                    IP: {session.ipAddress}
+                    IP: {session.ipAddress }
                   </div>
                 )}
-                
+
                 {session.userAgent && (
                   <div className="text-xs text-muted-foreground max-w-xs truncate">
                     {session.userAgent}
                   </div>
                 )}
-                
-                {session.createdAt && (
+
+                { session.createdAt && (
                   <div className="text-xs text-muted-foreground font-arabic">
-                    تم الإنشاء: {new Date(session.createdAt).toLocaleString('ar-SA')}
+                    تم الإنشاء: {new Date(session.createdAt).toLocaleString('ar-SA') }
                   </div>
                 )}
 
-                {session.expiresAt && (
+                { session.expiresAt && (
                   <div className="text-xs text-muted-foreground font-arabic">
-                    ينتهي في: {new Date(session.expiresAt).toLocaleString('ar-SA')}
+                    ينتهي في: {new Date(session.expiresAt).toLocaleString('ar-SA') }
                   </div>
                 )}
               </div>
-              
-              <Button 
-                variant="outline" 
-                size="sm" 
+
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => onRevokeSession(session.token)}
                 className="font-arabic text-red-600 border-red-600 hover:bg-red-50"
                 disabled={isPending}
@@ -138,4 +132,4 @@ export const SessionsManager = ({
       </div>
     </div>
   );
-}; 
+};

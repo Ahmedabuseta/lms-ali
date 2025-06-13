@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAuth } from '@/lib/api-auth';
 
-export async function GET(req: Request, { params }: { params: { examId: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { examId: string } }
+) {
   try {
-const {id} = await requireAuth()
+    const { id } = await requireAuth();
 
     // Get all attempts for this user and exam
     const attempts = await db.examAttempt.findMany({

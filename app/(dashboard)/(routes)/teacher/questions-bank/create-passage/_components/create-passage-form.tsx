@@ -11,15 +11,13 @@ import { MathRenderer } from '@/components/math-renderer';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from '@/components/ui/form';
+  FormDescription, } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,8 +25,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 
-const passageSchema = z.object({
-  title: z.string().min(1, 'عنوان القطعة مطلوب'),
+const passageSchema = z.object({ title: z.string().min(1, 'عنوان القطعة مطلوب'),
   content: z.string().min(1, 'محتوى القطعة مطلوب'),
   courseId: z.string().min(1, 'الدورة مطلوبة'),
   chapterId: z.string().optional(),
@@ -41,29 +38,21 @@ const passageSchema = z.object({
       options: z.array(
         z.object({
           text: z.string().min(1, 'نص الخيار مطلوب'),
-          isCorrect: z.boolean(),
-        })
+          isCorrect: z.boolean(), })
       ).min(2, 'يجب أن يكون هناك خياران على الأقل'),
     })
   ).min(1, 'يجب إضافة سؤال واحد على الأقل'),
 });
 
-interface Course {
-  id: string;
-  title: string;
-}
+interface Course { id: string;
+  title: string; }
 
-interface Chapter {
-  id: string;
-  title: string;
-}
+interface Chapter { id: string;
+  title: string; }
 
-interface CreatePassageFormProps {
-  courses: Course[];
-}
+interface CreatePassageFormProps { courses: Course[]; }
 
-export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
-  const router = useRouter();
+export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [chapters, setChapters] = useState<Chapter[]>([]);
 
@@ -91,10 +80,8 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
     },
   });
 
-  const { fields: questionFields, append: appendQuestion, remove: removeQuestion } = useFieldArray({
-    control: form.control,
-    name: 'questions',
-  });
+  const { fields: questionFields, append: appendQuestion, remove: removeQuestion } = useFieldArray({ control: form.control,
+    name: 'questions', });
 
   const selectedCourseId = form.watch('courseId');
 
@@ -108,17 +95,14 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
             const data = await response.json();
             setChapters(data);
           }
-        } catch (error) {
-          console.error('Error fetching chapters:', error);
-        }
+        } catch (error) { console.error('Error fetching chapters:', error); }
       }
     };
 
     fetchChapters();
   }, [selectedCourseId]);
 
-  const addQuestion = () => {
-    appendQuestion({
+  const addQuestion = () => { appendQuestion({
       text: '',
       type: 'MULTIPLE_CHOICE',
       difficulty: 'MEDIUM',
@@ -153,16 +137,12 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
       }
 
       // Convert empty chapterId to undefined for API
-      const submissionData = {
-        ...values,
-        chapterId: values.chapterId || undefined,
-      };
+      const submissionData = { ...values,
+        chapterId: values.chapterId || undefined, };
 
-      const response = await fetch('/api/passages', {
-        method: 'POST',
+      const response = await fetch('/api/passages', { method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json', },
         body: JSON.stringify(submissionData),
       });
 
@@ -279,9 +259,9 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
                       نص القطعة
                     </FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="أدخل نص القطعة هنا... يمكنك استخدام صيغ رياضية مثل $x^2$ أو $$\int x dx$$" 
-                        {...field} 
+                      <Textarea
+                        placeholder="أدخل نص القطعة هنا... يمكنك استخدام صيغ رياضية مثل $x^2$ أو $$\int x dx$$"
+                        {...field}
                         rows={10}
                         className="font-arabic"
                       />
@@ -290,11 +270,11 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
                       <FormDescription className="font-arabic">
                         هذا النص سيكون متاحاً للطلاب أثناء الإجابة على الأسئلة
                       </FormDescription>
-                      {field.value && (
+                      { field.value && (
                         <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                           <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-arabic">معاينة:</div>
                           <div className="prose dark:prose-invert max-w-none font-arabic text-sm">
-                            <MathRenderer content={field.value} />
+                            <MathRenderer content={field.value } />
                           </div>
                         </div>
                       )}
@@ -303,7 +283,7 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
                           <Calculator className="inline h-3 w-3 mr-1" />
                           أمثلة على الصيغ الرياضية
                         </summary>Cannot find name 'b'.ts(2304)
-                        
+
                         <div className="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono">
                           <div>للرياضيات البسيطة: {'$x^2 + y^2 = z^2$'}</div>
                           <div>للكسور: {'$\\frac{a}{b}$'}</div>
@@ -334,9 +314,9 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              {questionFields.map((question, questionIndex) => (
+              { questionFields.map((question, questionIndex) => (
                 <QuestionForm
-                  key={question.id}
+                  key={question.id }
                   questionIndex={questionIndex}
                   form={form}
                   onRemove={() => removeQuestion(questionIndex)}
@@ -349,15 +329,14 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
 
           {/* Submit */}
           <div className="pt-6 border-t">
-            <Button 
-              type="submit" 
-              disabled={isSubmitting} 
-              size="lg" 
-              className={`font-arabic bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 ${
-                isSubmitting ? 'cursor-wait opacity-90' : 'cursor-pointer'
-              }`}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              size="lg"
+              className={ `font-arabic bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 ${
+                isSubmitting ? 'cursor-wait opacity-90' : 'cursor-pointer' }`}
             >
-              {isSubmitting ? (
+              { isSubmitting ? (
                 <>
                   <Loader2 className="ml-2 h-5 w-5 animate-spin" />
                   جارٍ الإنشاء...
@@ -367,7 +346,7 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
                   <Save className="ml-2 h-5 w-5" />
                   إنشاء القطعة
                 </>
-              )}
+              ) }
             </Button>
           </div>
         </form>
@@ -377,18 +356,14 @@ export const CreatePassageForm = ({ courses }: CreatePassageFormProps) => {
 };
 
 // Question Form Component
-interface QuestionFormProps {
-  questionIndex: number;
+interface QuestionFormProps { questionIndex: number;
   form: any;
   onRemove: () => void;
   canRemove: boolean;
-  isSubmitting: boolean;
-}
+  isSubmitting: boolean; }
 
-const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }: QuestionFormProps) => {
-  const { fields: optionFields, append: appendOption, remove: removeOption } = useFieldArray({
-    control: form.control,
-    name: `questions.${questionIndex}.options`,
+const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }: QuestionFormProps) => { const { fields: optionFields, append: appendOption, remove: removeOption } = useFieldArray({ control: form.control,
+    name: `questions.${questionIndex }.options`,
   });
 
   const questionType = form.watch(`questions.${questionIndex}.type`);
@@ -410,8 +385,7 @@ const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }
     }
   }, [questionType, form, questionIndex, optionFields.length]);
 
-  const addOption = () => {
-    if (questionType === 'MULTIPLE_CHOICE') {
+  const addOption = () => { if (questionType === 'MULTIPLE_CHOICE') {
       appendOption({ text: '', isCorrect: false });
     }
   };
@@ -425,7 +399,7 @@ const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }
               السؤال {questionIndex + 1}
             </Badge>
             <Badge variant="outline" className="font-arabic">
-              {questionType === 'MULTIPLE_CHOICE' ? 'متعدد الخيارات' : 'صح أم خطأ'}
+              { questionType === 'MULTIPLE_CHOICE' ? 'متعدد الخيارات' : 'صح أم خطأ' }
             </Badge>
           </div>
           {canRemove && (
@@ -515,18 +489,18 @@ const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }
             <FormItem>
               <FormLabel className="font-arabic">نص السؤال</FormLabel>
               <FormControl>
-                <Textarea 
-                  placeholder="أدخل السؤال هنا... يمكنك استخدام صيغ رياضية مثل $x^2$" 
-                  {...field} 
+                <Textarea
+                  placeholder="أدخل السؤال هنا... يمكنك استخدام صيغ رياضية مثل $x^2$"
+                  {...field}
                   rows={3}
                   className="font-arabic"
                 />
               </FormControl>
-              {field.value && (
+              { field.value && (
                 <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
                   <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 font-arabic">معاينة:</div>
                   <div className="text-sm">
-                    <MathRenderer content={field.value} />
+                    <MathRenderer content={field.value } />
                   </div>
                 </div>
               )}
@@ -547,8 +521,8 @@ const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }
             )}
           </div>
 
-          {optionFields.map((option, optionIndex) => (
-            <div key={option.id} className="flex items-center gap-2">
+          { optionFields.map((option, optionIndex) => (
+            <div key={option.id } className="flex items-center gap-2">
               <FormField
                 control={form.control}
                 name={`questions.${questionIndex}.options.${optionIndex}.isCorrect`}
@@ -576,9 +550,9 @@ const QuestionForm = ({ questionIndex, form, onRemove, canRemove, isSubmitting }
                           className="font-arabic"
                           disabled={questionType === 'TRUE_FALSE'}
                         />
-                        {field.value && field.value.includes('$') && (
+                        { field.value && field.value.includes('$') && (
                           <div className="text-xs p-1 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-700">
-                            <MathRenderer content={field.value} />
+                            <MathRenderer content={field.value } />
                           </div>
                         )}
                       </div>

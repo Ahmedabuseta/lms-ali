@@ -10,20 +10,15 @@ import { Button } from '@/components/ui/button';
 import { useConfettiStore } from '@/hooks/use-confetti';
 import { cn } from '@/lib/utils';
 
-interface CourseProgressButtonProps {
-  chapterId: string;
+interface CourseProgressButtonProps { chapterId: string;
   courseId: string;
   isCompleted?: boolean;
-  nextChapterId?: string;
-}
+  nextChapterId?: string; }
 
-export const CourseProgressButton = ({
-  chapterId,
+export const CourseProgressButton = ({ chapterId,
   courseId,
   isCompleted,
-  nextChapterId,
-}: CourseProgressButtonProps) => {
-  const router = useRouter();
+  nextChapterId, }: CourseProgressButtonProps) => { const router = useRouter();
   const confetti = useConfettiStore();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,9 +26,7 @@ export const CourseProgressButton = ({
     try {
       setIsLoading(true);
 
-      await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
-        isCompleted: !isCompleted,
-      });
+      await axios.put(`/api/courses/${courseId }/chapters/${chapterId}/progress`, { isCompleted: !isCompleted, });
 
       if (!isCompleted && !nextChapterId) {
         confetti.onOpen();
@@ -59,17 +52,17 @@ export const CourseProgressButton = ({
       onClick={onClick}
       disabled={isLoading}
       type="button"
-      variant={isCompleted ? 'outline' : 'success'}
-      className={cn('relative w-full md:w-auto', isLoading && 'cursor-not-allowed opacity-50')}
+      variant={ isCompleted ? 'outline' : 'success' }
+      className={ cn('relative w-full md:w-auto', isLoading && 'cursor-not-allowed opacity-50') }
     >
-      {isLoading ? (
+      { isLoading ? (
         <>
           <Loader2 className="ml-2 h-4 w-4 animate-spin" />
           جاري التحديث...
         </>
       ) : (
         <>
-          {isCompleted ? 'لم يتم الإكمال' : 'تحديد كمكتمل'}
+          {isCompleted ? 'لم يتم الإكمال' : 'تحديد كمكتمل' }
           <Icon className="ml-2 h-4 w-4" />
         </>
       )}

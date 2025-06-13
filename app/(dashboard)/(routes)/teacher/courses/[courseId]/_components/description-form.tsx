@@ -14,19 +14,14 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 
-interface DescriptionFormProps {
-  initialData: Course;
-  courseId: string;
-}
+interface DescriptionFormProps { initialData: Course;
+  courseId: string; }
 
-const formSchema = z.object({
-  description: z.string().min(1, {
-    message: 'الوصف مطلوب',
-  }),
+const formSchema = z.object({ description: z.string().min(1, {
+    message: 'الوصف مطلوب', }),
 });
 
-export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -35,8 +30,7 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || '',
-    },
+      description: initialData?.description || '', },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -62,22 +56,22 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
           <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 font-arabic">وصف الدورة</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           {initialData.description ? (
             <div className="rounded-lg border border-blue-200/50 bg-blue-100/50 p-4 backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-800/20">
-              <p className="text-blue-900 dark:text-blue-100 leading-relaxed font-arabic whitespace-pre-wrap">{initialData.description}</p>
+              <p className="text-blue-900 dark:text-blue-100 leading-relaxed font-arabic whitespace-pre-wrap">{initialData.description }</p>
             </div>
           ) : (
             <div className="rounded-lg border border-blue-200/50 bg-blue-50/40 p-4 text-center backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-900/20">

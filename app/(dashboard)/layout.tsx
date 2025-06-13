@@ -29,10 +29,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Glassmorphism Navbar */}
-      <div className={cn(
+      <div className={ cn(
         'fixed inset-y-0 z-50 h-[80px] w-full transition-all duration-300',
         isCollapsed ? 'md:pl-16' : 'md:pl-64'
-      )}>
+      ) }>
         <Navbar />
       </div>
 
@@ -42,10 +42,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Main content */}
-      <main className={cn(
+      <main className={ cn(
         'relative min-h-screen pt-[80px] transition-all duration-300',
         isCollapsed ? 'md:pl-16' : 'md:pl-64'
-      )}>
+      ) }>
         <div className="relative z-10 min-h-screen">
           {children}
         </div>

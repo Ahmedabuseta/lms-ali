@@ -4,20 +4,18 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Loader2, 
-  Save, 
-  BookOpen, 
-  Eye, 
+import { ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Save,
+  BookOpen,
+  Eye,
   EyeOff,
   AlertCircle,
   CheckCircle2,
   Clock,
   Wifi,
-  WifiOff
-} from 'lucide-react';
+  WifiOff } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -27,20 +25,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MathRenderer } from '@/components/math-renderer';
 import { MDXRenderer } from '@/components/mdx-renderer';
 
-interface QuestionFormProps {
-  question: {
+interface QuestionFormProps { question: {
     id: string;
     text: string;
     type: string;
     passage?: {
       id: string;
       title: string;
-      content: string;
-    };
-    options: {
-      id: string;
-      text: string;
-    }[];
+      content: string; };
+    options: { id: string;
+      text: string; }[];
   };
   selectedOptionId: string | null;
   attemptId: string;
@@ -50,46 +44,37 @@ interface QuestionFormProps {
   totalQuestions: number;
 }
 
-interface AutoSaveState {
-  status: 'idle' | 'saving' | 'saved' | 'error' | 'offline';
+interface AutoSaveState { status: 'idle' | 'saving' | 'saved' | 'error' | 'offline';
   lastSaved?: Date;
-  retryCount: number;
-}
+  retryCount: number; }
 
-export const QuestionForm = ({
-  question,
+export const QuestionForm = ({ question,
   selectedOptionId,
   attemptId,
   userId,
   examId,
   currentQuestionIndex,
-  totalQuestions,
-}: QuestionFormProps) => {
-  const router = useRouter();
+  totalQuestions, }: QuestionFormProps) => { const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<string | null>(selectedOptionId);
   const [autoSaveState, setAutoSaveState] = useState<AutoSaveState>({
     status: 'idle',
-    retryCount: 0
-  });
+    retryCount: 0 });
   const [isPassageExpanded, setIsPassageExpanded] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
   const [localAnswers, setLocalAnswers] = useState<Record<string, string>>({});
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  
+
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Monitor online status
-  useEffect(() => {
-    const handleOnline = () => {
+  useEffect(() => { const handleOnline = () => {
       setIsOnline(true);
       if (unsavedChanges && selectedOption) {
-        saveAnswer(selectedOption, true);
-      }
+        saveAnswer(selectedOption, true); }
     };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
+
+    const handleOffline = () => { setIsOnline(false);
       setAutoSaveState(prev => ({ ...prev, status: 'offline' }));
     };
 
@@ -97,16 +82,14 @@ export const QuestionForm = ({
     window.addEventListener('offline', handleOffline);
     setIsOnline(navigator.onLine);
 
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
+    return () => { window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline); };
   }, [unsavedChanges, selectedOption]);
 
   // Initialize local answers from localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const savedAnswers = localStorage.getItem(`exam_answers_${attemptId}`);
     if (savedAnswers) {
       try {
@@ -117,16 +100,14 @@ export const QuestionForm = ({
           setSelectedOption(parsed[question.id]);
           setUnsavedChanges(true);
         }
-      } catch (e) {
-        console.error('Error parsing saved answers', e);
-        localStorage.removeItem(`exam_answers_${attemptId}`);
+      } catch (e) { console.error('Error parsing saved answers', e);
+        localStorage.removeItem(`exam_answers_${attemptId }`);
       }
     }
   }, [attemptId, question.id, selectedOptionId]);
 
   // Auto-save with retry logic
-  const saveAnswer = useCallback(async (optionId: string, isRetry = false) => {
-    if (!isOnline && !isRetry) {
+  const saveAnswer = useCallback(async (optionId: string, isRetry = false) => { if (!isOnline && !isRetry) {
       const updatedAnswers = { ...localAnswers, [question.id]: optionId };
       setLocalAnswers(updatedAnswers);
       localStorage.setItem(`exam_answers_${attemptId}`, JSON.stringify(updatedAnswers));
@@ -134,57 +115,46 @@ export const QuestionForm = ({
       return;
     }
 
-    try {
-      setAutoSaveState(prev => ({ ...prev, status: 'saving' }));
+    try { setAutoSaveState(prev => ({ ...prev, status: 'saving' }));
 
       const updatedAnswers = { ...localAnswers, [question.id]: optionId };
       setLocalAnswers(updatedAnswers);
         localStorage.setItem(`exam_answers_${attemptId}`, JSON.stringify(updatedAnswers));
 
-      const response = await axios.post(`/api/exam/answer`, {
-        attemptId,
+      const response = await axios.post(`/api/exam/answer`, { attemptId,
         questionId: question.id,
-        optionId,
-      });
+        optionId, });
 
-      if (response.status === 200) {
-        setAutoSaveState({
+      if (response.status === 200) { setAutoSaveState({
           status: 'saved',
           lastSaved: new Date(),
-          retryCount: 0
-        });
+          retryCount: 0 });
         setUnsavedChanges(false);
-        
-        setTimeout(() => {
-          setAutoSaveState(prev => 
+
+        setTimeout(() => { setAutoSaveState(prev =>
             prev.status === 'saved' ? { ...prev, status: 'idle' } : prev
           );
         }, 3000);
       }
-    } catch (error: any) {
-      console.error('Error saving answer:', error);
-      
+    } catch (error: any) { console.error('Error saving answer:', error);
+
       const isNetworkError = !error.response || error.code === 'NETWORK_ERROR';
       const shouldRetry = isNetworkError && autoSaveState.retryCount < 3;
-      
+
       if (shouldRetry) {
         const retryDelay = Math.pow(2, autoSaveState.retryCount + 1) * 1000;
-        
-        setAutoSaveState(prev => ({ 
-          ...prev, 
+
+        setAutoSaveState(prev => ({
+          ...prev,
           status: 'error',
-          retryCount: prev.retryCount + 1
-        }));
-        
-        retryTimeoutRef.current = setTimeout(() => {
-          saveAnswer(optionId, true);
-        }, retryDelay);
-        
+          retryCount: prev.retryCount + 1 }));
+
+        retryTimeoutRef.current = setTimeout(() => { saveAnswer(optionId, true); }, retryDelay);
+
         toast.error(`فشل في الحفظ، سيتم المحاولة مرة أخرى خلال ${retryDelay / 1000} ثانية`);
-      } else {
-        setAutoSaveState(prev => ({ ...prev, status: 'error' }));
+      } else { setAutoSaveState(prev => ({ ...prev, status: 'error' }));
         setUnsavedChanges(true);
-        
+
         if (error.response?.status === 403) {
           toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى');
         } else {
@@ -256,8 +226,7 @@ export const QuestionForm = ({
   };
 
   // Auto-save status indicator
-  const getStatusIcon = () => {
-    switch (autoSaveState.status) {
+  const getStatusIcon = () => { switch (autoSaveState.status) {
       case 'saving':
         return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />;
       case 'saved':
@@ -267,12 +236,10 @@ export const QuestionForm = ({
       case 'offline':
         return <WifiOff className="h-4 w-4 text-orange-500" />;
       default:
-        return isOnline ? <Wifi className="h-4 w-4 text-gray-400" /> : <WifiOff className="h-4 w-4 text-orange-500" />;
-    }
+        return isOnline ? <Wifi className="h-4 w-4 text-gray-400" /> : <WifiOff className="h-4 w-4 text-orange-500" />; }
   };
 
-  const getStatusText = () => {
-    switch (autoSaveState.status) {
+  const getStatusText = () => { switch (autoSaveState.status) {
       case 'saving':
         return 'جاري الحفظ...';
       case 'saved':
@@ -282,20 +249,19 @@ export const QuestionForm = ({
       case 'offline':
         return 'غير متصل';
       default:
-        return unsavedChanges ? 'غير محفوظ' : 'محفوظ';
-    }
+        return unsavedChanges ? 'غير محفوظ' : 'محفوظ'; }
   };
 
   return (
     <div className="space-y-4">
       {/* Passage Section */}
-      {question.passage && (
+      { question.passage && (
         <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-900/10">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
                 <BookOpen className="h-5 w-5" />
-                {question.passage.title}
+                {question.passage.title }
               </CardTitle>
               <Button
                 variant="ghost"
@@ -303,7 +269,7 @@ export const QuestionForm = ({
                 onClick={() => setIsPassageExpanded(!isPassageExpanded)}
                 className="text-blue-600 dark:text-blue-400"
               >
-                {isPassageExpanded ? (
+                { isPassageExpanded ? (
                   <>
                     <EyeOff className="h-4 w-4 ml-2" />
                     إخفاء
@@ -313,14 +279,14 @@ export const QuestionForm = ({
                     <Eye className="h-4 w-4 ml-2" />
                     إظهار
                   </>
-                )}
+                ) }
               </Button>
             </div>
           </CardHeader>
-          {isPassageExpanded && (
+          { isPassageExpanded && (
             <CardContent className="pt-0">
               <div className="prose prose-sm max-w-none text-blue-800 dark:text-blue-200 text-right">
-                {renderContent(question.passage.content)}
+                {renderContent(question.passage.content) }
               </div>
             </CardContent>
           )}
@@ -337,14 +303,14 @@ export const QuestionForm = ({
               </Badge>
               <span className="font-arabic">السؤال {currentQuestionIndex + 1}</span>
         </CardTitle>
-            
+
             <div className="flex items-center gap-3">
               {/* Auto-save status */}
               <div className="flex items-center gap-1 text-xs">
                 {getStatusIcon()}
                 <span className="font-arabic">{getStatusText()}</span>
               </div>
-              
+
               {/* Manual save button */}
               {(unsavedChanges || autoSaveState.status === 'error') && (
                 <Button
@@ -364,24 +330,24 @@ export const QuestionForm = ({
 
         <CardContent className="space-y-4">
           {/* Connection Status Alert */}
-          {!isOnline && (
+          { !isOnline && (
             <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-900/10">
               <WifiOff className="h-4 w-4" />
               <AlertDescription className="font-arabic">
                 أنت غير متصل بالإنترنت. سيتم حفظ إجاباتك محلياً وإرسالها عند عودة الاتصال.
               </AlertDescription>
             </Alert>
-          )}
+          ) }
 
           {/* Error Alert */}
-          {autoSaveState.status === 'error' && (
+          { autoSaveState.status === 'error' && (
             <Alert className="border-red-200 bg-red-50 dark:bg-red-900/10">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription className="font-arabic">
                 فشل في حفظ الإجابة على الخادم. تم حفظها محلياً وسيتم المحاولة مرة أخرى.
               </AlertDescription>
             </Alert>
-          )}
+          ) }
 
           {/* Question Text */}
         <div className="prose dark:prose-invert max-w-none text-right">
@@ -389,23 +355,22 @@ export const QuestionForm = ({
         </div>
 
           {/* Options */}
-          <RadioGroup 
-            value={selectedOption || ''} 
-            onValueChange={handleOptionSelect} 
+          <RadioGroup
+            value={selectedOption || ''}
+            onValueChange={handleOptionSelect}
             className="space-y-3"
           >
-            {question.options.map((option, index) => (
+            { question.options.map((option, index) => (
             <div
-              key={option.id}
-                className={`flex items-center space-x-2 space-x-reverse rounded-lg border p-3 transition-all ${
-                  selectedOption === option.id 
-                    ? 'border-primary bg-primary/10 shadow-sm' 
-                    : 'hover:bg-accent'
-              }`}
+              key={option.id }
+                className={ `flex items-center space-x-2 space-x-reverse rounded-lg border p-3 transition-all ${
+                  selectedOption === option.id
+                    ? 'border-primary bg-primary/10 shadow-sm'
+                    : 'hover:bg-accent' }`}
             >
               <RadioGroupItem value={option.id} id={option.id} />
-                <Label 
-                  htmlFor={option.id} 
+                <Label
+                  htmlFor={option.id}
                   className="flex-grow cursor-pointer text-right"
                 >
                   <div className="flex items-start gap-2">
@@ -423,9 +388,9 @@ export const QuestionForm = ({
       </CardContent>
 
         <CardFooter className="flex justify-between border-t pt-4">
-          <Button 
-            variant="outline" 
-            onClick={goToPreviousQuestion} 
+          <Button
+            variant="outline"
+            onClick={goToPreviousQuestion}
             disabled={currentQuestionIndex === 0}
             className="font-arabic"
           >
@@ -435,12 +400,12 @@ export const QuestionForm = ({
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground font-arabic">
             <Clock className="h-4 w-4" />
-            {selectedOption ? 'تم الإجابة' : 'لم يتم الإجابة'}
+            { selectedOption ? 'تم الإجابة' : 'لم يتم الإجابة' }
           </div>
 
-          <Button 
-            variant="outline" 
-            onClick={goToNextQuestion} 
+          <Button
+            variant="outline"
+            onClick={goToNextQuestion}
             disabled={currentQuestionIndex === totalQuestions - 1}
             className="font-arabic"
           >

@@ -13,26 +13,19 @@ import 'katex/dist/katex.min.css';
 import { MathRenderer } from './math-renderer';
 import { cn } from '@/lib/utils';
 
-interface MDXRendererProps {
-  content: string;
-}
+interface MDXRendererProps { content: string; }
 
 // Define custom component types for ReactMarkdown
-type CustomComponentProps = {
-  node?: any;
+type CustomComponentProps = { node?: any;
   inline?: boolean;
   className?: string;
   children?: React.ReactNode;
-  value?: string;
-};
+  value?: string; };
 
-type CustomComponents = Components & {
-  math?: React.ComponentType<CustomComponentProps>;
-  inlineMath?: React.ComponentType<CustomComponentProps>;
-};
+type CustomComponents = Components & { math?: React.ComponentType<CustomComponentProps>;
+  inlineMath?: React.ComponentType<CustomComponentProps>; };
 
-export const MDXRenderer = ({ content }: MDXRendererProps) => {
-  const [Component, setComponent] = useState<React.ComponentType | null>(null);
+export const MDXRenderer = ({ content }: MDXRendererProps) => { const [Component, setComponent] = useState<React.ComponentType | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isFallback, setIsFallback] = useState(false);
   const { theme } = useTheme();
@@ -46,8 +39,7 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
     }
 
     // Pre-process the content to prepare LaTeX expressions for MDX
-    const preprocessContent = (rawContent: string): string => {
-      return (
+    const preprocessContent = (rawContent: string): string => { return (
         rawContent
           // Fix unclosed code blocks
           .replace(/```\s*$/g, '```\n')
@@ -56,7 +48,7 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
           .replace(/\$\s*$/g, '$\\')
 
           // Normalize multiple line breaks
-          .replace(/\n{3,}/g, '\n\n')
+          .replace(/\n{3, }/g, '\n\n')
 
           // Fix multi-line display math by removing line breaks within LaTeX blocks
           .replace(/\$\$([\s\S]*?)\$\$/g, (match) => match.replace(/\n/g, ' '))
@@ -79,34 +71,28 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
     };
 
     // Evaluate MDX content on the client side
-    const evaluateMdx = async () => {
-      try {
+    const evaluateMdx = async () => { try {
         const cleanContent = preprocessContent(content);
 
-        const { default: MdxComponent } = await evaluate(cleanContent, {
-          ...runtime,
+        const { default: MdxComponent } = await evaluate(cleanContent, { ...runtime,
           Fragment: React.Fragment,
           remarkPlugins: [remarkMath],
-          rehypePlugins: [rehypeKatex, rehypeRaw],
-        });
+          rehypePlugins: [rehypeKatex, rehypeRaw], });
 
         setComponent(() => MdxComponent);
         setError(null);
         setIsFallback(false);
-      } catch (err) {
-        console.error('Error rendering MDX:', err);
+      } catch (err) { console.error('Error rendering MDX:', err);
         setError(err as Error);
         setIsFallback(true);
-        setComponent(null);
-      }
+        setComponent(null); }
     };
 
     evaluateMdx();
   }, [content]);
 
   // If there's an error or no content, fall back to a simpler Markdown renderer
-  if (error || isFallback) {
-    // Prepare content for ReactMarkdown with proper math formatting
+  if (error || isFallback) { // Prepare content for ReactMarkdown with proper math formatting
     const prepareForReactMarkdown = (text: string): string => {
       // Apply specific fixes for calculus problems
       const calculusFixes = text
@@ -115,7 +101,7 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
         .replace(/\\sin\(/g, '\\sin(')
         .replace(/\\cos\(/g, '\\cos(')
         .replace(/\\tan\(/g, '\\tan(')
-        .replace(/f'\(x\)/g, 'f^{\\prime}(x)')
+        .replace(/f'\(x\)/g, 'f^{\\prime }(x)')
         .replace(/\\cdot/g, '\\cdot')
         .replace(/\\text/g, '\\text')
         .replace(/\\quad/g, '\\quad')
@@ -133,21 +119,17 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
     };
 
     // Extra handling for derivative notation
-    const derivativeFixes = (text: string): string => {
-      return text.replace(/\(\\?where \( ([^)]+) \)\)/g, '(where $1)').replace(/\( ([^)]+) \)/g, '($1)');
-    };
+    const derivativeFixes = (text: string): string => { return text.replace(/\(\\?where \( ([^)]+) \)\)/g, '(where $1)').replace(/\( ([^)]+) \)/g, '($1)'); };
 
     // Detect if content is predominantly Arabic
-    const isArabicDominant = (text: string): boolean => {
-      // Simple heuristic: count Arabic characters vs Latin characters
+    const isArabicDominant = (text: string): boolean => { // Simple heuristic: count Arabic characters vs Latin characters
       const arabicPattern = /[\u0600-\u06FF]/g;
       const latinPattern = /[a-zA-Z]/g;
 
       const arabicMatches = text.match(arabicPattern) || [];
       const latinMatches = text.match(latinPattern) || [];
 
-      return arabicMatches.length > latinMatches.length;
-    };
+      return arabicMatches.length > latinMatches.length; };
 
     const processedContent = prepareForReactMarkdown(derivativeFixes(content));
     const contentDirection = isArabicDominant(processedContent) ? 'rtl-dominant' : 'ltr-dominant';
@@ -155,17 +137,15 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
     return (
       <div
         className={`markdown-content whitespace-pre-wrap ${contentDirection}`}
-        style={{ unicodeBidi: 'isolate-override' }}
+        style={ { unicodeBidi: 'isolate-override' }}
       >
         <ReactMarkdown
           remarkPlugins={[remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeRaw]}
-          components={
-            {
-              code({ node, inline, className, children, ...props }: CustomComponentProps) {
-                return inline ? (
+          rehypePlugins={ [rehypeKatex, rehypeRaw] }
+          components={ {
+              code({ node, inline, className, children, ...props }: CustomComponentProps) { return inline ? (
                   <code
-                    className={cn('bidi-isolate rounded px-1.5 py-0.5 font-mono text-sm', 'bg-[hsl(var(--code-bg))]')}
+                    className={cn('bidi-isolate rounded px-1.5 py-0.5 font-mono text-sm', 'bg-[hsl(var(--code-bg))]') }
                     {...props}
                   >
                     {children}
@@ -229,8 +209,7 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => {
               th({ children }) {
                 return <th className="px-4 py-2 text-left font-semibold">{children}</th>;
               },
-              td({ children }) {
-                return <td className="border-r border-border px-4 py-2 last:border-r-0">{children}</td>;
+              td({ children }) { return <td className="border-r border-border px-4 py-2 last:border-r-0">{children }</td>;
               },
               // Use proper type casting for custom components
               math({ value }: CustomComponentProps) {

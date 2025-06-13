@@ -6,29 +6,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { StudentPerformanceTable } from '@/components/StudentPerformanceTable';
 
-interface PageProps {
-  params: {
-    examId: string;
-  };
+interface PageProps { params: {
+    examId: string; };
 }
 
-export default async function ExamStatisticsPage({ params }: PageProps) {
-  const user = await getCurrentUser();
+export default async function ExamStatisticsPage({ params }: PageProps) { const user = await getCurrentUser();
   if (!user) redirect('/sign-in');
 
   const exam = await db.exam.findUnique({
     where: {
-      id: params.examId,
-    },
-    include: {
-      questions: true,
+      id: params.examId, },
+    include: { questions: true,
       attempts: {
         include: {
           questionAttempts: {
             include: {
               question: true,
-              selectedOption: true,
-            },
+              selectedOption: true, },
           },
         },
       },
@@ -40,26 +34,21 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
   }
 
   // Calculate statistics
-  const statistics = {
-    totalAttempts: exam.attempts.length,
+  const statistics = { totalAttempts: exam.attempts.length,
     averageScore: 0,
     questionStats: exam.questions.map((question) => {
       const correctAnswers = exam.attempts.filter((attempt) => {
         const questionAttempt = attempt.questionAttempts.find((qa) => qa.questionId === question.id);
-        return questionAttempt?.isCorrect;
-      }).length;
+        return questionAttempt?.isCorrect; }).length;
 
-      return {
-        questionId: question.id,
+      return { questionId: question.id,
         text: question.text,
         correctRate: exam.attempts.length > 0 ? Math.round((correctAnswers / exam.attempts.length) * 100) : 0,
-        attemptCount: exam.attempts.length,
-      };
+        attemptCount: exam.attempts.length, };
     }),
     studentResults: exam.attempts
       .filter(attempt => attempt.completedAt) // Only include completed attempts
-      .map((attempt) => ({
-        userId: attempt.userId,
+      .map((attempt) => ({ userId: attempt.userId,
         userName: 'Student', // Since we don't have user relation, use placeholder
         email: 'student@example.com', // Since we don't have user relation, use placeholder
         score: attempt.score || 0,
@@ -68,8 +57,7 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
           : 0,
         completedAt: attempt.completedAt!, // We know this is not null due to filter
         correct: attempt.questionAttempts.filter((qa) => qa.isCorrect).length,
-        total: attempt.questionAttempts.length,
-      })),
+        total: attempt.questionAttempts.length, })),
   };
 
   return (
@@ -80,12 +68,12 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
           <CardDescription>انظر إلى الأسئلة التي يجدها الطلاب أكثر صعوبة</CardDescription>
         </CardHeader>
         <CardContent>
-          {statistics.totalAttempts === 0 ? (
+          { statistics.totalAttempts === 0 ? (
             <div className="py-6 text-center text-slate-500">لم يتم إجراء أي محاولات على هذا الامتحان بعد.</div>
           ) : (
             <div className="space-y-4">
               {statistics.questionStats.map((question, index) => (
-                <div key={question.questionId} className="space-y-2">
+                <div key={question.questionId } className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="font-medium">
@@ -113,11 +101,11 @@ export default async function ExamStatisticsPage({ params }: PageProps) {
           <CardDescription>عرض وترتيب نتائج امتحانات الطلاب</CardDescription>
         </CardHeader>
         <CardContent>
-          {statistics.totalAttempts === 0 ? (
+          { statistics.totalAttempts === 0 ? (
             <div className="py-6 text-center text-slate-500">لم يتم إجراء أي محاولات على هذا الامتحان بعد.</div>
           ) : (
             <div>
-              <StudentPerformanceTable studentResults={statistics.studentResults} />
+              <StudentPerformanceTable studentResults={statistics.studentResults } />
             </div>
           )}
         </CardContent>

@@ -3,15 +3,14 @@
 import { FileUploadArabic } from './file-upload-arabic';
 import { useState } from 'react';
 
-export const UploadProgressTest = () => {
-  const [imageUrl, setImageUrl] = useState<string>();
+export const UploadProgressTest = () => { const [imageUrl, setImageUrl] = useState<string>();
   const [videoUrl, setVideoUrl] = useState<string>();
   const [documentUrl, setDocumentUrl] = useState<string>();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-8" dir="rtl">
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
+        {/* Header */ }
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white font-arabic">
             🚀 تحسين تجربة رفع الملفات
@@ -36,13 +35,13 @@ export const UploadProgressTest = () => {
               maxFileSize={5 * 1024 * 1024} // 5MB
               description="يُفضل الصور عالية الجودة بتنسيق PNG أو JPG"
             />
-            {imageUrl && (
+            { imageUrl && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع الصورة بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </div>
 
           {/* Video Upload */}
@@ -58,13 +57,13 @@ export const UploadProgressTest = () => {
               maxFileSize={100 * 1024 * 1024} // 100MB
               description="ملفات الفيديو بتنسيق MP4 أو MOV مع جودة HD"
             />
-            {videoUrl && (
+            { videoUrl && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع الفيديو بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </div>
 
           {/* Document Upload */}
@@ -80,13 +79,13 @@ export const UploadProgressTest = () => {
               maxFileSize={10 * 1024 * 1024} // 10MB
               description="مستندات PDF أو Word للمواد التعليمية"
             />
-            {documentUrl && (
+            { documentUrl && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
                 <p className="text-sm text-green-700 dark:text-green-300 font-arabic">
                   ✅ تم رفع المستند بنجاح!
                 </p>
               </div>
-            )}
+            ) }
           </div>
         </div>
 
@@ -184,4 +183,4 @@ export const UploadProgressTest = () => {
       </div>
     </div>
   );
-}; 
+};

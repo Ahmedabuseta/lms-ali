@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { Message } from '../utils/chat-utils';
 
-export const useChatApi = () => {
-  const [isLoading, setIsLoading] = useState(false);
+export const useChatApi = () => { const [isLoading, setIsLoading] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [streamingContent, setStreamingContent] = useState<string>('');
   const [connectionError, setConnectionError] = useState(false);
@@ -15,8 +14,7 @@ export const useChatApi = () => {
 
       // Cancel any previous request
       if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+        abortControllerRef.current.abort(); }
 
       // Create a new controller for this request
       abortControllerRef.current = new AbortController();
@@ -29,21 +27,17 @@ export const useChatApi = () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Call our server-side API which handles communication with the AI service
-      const response = await fetch('/api/ai-tutor', {
-        method: 'POST',
+      const response = await fetch('/api/ai-tutor', { method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [...messages, { role: 'user', content: userMessage }],
+          'Content-Type': 'application/json', },
+        body: JSON.stringify({ messages: [...messages, { role: 'user', content: userMessage }],
           streaming: true,
         }),
         signal: abortControllerRef.current.signal,
       });
 
       // Handle errors
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+      if (!response.ok) { throw new Error(`API error: ${response.status }`);
       }
 
       setThinking(false);
@@ -70,18 +64,14 @@ export const useChatApi = () => {
 
         // Process SSE format (data: {...})
         const lines = chunk.split('\n');
-        for (const line of lines) {
-          if (line.startsWith('data: ') && !line.includes('[DONE]')) {
+        for (const line of lines) { if (line.startsWith('data: ') && !line.includes('[DONE]')) {
             try {
               const data = JSON.parse(line.substring(6));
               if (data.choices?.[0]?.delta?.content) {
                 const content = data.choices[0].delta.content;
                 fullText += content;
-                setStreamingContent((prev) => prev + content);
-              }
-            } catch (e) {
-              console.error('Error parsing SSE chunk:', e);
-            }
+                setStreamingContent((prev) => prev + content); }
+            } catch (e) { console.error('Error parsing SSE chunk:', e); }
           }
         }
       }
@@ -91,26 +81,20 @@ export const useChatApi = () => {
       setStreamingContent('');
 
       // Return the full message
-      return {
-        success: true,
-        text: fullText,
-      };
-    } catch (error) {
-      console.error('Chat API error:', error);
+      return { success: true,
+        text: fullText, };
+    } catch (error) { console.error('Chat API error:', error);
 
       // Don't show error if it was an abort
       if ((error as Error).name !== 'AbortError') {
-        setConnectionError(true);
-      }
+        setConnectionError(true); }
 
       setIsLoading(false);
       setThinking(false);
       setStreamingContent('');
 
-      return {
-        success: false,
-        text: '',
-      };
+      return { success: false,
+        text: '', };
     }
   }, []);
 
@@ -121,12 +105,10 @@ export const useChatApi = () => {
     }
   }, []);
 
-  return {
-    isLoading,
+  return { isLoading,
     thinking,
     streamingContent,
     connectionError,
     sendMessage,
-    abortRequest,
-  };
+    abortRequest, };
 };

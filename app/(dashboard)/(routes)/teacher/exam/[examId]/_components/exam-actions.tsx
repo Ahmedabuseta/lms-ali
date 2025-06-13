@@ -10,14 +10,11 @@ import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/modals/confirm-modal';
 import { cn } from '@/lib/utils';
 
-interface ExamActionsProps {
-  disabled: boolean;
+interface ExamActionsProps { disabled: boolean;
   examId: string;
-  isPublished: boolean;
-}
+  isPublished: boolean; }
 
-export const ExamActions = ({ disabled, examId, isPublished }: ExamActionsProps) => {
-  const router = useRouter();
+export const ExamActions = ({ disabled, examId, isPublished }: ExamActionsProps) => { const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -26,7 +23,7 @@ export const ExamActions = ({ disabled, examId, isPublished }: ExamActionsProps)
       setIsLoading(true);
 
       if (isPublished) {
-        await axios.patch(`/api/exam/${examId}/unpublish`);
+        await axios.patch(`/api/exam/${examId }/unpublish`);
         toast.success('تم إيقاف نشر الامتحان');
       } else {
         await axios.patch(`/api/exam/${examId}/publish`);
@@ -61,24 +58,24 @@ export const ExamActions = ({ disabled, examId, isPublished }: ExamActionsProps)
         disabled={disabled || isLoading}
         variant="outline"
         size="sm"
-        className={cn('relative', (disabled || isLoading) && 'cursor-not-allowed opacity-50')}
+        className={ cn('relative', (disabled || isLoading) && 'cursor-not-allowed opacity-50') }
       >
-        {isLoading ? (
+        { isLoading ? (
           <>
             <Loader2 className="ml-2 h-4 w-4 animate-spin" />
             جاري التحديث...
           </>
         ) : (
-          <>{isPublished ? 'إيقاف النشر' : 'نشر'}</>
+          <>{isPublished ? 'إيقاف النشر' : 'نشر' }</>
         )}
       </Button>
       <ConfirmModal onConfirm={onDelete}>
         <Button
           size="sm"
           disabled={isDeleting}
-          className={cn('relative', isDeleting && 'cursor-not-allowed opacity-50')}
+          className={ cn('relative', isDeleting && 'cursor-not-allowed opacity-50') }
         >
-          {isDeleting ? (
+          { isDeleting ? (
             <>
               <Loader2 className="ml-2 h-4 w-4 animate-spin" />
               جاري الحذف...
@@ -88,7 +85,7 @@ export const ExamActions = ({ disabled, examId, isPublished }: ExamActionsProps)
               <Trash className="ml-2 h-4 w-4" />
               حذف
             </>
-          )}
+          ) }
         </Button>
       </ConfirmModal>
     </div>

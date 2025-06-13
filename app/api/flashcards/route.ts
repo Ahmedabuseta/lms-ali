@@ -11,8 +11,7 @@ export async function GET(req: Request) {
     const user = await getAuthenticatedUser();
     const { searchParams } = new URL(req.url);
 
-    if (!user) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    if (!user) { return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const courseId = searchParams.get('courseId');
@@ -21,13 +20,11 @@ export async function GET(req: Request) {
     const limit = parseInt(searchParams.get('limit') || '25');
     const randomSeed = searchParams.get('seed') || Date.now().toString(); // For consistent randomization in same session
 
-    if (!courseId) {
-      return new NextResponse('Course ID required', { status: 400 });
+    if (!courseId) { return new NextResponse('Course ID required', { status: 400 });
     }
 
     // If specific chapter requested, check chapter-specific access
-    if (chapterId) {
-      const hasAccess = await canAccessChapterServices(user, chapterId);
+    if (chapterId) { const hasAccess = await canAccessChapterServices(user, chapterId);
       if (!hasAccess) {
         return new NextResponse('Access denied for this chapter content', { status: 403 });
       }
@@ -37,10 +34,8 @@ export async function GET(req: Request) {
     const offset = (page - 1) * limit;
 
     // Build where clause
-    const whereClause: any = {
-      chapter: {
-        courseId,
-      },
+    const whereClause: any = { chapter: {
+        courseId, },
     };
 
     // Add chapter filter if provided
@@ -49,40 +44,36 @@ export async function GET(req: Request) {
     }
 
     // Get total count for pagination info
-    const totalCount = await db.flashcard.count({
-      where: whereClause,
-    });
+    const totalCount = await db.flashcard.count({ where: whereClause, });
 
     // Get flashcards with true database-level randomization
     let flashcards: Flashcard[] = [];
-    
-    if (chapterId) {
-      // Use raw SQL for true randomization when filtering by chapter
+
+    if (chapterId) { // Use raw SQL for true randomization when filtering by chapter
       flashcards = await db.$queryRaw`
-        SELECT 
+        SELECT
           f.*,
           c.id as "chapter_id",
           c.title as "chapter_title",
           c."courseId" as "chapter_courseId"
         FROM "Flashcard" f
         JOIN "Chapter" c ON f."chapterId" = c.id
-        WHERE f."chapterId" = ${chapterId}
+        WHERE f."chapterId" = ${chapterId }
         AND c."courseId" = ${courseId}
         ORDER BY RANDOM()
         LIMIT ${limit}
         OFFSET ${offset}
       `;
-    } else {
-      // Use raw SQL for true randomization across all chapters in course
+    } else { // Use raw SQL for true randomization across all chapters in course
       flashcards = await db.$queryRaw`
-        SELECT 
+        SELECT
           f.*,
-          c.id as "chapter_id", 
+          c.id as "chapter_id",
           c.title as "chapter_title",
           c."courseId" as "chapter_courseId"
         FROM "Flashcard" f
         JOIN "Chapter" c ON f."chapterId" = c.id
-        WHERE c."courseId" = ${courseId}
+        WHERE c."courseId" = ${courseId }
         ORDER BY RANDOM()
         LIMIT ${limit}
         OFFSET ${offset}
@@ -90,8 +81,7 @@ export async function GET(req: Request) {
     }
 
     // Transform the raw result to match expected structure
-    const randomizedFlashcards = flashcards.map((flashcard: any) => ({
-      id: flashcard.id,
+    const randomizedFlashcards = flashcards.map((flashcard: any) => ({ id: flashcard.id,
       question: flashcard.question,
       answer: flashcard.answer,
       chapterId: flashcard.chapterId,
@@ -100,8 +90,7 @@ export async function GET(req: Request) {
       chapter: {
         id: flashcard.chapter_id,
         title: flashcard.chapter_title,
-        courseId: flashcard.chapter_courseId,
-      },
+        courseId: flashcard.chapter_courseId, },
     }));
 
     // Calculate pagination metadata
@@ -109,19 +98,16 @@ export async function GET(req: Request) {
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
-    return NextResponse.json({
-      flashcards: randomizedFlashcards,
+    return NextResponse.json({ flashcards: randomizedFlashcards,
       pagination: {
         currentPage: page,
         totalPages,
         totalCount,
         limit,
         hasNextPage,
-        hasPrevPage,
-      },
+        hasPrevPage, },
     });
-  } catch (error) {
-    console.log('[FLASHCARDS_GET]', error);
+  } catch (error) { console.log('[FLASHCARDS_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

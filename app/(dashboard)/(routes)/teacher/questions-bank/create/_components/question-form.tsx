@@ -17,37 +17,28 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 
-const formSchema = z.object({
-  text: z.string().min(1, {
-    message: 'Question text is required',
-  }),
+const formSchema = z.object({ text: z.string().min(1, {
+    message: 'Question text is required', }),
   type: z.enum(['MULTIPLE_CHOICE', 'TRUE_FALSE']),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).optional(),
-  courseId: z.string().min(1, {
-    message: 'Course is required',
-  }),
+  courseId: z.string().min(1, { message: 'Course is required', }),
   chapterId: z.string().optional(),
   options: z
     .array(
-      z.object({
-        text: z.string().min(1, { message: 'Option text is required' }),
+      z.object({ text: z.string().min(1, { message: 'Option text is required' }),
         isCorrect: z.boolean().default(false),
       }),
     )
-    .refine((options) => options.some((option) => option.isCorrect), {
-      message: 'At least one option must be marked as correct',
-    }),
+    .refine((options) => options.some((option) => option.isCorrect), { message: 'At least one option must be marked as correct', }),
 });
 
-interface QuestionFormProps {
-  courseId?: string | '';
+interface QuestionFormProps { courseId?: string | '';
   chapterId?: string | '';
   courses: { id: string; title: string }[] | [];
   chapters: { id: string; title: string }[] | [];
 }
 
-export const QuestionForm = ({ courseId, chapterId, courses, chapters }: QuestionFormProps) => {
-  const router = useRouter();
+export const QuestionForm = ({ courseId, chapterId, courses, chapters }: QuestionFormProps) => { const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,23 +58,19 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'options',
-  });
+  const { fields, append, remove } = useFieldArray({ control: form.control,
+    name: 'options', });
 
   const questionType = form.watch('type');
   const selectedCourseId = form.watch('courseId');
 
   // Reset options when changing question type
-  useEffect(() => {
-    if (questionType === 'TRUE_FALSE') {
+  useEffect(() => { if (questionType === 'TRUE_FALSE') {
       form.setValue('options', [
         { text: 'True', isCorrect: false },
         { text: 'False', isCorrect: false },
       ]);
-    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length < 2) {
-      form.setValue('options', [
+    } else if (questionType === 'MULTIPLE_CHOICE' && fields.length < 2) { form.setValue('options', [
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
         { text: '', isCorrect: false },
@@ -92,16 +79,14 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
     }
   }, [questionType, form, fields.length]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => { try {
       setIsSubmitting(true);
 
       await axios.post('/api/practice/questions/create', values);
 
       toast.success('Question added to bank');
       router.push('/teacher/questions-bank');
-      router.refresh();
-    } catch (error) {
+      router.refresh(); } catch (error) {
       console.error(error);
       toast.error('Something went wrong');
     } finally {
@@ -186,35 +171,34 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
                       {courses.map((course) => (
                         <Card
                           key={course.id}
-                          className={cn(
+                          className={ cn(
                             'cursor-pointer border-2 transition-all duration-200 hover:border-primary/70',
                             field.value === course.id
                               ? 'border-primary bg-primary/10 shadow-sm'
                               : 'border-gray-200 bg-white hover:border-primary/50',
-                          )}
-                          onClick={() => {
+                          ) }
+                          onClick={ () => {
                             field.onChange(course.id);
-                            form.setValue('chapterId', '');
-                          }}
+                            form.setValue('chapterId', ''); }}
                         >
                           <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                               <div
-                                className={cn(
+                                className={ cn(
                                   'rounded-lg p-2',
                                   field.value === course.id
                                     ? 'bg-primary/20 text-primary'
                                     : 'bg-muted text-muted-foreground',
-                                )}
+                                ) }
                               >
                                 <BookOpen className="h-5 w-5" />
                               </div>
                               <div className="min-w-0 flex-1">
                                 <h3
-                                  className={cn(
+                                  className={ cn(
                                     'truncate font-medium',
                                     field.value === course.id ? 'text-primary' : 'text-foreground',
-                                  )}
+                                  ) }
                                 >
                                   {course.title}
                                 </h3>
@@ -268,19 +252,19 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
               <div className="mb-4">
                 <FormLabel className="text-base">Answer Options</FormLabel>
                 <FormDescription>
-                  {questionType === 'MULTIPLE_CHOICE'
+                  { questionType === 'MULTIPLE_CHOICE'
                     ? 'Add options and select the correct answer(s)'
-                    : 'Select the correct answer'}
+                    : 'Select the correct answer' }
                 </FormDescription>
               </div>
 
               <div className="space-y-4">
-                {fields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-x-2">
+                { fields.map((field, index) => (
+                  <div key={field.id } className="flex items-center gap-x-2">
                     <FormField
                       control={form.control}
                       name={`options.${index}.isCorrect`}
-                      render={({ field: checkboxField }) => (
+                      render={ ({ field: checkboxField }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                           <FormControl>
                             <Checkbox
@@ -295,7 +279,7 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
                     <FormField
                       control={form.control}
                       name={`options.${index}.text`}
-                      render={({ field: textField }) => (
+                      render={ ({ field: textField }) => (
                         <FormItem className="flex-1">
                           <FormControl>
                             <Input
@@ -328,7 +312,7 @@ export const QuestionForm = ({ courseId, chapterId, courses, chapters }: Questio
                     variant="outline"
                     size="sm"
                     disabled={isSubmitting}
-                    onClick={() => append({ text: '', isCorrect: false })}
+                    onClick={ () => append({ text: '', isCorrect: false })}
                     className="mt-2"
                   >
                     <Plus className="mr-2 h-4 w-4" />

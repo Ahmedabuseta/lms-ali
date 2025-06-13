@@ -8,36 +8,25 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { requireTeacher } from '@/lib/auth-helpers';
 
-interface PageProps {
-  searchParams: {
+interface PageProps { searchParams: {
     courseId?: string;
-    chapterId?: string;
-  };
+    chapterId?: string; };
 }
 
-export default async function CreateExamPage({ searchParams }: PageProps) {
-  const user = await requireTeacher();
+export default async function CreateExamPage({ searchParams }: PageProps) { const user = await requireTeacher();
 
   // Get all courses created by this teacher
   const courses = await db.course.findMany({
-    where: {},
-    orderBy: {
-      title: 'asc',
-    },
-    select: {
-      id: true,
+    where: { },
+    orderBy: { title: 'asc', },
+    select: { id: true,
       title: true,
       chapters: {
         where: {
-          isPublished: true,
-        },
-        select: {
-          id: true,
-          title: true,
-        },
-        orderBy: {
-          position: 'asc',
-        },
+          isPublished: true, },
+        select: { id: true,
+          title: true, },
+        orderBy: { position: 'asc', },
       },
     },
   });
@@ -53,7 +42,7 @@ export default async function CreateExamPage({ searchParams }: PageProps) {
             </Link>
           </Button>
         </div>
-        
+
         <Card className="max-w-2xl">
           <CardHeader>
             <CardTitle className="font-arabic text-center">لا توجد دورات متاحة</CardTitle>

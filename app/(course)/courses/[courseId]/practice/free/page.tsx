@@ -6,14 +6,11 @@ import { FreePracticeSession } from './_components/free-practice-session';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-interface FreePracticePageProps {
-  params: {
-    courseId: string;
-  };
+interface FreePracticePageProps { params: {
+    courseId: string; };
 }
 
-interface SessionData {
-  sessionId: string;
+interface SessionData { sessionId: string;
   courseId: string;
   mode: string;
   selectedChapters: { id: string; title: string }[];
@@ -22,27 +19,26 @@ interface SessionData {
   timeLimit: null;
 }
 
-const FreePracticePage = ({ params }: FreePracticePageProps) => {
-  const router = useRouter();
+const FreePracticePage = ({ params }: FreePracticePageProps) => { const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('id');
-  
+
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!sessionId) {
       toast.error('معرف الجلسة مطلوب');
-      router.push(`/courses/${params.courseId}/practice`);
+      router.push(`/courses/${params.courseId }/practice`);
       return;
     }
 
     const loadSession = async () => {
       try {
         setIsLoading(true);
-        
+
         const storedSession = localStorage.getItem(`practice_session_${sessionId}`);
-        
+
         if (storedSession) {
           const parsedSession = JSON.parse(storedSession);
           if (parsedSession.mode !== 'free') {
@@ -55,10 +51,9 @@ const FreePracticePage = ({ params }: FreePracticePageProps) => {
           toast.error('جلسة التدريب منتهية الصلاحية');
           router.push(`/courses/${params.courseId}/practice`);
         }
-      } catch (error) {
-        console.error('Error loading session:', error);
+      } catch (error) { console.error('Error loading session:', error);
         toast.error('خطأ في تحميل جلسة التدريب');
-        router.push(`/courses/${params.courseId}/practice`);
+        router.push(`/courses/${params.courseId }/practice`);
       } finally {
         setIsLoading(false);
       }
@@ -104,4 +99,4 @@ const FreePracticePage = ({ params }: FreePracticePageProps) => {
   );
 };
 
-export default FreePracticePage; 
+export default FreePracticePage;

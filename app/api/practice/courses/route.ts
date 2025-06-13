@@ -4,8 +4,7 @@ import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
-  try {
+export async function GET(req: NextRequest) { try {
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -15,37 +14,27 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const categoryId = searchParams.get('categoryId');
 
-    const courses = await db.course.findMany({
-      where: {
+    const courses = await db.course.findMany({ where: {
         isPublished: true,
         ...(categoryId && { categoryId }),
       },
-      include: {
-        category: true,
+      include: { category: true,
         chapters: {
           where: {
-            isPublished: true,
-          },
-          select: {
-            id: true,
-          },
+            isPublished: true, },
+          select: { id: true, },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc', },
     });
 
-    const coursesWithProgress = courses.map((course) => ({
-      ...course,
-      progress: null, // Add progress calculation if needed
-    }));
+    const coursesWithProgress = courses.map((course) => ({ ...course,
+      progress: null, // Add progress calculation if needed }));
 
     console.log(`Found ${coursesWithProgress.length} courses for practice`);
 
     return NextResponse.json(coursesWithProgress);
-  } catch (error) {
-    console.log('[PRACTICE_COURSES_GET]', error);
+  } catch (error) { console.log('[PRACTICE_COURSES_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

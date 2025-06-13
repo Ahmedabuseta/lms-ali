@@ -16,20 +16,15 @@ import { cn } from '@/lib/utils';
 import { Editor } from '@/components/editor';
 import { Preview } from '@/components/preview';
 
-interface ChapterDescriptionFormProps {
-  initialData: Chapter;
+interface ChapterDescriptionFormProps { initialData: Chapter;
   courseId: string;
-  chapterId: string;
-}
+  chapterId: string; }
 
-const formSchema = z.object({
-  description: z.string().min(1, {
-    message: 'وصف الفصل مطلوب',
-  }),
+const formSchema = z.object({ description: z.string().min(1, {
+    message: 'وصف الفصل مطلوب', }),
 });
 
-export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDescriptionFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: ChapterDescriptionFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -38,8 +33,7 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || '',
-    },
+      description: initialData?.description || '', },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -65,22 +59,22 @@ export const ChapterDescriptionForm = ({ initialData, courseId, chapterId }: Cha
           <h4 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 font-arabic">وصف الفصل</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           {initialData.description ? (
             <div className="rounded-lg border border-emerald-200/50 bg-emerald-100/50 p-4 backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-800/20">
-              <Preview value={initialData.description} />
+              <Preview value={initialData.description } />
             </div>
           ) : (
             <div className="rounded-lg border border-emerald-200/50 bg-emerald-50/40 p-4 text-center backdrop-blur-sm dark:border-emerald-400/30 dark:bg-emerald-900/20">

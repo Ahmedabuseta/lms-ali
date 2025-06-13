@@ -4,17 +4,14 @@ import * as React from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { type ThemeProviderProps } from 'next-themes';
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  const [mounted, setMounted] = React.useState(false);
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) { const [mounted, setMounted] = React.useState(false);
 
   // Only show UI once mounted to prevent hydration mismatch
   React.useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true); }, []);
 
   // Update color-scheme CSS property when theme changes
-  React.useEffect(() => {
-    if (!mounted) return;
+  React.useEffect(() => { if (!mounted) return;
 
     const updateColorScheme = () => {
       const theme = localStorage.getItem('theme') || 'system';
@@ -27,8 +24,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       const editorElements = document.querySelectorAll('.ql-editor');
       editorElements.forEach((editor) => {
         if (isDark) {
-          editor.classList.add('dark-editor');
-        } else {
+          editor.classList.add('dark-editor'); } else {
           editor.classList.remove('dark-editor');
         }
       });
@@ -43,14 +39,12 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     // Apply anti-aliasing for better text rendering in both themes
     document.body.classList.add('antialiased');
 
-    return () => {
-      window.removeEventListener('storage', updateColorScheme);
-    };
+    return () => { window.removeEventListener('storage', updateColorScheme); };
   }, [mounted]);
 
   return (
     <NextThemesProvider {...props}>
-      {mounted ? (
+      { mounted ? (
         children
       ) : (
         // Use a placeholder with the same layout to prevent layout shift

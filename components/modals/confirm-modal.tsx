@@ -1,7 +1,6 @@
 'use client';
 
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -9,13 +8,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 
-interface ConfirmModalProps {
-  children: React.ReactNode;
-  onConfirm: () => void;
-}
+interface ConfirmModalProps { children: React.ReactNode;
+  onConfirm: () => void; }
 
 export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
   return (

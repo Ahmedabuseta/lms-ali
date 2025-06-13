@@ -9,14 +9,11 @@ import { showNotification } from '@/components/ui/notifications';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-interface ImageUploadDialogProps {
-  open: boolean;
+interface ImageUploadDialogProps { open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTextExtracted: (text: string) => void;
-}
+  onTextExtracted: (text: string) => void; }
 
-export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: ImageUploadDialogProps) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: ImageUploadDialogProps) => { const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [extractedText, setExtractedText] = useState('');
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -36,16 +33,14 @@ export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: Image
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          setImagePreview(e.target.result as string);
-        }
+          setImagePreview(e.target.result as string); }
       };
       reader.readAsDataURL(file);
       setProgress(20);
 
       let text = '';
 
-      if (useClientSideOCR) {
-        // Client-side OCR
+      if (useClientSideOCR) { // Client-side OCR
         try {
           text = await performOptimizedOCR(file, (progress: number) => {
             setProgress(20 + Math.round(progress * 60)); // Scale to 20%-80%
@@ -56,15 +51,13 @@ export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: Image
           setIsProcessingImage(false);
           return;
         }
-      } else {
-        // Server-side OCR
+      } else { // Server-side OCR
         const formData = new FormData();
         formData.append('image', file);
 
         const response = await fetch('/api/image-processing/ocr', {
           method: 'POST',
-          body: formData,
-        });
+          body: formData, });
 
         if (!response.ok) {
           throw new Error('Failed to process image on server');
@@ -78,14 +71,12 @@ export const ImageUploadDialog = ({ open, onOpenChange, onTextExtracted }: Image
       setExtractedText(text);
       setProgress(100);
       showNotification.success('Image processed successfully', 'Text has been extracted from your image');
-    } catch (error) {
-      console.error('Image processing error:', error);
+    } catch (error) { console.error('Image processing error:', error);
       setImageError('Failed to process image. Please try again or use a clearer image.');
       showNotification.error(
         'Image processing failed',
         'Unable to extract text from the image. Please try again with a clearer image.',
-      );
-    } finally {
+      ); } finally {
       setIsProcessingImage(false);
     }
   };

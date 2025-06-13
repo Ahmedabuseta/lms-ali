@@ -12,21 +12,16 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-interface TitleFormProps {
-  initialData: {
-    title: string;
-  };
+interface TitleFormProps { initialData: {
+    title: string; };
   courseId: string;
 }
 
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: 'العنوان مطلوب',
-  }),
+const formSchema = z.object({ title: z.string().min(1, {
+    message: 'العنوان مطلوب', }),
 });
 
-export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+export const TitleForm = ({ initialData, courseId }: TitleFormProps) => { const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -34,8 +29,7 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
-  });
+    defaultValues: initialData, });
 
   const { isSubmitting, isValid } = form.formState;
 
@@ -60,22 +54,22 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
           <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 font-arabic">عنوان الدورة</h4>
         </div>
         <Button onClick={toggleEdit} variant="ghost" size="sm" className="text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100">
-          {isEditing ? (
+          { isEditing ? (
             <span className="font-arabic">إلغاء</span>
           ) : (
             <>
               <Pencil className="ml-2 h-4 w-4" />
               <span className="font-arabic">تعديل</span>
             </>
-          )}
+          ) }
         </Button>
       </div>
 
-      {!isEditing && (
+      { !isEditing && (
         <div className="mt-4">
           {initialData.title ? (
             <div className="rounded-lg border border-blue-200/50 bg-blue-100/50 p-4 backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-800/20">
-              <p className="text-blue-900 dark:text-blue-100 font-medium font-arabic">{initialData.title}</p>
+              <p className="text-blue-900 dark:text-blue-100 font-medium font-arabic">{initialData.title }</p>
             </div>
           ) : (
             <div className="rounded-lg border border-blue-200/50 bg-blue-50/40 p-4 text-center backdrop-blur-sm dark:border-blue-400/30 dark:bg-blue-900/20">
