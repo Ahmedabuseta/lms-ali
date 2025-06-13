@@ -178,6 +178,9 @@ export default async function ExamDetailPage({ params }: PageProps) { const user
                 timeLimit={exam?.timeLimit}
                   userId={user.id}
                   title={exam?.title}
+                totalQuestions={exam?.examQuestions?.length || 0}
+                maxAttempts={exam?.maxAttempts || 1}
+                passingScore={exam?.passingScore || 70}
               />
             </CardFooter>
           </Card>

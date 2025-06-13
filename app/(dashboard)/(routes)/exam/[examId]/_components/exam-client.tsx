@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { Loader2, AlertCircle, Clock, Users, Target, CheckCircle, XCircle, Timer } from 'lucide-react';
+import { Loader2, AlertCircle, Clock, Users, Target, CheckCircle, XCircle, Timer, FileQuestion, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -275,16 +275,16 @@ export const ExamClient = ({ examId,
             onClick={continueAttempt}
             disabled={isLoading}
             size="lg"
-            className="w-full"
+            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg font-arabic text-lg py-6"
           >
             { isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 جاري التحميل...
               </>
             ) : (
               <>
-                <Timer className="mr-2 h-4 w-4" />
+                <Timer className="mr-2 h-5 w-5" />
                 متابعة الامتحان
               </>
             ) }
@@ -295,46 +295,76 @@ export const ExamClient = ({ examId,
               <Button
                 disabled={isLoading || (stats?.remainingAttempts === 0)}
                 size="lg"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] font-arabic text-lg py-6 disabled:from-gray-400 disabled:to-gray-500 disabled:transform-none disabled:shadow-none"
               >
                 { isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     جاري البدء...
                   </>
                 ) : stats?.remainingAttempts === 0 ? (
-                  'لا توجد محاولات متبقية'
+                  <>
+                    <XCircle className="mr-2 h-5 w-5" />
+                    لا توجد محاولات متبقية
+                  </>
                 ) : (
-                  'بدء الامتحان'
+                  <>
+                    <FileQuestion className="mr-2 h-5 w-5" />
+                    بدء الامتحان
+                  </>
                 ) }
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-                <AlertDialogTitle>تأكيد بدء الامتحان</AlertDialogTitle>
-                <AlertDialogDescription className="space-y-2">
-                  <p>هل أنت متأكد من أنك تريد بدء الامتحان؟</p>
-                  <div className="bg-muted p-3 rounded-md space-y-1 text-sm">
-                    <p><strong>عدد الأسئلة:</strong> {totalQuestions}</p>
-                    <p><strong>مدة الامتحان:</strong> {formatTime(timeLimit || undefined)}</p>
-                    <p><strong>المحاولات المتبقية:</strong> {stats?.remainingAttempts || maxAttempts}</p>
-                    <p><strong>درجة النجاح:</strong> {passingScore}%</p>
+                <AlertDialogTitle className="text-right font-arabic text-xl">تأكيد بدء الامتحان</AlertDialogTitle>
+                <AlertDialogDescription className="space-y-4 text-right">
+                  <p className="font-arabic text-base">هل أنت متأكد من أنك تريد بدء الامتحان؟</p>
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-4 rounded-lg border border-blue-200/50 dark:border-blue-800/50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium font-arabic">عدد الأسئلة:</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-bold">{totalQuestions}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium font-arabic">مدة الامتحان:</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-bold">{formatTime(timeLimit || undefined)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium font-arabic">المحاولات المتبقية:</span>
+                      <span className="text-green-600 dark:text-green-400 font-bold">{stats?.remainingAttempts || maxAttempts}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium font-arabic">درجة النجاح:</span>
+                      <span className="text-purple-600 dark:text-purple-400 font-bold">{passingScore}%</span>
+                    </div>
                   </div>
-                  <p className="text-destructive font-medium">
-                    تذكر: لا يمكنك إيقاف الامتحان بعد البدء!
-                  </p>
+                  <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 p-4 rounded-lg border border-red-200/50 dark:border-red-800/50">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-red-700 dark:text-red-300 font-medium font-arabic text-sm">
+                        تذكر: لا يمكنك إيقاف الامتحان بعد البدء! تأكد من أنك جاهز للإجابة على جميع الأسئلة.
+                      </p>
+                    </div>
+                  </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-              <AlertDialogFooter>
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                <AlertDialogAction onClick={handleExamStart} disabled={isLoading}>
+              <AlertDialogFooter className="gap-3">
+            <AlertDialogCancel className="font-arabic">إلغاء</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleExamStart} 
+                  disabled={isLoading}
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 font-arabic"
+                >
                   { isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       جاري البدء...
                     </>
                   ) : (
-                    'بدء الامتحان'
+                    <>
+                      <FileQuestion className="mr-2 h-4 w-4" />
+                      بدء الامتحان
+                    </>
                   ) }
                 </AlertDialogAction>
           </AlertDialogFooter>
