@@ -13,24 +13,31 @@ import { getChapter } from '@/actions/get-chapter';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { getProgress } from '@/actions/get-progress';
+
 export default async function ChapterDetails({ params }: { params: { courseId: string; chapterId: string } }) {
   const {session} = await requireAuth();
   if (!session.userId) {
     return redirect('/');
   }
 
-  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase, hasChapterAccess, chapterQuiz } = await getChapter({ userId: session.userId,
-    ...params, });
+  const { chapter, course, muxData, attachments, nextChapter, userProgress, hasChapterAccess, chapterQuiz } = await getChapter({ 
+    userId: session.userId,
+    ...params, 
+  });
 
-  // if (!chapter || !course) {
-  //   return redirect('/');
-  // }
+  // Properly handle cases where chapter or course is not found
+  if (!chapter || !course) {
+    return redirect('/');
+  }
 
   // Get full course data with chapters for the playlist
-  const fullCourse = await db.course.findUnique({ where: { id: params.courseId },
-    include: { chapters: {
+  const fullCourse = await db.course.findUnique({ 
+    where: { id: params.courseId },
+    include: { 
+      chapters: {
         where: { isPublished: true },
-        include: { userProgress: {
+        include: { 
+          userProgress: {
             where: { userId: session.userId },
           },
         },
@@ -39,18 +46,20 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
     },
   });
 
-  // if (!fullCourse) {
-  //   return redirect('/');
-  // }
+  // Handle case where course is not found
+  if (!fullCourse) {
+    return redirect('/');
+  }
 
   const progressCount = await getProgress(session.userId, params.courseId);
+  
   // Use the new access control instead of just checking isFree and purchase
   const isLocked = !hasChapterAccess;
   const completedOnEnd = !!hasChapterAccess && !userProgress?.isCompleted;
 
-  // Get current chapter index for navigation
-  const currentChapterIndex = fullCourse?.chapters.findIndex(ch => ch.id === chapter?.id);
-  const previousChapter = currentChapterIndex && currentChapterIndex > 0 ? fullCourse?.chapters[currentChapterIndex - 1] : null;
+  // Get current chapter index for navigation - handle cases where chapter might not be in published list
+  const currentChapterIndex = fullCourse.chapters.findIndex(ch => ch.id === chapter.id);
+  const previousChapter = currentChapterIndex > 0 ? fullCourse.chapters[currentChapterIndex - 1] : null;
 
   // Check if quiz is required for completion and if user has passed it
   const hasQuizRequirement = chapterQuiz && chapterQuiz.quizQuestions.length > 0;
@@ -131,7 +140,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                     <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                       <div className="flex items-center gap-1">
                         <BookOpen className="h-4 w-4" />
-                        <span className="font-arabic">الفصل {currentChapterIndex + 1}</span>
+                        <span className="font-arabic">الفصل {currentChapterIndex >= 0 ? currentChapterIndex + 1 : chapter.position}</span>
                       </div>
                       {chapter.videoUrl && (
                         <div className="flex items-center gap-1">
@@ -147,18 +156,6 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                       )}
                     </div>
                   </div>
-
-                  {/* Progress Button */}
-                  {purchase && (
-                    <div className="flex-shrink-0">
-                      <CourseProgressButton
-                        chapterId={params.chapterId}
-                        courseId={params.courseId}
-                        nextChapterId={nextChapter?.id}
-                        isCompleted={!!userProgress?.isCompleted}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -190,7 +187,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
                 chapters={fullCourse.chapters}
                 currentChapterId={chapter.id}
                 progressCount={progressCount}
-                hasPurchase={!!purchase}
+                hasPurchase={true}
               />
             </div>
           </div>

@@ -6,12 +6,13 @@ type GetChapterArgs = { userId: string;
   courseId: string;
   chapterId: string; };
 
-export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs) { try {
-    const purchase = await db.purchase.findUnique({ where: { userId_courseId: { userId, courseId } } });
+export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs) {
+  try {
     const course = await db.course.findUnique({ where: { id: courseId, isPublished: true }, select: { price: true } });
     const chapter = await db.chapter.findUnique({ where: { id: chapterId, isPublished: true } });
 
     if (!chapter || !course) {
+      console.log('Chapter or course not found:', { chapterId, courseId, chapter: !!chapter, course: !!course });
       throw new Error('Chapter or course not found!');
     }
 
@@ -24,25 +25,28 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
     let nextChapter: Chapter | null = null;
     let chapterQuiz = null;
 
-    // Only provide attachments if user has purchased the course
-    if (purchase) { attachments = await db.attachment.findMany({ where: { courseId } });
-    }
+
 
     // Get chapter quiz if user has access
-    if (hasChapterAccess) { chapterQuiz = await db.quiz.findFirst({
+    if (hasChapterAccess) {
+      chapterQuiz = await db.quiz.findFirst({
         where: {
           chapterId,
-          isPublished: true, },
-        include: { quizQuestions: {
+          isPublished: true,
+        },
+        include: {
+          quizQuestions: {
             include: {
               question: {
                 include: {
-                  options: true, },
+                  options: true,
+                },
               },
             },
-            orderBy: { position: 'asc', },
+            orderBy: { position: 'asc' },
           },
-          attempts: { where: { userId },
+          attempts: {
+            where: { userId },
             orderBy: { createdAt: 'desc' },
             take: 1,
           },
@@ -51,33 +55,45 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
     }
 
     // Provide video access only if user has chapter access
-    if (hasChapterAccess) { muxData = await db.muxData.findUnique({ where: { chapterId } });
+    if (hasChapterAccess) {
+      muxData = await db.muxData.findUnique({ where: { chapterId } });
 
-      nextChapter = await db.chapter.findFirst({ where: { courseId, isPublished: true, position: { gt: chapter.position } },
+      nextChapter = await db.chapter.findFirst({
+        where: {
+          courseId,
+          isPublished: true,
+          position: { gt: chapter.position }
+        },
         orderBy: { position: 'asc' },
       });
     }
 
-    const userProgress = await db.userProgress.findUnique({ where: { userId_chapterId: { userId, chapterId } } });
+    const userProgress = await db.userProgress.findUnique({
+      where: { userId_chapterId: { userId, chapterId } }
+    });
 
-    return { chapter,
+    return {
+      chapter,
       course,
       muxData,
       attachments,
       nextChapter,
       userProgress,
-      purchase,
       hasChapterAccess,
-      chapterQuiz, };
-  } catch { return {
+      chapterQuiz,
+    };
+  } catch (error) {
+    console.error('Error in getChapter:', error);
+    return {
       chapter: null,
       course: null,
       muxData: null,
-      attachments: null,
+      attachments: [],
       nextChapter: null,
       userProgress: null,
       purchase: null,
       hasChapterAccess: false,
-      chapterQuiz: null, };
+      chapterQuiz: null,
+    };
   }
 }
