@@ -13,7 +13,21 @@ jobs:
     strategy:
       matrix:
         node-version: [22.16.0]
-
+    env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
+          DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
+          DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
+          DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
+          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
+          MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,54 +40,10 @@ jobs:
       - name: Inject environment variables
         run: |
           echo "Injecting env vars..."
-        env:
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
-          DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
-          DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
-          MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
-
+        
       - name: Install dependencies
         run: npm ci
-        env:
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
-          DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
-          DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
-          MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
-
+        
       - name: Build
         run: npm run build --if-present
-        env:
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          CHUTES_API_TOKEN: ${{ secrets.CHUTES_API_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DO_SPACES_BUCKET: ${{ secrets.DO_SPACES_BUCKET }}
-          DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
-          DO_SPACES_REGION: ${{ secrets.DO_SPACES_REGION }}
-          DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          MUX_TOKEN_ID: ${{ secrets.MUX_TOKEN_ID }}
-          MUX_TOKEN_SECRET: ${{ secrets.MUX_TOKEN_SECRET }}
+        
