@@ -7,14 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  production-build:
+  build:
     name: Production Build
     runs-on: self-hosted
     environment: production
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.*]
 
     env:
       NODE_ENV: production
@@ -44,27 +44,16 @@ jobs:
           cache: 'npm'
 
       - name: Install all dependencies
-        run: npm install
+        run: npm ci
 
       - name: Generate Prisma client
         run: npx prisma generate
-
-      - name: Database backup (production only)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Creating database backup..."
-          # Add your database backup commands here
 
       - name: Run database migrations
         run: npx prisma migrate deploy
 
       - name: Build application
         run: npm run build
-
-      - name: Run production tests
-        run: |
-          echo "Running production-specific tests..."
-          # Add production test commands here
 
       - name: Deploy to production
         run: |
