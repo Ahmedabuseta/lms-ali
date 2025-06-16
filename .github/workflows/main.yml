@@ -55,8 +55,10 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy to production
-        run: |
+      - name: change dir and Deploy to production
+        run: cd /home/ovveride/actions-runner/_work/lms-ali/lms-ali
+        
+      - name: change dir and Deploy to production
+        run: 
           echo "Deploying to production..."
-          # Restart your application service here
-          # Example: pm2 restart your-app-name
+          pm2 reload p2s
