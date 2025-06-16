@@ -15,7 +15,7 @@ const getBaseURL = () => {
 };
 
 export const authClient = createAuthClient({ 
-  baseURL: getBaseURL(),
+  baseURL: "https://p2s.tech",
   plugins: [
     adminClient(),
   ] 
