@@ -1,0 +1,40 @@
+<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Purple gradient background -->
+    <linearGradient id="compactBgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9333EA;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- White text gradient -->
+    <linearGradient id="compactTextGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F3F4F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="120" height="40" rx="8" ry="8" fill="url(#compactBgGradient)"/>
+  
+  <!-- Arrow -->
+  <g transform="translate(25, 20)">
+    <path d="M -8 5 Q -3 0, 3 3 Q 8 6, 12 -2" 
+          stroke="#FFFFFF" 
+          stroke-width="2" 
+          fill="none" 
+          stroke-linecap="round" 
+          opacity="0.9"/>
+    <path d="M 10 -4 L 14 -2 L 12 0 Z" 
+          fill="#FFFFFF" 
+          opacity="0.9"/>
+  </g>
+  
+  <!-- P2S Text -->
+  <text x="60" y="26" 
+        font-family="Arial, sans-serif" 
+        font-size="18" 
+        font-weight="bold" 
+        fill="url(#compactTextGradient)" 
+        text-anchor="middle">P2S</text>
+</svg> 

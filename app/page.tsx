@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { ArrowRight,
   BookOpen,
   Users,
@@ -79,13 +80,16 @@ export default function LandingPage() { const { data: session, isPending } = use
       <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-700 dark:bg-gray-900/80">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2 space-x-reverse">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
-                <GraduationCap className="h-5 w-5 text-white" />
+            <div className="flex items-center">
+              <div className="flex h-14 w-auto items-center justify-center rounded-lg overflow-hidden py-2">
+                <Image
+                  src="/p2s-logo-compact.svg"
+                  alt="P2S Logo"
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto object-contain"
+                />
               </div>
-              <span className="hidden sm:block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg md:text-xl font-bold text-transparent font-arabic">
-                LMS Ali
-              </span>
             </div>
             <div className="flex items-center space-x-2 md:space-x-4 space-x-reverse">
               <ThemeToggle />
@@ -161,7 +165,7 @@ export default function LandingPage() { const { data: session, isPending } = use
               شوف إزاي بنشتغل
             </Button>
           </div>
-        </div>
+        </div>إحصائيات الدورة التفصيلية
 
         {/* Floating Elements */}
         <div className="relative mt-16">
@@ -497,11 +501,16 @@ export default function LandingPage() { const { data: session, isPending } = use
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {/* Brand Section */}
             <div className="text-center md:text-right">
-              <div className="mb-4 flex items-center justify-center space-x-2 md:justify-start">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
-                  <GraduationCap className="h-5 w-5 text-white" />
+              <div className="mb-4 flex items-center justify-center md:justify-start">
+                <div className="flex h-16 w-16 items-center justify-center rounded-lg overflow-hidden">
+                  <Image
+                    src="/p2s-logo-compact.svg"
+                    alt="P2S Logo"
+                    width={64}
+                    height={64}
+                    className="h-full w-full object-contain"
+                  />
                 </div>
-                <span className="text-xl font-bold font-arabic">LMS Ali</span>
               </div>
               <p className="text-gray-400 font-arabic">
                 طريقك لكلية التجارة يبدأ من هنا
@@ -568,7 +577,7 @@ export default function LandingPage() { const { data: session, isPending } = use
             {/* Copyright Section */}
             <div className="text-center md:text-left">
               <div className="text-gray-400 font-arabic">
-                © 2025 LMS Ali
+                © 2025 P2S Learning
                 <br />
                 جميع الحقوق محفوظة
               </div>

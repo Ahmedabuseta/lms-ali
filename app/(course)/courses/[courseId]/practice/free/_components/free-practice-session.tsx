@@ -8,7 +8,8 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ChevronLeft,
+import { 
+  ChevronLeft,
   ChevronRight,
   X,
   CheckCircle,
@@ -17,15 +18,17 @@ import { ChevronLeft,
   Target,
   RotateCcw,
   Lightbulb,
-  Award,
-  Infinity,
   Brain,
-  Zap } from 'lucide-react';
+  Zap,
+  Award,
+  Infinity
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { MathRenderer } from '@/components/math-renderer';
 import { cn } from '@/lib/utils';
 
-interface Question { id: string;
+interface Question {
+  id: string;
   text: string;
   type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'PASSAGE';
   difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
@@ -34,19 +37,27 @@ interface Question { id: string;
   options: Array<{
     id: string;
     text: string;
-    isCorrect: boolean; }>;
-  passage?: { id: string;
-    title: string;
-    content: string; };
-  questionBank: { title: string;
-    chapterId?: string; };
-  attemptCount: number;
-  lastAttempt?: { selectedOptionId: string;
     isCorrect: boolean;
-    createdAt: string; };
+  }>;
+  passage?: {
+    id: string;
+    title: string;
+    content: string;
+  };
+  questionBank: {
+    title: string;
+    chapterId?: string;
+  };
+  attemptCount: number;
+  lastAttempt?: {
+    selectedOptionId: string;
+    isCorrect: boolean;
+    createdAt: string;
+  };
 }
 
-interface SessionData { sessionId: string;
+interface SessionData {
+  sessionId: string;
   courseId: string;
   mode: string;
   selectedChapters: { id: string; title: string }[];
@@ -55,11 +66,13 @@ interface SessionData { sessionId: string;
   timeLimit: null;
 }
 
-interface FreePracticeSessionProps { sessionData: SessionData;
-  onExit: () => void; }
+interface FreePracticeSessionProps {
+  sessionData: SessionData;
+  onExit: () => void;
+}
 
-export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessionData,
-  onExit, }) => { const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessionData, onExit }) => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerResult, setAnswerResult] = useState<any>(null);
@@ -78,11 +91,39 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
   useEffect(() => {
     setSelectedOption('');
     setShowAnswer(false);
-    setAnswerResult(null); }, [currentQuestionIndex]);
+    setAnswerResult(null);
+  }, [currentQuestionIndex]);
 
   const renderContent = (content: string) => {
     if (!content) return null;
     return <MathRenderer content={content} />;
+  };
+
+  const getDifficultyColor = (difficulty?: string) => {
+    switch (difficulty) {
+      case 'EASY': return 'bg-green-100 text-green-800 dark:bg-green-950/20 dark:text-green-300';
+      case 'MEDIUM': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950/20 dark:text-yellow-300';
+      case 'HARD': return 'bg-red-100 text-red-800 dark:bg-red-950/20 dark:text-red-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-950/20 dark:text-gray-300';
+    }
+  };
+
+  const getDifficultyLabel = (difficulty?: string) => {
+    switch (difficulty) {
+      case 'EASY': return 'سهل';
+      case 'MEDIUM': return 'متوسط';
+      case 'HARD': return 'صعب';
+      default: return difficulty;
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'MULTIPLE_CHOICE': return 'اختيار متعدد';
+      case 'TRUE_FALSE': return 'صح أم خطأ';
+      case 'PASSAGE': return 'قطعة';
+      default: return type;
+    }
   };
 
   const handleOptionSelect = (optionId: string) => {
@@ -91,24 +132,21 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
     }
   };
 
-  const submitAnswer = () => { if (!selectedOption || !currentQuestion) return;
+  const submitAnswer = () => {
+    if (!selectedOption || !currentQuestion) return;
 
     setIsSubmitting(true);
 
-    const selectedOptionObj = currentQuestion.options.find(opt => opt.id === selectedOption);
-    const isCorrect = selectedOptionObj?.isCorrect || false;
+    const correctOption = currentQuestion.options.find(opt => opt.isCorrect);
+    const isCorrect = selectedOption === correctOption?.id;
 
-    const result = {
-      questionId: currentQuestion.id,
-      selectedOptionId: selectedOption,
+    setAnswerResult({
       isCorrect,
-      correctAnswer: currentQuestion.options.find(opt => opt.isCorrect),
-      explanation: currentQuestion.explanation };
+      correctOption,
+      selectedOption
+    });
 
-    setAnswerResult(result);
-    setShowAnswer(true);
-
-    // Update stats
+    // Update session stats
     setQuestionsAnswered(prev => prev + 1);
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
@@ -116,16 +154,16 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
       toast.success('إجابة صحيحة! 🎉');
     } else {
       setCurrentStreak(0);
-      toast.error('إجابة خاطئة');
+      toast.error('إجابة خاطئة، حاول مرة أخرى');
     }
 
+    setShowAnswer(true);
     setIsSubmitting(false);
   };
 
   const nextQuestion = () => {
     if (currentQuestionIndex < sessionData.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-    } else { toast.success(`تم إنهاء التدريب! النقاط: ${correctAnswers }/${questionsAnswered} - الدقة: ${accuracy.toFixed(1)}%`);
     }
   };
 
@@ -141,30 +179,56 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
     setAnswerResult(null);
   };
 
+  // Completion screen
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center gap-2 text-xl text-gray-800">
-              <Award className="h-6 w-6 text-yellow-500" />
-              انتهى التدريب الحر
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-green-50 p-3 rounded-lg">
-                <div className="text-green-800 font-bold">{correctAnswers}</div>
-                <div className="text-green-600">إجابة صحيحة</div>
-              </div>
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <div className="text-blue-800 font-bold">{accuracy.toFixed(1)}%</div>
-                <div className="text-blue-600">دقة الإجابات</div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 flex items-center justify-center p-4 animate-fade-in" dir="rtl">
+        <Card className="w-full max-w-2xl shadow-xl border-0 bg-background/95 backdrop-blur-sm">
+          <CardHeader className="text-center bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20">
+            <div className="flex justify-center mb-4">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
+                <Award className="h-10 w-10 text-white" />
               </div>
             </div>
-            <Button onClick={onExit} className="w-full">
+            <CardTitle className="text-2xl text-foreground font-arabic-heading">
+              تهانينا! انتهى التدريب الحر
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-8 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-green-50/50 dark:bg-green-950/20 p-6 rounded-xl border border-green-200/50 dark:border-green-800/50">
+                <div className="text-4xl font-bold text-green-600 font-arabic-heading mb-2">{correctAnswers}</div>
+                <div className="text-green-700 dark:text-green-300 font-arabic">إجابة صحيحة</div>
+              </div>
+              <div className="bg-blue-50/50 dark:bg-blue-950/20 p-6 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                <div className="text-4xl font-bold text-blue-600 font-arabic-heading mb-2">{accuracy.toFixed(1)}%</div>
+                <div className="text-blue-700 dark:text-blue-300 font-arabic">دقة الإجابات</div>
+              </div>
+              <div className="bg-purple-50/50 dark:bg-purple-950/20 p-6 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
+                <div className="text-4xl font-bold text-purple-600 font-arabic-heading mb-2">{questionsAnswered}</div>
+                <div className="text-purple-700 dark:text-purple-300 font-arabic">إجمالي الأسئلة</div>
+              </div>
+            </div>
+            
+            {accuracy >= 80 && (
+              <Alert className="border-green-200 bg-green-50/50 dark:bg-green-950/20">
+                <Award className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800 dark:text-green-200 font-arabic text-lg">
+                  🌟 أداء ممتاز! استمر في التقدم والتعلم
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="flex gap-4 justify-center">
+              <Button onClick={onExit} variant="outline" className="font-arabic hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+                <Target className="mr-2 h-4 w-4" />
               العودة للقائمة الرئيسية
             </Button>
+              <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                جلسة تدريب جديدة
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -172,44 +236,51 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100" dir="rtl">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 animate-fade-in" dir="rtl">
+      {/* Enhanced Header */}
+      <div className="bg-background/95 backdrop-blur-sm shadow-lg border-b">
+        <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={onExit} className="flex items-center gap-2">
-                <X className="h-4 w-4" />
+            <div className="flex items-center gap-6">
+              <Button 
+                variant="ghost" 
+                onClick={onExit} 
+                className="flex items-center gap-2 font-arabic hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
+              >
+                <X className="h-5 w-5" />
                 إنهاء التدريب
               </Button>
-              <div className="flex items-center gap-2">
-                <Infinity className="h-5 w-5 text-blue-600" />
-                <span className="font-semibold text-gray-800">التدريب الحر</span>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-sm">
+                  <Infinity className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <span className="font-bold text-foreground font-arabic-heading text-lg">التدريب الحر</span>
+                  <p className="text-xs text-muted-foreground font-arabic">تعلم بالسرعة التي تناسبك</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-green-600" />
-                <span className="text-gray-600">الدقة:</span>
-                <span className="font-bold text-green-600">{accuracy.toFixed(1)}%</span>
+            <div className="flex items-center gap-6">
+              {[
+                { icon: Target, label: "الدقة", value: `${accuracy.toFixed(1)}%`, color: "text-green-600" },
+                { icon: Zap, label: "السلسلة", value: currentStreak, color: "text-orange-600" },
+                { icon: Brain, label: "الأسئلة", value: `${questionsAnswered}/${sessionData.questions.length}`, color: "text-purple-600" }
+              ].map((stat, index) => (
+                <div key={index} className="flex items-center gap-3 bg-background/80 px-4 py-2 rounded-lg border border-border/50 shadow-sm">
+                  <stat.icon className={cn("h-5 w-5", stat.color)} />
+                  <div>
+                    <span className="text-muted-foreground font-arabic text-sm">{stat.label}:</span>
+                    <span className={cn("font-bold ml-1 font-arabic", stat.color)}>{stat.value}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-orange-600" />
-                <span className="text-gray-600">السلسلة:</span>
-                <span className="font-bold text-orange-600">{currentStreak}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Brain className="h-4 w-4 text-purple-600" />
-                <span className="text-gray-600">الأسئلة:</span>
-                <span className="font-bold text-purple-600">{questionsAnswered}/{sessionData.questions.length}</span>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="mt-3">
-            <Progress value={progress} className="h-2" />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="mt-6 space-y-2">
+            <Progress value={progress} className="h-3" variant="success" />
+            <div className="flex justify-between text-sm text-muted-foreground font-arabic">
               <span>السؤال {currentQuestionIndex + 1} من {sessionData.questions.length}</span>
               <span>{progress.toFixed(1)}% مكتمل</span>
             </div>
@@ -217,123 +288,187 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-4">
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Badge variant="outline" className="text-blue-600 bg-blue-50 border-blue-200">
-                  { currentQuestion.type === 'MULTIPLE_CHOICE' ? 'اختيار متعدد' :
-                   currentQuestion.type === 'TRUE_FALSE' ? 'صح أو خطأ' : 'قطعة فهم' }
+      <div className="max-w-5xl mx-auto p-6">
+        <Card className="shadow-xl border-0 bg-background/95 backdrop-blur-sm">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <Badge 
+                  variant="outline" 
+                  className={cn("font-arabic border-2", getDifficultyColor(currentQuestion.difficulty))}
+                >
+                  {getDifficultyLabel(currentQuestion.difficulty)}
+                </Badge>
+                <Badge variant="secondary" className="text-blue-600 bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 font-arabic">
+                  {getTypeLabel(currentQuestion.type)}
                 </Badge>
                 {currentQuestion.questionBank?.title && (
-                  <Badge variant="outline" className="text-purple-600 bg-purple-50 border-purple-200">
+                  <Badge variant="outline" className="text-purple-600 bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 font-arabic">
+                    <BookOpen className="h-3 w-3 mr-1" />
                     {currentQuestion.questionBank.title}
                   </Badge>
                 )}
               </div>
             </div>
 
-            <CardTitle className="text-xl leading-relaxed">
+            <CardTitle className="text-2xl leading-relaxed font-arabic text-foreground">
               {renderContent(currentQuestion.text)}
             </CardTitle>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="space-y-8">
+            {/* Passage Section */}
             {currentQuestion.passage && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <BookOpen className="h-4 w-4" />
+              <Card className="bg-gradient-to-r from-blue-50/50 to-indigo-50/30 dark:from-blue-950/10 dark:to-indigo-950/10 border-blue-200/50 dark:border-blue-800/50">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-4 flex items-center gap-3 text-blue-900 dark:text-blue-100 font-arabic-heading">
+                    <BookOpen className="h-5 w-5 text-blue-600" />
                   {currentQuestion.passage.title}
                 </h3>
-                <div className="text-gray-700 leading-relaxed">
+                  <div className="text-foreground leading-relaxed font-arabic">
                   {renderContent(currentQuestion.passage.content)}
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             )}
 
+            {/* Options */}
             <RadioGroup
               value={selectedOption}
               onValueChange={handleOptionSelect}
               disabled={showAnswer}
-              className="space-y-3"
+              className="space-y-4"
             >
-              {currentQuestion.options.map((option) => (
+              {currentQuestion.options.map((option, index) => (
                 <div
                   key={option.id}
-                  className={ cn(
-                    "flex items-center space-x-3 space-x-reverse p-4 rounded-lg border transition-all",
-                    !showAnswer && "hover:bg-gray-50 cursor-pointer",
-                    showAnswer && option.isCorrect && "bg-green-50 border-green-200",
-                    showAnswer && selectedOption === option.id && !option.isCorrect && "bg-red-50 border-red-200",
-                    selectedOption === option.id && !showAnswer && "bg-blue-50 border-blue-200"
-                  ) }
+                  className={cn(
+                    "flex items-center space-x-4 space-x-reverse p-5 rounded-xl border-2 transition-all duration-200",
+                    !showAnswer && "hover:bg-muted/50 cursor-pointer",
+                    showAnswer && option.isCorrect && "bg-green-50/50 border-green-300/50 dark:bg-green-950/20 dark:border-green-700/50",
+                    showAnswer && selectedOption === option.id && !option.isCorrect && "bg-red-50/50 border-red-300/50 dark:bg-red-950/20 dark:border-red-700/50",
+                    selectedOption === option.id && !showAnswer && "bg-blue-50/50 border-blue-300/50 dark:bg-blue-950/20 dark:border-blue-700/50",
+                    !selectedOption && !showAnswer && "border-border"
+                  )}
                 >
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm font-medium text-muted-foreground bg-muted w-8 h-8 rounded-full flex items-center justify-center">
+                      {String.fromCharCode(65 + index)}
+                    </div>
                   <RadioGroupItem
                     value={option.id}
                     id={option.id}
                     disabled={showAnswer}
                   />
-                  <Label htmlFor={option.id} className="flex-1 cursor-pointer leading-relaxed">
+                  </div>
+                  <Label htmlFor={option.id} className="flex-1 cursor-pointer leading-relaxed font-arabic">
                     {renderContent(option.text)}
                   </Label>
+                  <div className="flex items-center gap-2">
                   {showAnswer && option.isCorrect && (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-6 w-6 text-green-600" />
                   )}
                   {showAnswer && selectedOption === option.id && !option.isCorrect && (
-                    <XCircle className="h-5 w-5 text-red-600" />
+                      <XCircle className="h-6 w-6 text-red-600" />
                   )}
+                  </div>
                 </div>
               ))}
             </RadioGroup>
 
-            { showAnswer && currentQuestion.explanation && (
-              <Alert className="mt-6">
-                <Lightbulb className="h-4 w-4" />
+            {/* Explanation */}
+            {showAnswer && currentQuestion.explanation && (
+              <Alert className="border-amber-200/50 bg-amber-50/50 dark:bg-amber-950/10 dark:border-amber-800/50">
+                <Lightbulb className="h-5 w-5 text-amber-600" />
                 <AlertDescription className="leading-relaxed">
-                  <strong>التفسير:</strong> {renderContent(currentQuestion.explanation) }
+                  <div className="font-semibold text-amber-800 dark:text-amber-300 mb-2 font-arabic">
+                    التفسير:
+                  </div>
+                  <div className="text-amber-700 dark:text-amber-200 font-arabic">
+                    {renderContent(currentQuestion.explanation)}
+                  </div>
                 </AlertDescription>
               </Alert>
             )}
 
-            <div className="flex items-center justify-between mt-8">
-              <div className="flex items-center gap-2">
+            {/* Answer Result */}
+            {showAnswer && answerResult && (
+              <Alert className={cn(
+                "border-2",
+                answerResult.isCorrect
+                  ? "border-green-500/50 bg-green-50/50 dark:bg-green-950/20"
+                  : "border-red-500/50 bg-red-50/50 dark:bg-red-950/20"
+              )}>
+                <div className="flex items-center gap-3">
+                  {answerResult.isCorrect ? (
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  ) : (
+                    <XCircle className="h-6 w-6 text-red-600" />
+                  )}
+                  <div>
+                    <AlertDescription className={cn(
+                      "font-semibold text-lg font-arabic",
+                      answerResult.isCorrect ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'
+                    )}>
+                      {answerResult.isCorrect ? 'إجابة صحيحة! 🎉' : 'إجابة خاطئة'}
+                    </AlertDescription>
+                  </div>
+                </div>
+              </Alert>
+            )}
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between pt-4">
+              <div className="flex items-center gap-3">
                 {currentQuestionIndex > 0 && (
-                  <Button variant="outline" onClick={previousQuestion}>
+                  <Button 
+                    variant="outline" 
+                    onClick={previousQuestion}
+                    className="font-arabic hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                  >
                     <ChevronRight className="h-4 w-4 mr-1" />
                     السابق
                   </Button>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
-                {!showAnswer ? (
+              <div className="flex items-center gap-3">
+                {showAnswer && (
+                  <Button 
+                    variant="outline" 
+                    onClick={retryQuestion}
+                    className="font-arabic hover:bg-secondary hover:text-secondary-foreground transition-all duration-200"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    إعادة المحاولة
+                  </Button>
+                )}
+                
+                {!showAnswer && selectedOption && (
                   <Button
                     onClick={submitAnswer}
-                    disabled={!selectedOption || isSubmitting}
-                    className="px-8"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    { isSubmitting ? 'جاري الإرسال...' : 'إرسال الإجابة' }
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    {isSubmitting ? 'جاري التحقق...' : 'تحقق من الإجابة'}
                   </Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={retryQuestion}>
-                      <RotateCcw className="h-4 w-4 mr-1" />
-                      إعادة المحاولة
-                    </Button>
-
-                    {currentQuestionIndex < sessionData.questions.length - 1 ? (
-                      <Button onClick={nextQuestion}>
+                )}
+                
+                {currentQuestionIndex < sessionData.questions.length - 1 && (
+                  <Button 
+                    onClick={nextQuestion}
+                    variant={showAnswer ? "default" : "outline"}
+                    className={cn(
+                      "font-arabic transition-all duration-200",
+                      showAnswer 
+                        ? "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg hover:shadow-xl"
+                        : "hover:bg-primary hover:text-primary-foreground"
+                    )}
+                  >
                         التالي
                         <ChevronLeft className="h-4 w-4 ml-1" />
                       </Button>
-                    ) : (
-                      <Button onClick={onExit} className="bg-green-600 hover:bg-green-700">
-                        إنهاء التدريب
-                        <Award className="h-4 w-4 ml-1" />
-                      </Button>
-                    )}
-                  </div>
                 )}
               </div>
             </div>

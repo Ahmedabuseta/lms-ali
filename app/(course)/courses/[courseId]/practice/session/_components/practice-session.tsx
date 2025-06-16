@@ -187,6 +187,24 @@ export const PracticeSession = ({ sessionData, onExit }: PracticeSessionProps) =
       }
       setQuestionsAnswered(prev => prev + 1);
 
+      // Update real-time session tracking
+      try {
+        await axios.post('/api/practice/session/track', {
+          sessionId: sessionData.sessionId,
+          courseId: sessionData.courseId,
+          chapterIds: sessionData.selectedChapters.map(c => c.id),
+          startTime: new Date(sessionStartTime).toISOString(),
+          currentQuestionIndex,
+          questionsAnswered: questionsAnswered + 1,
+          correctAnswers: correctAnswers + (isCorrect ? 1 : 0),
+          totalTimeSpent: Math.floor((Date.now() - sessionStartTime) / 1000),
+          questionTimeSpent: Math.floor(timeSpent / 1000),
+          mode: 'free', // or 'exam' based on session type
+        });
+      } catch (error) {
+        console.error('Error updating session tracking:', error);
+      }
+
       toast.success(isCorrect ? 'إجابة صحيحة! 🎉' : 'إجابة خاطئة');
     } catch (error) { console.error('Error submitting answer:', error);
       toast.error('حدث خطأ في إرسال الإجابة'); } finally {
@@ -415,7 +433,7 @@ export const PracticeSession = ({ sessionData, onExit }: PracticeSessionProps) =
       </div>
 
       {/* Stats Bar */}
-      <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3">
         <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <div className="text-lg font-bold text-blue-600">{questionsAnswered}</div>
           <div className="text-xs text-blue-700">مجابة</div>
@@ -436,7 +454,13 @@ export const PracticeSession = ({ sessionData, onExit }: PracticeSessionProps) =
           <div className="text-lg font-bold text-orange-600">
             {Math.round((Date.now() - questionStartTime) / 1000)}
           </div>
-          <div className="text-xs text-orange-700">ثانية</div>
+          <div className="text-xs text-orange-700">ثانية للسؤال</div>
+        </div>
+        <div className="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+          <div className="text-lg font-bold text-red-600">
+            {Math.floor((Date.now() - sessionStartTime) / 60000)}:{String(Math.floor(((Date.now() - sessionStartTime) % 60000) / 1000)).padStart(2, '0')}
+          </div>
+          <div className="text-xs text-red-700">وقت الجلسة</div>
         </div>
       </div>
 

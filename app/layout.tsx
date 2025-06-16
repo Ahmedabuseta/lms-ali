@@ -7,16 +7,18 @@ import { ConfettiProvider, ThemeProvider, NotificationsProvider } from '@/compon
 const inter = Inter({ subsets: ['latin'] });
 const cairo = Cairo({ subsets: ['arabic'] });
 
-export const metadata: Metadata = { title: 'درب النجاح p2s',
-  description: 'نظام إدارة التعلم',
+export const metadata: Metadata = { 
+  title: 'درب النجاح P2S',
+  description: 'منصة التعلم الإلكتروني - P2S Learning Platform',
   icons: {
     icon: [
       {
-        url: '/favicon.svg',
-        type: 'image/svg+xml', },
+        url: '/p2s-favicon.svg',
+        type: 'image/svg+xml', 
+      },
     ],
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    shortcut: '/p2s-favicon.svg',
+    apple: '/p2s-favicon.svg',
   },
 };
 

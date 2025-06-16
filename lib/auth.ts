@@ -133,6 +133,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   trustedOrigins: [
     'https://lms-ali.vercel.app',
     'http://localhost:3000',
@@ -153,6 +154,15 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 24 hours
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // 5 minutes
+    },
+  },
+  cookies: {
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
   },
   user: {
     additionalFields: {
@@ -212,7 +222,7 @@ export const auth = betterAuth({
   },
   callbacks: {
     session: {
-      jwt: async ({ session, token }) => {
+      jwt: async ({ session, token }: { session: any; token: any }) => {
         if (session?.user) {
           // Add permissions to session
           const permissions = calculateUserPermissions(session.user);
