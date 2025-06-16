@@ -61,4 +61,4 @@ jobs:
       - name: change dir and Deploy to production
         run: 
           echo "Deploying to production..."
-          pm2 reload p2s
+          pm2 restart p2s
