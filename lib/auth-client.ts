@@ -3,7 +3,7 @@ import { adminClient } from 'better-auth/client/plugins';
 
 const getBaseURL = () => {
   if (process.env.NODE_ENV === 'production') {
-    return process.env.NEXT_PUBLIC_APP_URL || 'https://lms-ali.vercel.app';
+    return process.env.BETTER_AUTH_URL || 'https://lms-ali.vercel.app';
   }
   
   // For development, try to use the current port or fallback to 3001
@@ -11,7 +11,7 @@ const getBaseURL = () => {
     return `${window.location.protocol}//${window.location.host}`;
   }
   
-  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  return process.env.BETTER_AUTH_URL || 'http://localhost:3000';
 };
 
 export const authClient = createAuthClient({ 
