@@ -43,7 +43,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Install all dependencies
+      - name: Install dependencies
         run: npm ci --production=false
 
       - name: Generate Prisma client
@@ -55,10 +55,27 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: change dir and Deploy to production
-        run: cd /home/ovveride/actions-runner/_work/lms-ali/lms-ali
-        
-      - name: change dir and Deploy to production
-        run: 
-          echo "Deploying to production..."
-          pm2 restart p2s
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          NODE_ENV=production
+          ADMIN_EMAIL=${ADMIN_EMAIL}
+          BETTER_AUTH_URL=${BETTER_AUTH_URL}
+          BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+          CHUTES_API_TOKEN=${CHUTES_API_TOKEN}
+          DATABASE_URL=${DATABASE_URL}
+          DO_SPACES_BUCKET=${DO_SPACES_BUCKET}
+          DO_SPACES_ENDPOINT=${DO_SPACES_ENDPOINT}
+          DO_SPACES_REGION=${DO_SPACES_REGION}
+          DO_SPACES_KEY=${DO_SPACES_KEY}
+          DO_SPACES_SECRET=${DO_SPACES_SECRET}
+          GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+          GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+          MUX_TOKEN_ID=${MUX_TOKEN_ID}
+          MUX_TOKEN_SECRET=${MUX_TOKEN_SECRET}
+          EOF
+
+      - name: Restart PM2 process
+        run: |
+          echo "Restarting PM2 app..."
+          pm2 restart p2s || pm2 start npm --name p2s -- run start
