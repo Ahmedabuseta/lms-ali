@@ -347,7 +347,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
               <CardContent className="p-4 sm:p-6 lg:p-8">
                 <div className="mb-6 sm:mb-8">
                   <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 sm:mb-6 text-foreground font-arabic leading-relaxed">
-                    {currentQuestion?.question}
+                    {currentQuestion?.text}
                   </h2>
 
                   {currentQuestion?.passage && (
