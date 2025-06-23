@@ -39,7 +39,9 @@ interface ExamPracticeSessionProps {
 export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSessionProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [timeRemaining, setTimeRemaining] = useState(sessionData.timeLimit * 60);
+  // Ensure timeLimit is a valid number, default to 45 minutes for exam mode
+  const initialTimeLimit = sessionData.timeLimit && !isNaN(sessionData.timeLimit) ? sessionData.timeLimit : 45;
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeLimit * 60);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
@@ -49,9 +51,13 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
   const progress = ((currentQuestionIndex + 1) / sessionData.totalQuestions) * 100;
 
   useEffect(() => {
-    if (timeRemaining > 0 && !isCompleted) {
+    // Only run timer if we have valid timeRemaining
+    if (timeRemaining > 0 && !isCompleted && !isNaN(timeRemaining)) {
       timerRef.current = setTimeout(() => {
-        setTimeRemaining(prev => prev - 1);
+        setTimeRemaining(prev => {
+          const newTime = prev - 1;
+          return newTime >= 0 ? newTime : 0;
+        });
       }, 1000);
     } else if (timeRemaining === 0 && !isCompleted) {
       handleSubmit(true);
@@ -65,6 +71,11 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
   }, [timeRemaining, isCompleted]);
 
   const formatTime = (seconds: number) => {
+    // Handle invalid input
+    if (!seconds || isNaN(seconds) || seconds < 0) {
+      return '00:00';
+    }
+    
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -106,7 +117,7 @@ export function ExamPracticeSession({ sessionData, onExit }: ExamPracticeSession
         totalPoints,
         maxPoints,
         percentage,
-        timeSpent: sessionData.timeLimit * 60 - timeRemaining,
+        timeSpent: (initialTimeLimit * 60) - timeRemaining,
         completedAt: new Date().toISOString(),
         autoSubmitted: autoSubmit
       };

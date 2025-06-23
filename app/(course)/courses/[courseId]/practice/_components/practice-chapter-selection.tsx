@@ -98,37 +98,37 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
   const maxQuestions = mode === 'exam' ? 20 : Math.min(totalQuestions, 50);
 
   return (
-    <div className="space-y-8 animate-fade-in" dir="rtl">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-in px-1 sm:px-2 lg:px-0 max-w-full" dir="rtl">
       {/* Error Message */}
       {error && (
         <Alert variant="destructive" className="animate-slide-up">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="font-arabic">{error}</AlertDescription>
+          <AlertDescription className="font-arabic text-sm">{error}</AlertDescription>
         </Alert>
       )}
 
       {/* Practice Settings */}
       <Card className="border-0 shadow-lg bg-gradient-to-r from-background to-blue-50/30 dark:to-blue-950/10">
-        <CardHeader className="pb-6">
-          <CardTitle className="flex items-center gap-3 text-xl font-arabic-heading">
+        <CardHeader className="pb-4 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl font-arabic-heading">
             <div className={cn(
               "p-2 rounded-lg shadow-sm",
               mode === 'exam' 
                 ? "bg-gradient-to-r from-blue-500 to-indigo-500" 
                 : "bg-gradient-to-r from-green-500 to-emerald-500"
             )}>
-              {mode === 'exam' ? <Clock className="h-5 w-5 text-white" /> : <Brain className="h-5 w-5 text-white" />}
+              {mode === 'exam' ? <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-white" /> : <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-white" />}
             </div>
             إعدادات التدريب {mode === 'exam' ? 'الامتحاني' : 'الحر'}
           </CardTitle>
           {mode === 'exam' && (
-            <CardDescription className="text-muted-foreground font-arabic text-base">
+            <CardDescription className="text-muted-foreground font-arabic text-sm sm:text-base">
               امتحان تدريبي شامل بـ 20 سؤال لمدة 45 دقيقة مع تقييم دقيق للأداء
             </CardDescription>
           )}
         </CardHeader>
         
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6">
           {mode === 'free' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -151,7 +151,7 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white/60 dark:bg-card/60 rounded-lg border border-border/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-white/60 dark:bg-card/60 rounded-lg border border-border/50">
             {[
               { 
                 icon: mode === 'exam' ? Clock : Brain, 
@@ -172,11 +172,11 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                 color: "text-orange-600"
               }
             ].map((item, index) => (
-              <div key={index} className="flex items-center gap-3 text-sm">
-                <item.icon className={cn("h-5 w-5", item.color)} />
-                <div>
-                  <div className="font-medium text-foreground font-arabic">{item.label}</div>
-                  <div className={cn("text-xs", item.color, "font-arabic")}>{item.value}</div>
+              <div key={index} className="flex items-center gap-2 sm:gap-3 text-sm p-2 bg-white/40 dark:bg-card/40 rounded-lg">
+                <item.icon className={cn("h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0", item.color)} />
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-foreground font-arabic text-xs sm:text-sm">{item.label}</div>
+                  <div className={cn("text-xs sm:text-sm font-semibold", item.color, "font-arabic")}>{item.value}</div>
                 </div>
               </div>
             ))}
@@ -186,19 +186,21 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
 
       {/* Chapter Selection */}
       <Card className="border-0 shadow-lg">
-        <CardHeader className="pb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-sm">
-              <BookOpen className="h-5 w-5 text-white" />
+        <CardHeader className="pb-4 sm:pb-6">
+          <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-sm">
+                <BookOpen className="h-5 w-5 text-white" />
+              </div>
+              <CardTitle className="text-xl sm:text-2xl font-bold font-arabic-heading">اختر الفصول للتدريب</CardTitle>
             </div>
-            <CardTitle className="text-2xl font-bold font-arabic-heading">اختر الفصول للتدريب</CardTitle>
           </div>
           <CardDescription className="text-muted-foreground font-arabic">
             اختر الفصول التي تريد التدرب عليها ({selectedChapters.length} من {availableChapters.length} مُختار)
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6">
           {availableChapters.length === 0 ? (
             <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-950/20">
               <AlertCircle className="h-4 w-4 text-orange-600" />
@@ -221,20 +223,20 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                   onClick={() => handleChapterToggle(chapter.id)}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
                         <Checkbox
                           checked={selectedChapters.includes(chapter.id)}
                           onChange={() => {}}
-                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary mt-1 flex-shrink-0"
                         />
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-lg font-arabic-heading text-foreground">
+                        <div className="space-y-2 min-w-0 flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                            <h3 className="font-semibold text-base sm:text-lg font-arabic-heading text-foreground">
                               {chapter.title}
                             </h3>
-                            <Badge variant="outline" className="text-xs font-arabic">
+                            <Badge variant="outline" className="text-xs font-arabic w-fit">
                               الفصل {chapter.position}
                             </Badge>
                           </div>
@@ -246,56 +248,56 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-blue-600 font-arabic-heading">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3 lg:gap-2 text-sm w-full">
+                        <div className="text-center p-2 bg-blue-50/50 dark:bg-blue-950/20 rounded-lg">
+                          <div className="text-sm sm:text-base lg:text-lg font-bold text-blue-600 font-arabic-heading">
                             {chapter.totalQuestions}
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">سؤال متاح</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">سؤال متاح</div>
                         </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-purple-600 font-arabic-heading">
+                        <div className="text-center p-2 bg-purple-50/50 dark:bg-purple-950/20 rounded-lg">
+                          <div className="text-sm sm:text-base lg:text-lg font-bold text-purple-600 font-arabic-heading">
                             {chapter.uniqueQuestionsAttempted}
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">سؤال تم حله</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">سؤال تم حله</div>
                         </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-green-600 font-arabic-heading">
+                        <div className="text-center p-2 bg-green-50/50 dark:bg-green-950/20 rounded-lg">
+                          <div className="text-sm sm:text-base lg:text-lg font-bold text-green-600 font-arabic-heading">
                             {chapter.correctAttempts}
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">إجابة صحيحة</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">إجابة صحيحة</div>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center p-2 bg-gray-50/50 dark:bg-gray-950/20 rounded-lg">
                           <div className={cn(
-                            "text-lg font-bold font-arabic-heading",
+                            "text-sm sm:text-base lg:text-lg font-bold font-arabic-heading",
                             chapter.averageScore >= 80 ? "text-green-600" :
                             chapter.averageScore >= 60 ? "text-yellow-600" : "text-red-600"
                           )}>
                             {chapter.averageScore}%
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">دقة الإجابات</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">دقة الإجابات</div>
                         </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-orange-600 font-arabic-heading">
+                        <div className="text-center p-2 bg-orange-50/50 dark:bg-orange-950/20 rounded-lg">
+                          <div className="text-sm sm:text-base lg:text-lg font-bold text-orange-600 font-arabic-heading">
                             {chapter.timeSpent}د
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">وقت مستغرق</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">وقت مستغرق</div>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center p-2 bg-yellow-50/50 dark:bg-yellow-950/20 rounded-lg">
                           <div className={cn(
-                            "text-lg font-bold font-arabic-heading",
+                            "text-sm sm:text-base lg:text-lg font-bold font-arabic-heading",
                             chapter.completionPercentage >= 80 ? "text-green-600" :
                             chapter.completionPercentage >= 50 ? "text-yellow-600" : "text-red-600"
                           )}>
                             {chapter.completionPercentage}%
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">نسبة الإنجاز</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">نسبة الإنجاز</div>
                         </div>
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-pink-600 font-arabic-heading">
+                        <div className="text-center p-2 bg-pink-50/50 dark:bg-pink-950/20 rounded-lg col-span-2 sm:col-span-1">
+                          <div className="text-sm sm:text-base lg:text-lg font-bold text-pink-600 font-arabic-heading">
                             {chapter.totalPointsEarned}
                           </div>
-                          <div className="text-xs text-muted-foreground font-arabic">نقطة مكتسبة</div>
+                          <div className="text-xs text-muted-foreground font-arabic leading-tight">نقطة مكتسبة</div>
                         </div>
                       </div>
                     </div>
@@ -308,10 +310,10 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
           {/* Selection Summary */}
           {selectedChapters.length > 0 && (
             <Card className="bg-gradient-to-r from-green-50/50 to-emerald-50/30 dark:from-green-950/10 dark:to-emerald-950/10 border-green-200/50 dark:border-green-800/50">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 flex-shrink-0" />
                     <div>
                       <div className="font-semibold text-green-900 dark:text-green-100 font-arabic-heading">
                         تم اختيار {selectedChapters.length} فصل
@@ -325,7 +327,7 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                     onClick={handleStartPractice}
                     disabled={isStarting}
                     className={cn(
-                      "font-arabic-heading shadow-lg hover:shadow-xl transition-all duration-300",
+                      "font-arabic-heading shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto",
                       mode === 'exam' 
                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                         : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
@@ -334,12 +336,12 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                   >
                     {isStarting ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
                         جاري البدء...
                       </>
                     ) : (
                       <>
-                        <Zap className="mr-2 h-5 w-5" />
+                        <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                         بدء التدريب
                       </>
                     )}

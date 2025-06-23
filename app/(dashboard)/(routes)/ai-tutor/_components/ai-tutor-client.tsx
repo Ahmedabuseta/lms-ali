@@ -96,7 +96,7 @@ export const AITutorClient = () => { // Message state
 
   return (
     // <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">
-      <div className="h-full max-w-4xl mx-auto p-4">
+      <div className="h-full max-w-4xl mx-auto md:p-4">
         <Card className="flex flex-col h-full border border-white/20 shadow-xl backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl overflow-hidden">
           {/* Header with enhanced styling */}
           <div className="shrink-0 border-b border-white/20 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-400/10 dark:to-indigo-400/10">
