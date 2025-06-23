@@ -528,7 +528,8 @@ export const PracticeSession = ({ sessionData, onExit }: PracticeSessionProps) =
         <CardContent>
           {/* Question Text */}
           <div className="text-lg font-medium leading-relaxed mb-6">
-            {renderContent(currentQuestion.text)}
+            {/* {renderContent(currentQuestion.text)} */}
+            {currentQuestion.text}
           </div>
 
           {/* Options */}
@@ -589,7 +590,8 @@ export const PracticeSession = ({ sessionData, onExit }: PracticeSessionProps) =
                     تفسير الإجابة:
                   </div>
                   <div className="text-amber-700 dark:text-amber-200">
-                    {renderContent(currentQuestion.explanation) }
+                    {/* {renderContent() } */}
+                    {currentQuestion.explanation}
               </div>
                 </div>
               </div>

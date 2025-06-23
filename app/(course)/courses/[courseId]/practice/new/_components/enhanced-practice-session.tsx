@@ -491,7 +491,8 @@ export const EnhancedPracticeSession: React.FC<EnhancedPracticeSessionProps> = (
         <CardContent className="space-y-6">
           {/* Question Text */}
           <div className="text-lg font-medium leading-relaxed text-gray-900 dark:text-gray-100">
-            {renderContent(currentQuestion.text)}
+            {/* {renderContent(currentQuestion.text)} */}
+            {currentQuestion.text}
           </div>
 
           {/* Options */}
@@ -563,7 +564,8 @@ export const EnhancedPracticeSession: React.FC<EnhancedPracticeSessionProps> = (
                     تفسير الإجابة:
                   </div>
                   <div className="text-amber-700 dark:text-amber-200">
-                    {renderContent(currentQuestion.explanation) }
+                    {/* {renderContent() } */}
+                    {currentQuestion.explanation}
                   </div>
                 </div>
               </div>

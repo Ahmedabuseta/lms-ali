@@ -312,7 +312,8 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
             </div>
 
             <CardTitle className="text-2xl leading-relaxed font-arabic text-foreground">
-              {renderContent(currentQuestion.text)}
+              {/* {renderContent(currentQuestion.text)} */}
+              {currentQuestion.text}
             </CardTitle>
           </CardHeader>
 

@@ -100,7 +100,8 @@ export const QuestionCard = ({ question,
       <CardContent className="space-y-6">
         <div>
           <div className="text-lg leading-relaxed">
-            <MathRenderer content={question.text} />
+            {/* <MathRenderer content={question.text} /> */}
+            {question.text}
           </div>
         </div>
 

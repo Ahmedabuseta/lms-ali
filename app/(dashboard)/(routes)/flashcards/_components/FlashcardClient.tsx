@@ -284,7 +284,8 @@ export default function FlashcardClient({ initialCards, courseId, chapterId }: F
             { isFlipped ? 'الإجابة:' : 'السؤال:' }
           </h3>
           <div className="flex-1 text-lg text-slate-900 dark:text-slate-100">
-            <MathRenderer content={ isFlipped ? currentCard.answer : currentCard.question } />
+            {/* <MathRenderer content={ isFlipped ? currentCard.answer : currentCard.question } /> */}
+            { isFlipped ? currentCard.answer : currentCard.question } 
           </div>
         </div>
 
