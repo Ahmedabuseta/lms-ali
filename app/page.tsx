@@ -33,8 +33,8 @@ import { FeatureCard } from '@/components/landing/feature-card';
 import { StudyTips } from '@/components/landing/study-tips';
 import { Testimonials } from '@/components/landing/testimonials';
 import { VideoPlayer } from '@/components/landing/video-player';
-// import { EidModal } from '@/components/ui/eid-modal'; // Will be used later
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { EidModal } from '@/components/ui/eid-modal'; // Will be used later
+// import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LandingPage() { const { data: session, isPending } = useSession();
@@ -587,10 +587,10 @@ export default function LandingPage() { const { data: session, isPending } = use
       </footer>
 
       {/* Coming Soon Modal */}
-      <ComingSoonModal isOpen={isModalOpen} onClose={closeModal} />
+      {/* <ComingSoonModal isOpen={isModalOpen} onClose={closeModal} /> */}
 
       {/* Eid Modal - Will be used later */}
-      {/* <EidModal isOpen={isModalOpen} onClose={closeModal} /> */}
+      <EidModal isOpen={isModalOpen} onClose={closeModal} />
 
       {/* Floating WhatsApp Button */}
       <a
