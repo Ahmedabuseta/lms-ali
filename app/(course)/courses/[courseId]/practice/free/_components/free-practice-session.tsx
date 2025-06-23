@@ -219,12 +219,12 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
               </Alert>
             )}
 
-            <div className="flex gap-4 justify-center">
-              <Button onClick={onExit} variant="outline" className="font-arabic hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Button onClick={onExit} variant="outline" className="font-arabic hover:bg-primary hover:text-primary-foreground transition-all duration-200 w-full sm:w-auto">
                 <Target className="mr-2 h-4 w-4" />
-              العودة للقائمة الرئيسية
-            </Button>
-              <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300">
+                العودة للقائمة الرئيسية
+              </Button>
+              <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
                 <RotateCcw className="mr-2 h-4 w-4" />
                 جلسة تدريب جديدة
               </Button>
@@ -239,48 +239,49 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
     <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 animate-fade-in" dir="rtl">
       {/* Enhanced Header */}
       <div className="bg-background/95 backdrop-blur-sm shadow-lg border-b">
-        <div className="max-w-6xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4 sm:gap-6">
               <Button 
                 variant="ghost" 
                 onClick={onExit} 
                 className="flex items-center gap-2 font-arabic hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
               >
-                <X className="h-5 w-5" />
-                إنهاء التدريب
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">إنهاء التدريب</span>
+                <span className="sm:hidden">إنهاء</span>
               </Button>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-sm">
-                  <Infinity className="h-6 w-6 text-white" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-sm">
+                  <Infinity className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                 </div>
                 <div>
-                  <span className="font-bold text-foreground font-arabic-heading text-lg">التدريب الحر</span>
-                  <p className="text-xs text-muted-foreground font-arabic">تعلم بالسرعة التي تناسبك</p>
+                  <span className="font-bold text-foreground font-arabic-heading text-sm sm:text-base lg:text-lg">التدريب الحر</span>
+                  <p className="text-xs text-muted-foreground font-arabic hidden sm:block">تعلم بالسرعة التي تناسبك</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto">
               {[
                 { icon: Target, label: "الدقة", value: `${accuracy.toFixed(1)}%`, color: "text-green-600" },
                 { icon: Zap, label: "السلسلة", value: currentStreak, color: "text-orange-600" },
                 { icon: Brain, label: "الأسئلة", value: `${questionsAnswered}/${sessionData.questions.length}`, color: "text-purple-600" }
               ].map((stat, index) => (
-                <div key={index} className="flex items-center gap-3 bg-background/80 px-4 py-2 rounded-lg border border-border/50 shadow-sm">
-                  <stat.icon className={cn("h-5 w-5", stat.color)} />
-                  <div>
-                    <span className="text-muted-foreground font-arabic text-sm">{stat.label}:</span>
-                    <span className={cn("font-bold ml-1 font-arabic", stat.color)}>{stat.value}</span>
-              </div>
-              </div>
+                <div key={index} className="flex items-center gap-2 sm:gap-3 bg-background/80 px-2 sm:px-3 lg:px-4 py-2 rounded-lg border border-border/50 shadow-sm min-w-0 flex-shrink-0">
+                  <stat.icon className={cn("h-4 w-4 sm:h-5 sm:w-5", stat.color)} />
+                  <div className="min-w-0">
+                    <span className="text-muted-foreground font-arabic text-xs sm:text-sm">{stat.label}:</span>
+                    <span className={cn("font-bold ml-1 font-arabic text-xs sm:text-sm", stat.color)}>{stat.value}</span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-6 space-y-2">
-            <Progress value={progress} className="h-3" variant="success" />
-            <div className="flex justify-between text-sm text-muted-foreground font-arabic">
+          <div className="mt-4 sm:mt-6 space-y-2">
+            <Progress value={progress} className="h-2 sm:h-3" variant="success" />
+            <div className="flex justify-between text-xs sm:text-sm text-muted-foreground font-arabic">
               <span>السؤال {currentQuestionIndex + 1} من {sessionData.questions.length}</span>
               <span>{progress.toFixed(1)}% مكتمل</span>
             </div>
@@ -288,47 +289,48 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6">
         <Card className="shadow-xl border-0 bg-background/95 backdrop-blur-sm">
-          <CardHeader className="pb-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
+          <CardHeader className="pb-4 sm:pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 <Badge 
                   variant="outline" 
-                  className={cn("font-arabic border-2", getDifficultyColor(currentQuestion.difficulty))}
+                  className={cn("font-arabic border-2 text-xs sm:text-sm", getDifficultyColor(currentQuestion.difficulty))}
                 >
                   {getDifficultyLabel(currentQuestion.difficulty)}
                 </Badge>
-                <Badge variant="secondary" className="text-blue-600 bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 font-arabic">
+                <Badge variant="secondary" className="text-xs sm:text-sm text-blue-600 bg-blue-50/50 dark:bg-blue-950/20 border-blue-200/50 font-arabic">
                   {getTypeLabel(currentQuestion.type)}
                 </Badge>
                 {currentQuestion.questionBank?.title && (
-                  <Badge variant="outline" className="text-purple-600 bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 font-arabic">
+                  <Badge variant="outline" className="text-xs sm:text-sm text-purple-600 bg-purple-50/50 dark:bg-purple-950/20 border-purple-200/50 font-arabic">
                     <BookOpen className="h-3 w-3 mr-1" />
-                    {currentQuestion.questionBank.title}
+                    <span className="hidden sm:inline">{currentQuestion.questionBank.title}</span>
+                    <span className="sm:hidden">الفصل</span>
                   </Badge>
                 )}
               </div>
             </div>
 
-            <CardTitle className="text-2xl leading-relaxed font-arabic text-foreground">
+            <CardTitle className="text-lg sm:text-xl lg:text-2xl leading-relaxed font-arabic text-foreground">
               {/* {renderContent(currentQuestion.text)} */}
               {currentQuestion.text}
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-6 sm:space-y-8">
             {/* Passage Section */}
             {currentQuestion.passage && (
               <Card className="bg-gradient-to-r from-blue-50/50 to-indigo-50/30 dark:from-blue-950/10 dark:to-indigo-950/10 border-blue-200/50 dark:border-blue-800/50">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-4 flex items-center gap-3 text-blue-900 dark:text-blue-100 font-arabic-heading">
-                    <BookOpen className="h-5 w-5 text-blue-600" />
-                  {currentQuestion.passage.title}
-                </h3>
-                  <div className="text-foreground leading-relaxed font-arabic">
-                  {renderContent(currentQuestion.passage.content)}
-                </div>
+                <CardContent className="p-4 sm:p-6">
+                  <h3 className="font-semibold mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3 text-blue-900 dark:text-blue-100 font-arabic-heading text-sm sm:text-base">
+                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                    {currentQuestion.passage.title}
+                  </h3>
+                  <div className="text-sm sm:text-base text-foreground leading-relaxed font-arabic">
+                    {renderContent(currentQuestion.passage.content)}
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -338,13 +340,13 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
               value={selectedOption}
               onValueChange={handleOptionSelect}
               disabled={showAnswer}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
             >
               {currentQuestion.options.map((option, index) => (
                 <div
                   key={option.id}
                   className={cn(
-                    "flex items-center space-x-4 space-x-reverse p-5 rounded-xl border-2 transition-all duration-200",
+                    "flex items-start sm:items-center space-x-3 sm:space-x-4 space-x-reverse p-4 sm:p-5 rounded-xl border-2 transition-all duration-200",
                     !showAnswer && "hover:bg-muted/50 cursor-pointer",
                     showAnswer && option.isCorrect && "bg-green-50/50 border-green-300/50 dark:bg-green-950/20 dark:border-green-700/50",
                     showAnswer && selectedOption === option.id && !option.isCorrect && "bg-red-50/50 border-red-300/50 dark:bg-red-950/20 dark:border-red-700/50",
@@ -352,26 +354,27 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
                     !selectedOption && !showAnswer && "border-border"
                   )}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-sm font-medium text-muted-foreground bg-muted w-8 h-8 rounded-full flex items-center justify-center">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-muted w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0">
                       {String.fromCharCode(65 + index)}
                     </div>
-                  <RadioGroupItem
-                    value={option.id}
-                    id={option.id}
-                    disabled={showAnswer}
-                  />
+                    <RadioGroupItem
+                      value={option.id}
+                      id={option.id}
+                      disabled={showAnswer}
+                      className="flex-shrink-0"
+                    />
                   </div>
-                  <Label htmlFor={option.id} className="flex-1 cursor-pointer leading-relaxed font-arabic">
+                  <Label htmlFor={option.id} className="flex-1 cursor-pointer leading-relaxed font-arabic text-sm sm:text-base min-w-0">
                     {renderContent(option.text)}
                   </Label>
-                  <div className="flex items-center gap-2">
-                  {showAnswer && option.isCorrect && (
-                      <CheckCircle className="h-6 w-6 text-green-600" />
-                  )}
-                  {showAnswer && selectedOption === option.id && !option.isCorrect && (
-                      <XCircle className="h-6 w-6 text-red-600" />
-                  )}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {showAnswer && option.isCorrect && (
+                      <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                    )}
+                    {showAnswer && selectedOption === option.id && !option.isCorrect && (
+                      <XCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+                    )}
                   </div>
                 </div>
               ))}
@@ -419,13 +422,14 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
             )}
 
             {/* Navigation */}
-            <div className="flex items-center justify-between pt-4">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-between pt-4 gap-4">
+              <div className="flex items-center gap-3 order-2 sm:order-1">
                 {currentQuestionIndex > 0 && (
                   <Button 
                     variant="outline" 
                     onClick={previousQuestion}
                     className="font-arabic hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    size="sm"
                   >
                     <ChevronRight className="h-4 w-4 mr-1" />
                     السابق
@@ -433,12 +437,13 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
                 )}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 order-1 sm:order-2">
                 {showAnswer && (
                   <Button 
                     variant="outline" 
                     onClick={retryQuestion}
                     className="font-arabic hover:bg-secondary hover:text-secondary-foreground transition-all duration-200"
+                    size="sm"
                   >
                     <RotateCcw className="h-4 w-4 mr-1" />
                     إعادة المحاولة
@@ -450,6 +455,7 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
                     onClick={submitAnswer}
                     disabled={isSubmitting}
                     className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300"
+                    size="sm"
                   >
                     <CheckCircle className="h-4 w-4 mr-1" />
                     {isSubmitting ? 'جاري التحقق...' : 'تحقق من الإجابة'}
@@ -466,10 +472,11 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
                         ? "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg hover:shadow-xl"
                         : "hover:bg-primary hover:text-primary-foreground"
                     )}
+                    size="sm"
                   >
-                        التالي
-                        <ChevronLeft className="h-4 w-4 ml-1" />
-                      </Button>
+                    التالي
+                    <ChevronLeft className="h-4 w-4 ml-1" />
+                  </Button>
                 )}
               </div>
             </div>

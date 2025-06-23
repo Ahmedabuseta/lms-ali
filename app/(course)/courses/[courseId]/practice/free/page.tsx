@@ -84,27 +84,27 @@ const FreePracticePage = ({ params }: FreePracticePageProps) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 flex items-center justify-center animate-fade-in" dir="rtl">
-        <Card className="w-full max-w-md shadow-xl border-0 bg-background/95 backdrop-blur-sm">
-          <CardHeader className="text-center p-8">
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
-                <Brain className="h-10 w-10 text-white" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 flex items-center justify-center animate-fade-in px-4" dir="rtl">
+        <Card className="w-full max-w-sm sm:max-w-md shadow-xl border-0 bg-background/95 backdrop-blur-sm">
+          <CardHeader className="text-center p-6 sm:p-8">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
+                <Brain className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-arabic-heading text-foreground">
+            <CardTitle className="text-xl sm:text-2xl font-arabic-heading text-foreground">
               جاري تحميل التدريب الحر
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-center pb-8 space-y-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-              <span className="text-muted-foreground font-arabic">يرجى الانتظار...</span>
+          <CardContent className="text-center pb-6 sm:pb-8 space-y-4 sm:space-y-6">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
+              <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-green-600" />
+              <span className="text-sm sm:text-base text-muted-foreground font-arabic">يرجى الانتظار...</span>
             </div>
-            <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full animate-pulse transition-all duration-1000" style={{ width: '75%' }}></div>
-        </div>
-            <p className="text-xs text-muted-foreground font-arabic">
+            <div className="w-full bg-muted rounded-full h-2 sm:h-3 overflow-hidden">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 sm:h-3 rounded-full animate-pulse transition-all duration-1000" style={{ width: '75%' }}></div>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground font-arabic">
               تحضير الأسئلة للتدريب المرن...
             </p>
           </CardContent>
@@ -115,27 +115,27 @@ const FreePracticePage = ({ params }: FreePracticePageProps) => {
 
   if (error || !sessionData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 flex items-center justify-center animate-fade-in" dir="rtl">
-        <Card className="w-full max-w-md shadow-xl border-0 bg-background/95 backdrop-blur-sm">
-          <CardHeader className="text-center p-8">
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center shadow-lg">
-                <AlertCircle className="h-10 w-10 text-white" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-green-50/40 to-emerald-50/60 dark:from-background dark:via-green-950/20 dark:to-emerald-950/20 flex items-center justify-center animate-fade-in px-4" dir="rtl">
+        <Card className="w-full max-w-sm sm:max-w-md shadow-xl border-0 bg-background/95 backdrop-blur-sm">
+          <CardHeader className="text-center p-6 sm:p-8">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+                <AlertCircle className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-arabic-heading text-foreground">
+            <CardTitle className="text-xl sm:text-2xl font-arabic-heading text-foreground">
               خطأ في تحميل التدريب
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-center space-y-6 pb-8">
+          <CardContent className="text-center space-y-4 sm:space-y-6 pb-6 sm:pb-8">
             <Alert variant="destructive" className="text-right">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="font-arabic">
+              <AlertDescription className="font-arabic text-sm">
                 {error || 'لم يتم العثور على جلسة التدريب'}
               </AlertDescription>
             </Alert>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <p className="text-sm text-muted-foreground font-arabic">
                 تأكد من صحة الرابط أو قم بإنشاء جلسة تدريب حر جديدة
               </p>
@@ -144,15 +144,15 @@ const FreePracticePage = ({ params }: FreePracticePageProps) => {
                 onClick={handleBackToPractice}
                 className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 font-arabic shadow-lg hover:shadow-xl transition-all duration-300"
                 size="lg"
-          >
-                <Home className="mr-2 h-5 w-5" />
-            العودة إلى اختيار نوع التدريب
+              >
+                <Home className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                العودة إلى اختيار نوع التدريب
               </Button>
               
               <p className="text-xs text-muted-foreground font-arabic">
                 يمكنك إنشاء جلسة تدريب حر جديدة من صفحة التدريب
               </p>
-        </div>
+            </div>
           </CardContent>
         </Card>
       </div>

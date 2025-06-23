@@ -11,24 +11,27 @@ interface ConversationContentProps { messages: Message[];
   streamingContent: string;
   messagesEndRef: React.RefObject<HTMLDivElement>; }
 
-export const ConversationContent = ({ messages,
+export const ConversationContent = ({
+  messages,
   thinking,
   streamingContent,
-  messagesEndRef, }: ConversationContentProps) => { return (
+  messagesEndRef,
+}: ConversationContentProps) => {
+  return (
     <CardContent className="h-full p-0">
       <div className="h-full overflow-y-auto">
-        <div className="space-y-1 min-h-full">
+        <div className="space-y-1 min-h-full px-2 sm:px-4">
           {messages.length === 0 ? (
             <EmptyConversation />
           ) : (
             <>
               {messages.map((message, index) => (
-                <ChatMessage key={index } role={message.role} content={message.content} />
+                <ChatMessage key={index} role={message.role} content={message.content} />
               ))}
 
               {/* Show thinking indicator */}
               {thinking && (
-                <div className="flex justify-start p-4">
+                <div className="flex justify-start p-3 sm:p-4">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm">Thinking...</span>

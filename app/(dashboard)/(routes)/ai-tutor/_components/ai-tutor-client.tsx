@@ -83,68 +83,68 @@ export const AITutorClient = () => { // Message state
   };
 
   // Prevent hydration issues by not rendering until mounted
-  if (!isMounted) { return (
-      <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">
-        <div className="h-full max-w-4xl mx-auto p-4 flex items-center justify-center">
+  if (!isMounted) {
+    return (
+      <div className="h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">
+        <div className="h-full w-full max-w-4xl mx-auto p-2 sm:p-4 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">Loading AI Tutor...</p>
           </div>
         </div>
       </div>
-    ); }
+    );
+  }
 
   return (
-    // <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900">
-      <div className="h-full max-w-4xl mx-auto md:p-4">
-        <Card className="flex flex-col h-full border border-white/20 shadow-xl backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl overflow-hidden">
-          {/* Header with enhanced styling */}
-          <div className="shrink-0 border-b border-white/20 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-400/10 dark:to-indigo-400/10">
-            <ConversationHeader />
-          </div>
+    <div className="h-screen w-full max-w-4xl mx-auto p-0 sm:p-2 md:p-4">
+      <Card className="flex flex-col h-full border-0 sm:border sm:border-white/20 shadow-none sm:shadow-xl backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-none sm:rounded-2xl overflow-hidden">
+        {/* Header with enhanced styling */}
+        <div className="shrink-0 border-b border-white/20 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-400/10 dark:to-indigo-400/10">
+          <ConversationHeader />
+        </div>
 
-          {/* Scrollable content area with custom styling */}
-          <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent dark:via-gray-800/30 pointer-events-none"></div>
-            <div className="flex-1 overflow-y-auto">
-              <ConversationContent
-                messages={messages}
-                thinking={thinking}
-                streamingContent={streamingContent}
-                messagesEndRef={messagesEndRef}
-              />
-            </div>
+        {/* Scrollable content area with custom styling */}
+        <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent dark:via-gray-800/30 pointer-events-none"></div>
+          <div className="flex-1 overflow-y-auto">
+            <ConversationContent
+              messages={messages}
+              thinking={thinking}
+              streamingContent={streamingContent}
+              messagesEndRef={messagesEndRef}
+            />
           </div>
+        </div>
 
-          {/* Enhanced input footer */}
-          <div className="shrink-0 border-t border-white/20 bg-gradient-to-r from-white/70 via-white/80 to-white/70 dark:from-gray-800/70 dark:via-gray-800/80 dark:to-gray-800/70 backdrop-blur-md">
-            <div className="relative">
-              {/* Subtle glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/10 to-purple-500/5 dark:from-blue-400/5 dark:via-indigo-400/10 dark:to-purple-400/5"></div>
-              <ConversationFooter
-                input={input}
-                setInput={setInput}
-                isLoading={isLoading}
-                onSubmit={handleSubmit}
-                onImageClick={() => setImageProcessingOpen(true)}
-                hasMessages={messages.length > 0}
-                onReset={handleReset}
-              />
-            </div>
+        {/* Enhanced input footer */}
+        <div className="shrink-0 border-t border-white/20 bg-gradient-to-r from-white/70 via-white/80 to-white/70 dark:from-gray-800/70 dark:via-gray-800/80 dark:to-gray-800/70 backdrop-blur-md">
+          <div className="relative">
+            {/* Subtle glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/10 to-purple-500/5 dark:from-blue-400/5 dark:via-indigo-400/10 dark:to-purple-400/5"></div>
+            <ConversationFooter
+              input={input}
+              setInput={setInput}
+              isLoading={isLoading}
+              onSubmit={handleSubmit}
+              onImageClick={() => setImageProcessingOpen(true)}
+              hasMessages={messages.length > 0}
+              onReset={handleReset}
+            />
           </div>
-        </Card>
+        </div>
+      </Card>
 
-        {/* Image Processing Dialog */}
-        <ImageUploadDialog
-          open={imageProcessingOpen}
-          onOpenChange={setImageProcessingOpen}
-          onTextExtracted={(text) => {
-            setInput((prevInput) => {
-              return prevInput ? `${prevInput}\n\n${text}` : text;
-            });
-          }}
-        />
-      </div>
-    // {/* </div> */}
+      {/* Image Processing Dialog */}
+      <ImageUploadDialog
+        open={imageProcessingOpen}
+        onOpenChange={setImageProcessingOpen}
+        onTextExtracted={(text) => {
+          setInput((prevInput) => {
+            return prevInput ? `${prevInput}\n\n${text}` : text;
+          });
+        }}
+      />
+    </div>
   );
 };
