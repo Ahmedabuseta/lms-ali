@@ -213,10 +213,10 @@ export const MDXRenderer = ({ content }: MDXRendererProps) => { const [Component
               },
               // Use proper type casting for custom components
               math({ value }: CustomComponentProps) {
-                return value ? <MathRenderer content={value} display={true} /> : null;
+                return value ? /*<MathRenderer content={value} display={true} />*/ value : null;
               },
               inlineMath({ value }: CustomComponentProps) {
-                return value ? <MathRenderer content={value} display={false} /> : null;
+                return value ? value /*<MathRenderer content={value} display={true} />*/ : null;
               },
               a({ children, href }) {
                 return (
