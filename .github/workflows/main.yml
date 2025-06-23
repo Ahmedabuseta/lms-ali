@@ -78,4 +78,4 @@ jobs:
       - name: Restart PM2 process
         run: |
           echo "Restarting PM2 app..."
-          pm2 restart p2s || pm2 start npm --name p2s -- run start
+          pm2 restart nextjs-app  || pm2 start npm --name p2s -- run start
