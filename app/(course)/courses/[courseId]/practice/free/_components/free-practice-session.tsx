@@ -389,7 +389,8 @@ export const FreePracticeSession: React.FC<FreePracticeSessionProps> = ({ sessio
                     التفسير:
                   </div>
                   <div className="text-amber-700 dark:text-amber-200 font-arabic">
-                    {renderContent(currentQuestion.explanation)}
+                    {/* {renderContent(currentQuestion.explanation)} */}
+                    {currentQuestion.explanation}
                   </div>
                 </AlertDescription>
               </Alert>

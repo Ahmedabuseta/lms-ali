@@ -13,6 +13,7 @@ import { BookOpen, Target, Trophy, Settings, AlertCircle, Zap, Clock, CheckCircl
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
+import { Preview } from '@/components/preview';
 
 interface Chapter {
   id: string;
@@ -242,7 +243,8 @@ export const PracticeChapterSelection = ({ courseId, chapters, mode }: PracticeC
                           </div>
                           {chapter.description && (
                             <p className="text-sm text-muted-foreground font-arabic leading-relaxed">
-                              {chapter.description}
+                              
+                              <Preview value={chapter.description } />
                             </p>
                           )}
                         </div>
