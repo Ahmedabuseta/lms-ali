@@ -1,53 +1,194 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  SortingState,
-  ColumnFiltersState,
-  Row,
-  Column,
-  Header,
-  HeaderGroup,
-  Cell, } from '@tanstack/react-table';
-import { CheckCircle,
-  XCircle,
-  Clock,
-  DollarSign,
-  UserPlus,
-  Shield,
-  ShieldOff,
-  Monitor,
-  UserX,
-  Gift,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  Users, } from 'lucide-react';
+import { useState, useMemo, useCallback } from 'react';
+import { Search, Filter, MoreVertical, CheckCircle, XCircle, Clock, Shield } from 'lucide-react';
 import { User, UserRole, StudentAccessType } from '@/lib/types';
 import { useUserManagement } from '../_hooks/use-user-management';
 import { GrantAccessForm } from './grant-access-form';
 import { BanUserForm } from './ban-user-form';
-import { SessionsManager } from './sessions-manager';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle, } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
-interface UserManagementProps { users: User[]; }
+interface UserManagementProps {
+  users: User[];
+}
+
+// Simplified user card component for mobile-first design
+const UserCard = ({ user, onGrantAccess, onBanUser }: {
+  user: User;
+  onGrantAccess: (user: User) => void;
+  onBanUser: (user: User) => void;
+}) => {
+  const getAccessBadge = () => {
+    switch (user.accessType) {
+      case StudentAccessType.FULL_ACCESS:
+        return <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">وصول كامل</Badge>;
+      case StudentAccessType.LIMITED_ACCESS:
+        return <Badge variant="default" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">وصول محدود</Badge>;
+      case StudentAccessType.FREE_TRIAL:
+        return <Badge variant="secondary" className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">فترة تجربة</Badge>;
+      case StudentAccessType.NO_ACCESS:
+        return <Badge variant="outline" className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">بدون وصول</Badge>;
+      default:
+        return <Badge variant="outline">غير محدد</Badge>;
+    }
+  };
+
+  const getRoleBadge = () => {
+    return user.role === UserRole.TEACHER ? (
+      <Badge variant="default" className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+        <Shield className="w-3 h-3 mr-1" />
+        مدرس
+      </Badge>
+    ) : (
+      <Badge variant="outline">طالب</Badge>
+    );
+  };
+
+  return (
+    <Card className="transition-all duration-200 hover:shadow-md">
+      <CardContent className="p-4">
+        <div className="space-y-3">
+          {/* Header */}
+          <div className="flex items-start justify-between">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-foreground truncate">
+                {user.name || 'بدون اسم'}
+              </h3>
+              <p className="text-sm text-muted-foreground truncate">
+                {user.email}
+              </p>
+            </div>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onGrantAccess(user)}>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  منح صلاحية
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => onBanUser(user)}
+                  className="text-destructive"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  حظر المستخدم
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Badges */}
+          <div className="flex flex-wrap gap-2">
+            {getRoleBadge()}
+            {getAccessBadge()}
+            {user.banned && (
+              <Badge variant="destructive">محظور</Badge>
+            )}
+          </div>
+
+          {/* Meta Info */}
+          <div className="text-xs text-muted-foreground space-y-1">
+            <div>انضم: {new Date(user.createdAt).toLocaleDateString('ar-SA')}</div>
+            {user.paymentReceived && (
+              <div className="text-green-600 dark:text-green-400">
+                تم استلام الدفع {user.paymentAmount ? `(${user.paymentAmount} ر.س)` : ''}
+              </div>
+            )}
+            {user.trialEndDate && user.accessType === StudentAccessType.FREE_TRIAL && (
+              <div className="text-orange-600 dark:text-orange-400">
+                تنتهي التجربة: {new Date(user.trialEndDate).toLocaleDateString('ar-SA')}
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export function UserManagement({ users }: UserManagementProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [accessFilter, setAccessFilter] = useState<string>('all');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [dialogType, setDialogType] = useState<'grant' | 'ban' | null>(null);
+
+  const { 
+    grantAccess, 
+    banUser, 
+    isLoading 
+  } = useUserManagement();
+
+  // Optimized filtering with useMemo
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const matchesSearch = searchTerm === '' || 
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+      
+      const matchesAccess = accessFilter === 'all' || user.accessType === accessFilter;
+
+      return matchesSearch && matchesRole && matchesAccess;
+    });
+  }, [users, searchTerm, roleFilter, accessFilter]);
+
+  const handleGrantAccess = useCallback((user: User) => {
+    setSelectedUser(user);
+    setDialogType('grant');
+  }, []);
+
+  const handleBanUser = useCallback((user: User) => {
+    setSelectedUser(user);
+    setDialogType('ban');
+  }, []);
+
+  const handleCloseDialog = useCallback(() => {
+    setSelectedUser(null);
+    setDialogType(null);
+  }, []);
+
+  // Statistics
+  const stats = useMemo(() => {
+    const total = filteredUsers.length;
+    const students = filteredUsers.filter(u => u.role === UserRole.STUDENT).length;
+    const teachers = filteredUsers.filter(u => u.role === UserRole.TEACHER).length;
+    const active = filteredUsers.filter(u => 
+      u.accessType === StudentAccessType.FULL_ACCESS || 
+      u.accessType === StudentAccessType.LIMITED_ACCESS
+    ).length;
+
+    return { total, students, teachers, active };
+  }, [filteredUsers]);
+
+  if (users.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-6xl mb-4">👥</div>
+        <h3 className="text-lg font-medium mb-2">لا توجد بيانات مستخدمين</h3>
+        <p className="text-muted-foreground">لم يتم العثور على أي مستخدمين في النظام.</p>
+      </div>
+    );
+  }
 
 const accessTypeLabels: Record<StudentAccessType, string> = { NO_ACCESS: 'لا يوجد وصول',
   FREE_TRIAL: 'تجربة مجانية',
