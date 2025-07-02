@@ -251,3 +251,5 @@ const UsersPage = () => {
     </Suspense>
   );
 };
+
+export default UsersPage;
