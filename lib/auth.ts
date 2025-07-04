@@ -128,18 +128,22 @@ const calculateUserPermissions = (user: any) => {
       };
   }
 };
+const baseURL = process.env.NODE_ENV === "production" ? process.env.BETTER_AUTH_URL : 'http://localhost:3000';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
-  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
+  baseURL:  process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   trustedOrigins: [
     'https://lms-ali.vercel.app',
     'http://localhost:3000',
     'http://localhost:3001',
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ],
+  emailAndPassword: {
+    enabled: true,
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,

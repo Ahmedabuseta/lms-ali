@@ -3,40 +3,53 @@
 import { usePathname } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 import Link from 'next/link';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 
 import { SearchInput } from './search-input';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from '@/components/ui/button';
-import { isTeacher } from '@/lib/teacher';
+import { isAdmin, isTeacher } from '@/lib/teacher';
 import { useSession, signOut } from '@/lib/auth-client';
 import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger, } from '@/components/ui/dropdown-menu';
 
-export const NavbarRoutes = () => { const { data: session } = useSession();
+export const NavbarRoutes = () => { 
+  const { data: session } = useSession();
   const [imageError, setImageError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const pathname = usePathname();
+
+  // Ensure client-side mounting to prevent hydration errors
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const isTeacherPage = pathname?.startsWith('/teacher');
   const isCoursePage = pathname?.includes('/courses');
   const isSearchPage = pathname?.includes('/search');
 
-  const handleSignOut = async () => { await signOut({
+  const handleSignOut = async () => { 
+    await signOut({
       fetchOptions: {
         onSuccess: () => {
-          window.location.href = '/'; },
+          window.location.href = '/'; 
+        },
       },
     });
   };
 
-  const handleImageError = () => { console.log('Image failed to load:', session?.user?.image);
-    setImageError(true); };
+  const handleImageError = () => { 
+    console.log('Image failed to load:', session?.user?.image);
+    setImageError(true); 
+  };
 
-  const handleImageLoad = () => { console.log('Image loaded successfully:', session?.user?.image);
-    setImageError(false); };
+  const handleImageLoad = () => { 
+    console.log('Image loaded successfully:', session?.user?.image);
+    setImageError(false); 
+  };
 
   // Check if we have a valid image URL
   const hasValidImage = session?.user?.image &&
@@ -44,10 +57,14 @@ export const NavbarRoutes = () => { const { data: session } = useSession();
     !imageError &&
     (session.user.image.startsWith('http') || session.user.image.startsWith('data:'));
 
-  console.log('Session user:', session?.user);
-  console.log('Image URL:', session?.user?.image);
-  console.log('Has valid image:', hasValidImage);
-  console.log('Image error state:', imageError);
+  // Don't render until mounted to prevent hydration errors
+  if (!isMounted) {
+    return (
+      <div className="ml-auto flex items-center gap-x-2">
+        <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700" />
+      </div>
+    );
+  }
 
   return (
     <>

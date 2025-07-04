@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { BarChart,
   Bot,
   Compass,
@@ -88,7 +89,11 @@ const getAllRoutes = (permissions: any) => { const studentRoutes = [
   return { studentRoutes: filteredStudentRoutes, teacherRoutes };
 };
 
-export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { const pathname = usePathname();
+const SidebarRoutesComponent = ({ collapsed = false }: SidebarRoutesProps) => { 
+  const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
+  const [isStartingTrial, setIsStartingTrial] = useState(false);
+  
   const {
     permissions,
     loading,
@@ -99,22 +104,50 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
     isTrialExpired,
     getAccessType } = usePermissions();
 
-  const startTrial = async () => { try {
+  // Ensure client-side mounting to prevent hydration errors
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const startTrial = async () => { 
+    if (isStartingTrial) return;
+    
+    try {
+      setIsStartingTrial(true);
       const response = await fetch('/api/user/start-trial', {
-        method: 'POST', });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
 
       if (response.ok) {
         toast.success('تم تفعيل التجربة المجانية!');
         // Refresh permissions to get updated data
         await refresh();
       } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'فشل في تفعيل التجربة المجانية');
+        toast.error(data.message || 'فشل في تفعيل التجربة المجانية');
       }
     } catch (error) {
+      console.error('Trial start error:', error);
       toast.error('حدث خطأ أثناء تفعيل التجربة المجانية');
+    } finally {
+      setIsStartingTrial(false);
     }
   };
+
+  // Don't render until mounted to prevent hydration errors
+  if (!isMounted) {
+    return (
+      <div className="flex w-full flex-col space-y-1">
+        <div className="h-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+      </div>
+    );
+  }
 
   if (loading) { return (
       <div className="flex w-full flex-col space-y-1">
@@ -169,7 +202,7 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
         <div className="mt-auto space-y-3 p-3">
           {/* Free Trial Card */}
           { canStartTrial() && (
-            <Card className="border-2 border-dashed border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <Card className="border-2 border-dashed border-blue-300 bg-blue-50 dark:bg-blue-900/20">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-blue-600" />
@@ -185,9 +218,10 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
                 <Button
                   onClick={startTrial }
                   size="sm"
+                  disabled={isStartingTrial}
                   className="w-full bg-blue-600 hover:bg-blue-700 font-arabic"
                 >
-                  بدء التجربة
+                  {isStartingTrial ? 'جاري التفعيل...' : 'بدء التجربة'}
                 </Button>
               </CardContent>
             </Card>
@@ -195,7 +229,7 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
 
           {/* Active Trial Status */}
           { getAccessType() === 'FREE_TRIAL' && !isTrialExpired() && (
-            <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
+            <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4 text-blue-600" />
@@ -212,7 +246,7 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
 
           {/* Upgrade Card */}
           { (getAccessType() === 'NO_ACCESS' || isTrialExpired()) && (
-            <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
+            <Card className="border-amber-200 bg-amber-50 dark:bg-amber-900/20">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-amber-600" />
@@ -230,7 +264,13 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
                   size="sm"
                   className="w-full bg-amber-600 hover:bg-amber-700 font-arabic"
                 >
-                  <a href="/pricing">عرض الخطط</a>
+                  <a
+                    href="https://wa.me/201090251773"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    تواصل عبر واتساب
+                  </a>
                 </Button>
               </CardContent>
             </Card>
@@ -240,3 +280,5 @@ export const SidebarRoutes = ({ collapsed = false }: SidebarRoutesProps) => { co
     </div>
   );
 };
+
+export const SidebarRoutes = React.memo(SidebarRoutesComponent);

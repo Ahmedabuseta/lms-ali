@@ -6,6 +6,7 @@ import { Shield, Lock, Clock, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface UserPermissions { canAccessVideos: boolean;
   canAccessCourses: boolean;
@@ -197,6 +198,31 @@ function AccessDeniedCard({ title,
   icon: Icon,
   fallbackUrl,
   permissions }: AccessDeniedCardProps) { const router = useRouter();
+    const startTrial = async () => { 
+      
+      try {
+       
+        const response = await fetch('/api/user/start-trial', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          toast.success('تم تفعيل التجربة المجانية!');
+          // Refresh permissions to get updated data
+          router.push('/dashboard?startTrial=true')
+        } else {
+          toast.error(data.message || 'فشل في تفعيل التجربة المجانية');
+        }
+      } catch (error) {
+        console.error('Trial start error:', error);
+        toast.error('حدث خطأ أثناء تفعيل التجربة المجانية');
+      } 
+    };
 
   return (
     <div className="flex items-center justify-center min-h-[400px] p-4">
@@ -212,7 +238,7 @@ function AccessDeniedCard({ title,
           {/* Show trial option if available */}
           {permissions?.canStartTrial && (
             <Button
-              onClick={() => router.push('/dashboard?startTrial=true')}
+              onClick={ startTrial }
               className="w-full font-arabic bg-blue-600 hover:bg-blue-700"
             >
               <Clock className="mr-2 h-4 w-4" />

@@ -28,10 +28,6 @@ export const startFreeTrial = async () => {
     throw new Error('Unauthorized');
   }
 
-  if (!user) {
-    throw new Error('User not found');
-  }
-
   if (user.isTrialUsed) {
     throw new Error('Trial already used');
   }
@@ -43,11 +39,14 @@ export const startFreeTrial = async () => {
   const trialStartDate = new Date();
   const trialEndDate = new Date(trialStartDate.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
-  return await db.user.update({ where: { id: user.id },
-    data: { accessType: StudentAccessType.FREE_TRIAL,
+  return await db.user.update({ 
+    where: { id: user.id },
+    data: { 
+      accessType: StudentAccessType.FREE_TRIAL,
       trialStartDate,
       trialEndDate,
-      isTrialUsed: true, },
+      isTrialUsed: true, 
+    },
   });
 };
 

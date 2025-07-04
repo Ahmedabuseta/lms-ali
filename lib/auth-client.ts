@@ -15,7 +15,7 @@ const getBaseURL = () => {
 };
 
 export const authClient = createAuthClient({ 
-  baseURL: "https://p2s.tech",
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   plugins: [
     adminClient(),
   ] 
@@ -24,5 +24,6 @@ export const authClient = createAuthClient({
 export const { 
   useSession,
   signIn,
+  signUp,
   signOut, 
 } = authClient;

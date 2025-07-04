@@ -16,7 +16,8 @@ interface UserPermissions { canAccessVideos: boolean;
 
 interface PermissionsState { permissions: UserPermissions | null;
   loading: boolean;
-  error: string | null; }
+  error: string | null;
+  isMounted: boolean; }
 
 // Cache permissions in memory with timestamp
 let permissionsCache: { data: UserPermissions | null;
@@ -27,7 +28,13 @@ const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 export function usePermissions() { const [state, setState] = useState<PermissionsState>({
     permissions: null,
     loading: true,
-    error: null, });
+    error: null,
+    isMounted: false, });
+
+  // Ensure client-side mounting to prevent hydration errors
+  useEffect(() => {
+    setState(prev => ({ ...prev, isMounted: true }));
+  }, []);
 
   const fetchPermissions = useCallback(async (forceRefresh = false) => { try {
       setState(prev => ({ ...prev, loading: true, error: null }));
@@ -37,27 +44,34 @@ export function usePermissions() { const [state, setState] = useState<Permission
         const isValid = (now - permissionsCache.timestamp) < CACHE_DURATION;
 
         if (isValid && permissionsCache.data) {
-          setState({
+          setState(prev => ({
+            ...prev,
             permissions: permissionsCache.data,
             loading: false,
-            error: null, });
+            error: null, }));
           return permissionsCache.data;
         }
       }
 
       // Fetch fresh permissions
-      const response = await fetch('/api/user/permissions');
+      const response = await fetch('/api/user/permissions', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (response.status === 401) { // User is not authenticated
-        setState({
+        setState(prev => ({
+          ...prev,
           permissions: null,
           loading: false,
-          error: 'Unauthorized', });
+          error: 'Unauthorized', }));
         return null;
       }
 
       if (!response.ok) {
-        throw new Error('Failed to fetch permissions');
+        throw new Error(`Failed to fetch permissions: ${response.status}`);
       }
 
       const permissions = await response.json();
@@ -66,9 +80,11 @@ export function usePermissions() { const [state, setState] = useState<Permission
       permissionsCache = { data: permissions,
         timestamp: Date.now(), };
 
-      setState({ permissions,
+      setState(prev => ({ 
+        ...prev,
+        permissions,
         loading: false,
-        error: null, });
+        error: null, }));
 
       return permissions;
     } catch (error) { console.error('Failed to fetch permissions:', error);
@@ -108,14 +124,17 @@ export function usePermissions() { const [state, setState] = useState<Permission
     return state.permissions?.accessType || 'NO_ACCESS';
   }, [state.permissions]);
 
-  // Initial fetch
+  // Initial fetch only after mounting
   useEffect(() => {
-    fetchPermissions();
-  }, [fetchPermissions]);
+    if (state.isMounted) {
+      fetchPermissions();
+    }
+  }, [fetchPermissions, state.isMounted]);
 
   return { permissions: state.permissions,
     loading: state.loading,
     error: state.error,
+    isMounted: state.isMounted,
     refetch: fetchPermissions,
     refresh: refreshPermissions,
     hasPermission,
@@ -127,10 +146,10 @@ export function usePermissions() { const [state, setState] = useState<Permission
 }
 
 // Hook for specific permission checks
-export function usePermissionCheck(permission: keyof UserPermissions) { const { permissions, loading, hasPermission } = usePermissions();
+export function usePermissionCheck(permission: keyof UserPermissions) { const { permissions, loading, hasPermission, isMounted } = usePermissions();
 
   return { hasPermission: hasPermission(permission),
-    loading,
+    loading: loading || !isMounted,
     permissions, };
 }
 

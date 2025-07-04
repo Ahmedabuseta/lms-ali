@@ -38,15 +38,8 @@ export default function MathExamples() { const examples = [
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-      {/* Enhanced decorative elements for both themes */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
-        <div
-          className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
-          style={ { animationDelay: '2s' }}
-         />
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* Removed heavy decorative elements for performance */}
 
       <div className="relative z-10 space-y-6 p-6">
         <div className="text-center">
@@ -56,7 +49,7 @@ export default function MathExamples() { const examples = [
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           { examples.map((example, index) => (
-            <Card key={index } className="border border-border/50 bg-card/60 p-4 shadow-lg backdrop-blur-sm">
+            <Card key={index } className="border border-border/50 bg-card/60 p-4 shadow-lg">
               <h2 className="mb-2 text-xl font-semibold text-foreground">{example.title}</h2>
               <div className="rounded-md border border-border/30 bg-muted/50 p-3">
                 <MathRenderer content={example.content} />

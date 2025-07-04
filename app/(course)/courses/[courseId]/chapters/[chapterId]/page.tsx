@@ -70,19 +70,8 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
   const isChapterFullyCompleted = userProgress?.isCompleted && hasPassedQuiz;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
-      {/* Enhanced decorative elements */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl" />
-        <div
-          className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl"
-          style={ { animationDelay: '2s' }}
-         />
-        <div
-          className="absolute left-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-green-500/8 to-emerald-500/4 dark:from-green-400/8 dark:to-emerald-400/4 blur-3xl"
-          style={ { animationDelay: '4s' }}
-         />
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
+      {/* Removed heavy decorative elements for performance */}
 
       <div className="relative z-10">
         {/* Status Banners */}

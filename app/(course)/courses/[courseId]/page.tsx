@@ -92,12 +92,8 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const chapterProgressionAccess = await getChapterAccessInfo(userId, course.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background" dir="rtl">
-      {/* Decorative elements */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-blue-500/8 to-indigo-500/4 dark:from-blue-400/8 dark:to-indigo-400/4 blur-3xl" />
-        <div className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-purple-500/8 to-pink-500/4 dark:from-purple-400/8 dark:to-pink-400/4 blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
+      {/* Removed heavy decorative elements for performance */}
 
       <div className="relative z-10 mx-auto max-w-7xl p-6 space-y-8">
         {/* Course Header */}
@@ -174,110 +170,4 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               {/* Action Buttons */}
               <div className="space-y-3">
                 {firstChapter && (
-                  <Link href={`/courses/${course.id}/chapters/${firstChapter.id}`}>
-                    <Button size="lg" className="w-full font-arabic">
-                      <PlayCircle className="h-5 w-5 ml-2" />
-                      {progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة'}
-                    </Button>
-                  </Link>
-                )}
-                <Link href={`/courses/${course.id}/practice`}>
-                  <Button variant="outline" size="lg" className="w-full font-arabic">
-                    <Target className="h-5 w-5 ml-2" />
-                    تدرب على الأسئلة
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Chapters List */}
-        <div className="rounded-2xl border border-border/50 bg-card/60 p-8 shadow-lg backdrop-blur-sm">
-          <div className="mb-6 flex items-center gap-3">
-            <BookOpen className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-foreground font-arabic">فصول الدورة</h2>
-          </div>
-
-          <div className="space-y-3">
-            {course.chapters.map((chapter, index) => {
-              const isCompleted = !!chapter.userProgress?.[0]?.isCompleted;
-              // Use pre-calculated access
-              const hasAccess = chapterAccess[index];
-              const canProgressToChapter = chapterProgressionAccess[chapter.id] !== false;
-              const isLocked = !hasAccess || !canProgressToChapter;
-
-              return (
-                <Card key={chapter.id} className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      {/* Chapter Number */}
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
-                        isCompleted
-                          ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
-                          : isLocked
-                          ? 'bg-gray-200 text-gray-500'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200'
-                      }`}>
-                        {index + 1}
-                      </div>
-
-                      {/* Chapter Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          {isCompleted ? (
-                            <CheckCircle className="h-5 w-5 text-green-600" />
-                          ) : isLocked ? (
-                            <Lock className="h-5 w-5 text-gray-400" />
-                          ) : (
-                            <PlayCircle className="h-5 w-5 text-blue-600" />
-                          )}
-                          <h3 className="font-semibold text-foreground font-arabic truncate">
-                            {chapter.title}
-                          </h3>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="font-arabic">
-                            {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
-                          </span>
-                          {isLocked && hasAccess && !canProgressToChapter && (
-                            <Badge variant="destructive" className="text-xs font-arabic">
-                              يتطلب إكمال الفصل السابق
-                            </Badge>
-                          )}
-                          {chapter.videoUrl && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-4 w-4" />
-                              <span className="font-arabic">فيديو</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Action Button */}
-                      <div>
-                        {!isLocked ? (
-                          <Link href={`/courses/${course.id}/chapters/${chapter.id}`}>
-                            <Button variant="ghost" size="sm" className="font-arabic">
-                              {isCompleted ? 'مراجعة' : 'بدء'}
-                            </Button>
-                          </Link>
-                        ) : (
-                          <Button variant="ghost" size="sm" disabled className="font-arabic">
-                            مقفل
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default CourseIdPage;
+                  <Link href={`

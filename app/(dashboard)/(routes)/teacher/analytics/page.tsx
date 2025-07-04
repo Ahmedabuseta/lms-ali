@@ -30,19 +30,8 @@ export default async function Analytics() {
   ]);
 
   return (
-    <div className="min-h-screen space-y-8 bg-gradient-to-br from-background via-muted/30 to-background p-6">
-      {/* Enhanced decorative elements for both themes */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-10 top-20 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/5 to-secondary/5 blur-3xl" />
-        <div
-          className="absolute bottom-1/4 left-20 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-accent/5 to-primary/5 blur-3xl"
-          style={ { animationDelay: '2s' }}
-         />
-        <div
-          className="absolute right-1/3 top-1/2 h-32 w-32 animate-pulse rounded-full bg-gradient-to-br from-secondary/5 to-accent/5 blur-3xl"
-          style={ { animationDelay: '4s' }}
-         />
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
+      {/* Removed heavy decorative elements for performance */}
 
       {/* Header */}
       <div className="relative z-10 flex flex-col gap-4">
