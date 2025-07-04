@@ -32,8 +32,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 
   const userId = currentUser.id;
 
-  console.log('Fetching course with ID:', params.courseId);
-
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
@@ -59,27 +57,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   });
 
   if (!course) {
-    console.log('Course not found for ID:', params.courseId);
-    console.log('Available courses:', await db.course.findMany({ select: { id: true, title: true, isPublished: true } }));
-    
-    // Instead of redirecting to home, redirect to courses list with error
     return redirect('/dashboard?error=course-not-found');
   }
 
-  console.log('Course found:', course.title, 'Published:', course.isPublished);
-
-  // Check if course is published
   if (!course.isPublished) {
-    console.log('Course is not published:', course.title);
     return redirect('/dashboard?error=course-not-published');
   }
 
   const progressCount = await getProgress(userId, course.id);
-
   const completedChapters = course.chapters.filter(chapter =>
     chapter.userProgress?.[0]?.isCompleted
   ).length;
-
   const totalChapters = course.chapters.length;
   const firstChapter = course.chapters[0];
 
@@ -93,11 +81,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      {/* Removed heavy decorative elements for performance */}
-
       <div className="relative z-10 mx-auto max-w-7xl p-6 space-y-8">
         {/* Course Header */}
-        <div className="rounded-2xl border border-border/50 bg-gradient-to-r from-card/80 to-card/60 p-8 shadow-lg backdrop-blur-sm">
+        <div className="rounded-2xl border border-border/50 bg-background/60 p-8 shadow-lg">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Course Info */}
             <div className="lg:col-span-2 space-y-6">
@@ -116,7 +102,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                   </div>
                 )}
               </div>
-
               {/* Course Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="flex items-center gap-3 p-4 rounded-lg bg-background/60 border border-border/30">
@@ -149,7 +134,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 </div>
               </div>
             </div>
-
             {/* Progress Card */}
             <div className="space-y-6">
               <Card className="border-border/50 bg-background/60">
@@ -166,8 +150,104 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                   </div>
                 </CardContent>
               </Card>
-
               {/* Action Buttons */}
               <div className="space-y-3">
                 {firstChapter && (
-                  <Link href={`
+                  <Link href={`/courses/${course.id}/chapters/${firstChapter.id}`}>
+                    <Button size="lg" className="w-full font-arabic">
+                      <PlayCircle className="h-5 w-5 ml-2" />
+                      {progressCount > 0 ? 'متابعة التعلم' : 'بدء الدورة'}
+                    </Button>
+                  </Link>
+                )}
+                <Link href={`/courses/${course.id}/practice`}>
+                  <Button variant="outline" size="lg" className="w-full font-arabic">
+                    <Target className="h-5 w-5 ml-2" />
+                    تدرب على الأسئلة
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Chapters List */}
+        <div className="rounded-2xl border border-border/50 bg-background/60 p-8 shadow-lg">
+          <div className="mb-6 flex items-center gap-3">
+            <BookOpen className="h-6 w-6 text-blue-600" />
+            <h2 className="text-2xl font-bold text-foreground font-arabic">فصول الدورة</h2>
+          </div>
+          <div className="space-y-3">
+            {course.chapters.map((chapter, index) => {
+              const isCompleted = !!chapter.userProgress?.[0]?.isCompleted;
+              const hasAccess = chapterAccess[index];
+              const canProgressToChapter = chapterProgressionAccess[chapter.id] !== false;
+              const isLocked = !hasAccess || !canProgressToChapter;
+              return (
+                <Card key={chapter.id} className="border-border/50 bg-background/40 hover:bg-background/60 transition-all duration-200">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
+                        isCompleted
+                          ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
+                          : isLocked
+                          ? 'bg-gray-200 text-gray-500'
+                          : 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          {isCompleted ? (
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                          ) : isLocked ? (
+                            <Lock className="h-5 w-5 text-gray-400" />
+                          ) : (
+                            <PlayCircle className="h-5 w-5 text-blue-600" />
+                          )}
+                          <h3 className="font-semibold text-foreground font-arabic truncate">
+                            {chapter.title}
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="font-arabic">
+                            {isCompleted ? 'مكتمل' : isLocked ? 'مقفل' : 'متاح'}
+                          </span>
+                          {isLocked && hasAccess && !canProgressToChapter && (
+                            <Badge variant="destructive" className="text-xs font-arabic">
+                              يتطلب إكمال الفصل السابق
+                            </Badge>
+                          )}
+                          {chapter.videoUrl && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              <span className="font-arabic">فيديو</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        {!isLocked ? (
+                          <Link href={`/courses/${course.id}/chapters/${chapter.id}`}>
+                            <Button variant="ghost" size="sm" className="font-arabic">
+                              {isCompleted ? 'مراجعة' : 'بدء'}
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled className="font-arabic">
+                            مقفل
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CourseIdPage;
