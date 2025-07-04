@@ -84,7 +84,7 @@ export const NavbarRoutes = () => {
               Exit
             </Button>
           </Link>
-        ) : isTeacher(session?.user?.email) ? (
+        ) : isAdmin(session?.user?.email) ? (
           <Link href="/teacher/">
             <Button size="sm" variant="ghost">
               Teacher mode

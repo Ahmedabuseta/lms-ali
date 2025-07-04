@@ -59,7 +59,6 @@ export default function SignInPage() {
                   تسجيل دخول آمن وسريع بحساب Google
                 </p>
               </div>
-              <EmailPassword />
             </div>
           </div>
         </div>
