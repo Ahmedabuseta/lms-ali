@@ -90,7 +90,11 @@ export const NavbarRoutes = () => {
               Teacher mode
             </Button>
           </Link>
-        ) : null }
+        ) :  <Link href="/teacher/">
+            <Button size="sm" variant="ghost">
+              Teacher mode
+            </Button>
+          </Link> }
 
         {session?.user && (
           <DropdownMenu>
